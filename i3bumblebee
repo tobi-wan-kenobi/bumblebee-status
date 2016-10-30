@@ -1,0 +1,20 @@
+#!/usr/bin/env python
+
+import bumblebee.outputs.i3
+
+def main():
+    output = bumblebee.outputs.i3.i3bar()
+
+    print output.preamble()
+
+    while True:
+        # TODO: retrieve data from modules
+        data = []
+        print output.data(data)
+
+    print output.finalize()
+
+if __name__ == "__main__":
+    main()
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
