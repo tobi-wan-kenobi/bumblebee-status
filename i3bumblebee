@@ -4,6 +4,7 @@ import sys
 import time
 import argparse
 import importlib
+import bumblebee.themes
 import bumblebee.outputs.i3
 
 def print_module_list():
@@ -13,7 +14,8 @@ def print_module_list():
 def main():
     parser = argparse.ArgumentParser(description="display system data in the i3bar")
     parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)")
-    parser.add_argument("-l", "--list", action="store_true", help="List all available modules")
+    parser.add_argument("-l", "--list", action="store_true", help="List all available modules and themes")
+    parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modulemoduless")
 
     args = parser.parse_args()
 
@@ -22,11 +24,12 @@ def main():
         sys.exit(0)
 
     modules = []
+    theme = bumblebee.themes.Theme(args.theme)
     for m in args.modules:
         # TODO: how to cleanly handle errors here?
         # (useful error messages)
         module = importlib.import_module("bumblebee.modules.%s" % m)
-        modules.append(getattr(module, "Module")())
+        modules.append(getattr(module, "Module")(theme))
 
     output = bumblebee.outputs.i3.i3bar()
 

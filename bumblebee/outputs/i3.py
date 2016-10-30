@@ -1,8 +1,10 @@
 import json
+import bumblebee.output
 
-class i3bar:
+class i3bar(bumblebee.output.Output):
     def __init__(self):
         self._data = []
+
     def start(self):
         return json.dumps({ "version": 1 }) + "["
 

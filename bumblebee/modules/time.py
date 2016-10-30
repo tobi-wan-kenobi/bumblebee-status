@@ -1,6 +1,10 @@
 import datetime
+import bumblebee.module
 
-class Module:
+class Module(bumblebee.module.Module):
+    def __init__(self, theme):
+        super(Module, self).__init__(theme)
+
     def data(self):
         return datetime.datetime.now().strftime("%x %X")
 
