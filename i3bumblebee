@@ -28,8 +28,10 @@ def main():
     for m in args.modules:
         # TODO: how to cleanly handle errors here?
         # (useful error messages)
-        module = importlib.import_module("bumblebee.modules.%s" % m)
-        modules.append(getattr(module, "Module")(theme))
+        module_name = m if not ":" in m else m.split(":")[0]
+        module_args = None if not ":" in m else m.split(":")[1:]
+        module = importlib.import_module("bumblebee.modules.%s" % module_name)
+        modules.append(getattr(module, "Module")(theme, module_args))
 
     output = bumblebee.outputs.i3.i3bar()
 
