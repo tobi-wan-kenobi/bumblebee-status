@@ -11,6 +11,7 @@ class Theme:
             self._data = json.load(f)
         self._defaults = self._data.get("defaults", {})
         self._cycle = self._defaults.get("cycle", [])
+        self._modules = {}
 
         self.reset()
 
@@ -29,6 +30,16 @@ class Theme:
             state_theme = module_theme.get("states", {}).get(state, {})
 
             value = state_theme.get(key, value)
+
+        if type(value) is list:
+            # cycle through the values
+            if not obj in self._modules:
+                self._modules[obj] = { "idx": 0 }
+            else:
+                self._modules[obj]["idx"] += 1
+                if self._modules[obj]["idx"] >= len(value):
+                    self._modules[obj]["idx"] = 0
+            value = value[self._modules[obj]["idx"]]
 
         return value
 

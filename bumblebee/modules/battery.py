@@ -28,5 +28,7 @@ class Module(bumblebee.module.Module):
                 return "discharging_high"
             return "discharging_full"
         else:
+            if self._capacity > 95:
+                return "charged"
             return "charging"
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
