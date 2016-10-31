@@ -1,8 +1,6 @@
 import os
 import json
 
-
-
 class Theme:
     _cycle_index = 0
     _cycle = None
@@ -22,10 +20,9 @@ class Theme:
 
         value = getattr(obj, key)() if hasattr(obj, key) else None
         value = self._defaults.get(key, value)
-        value = module_theme.get(key, value)
-
         if len(self._cycle) > 0:
             value = self._defaults["cycle"][self._cycle_index].get(key, value)
+        value = module_theme.get(key, value)
 
         if hasattr(obj, "state"):
             state = getattr(obj, "state")()
