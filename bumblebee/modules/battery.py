@@ -1,6 +1,15 @@
 import datetime
 import bumblebee.module
 
+def usage():
+    return "battery::<battery ID, defaults to BAT0>"
+
+def notes():
+    return "Reads /sys/class/power_supply/<ID>/[capacity|status]"
+
+def description():
+    return "Displays battery status, percentage and whether it's charging or discharging"
+
 class Module(bumblebee.module.Module):
     def __init__(self, args):
         super(Module, self).__init__(args)

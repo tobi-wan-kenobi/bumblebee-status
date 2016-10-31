@@ -1,22 +1,41 @@
 #!/usr/bin/env python
 
+import os
 import sys
 import time
+import pkgutil
 import argparse
+import textwrap
 import importlib
 import bumblebee.theme
+import bumblebee.modules
 import bumblebee.outputs.i3
 
 def print_module_list():
-    # TODO
-    pass
+    print "available modules:"
+    path = os.path.dirname(bumblebee.modules.__file__)
+    for mod in [ name for _, name, _ in pkgutil.iter_modules([path])]:
+        m = importlib.import_module("bumblebee.modules.{}".format(mod))
+
+        desc = "n/a" if not hasattr(m, "description") else getattr(m, "description")()
+        usage = "n/a" if not hasattr(m, "usage") else getattr(m, "usage")()
+        notes = "n/a" if not hasattr(m, "notes") else getattr(m, "notes")()
+
+        print "    {}: ".format(mod)
+        print textwrap.fill("Description: {}".format(desc), 80, initial_indent="        ", subsequent_indent="                     ")
+        print textwrap.fill("Usage      : {}".format(usage), 80, initial_indent="        ", subsequent_indent="                     ")
+        print textwrap.fill("Notes      : {}".format(notes), 80, initial_indent="        ", subsequent_indent="                     ")
 
 def main():
     parser = argparse.ArgumentParser(description="display system data in the i3bar")
     parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)")
     parser.add_argument("-l", "--list", action="store_true", help="List all available modules and themes")
     parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modulemoduless")
-    parser.add_argument("-i", "--interval", help="Specify the update interaval", default=1, type=int)
+    parser.add_argument("-i", "--interval", help="Specify the update interval", default=1, type=int)
+
+    if len(sys.argv) == 1:
+        parser.print_help()
+        parser.exit()
 
     args = parser.parse_args()
 
