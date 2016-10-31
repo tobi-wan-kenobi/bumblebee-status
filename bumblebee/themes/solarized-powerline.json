@@ -1,0 +1,69 @@
+{
+	"defaults": {
+		"prefix": " ",
+		"suffix" : " ",
+		"cycle": [
+			{
+				"fg": "#eee8d5",
+				"bg": "#586e75"
+			},
+			{
+				"fg": "#93a1a1",
+				"bg": "#002b36"
+			}
+		],
+		"fg-critical": "#002b36",
+		"bg-critical": "#dc322f",
+		"fg-warning": "#002b36",
+		"bg-warning": "#b58900",
+
+		"default_separators": false,
+		"separator": ""
+	},
+	"date": {
+		"prefix": "  "
+	},
+	"time": {
+		"prefix": "  "
+	},
+	"memory": {
+		"prefix": "  "
+	},
+	"cpu": {
+		"prefix": "  "
+	},
+	"battery": {
+		"states": {
+			"charged": {
+				"prefix": "  ",
+				"suffix": "  ",
+				"fg": "#002b36",
+				"bg": "#859900"
+			},
+			"charging": {
+				"prefix": [ "  ", "  ", "  ", "  ", "  " ],
+				"suffix": "  "
+			},
+			"discharging_critical": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging_low": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging_medium": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging_high": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging_full": {
+				"prefix": "  ",
+				"suffix": "  "
+			}
+		}
+	}
+}
