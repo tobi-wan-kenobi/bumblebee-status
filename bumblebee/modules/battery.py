@@ -18,7 +18,15 @@ class Module(bumblebee.module.Module):
         with open("/sys/class/power_supply/{}/status".format(self._battery)) as f:
             self._status = f.read().strip()
         if self._status == "Discharging":
-            return "discharging"
+            if self._capacity < 10:
+                return "discharging_critical"
+            if self._capacity < 25:
+                return "discharging_low"
+            if self._capacity < 50:
+                return "discharging_medium"
+            if self._capacity < 75:
+                return "discharging_high"
+            return "discharging_full"
         else:
             return "charging"
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -6,6 +6,12 @@ class Module(object):
     def data(self):
         pass
 
+    def critical(self):
+        return False
+
+    def warning(self):
+        return False
+
     def state(self):
         return "default"
 

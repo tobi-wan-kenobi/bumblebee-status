@@ -1,5 +1,6 @@
 {
 	"defaults": {
+		"urgent": true,
 		"prefix": " ",
 		"suffix" : " ",
 		"cycle": [

@@ -20,6 +20,10 @@ class i3bar(bumblebee.output.Output):
             "color": theme.color(obj),
             "background": theme.background(obj),
         }
+
+        if theme.urgent(obj) and obj.critical():
+            data["urgent"] = True
+
         if theme.default_separators(obj) == False:
             data["separator"] = False
             data["separator_block_width"] = 0

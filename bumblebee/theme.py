@@ -37,6 +37,9 @@ class Theme:
         self._previous_background = None
         self._background = None
 
+    def urgent(self, obj):
+        self._gettheme(obj, "urgent")
+
     def next(self):
         self._cycle_index += 1
         self._previous_background = self._background
@@ -44,10 +47,25 @@ class Theme:
             self._cycle_index = 0
 
     def color(self, obj):
-        return self._gettheme(obj, "fg")
+        fg = None
+        if obj.warning():
+            fg = self._gettheme(obj, "fg-warning")
+        if obj.critical():
+            fg = self._gettheme(obj, "fg-critical")
+        if fg == None:
+            fg = self._gettheme(obj, "fg")
+        return fg
 
     def background(self, obj):
-        self._background = self._gettheme(obj, "bg")
+        self._background = None
+        if obj.warning():
+            self._background = self._gettheme(obj, "bg-warning")
+        if obj.critical():
+            self._background = self._gettheme(obj, "bg-critical")
+
+        if self._background == None:
+            self._background = self._gettheme(obj, "bg")
+
         return self._background
 
     def previous_background(self):
