@@ -16,8 +16,9 @@ class i3bar(bumblebee.output.Output):
         theme = self.theme()
 
         while True:
+            d = obj.data()
             data = {
-                u"full_text": "{}{}{}".format(theme.prefix(obj), obj.data(), theme.suffix(obj)),
+                u"full_text": "{}{}{}".format(theme.prefix(obj), d, theme.suffix(obj)),
                 "color": theme.color(obj),
                 "background": theme.background(obj),
             }

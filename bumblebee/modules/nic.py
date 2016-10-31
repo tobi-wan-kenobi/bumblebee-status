@@ -44,12 +44,13 @@ class Module(bumblebee.module.Module):
             try:
                 iw.get_interface_by_ifindex(idx)
                 self._cache["wlan{}".format(intf)] = True
-            except exception as e:
+            except Exception as e:
                 self._cache["wlan{}".format(intf)] = False
-        return self._cache
+        return self._cache["wlan{}".format(intf)]
 
     def state(self):
         t = "wireless" if self._iswlan(self._intf) else "wired"
+
         return "{}-{}".format(t, self._state)
 
     def warning(self):
