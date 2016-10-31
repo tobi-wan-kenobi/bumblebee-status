@@ -61,13 +61,17 @@ Restart i3wm and - that's it!
 Here are some screenshots for all themes that currently exist:
 
 Solarized Powerline (`-t solarized-powerline`):
+
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/i3bumblebee/blob/master/screenshots/powerline-solarized.png)
 
 Solarized (`-t solarized`):
+
 ![Solarized](https://github.com/tobi-wan-kenobi/i3bumblebee/blob/master/screenshots/solarized.png)
 
 Powerline (`-t powerline`):
+
 ![Powerline](https://github.com/tobi-wan-kenobi/i3bumblebee/blob/master/screenshots/powerline.png)
 
 Default (nothing or `-t default`):
+
 ![Default](https://github.com/tobi-wan-kenobi/i3bumblebee/blob/master/screenshots/default.png)
