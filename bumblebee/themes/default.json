@@ -1,0 +1,11 @@
+{
+	"defaults": {
+		"prefix": " ",
+		"suffix" : " "
+	},
+	"battery": {
+		"prefix": "bat "
+	},
+	"time": {
+	}
+}

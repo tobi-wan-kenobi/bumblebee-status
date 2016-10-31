@@ -9,8 +9,11 @@ class i3bar(bumblebee.output.Output):
         return json.dumps({ "version": 1 }) + "["
 
     def add(self, obj):
+        theme = obj.theme()
         self._data.append({
-            "full_text": obj.data()
+            "full_text": "%s%s%s" % (theme.prefix(obj), obj.data(), theme.suffix(obj)),
+            "separator": False,
+            "separator_block_width": 0,
         })
 
     def get(self):

@@ -4,7 +4,7 @@ import sys
 import time
 import argparse
 import importlib
-import bumblebee.themes
+import bumblebee.theme
 import bumblebee.outputs.i3
 
 def print_module_list():
@@ -24,7 +24,7 @@ def main():
         sys.exit(0)
 
     modules = []
-    theme = bumblebee.themes.Theme(args.theme)
+    theme = bumblebee.theme.Theme(args.theme) if args.theme else bumblebee.theme.Theme()
     for m in args.modules:
         # TODO: how to cleanly handle errors here?
         # (useful error messages)
