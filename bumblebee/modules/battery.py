@@ -9,13 +9,13 @@ class Module(bumblebee.module.Module):
         self._status = "Unknown"
 
     def data(self):
-        with open("/sys/class/power_supply/%s/capacity" % self._battery) as f:
+        with open("/sys/class/power_supply/{}/capacity".format(self._battery)) as f:
             self._capacity = int(f.read())
 
-        return "%02d%%" % self._capacity
+        return "{:02d}%".format(self._capacity)
 
     def state(self):
-        with open("/sys/class/power_supply/%s/status" % self._battery) as f:
+        with open("/sys/class/power_supply/{}/status".format(self._battery)) as f:
             self._status = f.read().strip()
         if self._status == "Discharging":
             return "discharging"

@@ -5,7 +5,7 @@ class Theme:
     def __init__(self, name="default"):
         self._data = None
         path = os.path.dirname(os.path.realpath(__file__))
-        with open("%s/themes/%s.json" % (path, name)) as f:
+        with open("{}/themes/{}.json".format(path, name)) as f:
             self._data = json.load(f)
         self._defaults = self._data.get("defaults", {})
 
