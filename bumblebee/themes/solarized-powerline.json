@@ -35,6 +35,26 @@
 	"disk": {
 		"prefix": "  "
 	},
+	"pasink": {
+		"states": {
+			"muted": {
+				"prefix": "  "
+			},
+			"unmuted": {
+				"prefix": "  "
+			}
+		}
+	},
+	"pasource": {
+		"states": {
+			"muted": {
+				"prefix": "  "
+			},
+			"unmuted": {
+				"prefix": "  "
+			}
+		}
+	},
 	"nic": {
 		"states": {
 			"wireless-up": {

@@ -1,0 +1,70 @@
+import re
+import shlex
+import subprocess
+
+import bumblebee.module
+import bumblebee.util
+
+class Module(bumblebee.module.Module):
+    def __init__(self, args):
+        super(Module, self).__init__(args)
+
+        self._module = self.__module__.split(".")[-1]
+        self._left = 0
+        self._right = 0
+        self._mono = 0
+        self._mute = False
+
+    def data(self):
+        res = subprocess.check_output(shlex.split("pactl info"))
+        channel = "sinks" if self._module == "pasink" else "sources"
+        name = None
+        for line in res.split("\n"):
+            if line.startswith("Default Sink: ") and channel == "sinks":
+                name = line[14:]
+            if line.startswith("Default Source: ") and channel == "sources":
+                name = line[16:]
+        
+        res = subprocess.check_output(shlex.split("pactl list {}".format(channel)))
+
+        found = False
+        for line in res.split("\n"):
+            if "Name:" in line and found == True:
+                break
+            if name in line:
+                found = True
+            if "Mute:" in line and found == True:
+                self._mute = False if " no" in line.lower() else True
+
+            if "Volume:" in line and found == True:
+                m = None
+                if "mono" in line:
+                    m = re.search(r'mono:.*\s*\/\s*(\d+)%', line)
+                else:
+                    m = re.search(r'left:.*\s*\/\s*(\d+)%.*right:.*\s*\/\s*(\d+)%', line)
+                if not m: continue
+
+                if "mono" in line:
+                    self._mono = m.group(1)
+                else:
+                    self._left = m.group(1)
+                    self._right = m.group(2)
+        result = ""
+        if self._mono > 0:
+            result = "{}%".format(self._mono)
+        elif self._left == self._right:
+            result = "{}%".format(self._left)
+        else:
+            result="{}%/{}%".format(self._left, self._right)
+        return result
+
+    def state(self):
+        return "muted" if self._mute is True else "unmuted"
+
+    def warning(self):
+        return self._mute
+
+    def critical(self):
+        return False
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
