@@ -1,6 +1,15 @@
 import bumblebee.module
 import bumblebee.util
 
+def usage():
+    return "spacer"
+
+def notes():
+    return "none"
+
+def description():
+    return "Draws an empty field."
+
 class Module(bumblebee.module.Module):
     def __init__(self, args):
         super(Module, self).__init__(args)

@@ -2,6 +2,15 @@ import os
 import bumblebee.util
 import bumblebee.module
 
+def usage():
+    return "disk or disk::<path, defaults to '/'>"
+
+def notes():
+    return "Warning is at 20% free diskspace, Critical at 10%."
+
+def description():
+    return "Shows free diskspace, total diskspace and the percentage of free disk space."
+
 class Module(bumblebee.module.Module):
     def __init__(self, args):
         super(Module, self).__init__(args)

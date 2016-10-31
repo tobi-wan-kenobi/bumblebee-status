@@ -2,13 +2,13 @@ import datetime
 import bumblebee.module
 
 def usage():
-    return "battery::<battery ID, defaults to BAT0>"
+    return "battery or battery::<battery ID, defaults to BAT0>"
 
 def notes():
-    return "Reads /sys/class/power_supply/<ID>/[capacity|status]"
+    return "Reads /sys/class/power_supply/<ID>/[capacity|status]. Warning is at 20% remaining charge, Critical at 10%."
 
 def description():
-    return "Displays battery status, percentage and whether it's charging or discharging"
+    return "Displays battery status, percentage and whether it's charging or discharging."
 
 class Module(bumblebee.module.Module):
     def __init__(self, args):

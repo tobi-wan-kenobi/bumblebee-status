@@ -25,6 +25,7 @@ def print_module_list():
         print textwrap.fill("Description: {}".format(desc), 80, initial_indent="        ", subsequent_indent="                     ")
         print textwrap.fill("Usage      : {}".format(usage), 80, initial_indent="        ", subsequent_indent="                     ")
         print textwrap.fill("Notes      : {}".format(notes), 80, initial_indent="        ", subsequent_indent="                     ")
+        print "\n"
 
 def main():
     parser = argparse.ArgumentParser(description="display system data in the i3bar")

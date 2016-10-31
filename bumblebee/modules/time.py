@@ -3,6 +3,20 @@ from __future__ import absolute_import
 import datetime
 import bumblebee.module
 
+def usage():
+    module = __name__.split(".")[-1]
+    if module == "date":
+        return "date::<strftime format string, defaults to %x>"
+    if module == "time":
+        return "time::<strftime format string, defaults to %X>"
+    return "datetime::<strftime format string, defaults to '%x %X'>"
+
+def notes():
+    return "none"
+
+def description():
+    return "Displays the current time, using the optional format string as input for strftime."
+
 class Module(bumblebee.module.Module):
     def __init__(self, args):
         super(Module, self).__init__(args)

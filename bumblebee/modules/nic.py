@@ -2,6 +2,15 @@ import pyroute2
 import netifaces
 import bumblebee.module
 
+def usage():
+    return "nic"
+
+def notes():
+    return "Interfaces starting with 'lo' or 'virbr' are ignored. Critical if the status of an interface is 'down', Warning if it is anything else but 'up'. Interface status is derived from whether an IP address is available or not."
+
+def description():
+    return "Displays the names, IP addresses and status of each available interface."
+
 class Module(bumblebee.module.Module):
     def __init__(self, args):
         super(Module, self).__init__(args)

@@ -1,6 +1,15 @@
 import bumblebee.module
 import psutil
 
+def usage():
+    return "cpu"
+
+def notes():
+    return "Warning is at 70%, Critical at 80%."
+
+def description():
+    return "Displays CPU utilization across all CPUs."
+
 class Module(bumblebee.module.Module):
     def __init__(self, args):
         super(Module, self).__init__(args)
