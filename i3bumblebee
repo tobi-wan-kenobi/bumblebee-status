@@ -16,6 +16,7 @@ def main():
     parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)")
     parser.add_argument("-l", "--list", action="store_true", help="List all available modules and themes")
     parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modulemoduless")
+    parser.add_argument("-i", "--interval", help="Specify the update interaval", default=1, type=int)
 
     args = parser.parse_args()
 
@@ -45,7 +46,7 @@ def main():
             theme.next()
         print output.get()
         sys.stdout.flush()
-        time.sleep(1)
+        time.sleep(args.interval)
 
     print output.stop()
 
