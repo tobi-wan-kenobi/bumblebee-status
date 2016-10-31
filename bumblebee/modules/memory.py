@@ -1,12 +1,6 @@
-import bumblebee.module
 import psutil
-
-def fmt(num, suffix='B'):
-    for unit in [ "", "Ki", "Mi", "Gi" ]:
-        if num < 1024.0:
-            return "{:.2f}{}{}".format(num, unit, suffix)
-        num /= 1024.0
-    return "{:05.2f%}{}{}".format(num, "Gi", suffix)
+import bumblebee.module
+import bumblebee.util
 
 class Module(bumblebee.module.Module):
     def __init__(self, args):
@@ -19,7 +13,7 @@ class Module(bumblebee.module.Module):
         free = self._mem.available
         total = self._mem.total
 
-        return "{}/{} ({:05.02f}%)".format(fmt(self._mem.available), fmt(self._mem.total), 100.0 - self._mem.percent)
+        return "{}/{} ({:05.02f}%)".format(bumblebee.util.bytefmt(self._mem.available), bumblebee.util.bytefmt(self._mem.total), 100.0 - self._mem.percent)
 
     def warning(self):
         return self._mem.percent < 20

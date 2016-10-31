@@ -32,6 +32,9 @@
 	"cpu": {
 		"prefix": "  "
 	},
+	"disk": {
+		"prefix": "  "
+	},
 	"nic": {
 		"states": {
 			"wireless-up": {
@@ -44,6 +47,12 @@
 				"prefix": "  "
 			},
 			"wired-down": {
+				"prefix": "  "
+			},
+			"tunnel-up": {
+				"prefix": "  "
+			},
+			"tunnel-down": {
 				"prefix": "  "
 			}
 		}

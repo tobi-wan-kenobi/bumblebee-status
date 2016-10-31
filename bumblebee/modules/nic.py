@@ -19,11 +19,15 @@ class Module(bumblebee.module.Module):
         self._state = "down"
         addr = []
 
-        if netifaces.AF_INET in netifaces.ifaddresses(self._intf):
-            for ip in netifaces.ifaddresses(self._intf)[netifaces.AF_INET]:
-                if "addr" in ip and ip["addr"] != "":
-                    addr.append(ip["addr"])
-                    self._state = "up"
+        try:
+            if netifaces.AF_INET in netifaces.ifaddresses(self._intf):
+                for ip in netifaces.ifaddresses(self._intf)[netifaces.AF_INET]:
+                    if "addr" in ip and ip["addr"] != "":
+                        addr.append(ip["addr"])
+                        self._state = "up"
+        except Exception as e:
+            self._state = "down"
+            addr = []
 
         return "{} {} {}".format(self._intf, self._state, ", ".join(addr))
 
@@ -48,8 +52,13 @@ class Module(bumblebee.module.Module):
                 self._cache["wlan{}".format(intf)] = False
         return self._cache["wlan{}".format(intf)]
 
+    def _istunnel(self, intf):
+        return intf.startswith("tun")
+
     def state(self):
         t = "wireless" if self._iswlan(self._intf) else "wired"
+
+        t = "tunnel" if self._istunnel(self._intf) else t
 
         return "{}-{}".format(t, self._state)
 
