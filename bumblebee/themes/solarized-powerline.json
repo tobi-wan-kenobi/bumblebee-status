@@ -35,6 +35,15 @@
 	"disk": {
 		"prefix": "  "
 	},
+	"dnf": {
+		"prefix": "  ",
+		"states": {
+			"good": {
+				"fg": "#002b36",
+				"bg": "#859900"
+			}
+		}
+	},
 	"pasink": {
 		"states": {
 			"muted": {
