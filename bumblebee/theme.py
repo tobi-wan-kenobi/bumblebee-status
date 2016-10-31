@@ -31,6 +31,9 @@ class Theme:
     def background(self, obj):
         return self._gettheme(obj, "bg")
 
+    def separator(self, obj):
+        return self._gettheme(obj, "separator")
+
     def default_separators(self, obj):
         return self._gettheme(obj, "default_separators")
 
