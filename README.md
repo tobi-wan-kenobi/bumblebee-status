@@ -7,7 +7,9 @@ Focus is on:
 * Theme support
 * Extensibility (of course...)
 
-I hope you like it :)
+I hope you like it and appreciate any kind of feedback: Bug reports, Feature requests, etc. :)
+
+Thanks a lot!
 
 # Documentation
 See [the wiki](https://github.com/tobi-wan-kenobi/i3bumblebee/wiki) for documentation.
