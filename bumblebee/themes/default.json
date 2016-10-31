@@ -4,7 +4,15 @@
 		"suffix" : " "
 	},
 	"battery": {
-		"prefix": "bat "
+		"prefix": "bat ",
+		"states": {
+			"charging": {
+				"suffix": "+"
+			},
+			"discharging": {
+				"suffix": "-"
+			}
+		}
 	},
 	"time": {
 	}

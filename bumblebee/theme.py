@@ -17,6 +17,12 @@ class Theme:
         value = self._defaults.get(key, value)
         value = module_theme.get(key, value)
 
+        if hasattr(obj, "state"):
+            state = getattr(obj, "state")()
+            state_theme = module_theme.get("states", {}).get(state, {})
+
+            value = state_theme.get(key, value)
+
         return value
 
     def prefix(self, obj):

@@ -11,9 +11,14 @@ class Module(bumblebee.module.Module):
     def data(self):
         with open("/sys/class/power_supply/%s/capacity" % self._battery) as f:
             self._capacity = int(f.read())
-        with open("/sys/class/power_supply/%s/status" % self._battery) as f:
-            self._status = f.read().strip()
 
         return "%02d%%" % self._capacity
 
+    def state(self):
+        with open("/sys/class/power_supply/%s/status" % self._battery) as f:
+            self._status = f.read().strip()
+        if self._status == "Discharging":
+            return "discharging"
+        else:
+            return "charging"
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
