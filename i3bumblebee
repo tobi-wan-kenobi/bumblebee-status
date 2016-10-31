@@ -27,8 +27,8 @@ def main():
     for m in args.modules:
         # TODO: how to cleanly handle errors here?
         # (useful error messages)
-        module_name = m if not ":" in m else m.split(":")[0]
-        module_args = None if not ":" in m else m.split(":")[1:]
+        module_name = m if not "::" in m else m.split("::")[0]
+        module_args = None if not "::" in m else m.split("::")[1:]
         module = importlib.import_module("bumblebee.modules.{}".format(module_name))
         modules.append(getattr(module, "Module")(module_args))
 
