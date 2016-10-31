@@ -32,6 +32,22 @@
 	"cpu": {
 		"prefix": "  "
 	},
+	"nic": {
+		"states": {
+			"wireless-up": {
+				"prefix": "  "
+			},
+			"wireless-down": {
+				"prefix": "  "
+			},
+			"wired-up": {
+				"prefix": "  "
+			},
+			"wired-down": {
+				"prefix": "  "
+			}
+		}
+	},
 	"battery": {
 		"states": {
 			"charged": {

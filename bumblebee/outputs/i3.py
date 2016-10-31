@@ -15,28 +15,32 @@ class i3bar(bumblebee.output.Output):
     def add(self, obj):
         theme = self.theme()
 
-        data = {
-            u"full_text": "{}{}{}".format(theme.prefix(obj), obj.data(), theme.suffix(obj)),
-            "color": theme.color(obj),
-            "background": theme.background(obj),
-        }
+        while True:
+            data = {
+                u"full_text": "{}{}{}".format(theme.prefix(obj), obj.data(), theme.suffix(obj)),
+                "color": theme.color(obj),
+                "background": theme.background(obj),
+            }
 
-        if theme.urgent(obj) and obj.critical():
-            data["urgent"] = True
+            if theme.urgent(obj) and obj.critical():
+                data["urgent"] = True
 
-        if theme.default_separators(obj) == False:
-            data["separator"] = False
-            data["separator_block_width"] = 0
-            if theme.separator(obj):
-                self._data.append({
-                    u"full_text": theme.separator(obj),
-                    "color": theme.background(obj),
-                    "background": theme.previous_background(),
-                    "separator": False,
-                    "separator_block_width": 0,
-                })
+            if theme.default_separators(obj) == False:
+                data["separator"] = False
+                data["separator_block_width"] = 0
+                if theme.separator(obj):
+                    self._data.append({
+                        u"full_text": theme.separator(obj),
+                        "color": theme.background(obj),
+                        "background": theme.previous_background(),
+                        "separator": False,
+                        "separator_block_width": 0,
+                    })
 
-        self._data.append(data)
+            self._data.append(data)
+            if obj.next() == False:
+                break
+            theme.next()
 
     def get(self):
         data = json.dumps(self._data)
