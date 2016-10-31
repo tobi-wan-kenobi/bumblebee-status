@@ -3,6 +3,7 @@
 import os
 import sys
 import time
+import glob
 import pkgutil
 import argparse
 import textwrap
@@ -25,7 +26,16 @@ def print_module_list():
         print textwrap.fill("Description: {}".format(desc), 80, initial_indent="        ", subsequent_indent="                     ")
         print textwrap.fill("Usage      : {}".format(usage), 80, initial_indent="        ", subsequent_indent="                     ")
         print textwrap.fill("Notes      : {}".format(notes), 80, initial_indent="        ", subsequent_indent="                     ")
-        print "\n"
+        print ""
+
+def print_theme_list():
+    d = bumblebee.theme.getpath()
+
+    print "available themes:"
+    print textwrap.fill(", ".join(
+        [ os.path.basename(f).replace(".json", "") for f in glob.iglob("{}/*.json".format(d)) ]),
+        80, initial_indent = "    ", subsequent_indent = "    "
+    )
 
 def main():
     parser = argparse.ArgumentParser(description="display system data in the i3bar")
@@ -42,6 +52,7 @@ def main():
 
     if args.list:
         print_module_list()
+        print_theme_list()
         sys.exit(0)
 
     modules = []

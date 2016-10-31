@@ -1,13 +1,16 @@
 import os
 import json
 
+def getpath():
+    return os.path.dirname("{}/themes/".format(os.path.dirname(os.path.realpath(__file__))))
+
 class Theme:
     _cycle_index = 0
     _cycle = None
     def __init__(self, name="default"):
         self._data = None
         path = os.path.dirname(os.path.realpath(__file__))
-        with open("{}/themes/{}.json".format(path, name)) as f:
+        with open("{}/{}.json".format(getpath(), name)) as f:
             self._data = json.load(f)
         self._defaults = self._data.get("defaults", {})
         self._cycle = self._defaults.get("cycle", [])
