@@ -7,10 +7,10 @@
 		"prefix": "bat ",
 		"states": {
 			"charging": {
-				"suffix": "+"
+				"suffix": "+ "
 			},
 			"discharging": {
-				"suffix": "-"
+				"suffix": "- "
 			}
 		}
 	},

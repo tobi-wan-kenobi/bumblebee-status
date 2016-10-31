@@ -25,6 +25,9 @@ class Theme:
 
         return value
 
+    def default_separators(self, obj):
+        return self._gettheme(obj, "default_separators")
+
     def prefix(self, obj):
         return self._gettheme(obj, "prefix")
 

@@ -10,11 +10,15 @@ class i3bar(bumblebee.output.Output):
 
     def add(self, obj):
         theme = obj.theme()
-        self._data.append({
-            "full_text": "%s%s%s" % (theme.prefix(obj), obj.data(), theme.suffix(obj)),
-            "separator": False,
-            "separator_block_width": 0,
-        })
+
+        data = {
+            "full_text": "%s%s%s" % (theme.prefix(obj), obj.data(), theme.suffix(obj))
+        }
+        if theme.default_separators(obj) == False:
+            data["separator"] = False
+            data["separator_block_width"] = 0
+
+        self._data.append(data)
 
     def get(self):
         data = json.dumps(self._data)
