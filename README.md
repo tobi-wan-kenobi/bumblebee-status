@@ -2,6 +2,13 @@
 
 i3bumblebee is a modular, theme-able status line generator for the [i3 window manager](https://i3wm.org/).
 
+Focus is on:
+* Ease of use (no configuration files!)
+* Theme support
+* Extensibility (of course...)
+
+I hope you like it :)
+
 # Documentation
 See [the wiki](https://github.com/tobi-wan-kenobi/i3bumblebee/wiki) for documentation.
 
