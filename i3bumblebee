@@ -23,9 +23,12 @@ def print_module_list():
         notes = "n/a" if not hasattr(m, "notes") else getattr(m, "notes")()
 
         print "    {}: ".format(mod)
-        print textwrap.fill("Description: {}".format(desc), 80, initial_indent="        ", subsequent_indent="                     ")
-        print textwrap.fill("Usage      : {}".format(usage), 80, initial_indent="        ", subsequent_indent="                     ")
-        print textwrap.fill("Notes      : {}".format(notes), 80, initial_indent="        ", subsequent_indent="                     ")
+        print textwrap.fill("Description: {}".format(desc),
+            80, initial_indent="        ", subsequent_indent="                     ")
+        print textwrap.fill("Usage      : {}".format(usage),
+            80, initial_indent="        ", subsequent_indent="                     ")
+        print textwrap.fill("Notes      : {}".format(notes),
+            80, initial_indent="        ", subsequent_indent="                     ")
         print ""
 
 def print_theme_list():
@@ -43,6 +46,7 @@ def main():
     parser.add_argument("-l", "--list", action="store_true", help="List all available modules and themes")
     parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modulemoduless")
     parser.add_argument("-i", "--interval", help="Specify the update interval", default=1, type=int)
+    parser.add_argument("-s", "--split", help="Specify string to use for splitting modules and their arguments", default="::")
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -56,11 +60,12 @@ def main():
         sys.exit(0)
 
     modules = []
+    s = args.split
     for m in args.modules:
         # TODO: how to cleanly handle errors here?
         # (useful error messages)
-        module_name = m if not "::" in m else m.split("::")[0]
-        module_args = None if not "::" in m else m.split("::")[1:]
+        module_name = m if not s in m else m.split(s)[0]
+        module_args = None if not s in m else m.split(s)[1:]
         module = importlib.import_module("bumblebee.modules.{}".format(module_name))
         modules.append(getattr(module, "Module")(module_args))
 
