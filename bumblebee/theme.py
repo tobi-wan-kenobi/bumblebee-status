@@ -13,7 +13,7 @@ class Theme:
         module = obj.__module__.split(".")[-1]
         module_theme = self._data.get(module, {})
 
-        value = getattr(obj, key)() if hasattr(obj, key) else ""
+        value = getattr(obj, key)() if hasattr(obj, key) else None
         value = self._defaults.get(key, value)
         value = module_theme.get(key, value)
 
@@ -24,6 +24,12 @@ class Theme:
             value = state_theme.get(key, value)
 
         return value
+
+    def color(self, obj):
+        return self._gettheme(obj, "fg")
+
+    def background(self, obj):
+        return self._gettheme(obj, "bg")
 
     def default_separators(self, obj):
         return self._gettheme(obj, "default_separators")

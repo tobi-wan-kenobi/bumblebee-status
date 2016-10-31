@@ -12,7 +12,9 @@ class i3bar(bumblebee.output.Output):
         theme = obj.theme()
 
         data = {
-            "full_text": "{}{}{}".format(theme.prefix(obj), obj.data(), theme.suffix(obj))
+            "full_text": "{}{}{}".format(theme.prefix(obj), obj.data(), theme.suffix(obj)),
+            "color": theme.color(obj),
+            "background": theme.background(obj)
         }
         if theme.default_separators(obj) == False:
             data["separator"] = False
