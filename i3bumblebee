@@ -44,7 +44,7 @@ def main():
     parser = argparse.ArgumentParser(description="display system data in the i3bar")
     parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)")
     parser.add_argument("-l", "--list", action="store_true", help="List all available modules and themes")
-    parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modulemoduless")
+    parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modules")
     parser.add_argument("-i", "--interval", help="Specify the update interval", default=1, type=int)
     parser.add_argument("-s", "--split", help="Specify string to use for splitting modules and their arguments", default="::")
 
