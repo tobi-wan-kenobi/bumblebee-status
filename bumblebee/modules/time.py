@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import datetime
 import bumblebee.module
 
@@ -6,8 +8,12 @@ class Module(bumblebee.module.Module):
         super(Module, self).__init__(args)
 
         module = self.__module__.split(".")[-1]
+        default = "%x %X"
+        if module == "date":
+            default = "%x"
+        if module == "time":
+            default = "%X"
 
-        default = "%x" if module == "date" else "%X"
         self._fmt = args[0] if args else default
 
 
