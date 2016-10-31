@@ -1,0 +1,123 @@
+{
+	"defaults": {
+		"prefix": " ",
+		"suffix" : " ",
+		"cycle": [
+			{
+				"fg": "#ffd700",
+				"bg": "#d75f00"
+			},
+			{
+				"fg": "#ffffff",
+				"bg": "#0087af"
+			}
+		],
+		"fg-critical": "#ffffff",
+		"bg-critical": "#ff0000",
+		"fg-warning": "#d75f00",
+		"bg-warning": "#ffd700",
+
+		"default_separators": false,
+		"separator": ""
+	},
+	"date": {
+		"prefix": "  "
+	},
+	"time": {
+		"prefix": "  "
+	},
+	"memory": {
+		"prefix": "  "
+	},
+	"cpu": {
+		"prefix": "  "
+	},
+	"disk": {
+		"prefix": "  "
+	},
+	"dnf": {
+		"prefix": "  ",
+		"states": {
+			"good": {
+				"fg": "#494949",
+				"bg": "#41db00"
+			}
+		}
+	},
+	"pasink": {
+		"states": {
+			"muted": {
+				"prefix": "  "
+			},
+			"unmuted": {
+				"prefix": "  "
+			}
+		}
+	},
+	"pasource": {
+		"states": {
+			"muted": {
+				"prefix": "  "
+			},
+			"unmuted": {
+				"prefix": "  "
+			}
+		}
+	},
+	"nic": {
+		"states": {
+			"wireless-up": {
+				"prefix": "  "
+			},
+			"wireless-down": {
+				"prefix": "  "
+			},
+			"wired-up": {
+				"prefix": "  "
+			},
+			"wired-down": {
+				"prefix": "  "
+			},
+			"tunnel-up": {
+				"prefix": "  "
+			},
+			"tunnel-down": {
+				"prefix": "  "
+			}
+		}
+	},
+	"battery": {
+		"states": {
+			"charged": {
+				"prefix": "  ",
+				"suffix": "  ",
+				"fg": "#494949",
+				"bg": "#41db00"
+			},
+			"charging": {
+				"prefix": [ "  ", "  ", "  ", "  ", "  " ],
+				"suffix": "  "
+			},
+			"discharging_critical": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging_low": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging_medium": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging_high": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging_full": {
+				"prefix": "  ",
+				"suffix": "  "
+			}
+		}
+	}
+}
