@@ -4,15 +4,16 @@ import json
 import bumblebee.output
 
 class i3bar(bumblebee.output.Output):
-    def __init__(self):
+    def __init__(self, theme):
+
+        super(i3bar, self).__init__(theme)
         self._data = []
-        self._previous_background = None
 
     def start(self):
         return json.dumps({ "version": 1 }) + "["
 
     def add(self, obj):
-        theme = obj.theme()
+        theme = self.theme()
 
         data = {
             u"full_text": "{}{}{}".format(theme.prefix(obj), obj.data(), theme.suffix(obj)),
@@ -26,13 +27,12 @@ class i3bar(bumblebee.output.Output):
                 self._data.append({
                     u"full_text": theme.separator(obj),
                     "color": theme.background(obj),
-                    "background": self._previous_background,
+                    "background": theme.previous_background(),
                     "separator": False,
                     "separator_block_width": 0,
                 })
 
         self._data.append(data)
-        self._previous_background = theme.background(obj)
 
     def get(self):
         data = json.dumps(self._data)

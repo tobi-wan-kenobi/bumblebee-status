@@ -24,23 +24,25 @@ def main():
         sys.exit(0)
 
     modules = []
-    theme = bumblebee.theme.Theme(args.theme) if args.theme else bumblebee.theme.Theme()
     for m in args.modules:
         # TODO: how to cleanly handle errors here?
         # (useful error messages)
         module_name = m if not ":" in m else m.split(":")[0]
         module_args = None if not ":" in m else m.split(":")[1:]
         module = importlib.import_module("bumblebee.modules.{}".format(module_name))
-        modules.append(getattr(module, "Module")(theme, module_args))
+        modules.append(getattr(module, "Module")(module_args))
 
-    output = bumblebee.outputs.i3.i3bar()
+    theme = bumblebee.theme.Theme(args.theme) if args.theme else bumblebee.theme.Theme()
+    output = bumblebee.outputs.i3.i3bar(theme)
 
     print output.start()
     sys.stdout.flush()
 
     while True:
+        theme.reset()
         for m in modules:
             output.add(m)
+            theme.next()
         print output.get()
         sys.stdout.flush()
         time.sleep(1)

@@ -1,7 +1,15 @@
 {
 	"defaults": {
 		"prefix": " ",
-		"suffix" : " "
+		"suffix" : " ",
+		"cycle": [
+			{
+				"fg": "red"
+			},
+			{
+				"fg": "lime"
+			}
+		]
 	},
 	"battery": {
 		"prefix": "bat ",

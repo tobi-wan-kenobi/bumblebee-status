@@ -1,5 +1,11 @@
 
 class Output(object):
+    def __init__(self, theme):
+        self._theme = theme
+
+    def theme(self):
+        return self._theme
+
     def start(self):
         pass
 

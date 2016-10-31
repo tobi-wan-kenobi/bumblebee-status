@@ -1,10 +1,7 @@
 
 class Module(object):
-    def __init__(self, theme, args):
-        self._theme = theme
-
-    def theme(self):
-        return self._theme
+    def __init__(self, args):
+        pass
 
     def data(self):
         pass
