@@ -16,6 +16,9 @@ class Module(bumblebee.module.Module):
         super(Module, self).__init__(args)
         self._mem = psutil.virtual_memory()
 
+        output.add_callback(module=self.__module__, button=1,
+            cmd="gnome-system-monitor")
+
     def data(self):
         self._mem = psutil.virtual_memory()
 

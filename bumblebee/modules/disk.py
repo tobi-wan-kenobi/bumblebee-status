@@ -16,8 +16,8 @@ class Module(bumblebee.module.Module):
         super(Module, self).__init__(args)
         self._path = args[0] if args else "/"
 
-        output.add_callback(module=self.__module__,
-            button=1, cmd="nautilus {instance}")
+        output.add_callback(module=self.__module__, button=1,
+            cmd="nautilus {instance}")
 
     def data(self):
         st = os.statvfs(self._path)

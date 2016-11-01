@@ -15,6 +15,9 @@ class Module(bumblebee.module.Module):
         super(Module, self).__init__(args)
         self._perc = psutil.cpu_percent(percpu=False)
 
+        output.add_callback(module=self.__module__, button=1,
+            cmd="gnome-system-monitor")
+
     def data(self):
         self._perc = psutil.cpu_percent(percpu=False)
 
