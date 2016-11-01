@@ -43,6 +43,7 @@ def print_theme_list():
 def main():
     parser = argparse.ArgumentParser(description="display system data in the i3bar")
     parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)")
+    parser.add_argument("-e", "--events", nargs="+", help="List of click events that should be handled. Format is: <module name><splitter, see -s><button ID><splitter><command to execute>")
     parser.add_argument("-l", "--list", action="store_true", help="List all available modules and themes")
     parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modules")
     parser.add_argument("-i", "--interval", help="Specify the update interval", default=1, type=int)
@@ -71,6 +72,17 @@ def main():
 
     theme = bumblebee.theme.Theme(args.theme) if args.theme else bumblebee.theme.Theme()
     output = bumblebee.outputs.i3.i3bar(theme)
+
+    for e in args.events:
+        ev = e.split(s)
+        if len(ev) < 3:
+            sys.stderr.write("invalid format for click event, expect 3 parameters")
+            continue
+        output.add_callback(
+            module=ev[0],
+            button=int(ev[1]),
+            cmd=ev[2],
+        )
 
     print output.start()
     sys.stdout.flush()
