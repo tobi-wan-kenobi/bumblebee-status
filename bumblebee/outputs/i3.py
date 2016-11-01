@@ -24,7 +24,7 @@ def read_input(output):
                 instance = event.get("instance", ""),
                 button = event.get("button", -1)
             )
-            subprocess.call(shlex.split(cb), stdout=DEVNULL, stderr=DEVNULL)
+            subprocess.Popen(shlex.split(cb), stdout=DEVNULL, stderr=DEVNULL)
 
 class i3bar(bumblebee.output.Output):
     def __init__(self, theme):
