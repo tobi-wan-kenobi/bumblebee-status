@@ -12,7 +12,7 @@ def description():
     return "Displays the names, IP addresses and status of each available interface."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, args):
+    def __init__(self, output, args):
         super(Module, self).__init__(args)
         self._exclude = ( "lo", "virbr" )
         self._interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]

@@ -26,7 +26,7 @@ def description():
     return "See 'pasource'."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, args):
+    def __init__(self, output, args):
         super(Module, self).__init__(args)
 
         self._module = self.__module__.split(".")[-1]

@@ -42,8 +42,8 @@ def print_theme_list():
 
 def main():
     parser = argparse.ArgumentParser(description="display system data in the i3bar")
-    parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)")
-    parser.add_argument("-e", "--events", nargs="+", help="List of click events that should be handled. Format is: <module name><splitter, see -s><button ID><splitter><command to execute>")
+    parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)", default=[])
+    parser.add_argument("-e", "--events", nargs="+", help="List of click events that should be handled. Format is: <module name><splitter, see -s><button ID><splitter><command to execute>", default=[])
     parser.add_argument("-l", "--list", action="store_true", help="List all available modules and themes")
     parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modules")
     parser.add_argument("-i", "--interval", help="Specify the update interval", default=1, type=int)
@@ -60,6 +60,9 @@ def main():
         print_theme_list()
         sys.exit(0)
 
+    theme = bumblebee.theme.Theme(args.theme) if args.theme else bumblebee.theme.Theme()
+    output = bumblebee.outputs.i3.i3bar(theme)
+
     modules = []
     s = args.split
     for m in args.modules:
@@ -68,10 +71,7 @@ def main():
         module_name = m if not s in m else m.split(s)[0]
         module_args = None if not s in m else m.split(s)[1:]
         module = importlib.import_module("bumblebee.modules.{}".format(module_name))
-        modules.append(getattr(module, "Module")(module_args))
-
-    theme = bumblebee.theme.Theme(args.theme) if args.theme else bumblebee.theme.Theme()
-    output = bumblebee.outputs.i3.i3bar(theme)
+        modules.append(getattr(module, "Module")(output, module_args))
 
     for e in args.events:
         ev = e.split(s)

@@ -11,7 +11,7 @@ def description():
     return "Displays CPU utilization across all CPUs."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, args):
+    def __init__(self, output, args):
         super(Module, self).__init__(args)
         self._perc = psutil.cpu_percent(percpu=False)
 

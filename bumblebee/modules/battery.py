@@ -11,7 +11,7 @@ def description():
     return "Displays battery status, percentage and whether it's charging or discharging."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, args):
+    def __init__(self, output, args):
         super(Module, self).__init__(args)
         self._battery = "BAT0" if not args else args[0]
         self._capacity = 0

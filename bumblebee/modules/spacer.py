@@ -11,7 +11,7 @@ def description():
     return "Draws an empty field."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, args):
+    def __init__(self, output, args):
         super(Module, self).__init__(args)
 
     def data(self):

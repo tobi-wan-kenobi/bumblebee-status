@@ -50,7 +50,7 @@ def get_dnf_info(obj):
     
 
 class Module(bumblebee.module.Module):
-    def __init__(self, args):
+    def __init__(self, output, args):
         super(Module, self).__init__(args)
         self._interval = args[0] if args else 30*60
         self._counter = {}

@@ -5,6 +5,8 @@ class Output(object):
         self._callbacks = {}
 
     def add_callback(self, cmd, button, module=None):
+        if module:
+            module = module.replace("bumblebee.modules.", "")
         self._callbacks[(
             button,
             module,

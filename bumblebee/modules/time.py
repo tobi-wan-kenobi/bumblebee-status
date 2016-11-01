@@ -18,7 +18,7 @@ def description():
     return "Displays the current time, using the optional format string as input for strftime."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, args):
+    def __init__(self, output, args):
         super(Module, self).__init__(args)
 
         module = self.__module__.split(".")[-1]

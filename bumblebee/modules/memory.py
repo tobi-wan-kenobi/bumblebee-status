@@ -12,7 +12,7 @@ def description():
     return "Shows available RAM, total amount of RAM and the percentage of available RAM."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, args):
+    def __init__(self, output, args):
         super(Module, self).__init__(args)
         self._mem = psutil.virtual_memory()
 
