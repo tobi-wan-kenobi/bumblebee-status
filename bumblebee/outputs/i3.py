@@ -31,8 +31,8 @@ class i3bar(bumblebee.output.Output):
         super(i3bar, self).__init__(theme)
         self._data = []
 
-        self.add_callback("i3-msg workspace prev", 4)
-        self.add_callback("i3-msg workspace next", 5)
+        self.add_callback("i3-msg workspace prev_on_output", 4)
+        self.add_callback("i3-msg workspace next_on_output", 5)
 
         self._thread = threading.Thread(target=read_input, args=(self,))
         self._thread.start()
