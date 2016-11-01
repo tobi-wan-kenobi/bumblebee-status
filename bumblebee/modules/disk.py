@@ -25,6 +25,9 @@ class Module(bumblebee.module.Module):
 
         return "{} {}/{} ({:05.02f}%)".format(self._path, bumblebee.util.bytefmt(self._free), bumblebee.util.bytefmt(self._size), self._perc)
 
+    def instance(self):
+        return self._path
+
     def warning(self):
         return self._perc < 20
 

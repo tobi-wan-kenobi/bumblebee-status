@@ -64,6 +64,9 @@ class Module(bumblebee.module.Module):
     def _istunnel(self, intf):
         return intf.startswith("tun")
 
+    def instance(self):
+        return self._intf
+
     def state(self):
         t = "wireless" if self._iswlan(self._intf) else "wired"
 
