@@ -20,6 +20,7 @@ class Module(bumblebee.module.Module):
     def data(self):
         with open("/sys/class/power_supply/{}/capacity".format(self._battery)) as f:
             self._capacity = int(f.read())
+        self._capacity = self._capacity if self._capacity < 100 else 100
 
         return "{:02d}%".format(self._capacity)
 
