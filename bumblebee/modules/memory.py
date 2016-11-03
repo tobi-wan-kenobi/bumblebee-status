@@ -22,10 +22,9 @@ class Module(bumblebee.module.Module):
     def data(self):
         self._mem = psutil.virtual_memory()
 
-        free = self._mem.available
-        total = self._mem.total
+        used = self._mem.total - self._mem.available
 
-        return "{}/{} ({:05.02f}%)".format(bumblebee.util.bytefmt(self._mem.available), bumblebee.util.bytefmt(self._mem.total), 100.0 - self._mem.percent)
+        return "{}/{} ({:05.02f}%)".format(bumblebee.util.bytefmt(used), bumblebee.util.bytefmt(self._mem.total), self._mem.percent)
 
     def warning(self):
         return self._mem.percent < 20
