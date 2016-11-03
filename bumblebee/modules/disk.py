@@ -23,18 +23,18 @@ class Module(bumblebee.module.Module):
         st = os.statvfs(self._path)
 
         self._size = st.f_frsize*st.f_blocks
-        self._free = st.f_frsize*st.f_bavail
-        self._perc = 100.0*self._free/self._size
+        self._used = self._size - st.f_frsize*st.f_bavail
+        self._perc = 100.0*self._used/self._size
 
-        return "{} {}/{} ({:05.02f}%)".format(self._path, bumblebee.util.bytefmt(self._free), bumblebee.util.bytefmt(self._size), self._perc)
+        return "{} {}/{} ({:05.02f}%)".format(self._path, bumblebee.util.bytefmt(self._used), bumblebee.util.bytefmt(self._size), self._perc)
 
     def instance(self):
         return self._path
 
     def warning(self):
-        return self._perc < 20
+        return self._perc > 80
 
     def critical(self):
-        return self._perc < 10
+        return self._perc > 90
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
