@@ -28,6 +28,7 @@ def get_dnf_info(obj):
         other = 0
         for line in res.split("\n"):
             if "expiration" in line: continue
+            if not line.startswith(" "): continue
             elif "ecurity" in line:
                 for s in str.split(line):
                     if s.isdigit(): security += int(s)
@@ -68,7 +69,7 @@ class Module(bumblebee.module.Module):
 
     def data(self):
         result = []
-        for t in [ "security", "bugfix", "enhancement", "other" ]:
+        for t in [ "security", "bugfixes", "enhancements", "other" ]:
             result.append(str(self.get(t)))
 
         return "/".join(result)
