@@ -14,7 +14,7 @@ def description():
 class Module(bumblebee.module.Module):
     def __init__(self, output, args):
         super(Module, self).__init__(args)
-        self._exclude = ( "lo", "virbr" )
+        self._exclude = ( "lo", "virbr", "docker", "vboxnet" )
         self._interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
         self._index = 0
         self._intf = self._interfaces[0] if len(self._interfaces) > 0 else None
