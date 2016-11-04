@@ -40,7 +40,7 @@ def print_theme_list():
         80, initial_indent = "    ", subsequent_indent = "    "
     )
 
-def main():
+def init_argument_parser():
     parser = argparse.ArgumentParser(description="display system data in the i3bar")
     parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)", default=[])
     parser.add_argument("-e", "--events", nargs="+", help="List of click events that should be handled. Format is: <module name><splitter, see -s><button ID><splitter><command to execute>", default=[])
@@ -48,6 +48,29 @@ def main():
     parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modules")
     parser.add_argument("-i", "--interval", help="Specify the update interval", default=1, type=int)
     parser.add_argument("-s", "--split", help="Specify string to use for splitting modules and their arguments", default="::")
+
+    return parser
+
+def getmodule(args, output, modulespec):
+    s = args.split
+    module_name = modulespec if not s in modulespec else modulespec.split(s)[0]
+    module_args = None if not s in modulespec else modulespec.split(s)[1:]
+    module = importlib.import_module("bumblebee.modules.{}".format(module_name))
+    return getattr(module, "Module")(output, module_args)
+
+def register_event(args, output, event):
+    ev = event.split(args.split)
+    if len(ev) < 3:
+        sys.stderr.write("invalid format for click event, expect 3 parameters")
+        return
+    output.add_callback(
+        module=ev[0],
+        button=int(ev[1]),
+        cmd=ev[2],
+    )
+
+def main():
+    parser = init_argument_parser()
 
     if len(sys.argv) == 1:
         parser.print_help()
@@ -64,25 +87,11 @@ def main():
     output = bumblebee.outputs.i3.i3bar(theme)
 
     modules = []
-    s = args.split
     for m in args.modules:
-        # TODO: how to cleanly handle errors here?
-        # (useful error messages)
-        module_name = m if not s in m else m.split(s)[0]
-        module_args = None if not s in m else m.split(s)[1:]
-        module = importlib.import_module("bumblebee.modules.{}".format(module_name))
-        modules.append(getattr(module, "Module")(output, module_args))
+        modules.append(getmodule(args, output, m))
 
     for e in args.events:
-        ev = e.split(s)
-        if len(ev) < 3:
-            sys.stderr.write("invalid format for click event, expect 3 parameters")
-            continue
-        output.add_callback(
-            module=ev[0],
-            button=int(ev[1]),
-            cmd=ev[2],
-        )
+        register_event(args, output, e)
 
     print output.start()
     sys.stdout.flush()
