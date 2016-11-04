@@ -1,5 +1,9 @@
 import threading
 
+def output(args):
+    import bumblebee.outputs.i3
+    return bumblebee.outputs.i3.Output(args)
+
 class Output(object):
     def __init__(self, args):
         self._callbacks = {}

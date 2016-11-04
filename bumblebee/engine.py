@@ -6,6 +6,7 @@ import textwrap
 import argparse
 import importlib
 import bumblebee.theme
+import bumblebee.output
 
 class Arguments:
     def __init__(self):
@@ -77,11 +78,11 @@ class Arguments:
             print ""
 
 class Engine:
-    def __init__(self, args, theme, output):
+    def __init__(self, args):
         self._modules = []
-        self._output = output
         self._args = args
-        self._theme = theme
+        self._theme = bumblebee.theme.Theme(args)
+        self._output = bumblebee.output.output(args)
 
     def load_module(self, modulespec):
         name = modulespec.split(self._args.split)[0]
@@ -106,11 +107,9 @@ class Engine:
     def register_events(self):
         for e in self._args.events:
             self.register_event(e)
-        pass
 
     def run(self):
         print self._output.start()
-        sys.stdout.flush()
 
         while True:
             # improve this
