@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import time
 import shlex
 import threading
@@ -16,11 +18,25 @@ def description():
     return "Checks DNF for updated packages and displays the number of <security>/<bugfixes>/<enhancements>/<other> pending updates."
 
 def get_dnf_info(obj):
-    while True:
+
+    loops = 0
+
+    for thread in threading.enumerate():
+        if thread.name == "MainThread":
+            main = thread
+
+    while main.is_alive():
         try:
             res = subprocess.check_output(shlex.split("dnf updateinfo"))
         except Exception as e:
             break
+
+        loops += 1
+        time.sleep(1)
+        if loops < obj.interval():
+            continue
+
+        loops = 0
 
         security = 0
         bugfixes = 0
@@ -47,13 +63,11 @@ def get_dnf_info(obj):
         obj.set("enhancements", enhancements)
         obj.set("other", other)
 
-        time.sleep(obj.interval())
-    
-
 class Module(bumblebee.module.Module):
     def __init__(self, output, args):
         super(Module, self).__init__(args)
-        self._interval = args[0] if args else 30*60
+
+        self._interval = int(args[0]) if args else 30*60
         self._counter = {}
         self._thread = threading.Thread(target=get_dnf_info, args=(self,))
         self._thread.start()
