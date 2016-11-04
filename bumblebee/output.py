@@ -1,11 +1,10 @@
 
 class Output(object):
-    def __init__(self, refresh, theme):
-        self._theme = theme
-        self._refresh = refresh
+    def __init__(self, args):
         self._callbacks = {}
 
     def redraw(self):
+        pass
         self._refresh.acquire()
         self._refresh.notify()
         self._refresh.release()
@@ -30,13 +29,10 @@ class Output(object):
         ), None)
         return cb
 
-    def theme(self):
-        return self._theme
-
     def start(self):
         pass
 
-    def add(self, obj):
+    def add(self, obj, theme):
         pass
 
     def get(self):

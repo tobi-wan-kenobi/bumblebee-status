@@ -27,9 +27,9 @@ def read_input(output):
             subprocess.Popen(shlex.split(cb), stdout=DEVNULL, stderr=DEVNULL)
         output.redraw()
 
-class i3bar(bumblebee.output.Output):
-    def __init__(self, refresh, theme):
-        super(i3bar, self).__init__(refresh, theme)
+class Output(bumblebee.output.Output):
+    def __init__(self, args):
+        super(Output, self).__init__(args)
         self._data = []
 
         self.add_callback("i3-msg workspace prev_on_output", 4)
@@ -41,8 +41,7 @@ class i3bar(bumblebee.output.Output):
     def start(self):
         return json.dumps({ "version": 1, "click_events": True }) + "["
 
-    def add(self, obj):
-        theme = self.theme()
+    def add(self, obj, theme):
 
         while True:
             d = obj.data()

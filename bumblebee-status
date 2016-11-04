@@ -1,114 +1,20 @@
 #!/usr/bin/env python
 
-import os
-import sys
-import time
-import glob
-import pkgutil
-import argparse
-import textwrap
-import threading
-import importlib
 import bumblebee.theme
-import bumblebee.modules
+import bumblebee.engine
 import bumblebee.outputs.i3
 
-def print_module_list():
-    print "available modules:"
-    path = os.path.dirname(bumblebee.modules.__file__)
-    for mod in [ name for _, name, _ in pkgutil.iter_modules([path])]:
-        m = importlib.import_module("bumblebee.modules.{}".format(mod))
-
-        desc = "n/a" if not hasattr(m, "description") else getattr(m, "description")()
-        usage = "n/a" if not hasattr(m, "usage") else getattr(m, "usage")()
-        notes = "n/a" if not hasattr(m, "notes") else getattr(m, "notes")()
-
-        print "    {}: ".format(mod)
-        print textwrap.fill("Description: {}".format(desc),
-            80, initial_indent="        ", subsequent_indent="                     ")
-        print textwrap.fill("Usage      : {}".format(usage),
-            80, initial_indent="        ", subsequent_indent="                     ")
-        print textwrap.fill("Notes      : {}".format(notes),
-            80, initial_indent="        ", subsequent_indent="                     ")
-        print ""
-
-def print_theme_list():
-    d = bumblebee.theme.getpath()
-
-    print "available themes:"
-    print textwrap.fill(", ".join(
-        [ os.path.basename(f).replace(".json", "") for f in glob.iglob("{}/*.json".format(d)) ]),
-        80, initial_indent = "    ", subsequent_indent = "    "
-    )
-
-def init_argument_parser():
-    parser = argparse.ArgumentParser(description="display system data in the i3bar")
-    parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)", default=[])
-    parser.add_argument("-e", "--events", nargs="+", help="List of click events that should be handled. Format is: <module name><splitter, see -s><button ID><splitter><command to execute>", default=[])
-    parser.add_argument("-l", "--list", action="store_true", help="List all available modules and themes")
-    parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modules")
-    parser.add_argument("-i", "--interval", help="Specify the update interval", default=1, type=int)
-    parser.add_argument("-s", "--split", help="Specify string to use for splitting modules and their arguments", default="::")
-
-    return parser
-
-def getmodule(args, output, modulespec):
-    s = args.split
-    module_name = modulespec if not s in modulespec else modulespec.split(s)[0]
-    module_args = None if not s in modulespec else modulespec.split(s)[1:]
-    module = importlib.import_module("bumblebee.modules.{}".format(module_name))
-    return getattr(module, "Module")(output, module_args)
-
-def register_event(args, output, event):
-    ev = event.split(args.split)
-    if len(ev) < 3:
-        sys.stderr.write("invalid format for click event, expect 3 parameters")
-        return
-    output.add_callback(
-        module=ev[0],
-        button=int(ev[1]),
-        cmd=ev[2],
-    )
-
 def main():
-    parser = init_argument_parser()
+    args = bumblebee.engine.Arguments()
 
-    if len(sys.argv) == 1:
-        parser.print_help()
-        parser.exit()
+    theme = bumblebee.theme.Theme(args.args())
+    output = bumblebee.outputs.i3.Output(args.args())
 
-    args = parser.parse_args()
+    engine = bumblebee.engine.Engine(args.args(), theme, output)
+    engine.load_modules()
+    engine.register_events()
 
-    if args.list:
-        print_module_list()
-        print_theme_list()
-        sys.exit(0)
-
-    refresh = threading.Condition()
-    theme = bumblebee.theme.Theme(args.theme) if args.theme else bumblebee.theme.Theme()
-    output = bumblebee.outputs.i3.i3bar(refresh, theme)
-
-    modules = []
-    for m in args.modules:
-        modules.append(getmodule(args, output, m))
-
-    for e in args.events:
-        register_event(args, output, e)
-
-    print output.start()
-    sys.stdout.flush()
-
-    refresh.acquire()
-    while True:
-        theme.reset()
-        for m in modules:
-            output.add(m)
-            theme.next()
-        print output.get()
-        sys.stdout.flush()
-        refresh.wait(args.interval)
-
-    print output.stop()
+    engine.run()
 
 if __name__ == "__main__":
     main()
