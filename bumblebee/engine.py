@@ -4,7 +4,6 @@ import glob
 import pkgutil
 import textwrap
 import argparse
-import threading
 import importlib
 import bumblebee.theme
 
@@ -101,8 +100,6 @@ class Engine:
         print self._output.start()
         sys.stdout.flush()
 
-        refresh = threading.Condition()
-        refresh.acquire()
         while True:
             # improve this
             self._theme.reset()
@@ -111,7 +108,7 @@ class Engine:
                 self._theme.next()
             print self._output.get()
             sys.stdout.flush()
-            refresh.wait(self._args.interval)
+            self._output.wait(self._args.interval)
 
         print self._output.stop()
 

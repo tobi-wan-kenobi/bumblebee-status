@@ -1,13 +1,15 @@
+import threading
 
 class Output(object):
     def __init__(self, args):
         self._callbacks = {}
+        self._wait = threading.Condition()
+        self._wait.acquire()
 
     def redraw(self):
-        pass
-        self._refresh.acquire()
-        self._refresh.notify()
-        self._refresh.release()
+        self._wait.acquire()
+        self._wait.notify()
+        self._wait.release()
 
     def add_callback(self, cmd, button, module=None):
         if module:
@@ -28,6 +30,9 @@ class Output(object):
             None,
         ), None)
         return cb
+
+    def wait(self, interval):
+        self._wait.wait(interval)
 
     def start(self):
         pass
