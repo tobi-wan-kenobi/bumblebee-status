@@ -1,8 +1,14 @@
 
 class Output(object):
-    def __init__(self, theme):
+    def __init__(self, refresh, theme):
         self._theme = theme
+        self._refresh = refresh
         self._callbacks = {}
+
+    def redraw(self):
+        self._refresh.acquire()
+        self._refresh.notify()
+        self._refresh.release()
 
     def add_callback(self, cmd, button, module=None):
         if module:

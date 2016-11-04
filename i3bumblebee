@@ -7,6 +7,7 @@ import glob
 import pkgutil
 import argparse
 import textwrap
+import threading
 import importlib
 import bumblebee.theme
 import bumblebee.modules
@@ -83,8 +84,9 @@ def main():
         print_theme_list()
         sys.exit(0)
 
+    refresh = threading.Condition()
     theme = bumblebee.theme.Theme(args.theme) if args.theme else bumblebee.theme.Theme()
-    output = bumblebee.outputs.i3.i3bar(theme)
+    output = bumblebee.outputs.i3.i3bar(refresh, theme)
 
     modules = []
     for m in args.modules:
@@ -96,6 +98,7 @@ def main():
     print output.start()
     sys.stdout.flush()
 
+    refresh.acquire()
     while True:
         theme.reset()
         for m in modules:
@@ -103,7 +106,7 @@ def main():
             theme.next()
         print output.get()
         sys.stdout.flush()
-        time.sleep(args.interval)
+        refresh.wait(args.interval)
 
     print output.stop()
 
