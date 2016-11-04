@@ -26,17 +26,17 @@ def get_dnf_info(obj):
             main = thread
 
     while main.is_alive():
-        try:
-            res = subprocess.check_output(shlex.split("dnf updateinfo"))
-        except Exception as e:
-            break
-
         loops += 1
         time.sleep(1)
         if loops < obj.interval():
             continue
 
         loops = 0
+        try:
+            res = subprocess.check_output(shlex.split("dnf updateinfo"))
+        except Exception as e:
+            break
+
 
         security = 0
         bugfixes = 0
