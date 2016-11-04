@@ -27,12 +27,23 @@ class Arguments:
 
     def create_parser(self):
         parser = argparse.ArgumentParser(description="display system data in the i3bar")
-        parser.add_argument("-m", "--modules", nargs="+", help="List of modules to load. The order of the list determines their order in the i3bar (from left to right)", default=[])
-        parser.add_argument("-e", "--events", nargs="+", help="List of click events that should be handled. Format is: <module name><splitter, see -s><button ID><splitter><command to execute>", default=[])
-        parser.add_argument("-l", "--list", action="store_true", help="List all available modules and themes")
-        parser.add_argument("-t", "--theme", help="Specify which theme to use for drawing the modules", default="default")
-        parser.add_argument("-i", "--interval", help="Specify the update interval", default=1, type=int)
-        parser.add_argument("-s", "--split", help="Specify string to use for splitting modules and their arguments", default="::")
+        parser.add_argument("-m", "--modules", nargs="+",
+            help="List of modules to load. The order of the list determines "
+            "their order in the i3bar (from left to right)",
+            default=[])
+        parser.add_argument("-e", "--events", nargs="+",
+            help="List of click events that should be handled. Format is: "
+            "<module name><splitter, see -s><button ID><splitter><command to execute>",
+            default=[])
+        parser.add_argument("-l", "--list", action="store_true",
+            help="List all available modules and themes")
+        parser.add_argument("-t", "--theme", help="Specify which theme to use for "
+            "drawing the modules",
+            default="default")
+        parser.add_argument("-i", "--interval", help="Specify the update interval",
+            default=1, type=int)
+        parser.add_argument("-s", "--split", help="Specify string to use for "
+            "splitting modules and their arguments", default="::")
 
         return parser
 
@@ -41,7 +52,8 @@ class Arguments:
 
         print "available themes:"
         print textwrap.fill(", ".join(
-            [ os.path.basename(f).replace(".json", "") for f in glob.iglob("{}/*.json".format(d)) ]),
+            [ os.path.basename(f).replace(".json", "") for f in glob.iglob("{}/*.json".format(d)) ]
+            ),
             80, initial_indent = "    ", subsequent_indent = "    "
         )
 
