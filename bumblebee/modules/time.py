@@ -28,7 +28,7 @@ class Module(bumblebee.module.Module):
         if module == "time":
             default = "%X"
 
-        self._fmt = config.parameter("format", default)
+        self._fmt = self._config.parameter("format", default)
 
     def widgets(self):
         return bumblebee.output.Widget(self, datetime.datetime.now().strftime(self._fmt))
