@@ -1,8 +1,13 @@
 import os
 import json
+import glob
 
 def getpath():
     return os.path.dirname("{}/themes/".format(os.path.dirname(os.path.realpath(__file__))))
+
+def themes():
+    d = getpath()
+    return [ os.path.basename(f).replace(".json", "") for f in glob.iglob("{}/*.json".format(d)) ]
 
 class Theme:
     _cycle_index = 0
