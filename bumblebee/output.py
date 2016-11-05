@@ -74,8 +74,12 @@ class Output(object):
         module = event.get("instance", event.get("name", None))
         cb = self._callbacks.get((
             event.get("button", -1),
-            module,
+            None,
         ), None)
+        cb = self._callbacks.get((
+            event.get("button", -1),
+            event.get("instance", event.get("name", None)),
+        ), cb)
         if inspect.isfunction(cb) or cb is None: return cb
 
         return Command(cb)
