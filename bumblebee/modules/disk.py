@@ -31,9 +31,6 @@ class Module(bumblebee.module.Module):
             bumblebee.util.bytefmt(self._size), self._perc)
         )
 
-    def instance(self, widget=None):
-        return self._path
-
     def warning(self, widget):
         return self._perc > self._config.parameter("warning", 80)
 
