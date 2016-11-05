@@ -1,4 +1,3 @@
-import inspect
 import threading
 
 def output(args):
@@ -6,27 +5,24 @@ def output(args):
     return bumblebee.outputs.i3.Output(args)
 
 class Widget(object):
-    def __init__(self, text, warning=False, critical=False, state=None):
-        self._name = inspect.getmodule(inspect.stack()[1][0]).__name__
+    def __init__(self, obj, text):
+        self._obj = obj
         self._text = text
-        self._warning = warning
-        self._critical = critical
-        self._state = state
 
     def state(self):
-        return self._state
+        return self._obj.state()
 
     def warning(self):
-        return self._warning
+        return self._obj.warning()
 
     def critical(self):
-        return self._critical
+        return self._obj.critical()
 
     def module(self):
-        return self._name.split(".")[-1]
+        return self._obj.__module__.split(".")[-1]
 
     def name(self):
-        return self._name
+        return self._obj.__module__
 
     def text(self):
         return self._text

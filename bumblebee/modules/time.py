@@ -33,7 +33,7 @@ class Module(bumblebee.module.Module):
 
     def widgets(self):
         return [
-            bumblebee.output.Widget(
+            bumblebee.output.Widget(self,
                 datetime.datetime.now().strftime(self._fmt)
             )
         ]
