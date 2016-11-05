@@ -11,10 +11,10 @@ def description():
     return "Draws an empty field."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, args):
-        super(Module, self).__init__(args)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
 
-    def data(self):
-        return ""
+    def widgets(self):
+        return bumblebee.output.Widget(self, "")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
