@@ -18,6 +18,7 @@
 		"bg-warning": "#b58900",
 
 		"default-separators": false,
+		"separator-block-width": 0,
 		"separator": ""
 	},
 	"date": {

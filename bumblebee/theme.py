@@ -19,7 +19,7 @@ class Theme:
         self.begin()
 
     def begin(self):
-        self._config.parameter("theme.cycleidx", 0)
+        self._config.set("theme.cycleidx", 0)
         self._cycle = self._cycles[0] if len(self._cycles) > 0 else {}
         self._background = [ None, None ]
 
@@ -64,7 +64,7 @@ class Theme:
         return self._background[1]
 
     def separator_block_width(self, widget):
-        return 9
+        return self._get(widget, "separator-block-width")
 
     def _get(self, widget, name):
         module = widget.module()

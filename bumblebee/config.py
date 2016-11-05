@@ -47,9 +47,16 @@ class Config(object):
 
         self._args = self._parser.parse_args(args)
 
+        for p in self._args.parameters:
+            key, value = p.split("=")
+            self.parameter(key, value)
+
+    def set(self, name, value):
+        self._store[name] = value
+
     def parameter(self, name, default=None):
         if not name in self._store:
-            self._store[name] = default
+            self.set(name, default)
         return self._store.get(name, default)
 
     def increase(self, name, limit, default):
@@ -75,6 +82,10 @@ class Config(object):
             help="List: 'modules', 'themes' ",
             choices = [ "modules", "themes" ],
             action=print_usage,
+        )
+        parser.add_argument("-p", "--parameters", nargs="+",
+            help="Provide configuration parameters to individual modules.",
+            default=[]
         )
         parser.add_argument("-t", "--theme", help="Specify which theme to use for "
             "drawing the modules",
