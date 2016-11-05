@@ -1,5 +1,6 @@
 import os
 import json
+import yaml
 import glob
 
 def getpath():
@@ -12,8 +13,13 @@ def themes():
 class Theme:
     def __init__(self, config):
         self._config = config
-        with open("{}/{}.json".format(getpath(), config.theme())) as f:
-            self._data = json.load(f)
+
+        if os.path.isfile("{}/{}.yaml".format(getpath(), config.theme())):
+            with open("{}/{}.yaml".format(getpath(), config.theme())) as f:
+                self._data = yaml.load(f)
+        else:
+            with open("{}/{}.json".format(getpath(), config.theme())) as f:
+                self._data = json.load(f)
         self._defaults = self._data.get("defaults", {})
         self._cycles = self._defaults.get("cycle", [])
         self.begin()
