@@ -1,4 +1,3 @@
-import pyroute2
 import netifaces
 import bumblebee.module
 
@@ -39,14 +38,9 @@ class Module(bumblebee.module.Module):
         return result
 
     def _iswlan(self, intf):
-        iw = pyroute2.IW()
-        ip = pyroute2.IPRoute()
-        idx = ip.link_lookup(ifname=intf)[0]
-        try:
-            iw.get_interface_by_ifindex(idx)
-            return True
-        except Exception as e:
-            return False
+        # wifi, wlan, wlp, seems to work for me
+        if intf.startswith("w"): return True
+        return False
 
     def _istunnel(self, intf):
         return intf.startswith("tun")

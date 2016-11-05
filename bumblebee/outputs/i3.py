@@ -38,7 +38,7 @@ class Output(bumblebee.output.Output):
         self._thread.start()
 
     def start(self):
-        print json.dumps({ "version": 1, "click_events": True }) + "["
+        print(json.dumps({ "version": 1, "click_events": True }) + "[")
 
     def _draw(self, widgets, theme):
         for widget in widgets:

@@ -37,7 +37,7 @@ def get_dnf_info(obj):
         bugfixes = 0
         enhancements = 0
         other = 0
-        for line in res.split("\n"):
+        for line in res.decode().split("\n"):
             if not line.startswith(" "): continue
             elif "ecurity" in line:
                 for s in str.split(line):

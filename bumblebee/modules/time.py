@@ -26,7 +26,7 @@ class Module(bumblebee.module.Module):
 
         module = self.__module__.split(".")[-1]
 
-        self._fmt = self._config.parameter("format", default_format(module_format(module)))
+        self._fmt = self._config.parameter("format", default_format(module))
 
     def widgets(self):
         return bumblebee.output.Widget(self, datetime.datetime.now().strftime(self._fmt))

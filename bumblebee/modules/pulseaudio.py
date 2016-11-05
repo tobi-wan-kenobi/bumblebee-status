@@ -41,7 +41,7 @@ class Module(bumblebee.module.Module):
         res = subprocess.check_output(shlex.split("pactl info"))
         channel = "sinks" if self._module == "pasink" else "sources"
         name = None
-        for line in res.split("\n"):
+        for line in res.decode().split("\n"):
             if line.startswith("Default Sink: ") and channel == "sinks":
                 name = line[14:]
             if line.startswith("Default Source: ") and channel == "sources":
@@ -50,7 +50,7 @@ class Module(bumblebee.module.Module):
         res = subprocess.check_output(shlex.split("pactl list {}".format(channel)))
 
         found = False
-        for line in res.split("\n"):
+        for line in res.decode().split("\n"):
             if "Name:" in line and found == True:
                 break
             if name in line:
@@ -72,7 +72,7 @@ class Module(bumblebee.module.Module):
                     self._left = m.group(1)
                     self._right = m.group(2)
         result = ""
-        if self._mono > 0:
+        if int(self._mono) > 0:
             result = "{}%".format(self._mono)
         elif self._left == self._right:
             result = "{}%".format(self._left)

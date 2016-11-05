@@ -58,6 +58,6 @@ class Module(object):
         return "default"
 
     def instance(self, widget=None):
-        return self.__module__.split(".")[-1]
+        return self._alias if self._alias else self.__module__.split(".")[-1]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
