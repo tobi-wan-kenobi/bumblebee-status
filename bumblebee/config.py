@@ -10,6 +10,7 @@ class Config(object):
         self._raw = args
         self._parser = self._parser()
         self._indent = " "*4
+        self._store = {}
 
         if len(args) == 0:
             self._parser.print_help()
@@ -23,6 +24,20 @@ class Config(object):
             self.print_themes()
         if self._args.list:
             self._parser.exit()
+
+    def getstore(self, name, default=None):
+        if not name in self._store:
+            self._store[name] = default
+        return self._store.get(name, default)
+
+    def store(self, name, value):
+        self._store[name] = value
+
+    def increase(self, name, limit, default):
+        self._store[name] += 1
+        if self._store[name] >= limit:
+            self._store[name] = default
+        return self._store[name]
 
     def parameter(self, name, default):
         # TODO

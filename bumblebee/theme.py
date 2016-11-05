@@ -11,6 +11,7 @@ def themes():
 
 class Theme:
     def __init__(self, config):
+        self._config = config
         with open("{}/{}.json".format(getpath(), config.theme())) as f:
             self._data = json.load(f)
         self._defaults = self._data.get("defaults", {})
@@ -18,16 +19,14 @@ class Theme:
         self.begin()
 
     def begin(self):
-        self._cycleidx = 0
+        self._config.store("theme.cycleidx", 0)
         self._cycle = self._cycles[0] if len(self._cycles) > 0 else {}
         self._background = [ None, None ]
 
     def next_widget(self):
         self._background[1] = self._background[0]
-        self._cycleidx += 1
-        if self._cycleidx >= len(self._cycles):
-            self._cycleidx = 0
-        self._cycle = self._cycles[self._cycleidx] if len(self._cycles) > self._cycleidx else {}
+        idx = self._config.increase("theme.cycleidx", len(self._cycles), 0)
+        self._cycle = self._cycles[idx] if len(self._cycles) > idx else {}
 
     def prefix(self, widget):
         return self._get(widget, "prefix")
@@ -80,9 +79,10 @@ class Theme:
         value = state_theme.get(name, value)
 
         if type(value) is list:
-            # if the value is a list, cycle through it
-            # TODO
-            pass
+            key = "{}{}".format(repr(widget), value)
+            idx = self._config.getstore(key, 0)
+            self._config.increase(key, len(value), 0)
+            value = value[idx]
 
         return value
 
