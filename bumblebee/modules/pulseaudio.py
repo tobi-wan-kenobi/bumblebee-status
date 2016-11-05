@@ -26,8 +26,8 @@ def description():
     return "See 'pasource'."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, args):
-        super(Module, self).__init__(args)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
 
         self._module = self.__module__.split(".")[-1]
         self._left = 0
@@ -36,16 +36,17 @@ class Module(bumblebee.module.Module):
         self._mute = False
         channel = "sink" if self._module == "pasink" else "source"
 
-        output.add_callback(module=self.__module__, button=3,
-            cmd="pavucontrol")
-        output.add_callback(module=self.__module__, button=1,
-            cmd="pactl set-{}-mute @DEFAULT_{}@ toggle".format(channel, channel.upper()))
-        output.add_callback(module=self.__module__, button=4,
-            cmd="pactl set-{}-volume @DEFAULT_{}@ +2%".format(channel, channel.upper()))
-        output.add_callback(module=self.__module__, button=5,
-            cmd="pactl set-{}-volume @DEFAULT_{}@ -2%".format(channel, channel.upper()))
+# TODO
+#        output.add_callback(module=self.__module__, button=3,
+#            cmd="pavucontrol")
+#        output.add_callback(module=self.__module__, button=1,
+#            cmd="pactl set-{}-mute @DEFAULT_{}@ toggle".format(channel, channel.upper()))
+#        output.add_callback(module=self.__module__, button=4,
+#            cmd="pactl set-{}-volume @DEFAULT_{}@ +2%".format(channel, channel.upper()))
+#        output.add_callback(module=self.__module__, button=5,
+#            cmd="pactl set-{}-volume @DEFAULT_{}@ -2%".format(channel, channel.upper()))
 
-    def data(self):
+    def widgets(self):
         res = subprocess.check_output(shlex.split("pactl info"))
         channel = "sinks" if self._module == "pasink" else "sources"
         name = None
@@ -86,15 +87,15 @@ class Module(bumblebee.module.Module):
             result = "{}%".format(self._left)
         else:
             result="{}%/{}%".format(self._left, self._right)
-        return result
+        return bumblebee.output.Widget(self, result)
 
-    def state(self):
+    def state(self, widget):
         return "muted" if self._mute is True else "unmuted"
 
-    def warning(self):
+    def warning(self, widget):
         return self._mute
 
-    def critical(self):
+    def critical(self, widget):
         return False
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
