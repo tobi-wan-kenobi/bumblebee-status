@@ -38,18 +38,19 @@ def get_dnf_info(obj):
         enhancements = 0
         other = 0
         for line in res.decode().split("\n"):
+
             if not line.startswith(" "): continue
             elif "ecurity" in line:
-                for s in str.split(line):
+                for s in line.split():
                     if s.isdigit(): security += int(s)
             elif "ugfix" in line:
-                for s in str.split(line):
+                for s in line.split():
                     if s.isdigit(): bugfixes += int(s)
             elif "hancement" in line:
-                for s in str.split(line):
+                for s in line.split():
                     if s.isdigit(): enhancements += int(s)
             else:
-                for s in str.split(line):
+                for s in line.split():
                     if s.isdigit(): other += int(s)
 
         obj.set("security", security)
