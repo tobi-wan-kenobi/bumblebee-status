@@ -33,13 +33,13 @@ class Module(bumblebee.module.Module):
             bumblebee.util.bytefmt(self._size), self._perc)
         )
 
-    def instance(self):
+    def instance(self, widget):
         return self._path
 
-    def warning(self):
+    def warning(self, widget):
         return self._perc > self._config.parameter("disk.warning", 80)
 
-    def critical(self):
+    def critical(self, widget):
         return self._perc > self._config.parameter("disk.critical", 90)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

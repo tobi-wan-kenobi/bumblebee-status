@@ -24,13 +24,13 @@ class Module(bumblebee.module.Module):
 
         return bumblebee.output.Widget(self,"{:02d}%".format(self._capacity))
 
-    def warning(self):
+    def warning(self, widget):
         return self._capacity < self._config.parameter("battery.warning", 20)
 
-    def critical(self):
+    def critical(self, widget):
         return self._capacity < self._config.parameter("battery.critical", 10)
 
-    def state(self):
+    def state(self, widget):
         with open("/sys/class/power_supply/{}/status".format(self._battery)) as f:
             self._status = f.read().strip()
 

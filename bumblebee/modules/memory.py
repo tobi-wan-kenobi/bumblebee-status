@@ -12,24 +12,28 @@ def description():
     return "Shows available RAM, total amount of RAM and the percentage of available RAM."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, args):
-        super(Module, self).__init__(args)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
         self._mem = psutil.virtual_memory()
 
         output.add_callback(module=self.__module__, button=1,
             cmd="gnome-system-monitor")
 
-    def data(self):
+    def widgets(self):
         self._mem = psutil.virtual_memory()
 
         used = self._mem.total - self._mem.available
 
-        return "{}/{} ({:05.02f}%)".format(bumblebee.util.bytefmt(used), bumblebee.util.bytefmt(self._mem.total), self._mem.percent)
+        return bumblebee.output.Widget(self, "{}/{} ({:05.02f}%)".format(
+            bumblebee.util.bytefmt(used),
+            bumblebee.util.bytefmt(self._mem.total),
+            self._mem.percent)
+        )
 
-    def warning(self):
-        return self._mem.percent < 20
+    def warning(self, widget):
+        return self._mem.percent < self._config.parameter("memory.warning", 20)
 
-    def critical(self):
-        return self._mem.percent < 10
+    def critical(self, widget):
+        return self._mem.percent < self._config.parameter("memory.critical", 10)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

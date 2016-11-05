@@ -12,72 +12,59 @@ def description():
     return "Displays the names, IP addresses and status of each available interface."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, args):
-        super(Module, self).__init__(args)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
         self._exclude = ( "lo", "virbr", "docker", "vboxnet" )
-        self._interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
-        self._index = 0
-        self._intf = self._interfaces[0] if len(self._interfaces) > 0 else None
-        self._cache = {}
         self._state = "down"
 
-    def data(self):
-        if len(self._interfaces) <= self._index:
-            return "n/a"
-        self._intf = self._interfaces[self._index]
-        self._state = "down"
+    def widgets(self):
+        result = []
+        interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
         addr = []
+        state = "down"
+        for intf in interfaces:
+            try:
+                if netifaces.AF_INET in netifaces.ifaddresses(intf):
+                    for ip in netifaces.ifaddresses(intf)[netifaces.AF_INET]:
+                        if "addr" in ip and ip["addr"] != "":
+                            addr.append(ip["addr"])
+                            state = "up"
+            except Exception as e:
+                addr = []
+            widget = bumblebee.output.Widget(self, "{} {} {}".format(
+                intf, state, ", ".join(addr)
+            ))
+            widget.set("intf", intf)
+            widget.set("state", state)
+            result.append(widget)
 
-        try:
-            if netifaces.AF_INET in netifaces.ifaddresses(self._intf):
-                for ip in netifaces.ifaddresses(self._intf)[netifaces.AF_INET]:
-                    if "addr" in ip and ip["addr"] != "":
-                        addr.append(ip["addr"])
-                        self._state = "up"
-        except Exception as e:
-            self._state = "down"
-            addr = []
-
-        return "{} {} {}".format(self._intf, self._state, ", ".join(addr))
-
-    def next(self):
-        self._index += 1
-        if self._index < len(self._interfaces):
-            return True
-        self._index = 0
-        # reload to support hotplug
-        self._interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
-        return False
+        return result
 
     def _iswlan(self, intf):
-        if not "wlan{}".format(intf) in self._cache:
-            iw = pyroute2.IW()
-            ip = pyroute2.IPRoute()
-            idx = ip.link_lookup(ifname=intf)[0]
-            try:
-                iw.get_interface_by_ifindex(idx)
-                self._cache["wlan{}".format(intf)] = True
-            except Exception as e:
-                self._cache["wlan{}".format(intf)] = False
-        return self._cache["wlan{}".format(intf)]
+        iw = pyroute2.IW()
+        ip = pyroute2.IPRoute()
+        idx = ip.link_lookup(ifname=intf)[0]
+        try:
+            iw.get_interface_by_ifindex(idx)
+            return True
+        except Exception as e:
+            return False
 
     def _istunnel(self, intf):
         return intf.startswith("tun")
 
-    def instance(self):
-        return self._intf
+    def state(self, widget):
+        intf = widget.get("intf")
+        t = "wireless" if self._iswlan(intf) else "wired"
 
-    def state(self):
-        t = "wireless" if self._iswlan(self._intf) else "wired"
+        t = "tunnel" if self._istunnel(intf) else t
 
-        t = "tunnel" if self._istunnel(self._intf) else t
+        return "{}-{}".format(t, widget.get("state"))
 
-        return "{}-{}".format(t, self._state)
+    def warning(self, widget):
+        return widget.get("state") != "up"
 
-    def warning(self):
-        return self._state != "up"
-
-    def critical(self):
-        return self._state == "down"
+    def critical(self, widget):
+        return widget.get("state") == "down"
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

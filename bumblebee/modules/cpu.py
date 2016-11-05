@@ -23,10 +23,10 @@ class Module(bumblebee.module.Module):
         self._perc = psutil.cpu_percent(percpu=False)
         return bumblebee.output.Widget(self, "{:05.02f}%".format(self._perc))
 
-    def warning(self):
+    def warning(self, widget):
         return self._perc > self._config.parameter("cpu.warning", 70)
 
-    def critical(self):
+    def critical(self, widget):
         return self._perc > self._config.parameter("cpu.critical", 80)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

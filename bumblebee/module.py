@@ -36,24 +36,16 @@ class Module(object):
         self._config = config
         self._output = output
 
-    def data(self):
-        pass
-
-    def critical(self):
+    def critical(self, widget):
         return False
 
-    def warning(self):
+    def warning(self, widget):
         return False
 
-    def state(self):
+    def state(self, widget):
         return "default"
 
-    def instance(self):
+    def instance(self, widget):
         return None
-
-    def next(self):
-        return False
-
-
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -8,15 +8,22 @@ class Widget(object):
     def __init__(self, obj, text):
         self._obj = obj
         self._text = text
+        self._store = {}
+
+    def set(self, key, value):
+        self._store[key] = value
+
+    def get(self, key, default=None):
+        return self._store.get(key, default)
 
     def state(self):
-        return self._obj.state()
+        return self._obj.state(self)
 
     def warning(self):
-        return self._obj.warning()
+        return self._obj.warning(self)
 
     def critical(self):
-        return self._obj.critical()
+        return self._obj.critical(self)
 
     def module(self):
         return self._obj.__module__.split(".")[-1]
@@ -25,7 +32,7 @@ class Widget(object):
         return self._obj.__module__
 
     def instance(self):
-        rv = getattr(self._obj, "instance")()
+        rv = getattr(self._obj, "instance")(self)
 
     def text(self):
         return self._text
