@@ -7,6 +7,7 @@ import argparse
 import importlib
 import bumblebee.theme
 import bumblebee.output
+import bumblebee.modules
 
 class Arguments:
     def __init__(self):
