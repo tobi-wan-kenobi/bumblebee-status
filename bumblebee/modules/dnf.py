@@ -18,8 +18,7 @@ def description():
     return "Checks DNF for updated packages and displays the number of <security>/<bugfixes>/<enhancements>/<other> pending updates."
 
 def get_dnf_info(obj):
-
-    loops = 0
+    loops = obj.interval()
 
     for thread in threading.enumerate():
         if thread.name == "MainThread":
@@ -27,8 +26,8 @@ def get_dnf_info(obj):
 
     while main.is_alive():
         loops += 1
-        time.sleep(1)
         if loops < obj.interval():
+            time.sleep(1)
             continue
 
         loops = 0
@@ -37,13 +36,11 @@ def get_dnf_info(obj):
         except Exception as e:
             break
 
-
         security = 0
         bugfixes = 0
         enhancements = 0
         other = 0
         for line in res.split("\n"):
-            if "expiration" in line: continue
             if not line.startswith(" "): continue
             elif "ecurity" in line:
                 for s in str.split(line):
@@ -64,16 +61,15 @@ def get_dnf_info(obj):
         obj.set("other", other)
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, args):
-        super(Module, self).__init__(args)
+    def __init__(self, output, config, alias):
+        super(Module, self).__init__(output, config, alias)
 
-        self._interval = int(args[0]) if args else 30*60
         self._counter = {}
         self._thread = threading.Thread(target=get_dnf_info, args=(self,))
         self._thread.start()
 
     def interval(self):
-        return self._interval
+        return self._config.parameter("interval", 30*60)
 
     def set(self, what, value):
         self._counter[what] = value
@@ -81,23 +77,23 @@ class Module(bumblebee.module.Module):
     def get(self, what):
         return self._counter.get(what, 0)
 
-    def data(self):
+    def widgets(self):
         result = []
         for t in [ "security", "bugfixes", "enhancements", "other" ]:
             result.append(str(self.get(t)))
 
-        return "/".join(result)
+        return bumblebee.output.Widget(self, "/".join(result))
 
-    def state(self):
+    def state(self, widget):
         total = sum(self._counter.values())
         if total == 0: return "good"
         return "default"
 
-    def warning(self):
+    def warning(self, widget):
         total = sum(self._counter.values())
         return total > 0
 
-    def critical(self):
+    def critical(self, widget):
         total = sum(self._counter.values())
         return total > 50 or self._counter.get("security", 0) > 0
 
