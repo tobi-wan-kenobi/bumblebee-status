@@ -9,6 +9,7 @@ class Config(object):
     def __init__(self, args):
         self._raw = args
         self._parser = self.parser()
+        self._indent = " "*4
 
         if len(args) == 0:
             self._parser.print_help()
@@ -41,19 +42,19 @@ class Config(object):
 
     def print_themes(self):
         print(textwrap.fill(", ".join(bumblebee.theme.themes()),
-            80, initial_indent = "    ", subsequent_indent = "    "
+            80, initial_indent = self._indent, subsequent_indent = self._indent
         ))
 
     def print_modules(self):
         for m in bumblebee.module.modules():
 
-            print "    {}: ".format(m.name())
-            print textwrap.fill("Description: {}".format(m.description()),
-                80, initial_indent="        ", subsequent_indent="                     ")
-            print textwrap.fill("Usage      : {}".format(m.usage()),
-                80, initial_indent="        ", subsequent_indent="                     ")
-            print textwrap.fill("Notes      : {}".format(m.notes()),
-                80, initial_indent="        ", subsequent_indent="                     ")
+            print("{}{}: ".format(self._indent, m.name()))
+            print textwrap.fill("About : {}".format(m.description()),
+                80, initial_indent=self._indent*2, subsequent_indent=self._indent*4)
+            print textwrap.fill("Usage : {}".format(m.usage()),
+                80, initial_indent=self._indent*2, subsequent_indent=self._indent*4)
+            print textwrap.fill("Notes : {}".format(m.notes()),
+                80, initial_indent=self._indent*2, subsequent_indent=self._indent*4)
             print ""
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
