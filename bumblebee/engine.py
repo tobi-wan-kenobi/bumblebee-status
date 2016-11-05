@@ -43,18 +43,15 @@ class Engine:
             self.register_event(e)
 
     def run(self):
-        print self._output.start()
+        self._output.start()
 
         while True:
-            # improve this
-            self._theme.reset()
+            self._theme.begin()
             for m in self._modules:
-                self._output.add(m, self._theme)
-                self._theme.next()
-            print self._output.get()
-            sys.stdout.flush()
-            self._output.wait(self._args.interval)
+                self._output.draw(m.widgets(), self._theme)
+            self._output.flush()
+            self._output.wait()
 
-        print self._output.stop()
+        self._output.stop()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

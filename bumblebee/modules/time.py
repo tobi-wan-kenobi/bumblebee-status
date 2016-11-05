@@ -31,7 +31,11 @@ class Module(bumblebee.module.Module):
         param_name = "{}.format".format(module)
         self._fmt = config.parameter(param_name, default)
 
-    def data(self):
-        return datetime.datetime.now().strftime(self._fmt)
+    def widgets(self):
+        return [
+            bumblebee.output.Widget(
+                datetime.datetime.now().strftime(self._fmt)
+            )
+        ]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

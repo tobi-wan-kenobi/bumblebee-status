@@ -32,51 +32,47 @@ class Output(bumblebee.output.Output):
         super(Output, self).__init__(args)
         self._data = []
 
-        self.add_callback("i3-msg workspace prev_on_output", 4)
-        self.add_callback("i3-msg workspace next_on_output", 5)
+# TODO
+#        self.add_callback("i3-msg workspace prev_on_output", 4)
+#        self.add_callback("i3-msg workspace next_on_output", 5)
 
-        self._thread = threading.Thread(target=read_input, args=(self,))
-        self._thread.start()
+#        self._thread = threading.Thread(target=read_input, args=(self,))
+#        self._thread.start()
 
     def start(self):
-        return json.dumps({ "version": 1, "click_events": True }) + "["
+        print json.dumps({ "version": 1, "click_events": True }) + "["
 
-    def add(self, obj, theme):
+    def draw(self, widgets, theme):
+        for widget in widgets:
+            if theme.separator(widget):
+                self._data.append({
+                    u"full_text": theme.separator(obj),
+                    "color": theme.separator_color(obj),
+                    "background": theme.separator_background(),
+                    "separator": False,
+                    "separator_block_width": 0,
+                })
 
-        while True:
-            d = obj.data()
-            data = {
-                u"full_text": "{}{}{}".format(theme.prefix(obj), d, theme.suffix(obj)),
-                "color": theme.color(obj),
-                "background": theme.background(obj),
-                "name": obj.__module__.replace("bumblebee.modules.",""),
-                "instance": obj.instance() if hasattr(obj, "instance") else None,
-            }
+            self._data.append({
+                u"full_text": "{}{}{}".format(
+                    theme.prefix(widget),
+                    widget.text(),
+                    theme.suffix(widget)
+                ),
+                "color": theme.color(widget),
+                "background": theme.background(widget),
+                "name": widget.name(),
+                "instance": getattr(widget, "instance", None),
+                "separator": theme.default_separators(widget),
+                "separator_block_width": theme.separator_block_width(widget),
+            })
+            theme.next_widget()
 
-            if theme.urgent(obj) and obj.critical():
-                data["urgent"] = True
-
-            if theme.default_separators(obj) == False:
-                data["separator"] = False
-                data["separator_block_width"] = 0
-                if theme.separator(obj):
-                    self._data.append({
-                        u"full_text": theme.separator(obj),
-                        "color": theme.background(obj),
-                        "background": theme.previous_background(),
-                        "separator": False,
-                        "separator_block_width": 0,
-                    })
-
-            self._data.append(data)
-            if obj.next() == False:
-                break
-            theme.next()
-
-    def get(self):
+    def flush(self):
         data = json.dumps(self._data)
         self._data = []
-        return data + ","
+        print(data + ",")
+        sys.stdout.flush()
 
     def stop(self):
         return "]"

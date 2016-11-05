@@ -2,7 +2,8 @@
 	"defaults": {
 		"prefix": " ",
 		"suffix" : " ",
-		"urgent": true
+		"urgent": true,
+		"fg": "#aabbcc"
 	},
 	"date": {
 		"prefix": " "
