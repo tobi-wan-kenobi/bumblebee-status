@@ -31,7 +31,7 @@ Next, open your i3wm configuration and modify the *status_command* for your i3ba
 
 ```
 bar {
-	status_command = <path to bumblebee-status/bumblebee-status> -m <list of modules> -t <theme>
+	status_command = <path to bumblebee-status/bumblebee-status> -m <list of modules> -p <list of module parameters> -t <theme>
 }
 ```
 
@@ -48,7 +48,7 @@ bar {
 	font pango:Inconsolata 10
 	position top
 	tray_output none
-	status_command ~/src/bumblebee-status/bumblebee-status -m disk disk::/home nic cpu memory battery date::"%a, %b %d %Y" spacer time::"%H:%M CW %V" pasink pasource dnf -t solarized-powerline
+	status_command ~/.i3/bumblebee-status/bumblebee-status -m nic disk:/ cpu memory battery date time pasink pasource dnf -p time.format="%H:%M CW %V" date.format="%a, %b %d %Y" -t solarized-powerline
 }
 
 ```
