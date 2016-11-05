@@ -39,6 +39,21 @@ class Module(object):
         name = "{}.".format(alias if alias else self.__module__.split(".")[-1])
         self._config = bumblebee.config.ModuleConfig(config, name)
 
+        buttons = [
+            { "name": "left-click", "id": 1 },
+            { "name": "middle-click", "id": 2 },
+            { "name": "right-click", "id": 3 },
+            { "name": "wheel-up", "id": 4 },
+            { "name": "wheel-down", "id": 5 },
+        ]
+        for button in buttons:
+            if self._config.parameter(button["name"], None):
+                output.add_callback(
+                    module=self.instance(),
+                    button=button["id"],
+                    cmd=self._config.parameter(button["name"])
+                )
+
     def critical(self, widget):
         return False
 

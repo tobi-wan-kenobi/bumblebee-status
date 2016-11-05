@@ -63,6 +63,8 @@ class Output(object):
         if module:
             module = module.replace("bumblebee.modules.", "")
 
+        if self._callbacks.get((button, module)): return
+
         self._callbacks[(
             button,
             module,
