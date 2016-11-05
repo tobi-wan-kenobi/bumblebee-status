@@ -35,6 +35,23 @@ class print_usage(argparse.Action):
                 80, initial_indent=self._indent*2, subsequent_indent=self._indent*4)
             print ""
 
+class ModuleConfig(object):
+    def __init__(self, config, prefix):
+        self._prefix = prefix
+        self._config = config
+
+    def set(self, name, value):
+        name = self._prefix + name
+        return self._config.set(name, value)
+
+    def parameter(self, name, default=None):
+        name = self._prefix + name
+        return self._config.parameter(name, default)
+
+    def increase(self, name, limit, default):
+        name = self._prefix + name
+        return self._config.increase(name, limit, default)
+
 class Config(object):
     def __init__(self, args):
         self._raw = args
@@ -69,7 +86,11 @@ class Config(object):
         return self._args.theme
 
     def modules(self):
-        return self._args.modules
+        result = []
+        for m in self._args.modules:
+            items = m.split(":")
+            result.append({ "name": items[0], "alias": items[1] if len(items) > 1 else None })
+        return result
 
     def _parser(self):
         parser = argparse.ArgumentParser(description="display system data in the i3bar")

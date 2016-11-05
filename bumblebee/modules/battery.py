@@ -11,9 +11,9 @@ def description():
     return "Displays battery status, percentage and whether it's charging or discharging."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, config):
-        super(Module, self).__init__(output, config)
-        self._battery = config.parameter("battery.device", "BAT0")
+    def __init__(self, output, config, alias):
+        super(Module, self).__init__(output, config, alias)
+        self._battery = config.parameter("device", "BAT0")
         self._capacity = 0
         self._status = "Unknown"
 
@@ -25,10 +25,10 @@ class Module(bumblebee.module.Module):
         return bumblebee.output.Widget(self,"{:02d}%".format(self._capacity))
 
     def warning(self, widget):
-        return self._capacity < self._config.parameter("battery.warning", 20)
+        return self._capacity < self._config.parameter("warning", 20)
 
     def critical(self, widget):
-        return self._capacity < self._config.parameter("battery.critical", 10)
+        return self._capacity < self._config.parameter("critical", 10)
 
     def state(self, widget):
         with open("/sys/class/power_supply/{}/status".format(self._battery)) as f:

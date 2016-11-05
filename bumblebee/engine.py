@@ -16,9 +16,10 @@ class Engine:
         self._theme = bumblebee.theme.Theme(config)
         self._output = bumblebee.output.output(config)
 
-    def load_module(self, name):
+    def load_module(self, modulespec):
+        name = modulespec["name"]
         module = importlib.import_module("bumblebee.modules.{}".format(name))
-        return getattr(module, "Module")(self._output, self._config)
+        return getattr(module, "Module")(self._output, self._config, modulespec["alias"])
 
     def load_modules(self):
         for m in self._config.modules():

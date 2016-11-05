@@ -12,8 +12,8 @@ def description():
     return "Displays the names, IP addresses and status of each available interface."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, config):
-        super(Module, self).__init__(output, config)
+    def __init__(self, output, config, alias):
+        super(Module, self).__init__(output, config, alias)
         self._exclude = ( "lo", "virbr", "docker", "vboxnet" )
         self._state = "down"
         self._typecache = {}

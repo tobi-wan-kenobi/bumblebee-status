@@ -12,9 +12,9 @@ def description():
     return "Shows free diskspace, total diskspace and the percentage of free disk space."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, config):
-        super(Module, self).__init__(output, config)
-        self._path = self._config.parameter("disk.path", "/")
+    def __init__(self, output, config, alias):
+        super(Module, self).__init__(output, config, alias)
+        self._path = self._config.parameter("path", "/")
 
 # TODO
 #        output.add_callback(module=self.__module__, button=1,
@@ -33,13 +33,10 @@ class Module(bumblebee.module.Module):
             bumblebee.util.bytefmt(self._size), self._perc)
         )
 
-    def instance(self, widget):
-        return self._path
-
     def warning(self, widget):
-        return self._perc > self._config.parameter("disk.warning", 80)
+        return self._perc > self._config.parameter("warning", 80)
 
     def critical(self, widget):
-        return self._perc > self._config.parameter("disk.critical", 90)
+        return self._perc > self._config.parameter("critical", 90)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

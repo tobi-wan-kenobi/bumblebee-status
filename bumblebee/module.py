@@ -2,6 +2,7 @@ import os
 import pkgutil
 import importlib
 
+import bumblebee.config
 import bumblebee.modules
 
 def modules():
@@ -32,9 +33,11 @@ class ModuleDescription(object):
         return "n/a"
 
 class Module(object):
-    def __init__(self, output, config):
-        self._config = config
+    def __init__(self, output, config, alias=None):
         self._output = output
+        self._alias = alias
+        name = "{}.".format(alias if alias else self.__module__.split(".")[-1])
+        self._config = bumblebee.config.ModuleConfig(config, name)
 
     def critical(self, widget):
         return False
@@ -46,6 +49,6 @@ class Module(object):
         return "default"
 
     def instance(self, widget):
-        return None
+        return self._alias if self._alias else self.__module__.split(".")[-1]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
