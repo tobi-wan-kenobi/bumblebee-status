@@ -19,7 +19,7 @@ class Theme:
         self.begin()
 
     def begin(self):
-        self._config.store("theme.cycleidx", 0)
+        self._config.parameter("theme.cycleidx", 0)
         self._cycle = self._cycles[0] if len(self._cycles) > 0 else {}
         self._background = [ None, None ]
 
@@ -80,7 +80,7 @@ class Theme:
 
         if type(value) is list:
             key = "{}{}".format(repr(widget), value)
-            idx = self._config.getstore(key, 0)
+            idx = self._config.parameter(key, 0)
             self._config.increase(key, len(value), 0)
             value = value[idx]
 

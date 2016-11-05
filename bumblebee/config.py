@@ -26,7 +26,6 @@ class print_usage(argparse.Action):
 
     def print_modules(self):
         for m in bumblebee.module.modules():
-
             print("{}{}: ".format(self._indent, m.name()))
             print textwrap.fill("About : {}".format(m.description()),
                 80, initial_indent=self._indent*2, subsequent_indent=self._indent*4)
@@ -48,13 +47,10 @@ class Config(object):
 
         self._args = self._parser.parse_args(args)
 
-    def getstore(self, name, default=None):
+    def parameter(self, name, default=None):
         if not name in self._store:
             self._store[name] = default
         return self._store.get(name, default)
-
-    def store(self, name, value):
-        self._store[name] = value
 
     def increase(self, name, limit, default):
         self._store[name] += 1
@@ -62,16 +58,11 @@ class Config(object):
             self._store[name] = default
         return self._store[name]
 
-    def parameter(self, name, default):
-        # TODO
-        return default
-
     def theme(self):
         return self._args.theme
 
     def modules(self):
         return self._args.modules
-
 
     def _parser(self):
         parser = argparse.ArgumentParser(description="display system data in the i3bar")
