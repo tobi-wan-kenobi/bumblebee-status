@@ -14,7 +14,6 @@ class Module(bumblebee.module.Module):
     def __init__(self, output, config):
         super(Module, self).__init__(output, config)
         self._perc = psutil.cpu_percent(percpu=False)
-        self._config = config
 
 # TODO
 #        output.add_callback(module=self.__module__, button=1,

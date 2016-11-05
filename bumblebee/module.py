@@ -33,7 +33,8 @@ class ModuleDescription(object):
 
 class Module(object):
     def __init__(self, output, config):
-        pass
+        self._config = config
+        self._output = output
 
     def data(self):
         pass
