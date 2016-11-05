@@ -42,7 +42,7 @@ class Output(bumblebee.output.Output):
     def start(self):
         print json.dumps({ "version": 1, "click_events": True }) + "["
 
-    def draw(self, widgets, theme):
+    def _draw(self, widgets, theme):
         for widget in widgets:
             if theme.separator(widget):
                 self._data.append({

@@ -21,11 +21,7 @@ class Module(bumblebee.module.Module):
 
     def widgets(self):
         self._perc = psutil.cpu_percent(percpu=False)
-        return [
-            bumblebee.output.Widget(self,
-                "{:05.02f}%".format(self._perc)
-            )
-        ]
+        return bumblebee.output.Widget(self, "{:05.02f}%".format(self._perc))
 
     def warning(self):
         return self._perc > self._config.parameter("cpu.warning", 70)

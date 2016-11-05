@@ -22,9 +22,7 @@ class Module(bumblebee.module.Module):
             self._capacity = int(f.read())
         self._capacity = self._capacity if self._capacity < 100 else 100
 
-        return [
-            bumblebee.output.Widget(self,"{:02d}%".format(self._capacity))
-        ]
+        return bumblebee.output.Widget(self,"{:02d}%".format(self._capacity))
 
     def warning(self):
         return self._capacity < self._config.parameter("battery.warning", 20)

@@ -66,6 +66,11 @@ class Output(object):
         pass
 
     def draw(self, widgets, theme):
+        if not type(widgets) is list:
+            widgets = [ widgets ]
+        self._draw(widgets, theme)
+
+    def _draw(self, widgets, theme):
         pass
 
     def flush(self):
