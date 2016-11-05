@@ -24,6 +24,9 @@ class Widget(object):
     def name(self):
         return self._obj.__module__
 
+    def instance(self):
+        rv = getattr(self._obj, "instance")()
+
     def text(self):
         return self._text
 

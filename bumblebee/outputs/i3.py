@@ -62,7 +62,7 @@ class Output(bumblebee.output.Output):
                 "color": theme.color(widget),
                 "background": theme.background(widget),
                 "name": widget.name(),
-                "instance": getattr(widget, "instance", None),
+                "instance": widget.instance(),
                 "separator": theme.default_separators(widget),
                 "separator_block_width": theme.separator_block_width(widget),
             })

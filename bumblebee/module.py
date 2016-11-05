@@ -48,7 +48,12 @@ class Module(object):
     def state(self):
         return "default"
 
+    def instance(self):
+        return None
+
     def next(self):
         return False
+
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
