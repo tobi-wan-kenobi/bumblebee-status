@@ -36,15 +36,14 @@ class Module(bumblebee.module.Module):
         self._mute = False
         channel = "sink" if self._module == "pasink" else "source"
 
-# TODO
-#        output.add_callback(module=self.__module__, button=3,
-#            cmd="pavucontrol")
-#        output.add_callback(module=self.__module__, button=1,
-#            cmd="pactl set-{}-mute @DEFAULT_{}@ toggle".format(channel, channel.upper()))
-#        output.add_callback(module=self.__module__, button=4,
-#            cmd="pactl set-{}-volume @DEFAULT_{}@ +2%".format(channel, channel.upper()))
-#        output.add_callback(module=self.__module__, button=5,
-#            cmd="pactl set-{}-volume @DEFAULT_{}@ -2%".format(channel, channel.upper()))
+        output.add_callback(module=self.instance(), button=3,
+            cmd="pavucontrol")
+        output.add_callback(module=self.instance(), button=1,
+            cmd="pactl set-{}-mute @DEFAULT_{}@ toggle".format(channel, channel.upper()))
+        output.add_callback(module=self.instance(), button=4,
+            cmd="pactl set-{}-volume @DEFAULT_{}@ +2%".format(channel, channel.upper()))
+        output.add_callback(module=self.instance(), button=5,
+            cmd="pactl set-{}-volume @DEFAULT_{}@ -2%".format(channel, channel.upper()))
 
     def widgets(self):
         res = subprocess.check_output(shlex.split("pactl info"))

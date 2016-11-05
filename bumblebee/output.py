@@ -1,4 +1,8 @@
+import os
+import shlex
+import inspect
 import threading
+import subprocess
 
 def output(args):
     import bumblebee.outputs.i3
@@ -28,14 +32,20 @@ class Widget(object):
     def module(self):
         return self._obj.__module__.split(".")[-1]
 
-    def name(self):
-        return self._obj.__module__
-
     def instance(self):
-        rv = getattr(self._obj, "instance")(self)
+        return getattr(self._obj, "instance")(self)
 
     def text(self):
         return self._text
+
+class Command(object):
+    def __init__(self, command):
+        self._command = command
+
+    def __call__(self, *args, **kwargs):
+        cmd = self._command.format(*args, **kwargs)
+        DEVNULL = open(os.devnull, 'wb')
+        subprocess.Popen(shlex.split(cmd), stdout=DEVNULL, stderr=DEVNULL)
 
 class Output(object):
     def __init__(self, config):
@@ -52,6 +62,7 @@ class Output(object):
     def add_callback(self, cmd, button, module=None):
         if module:
             module = module.replace("bumblebee.modules.", "")
+
         self._callbacks[(
             button,
             module,
@@ -60,14 +71,19 @@ class Output(object):
     def callback(self, event):
         cb = self._callbacks.get((
             event.get("button", -1),
-            event.get("name", None),
-        ), None)
-        if cb is not None: return cb
-        cb = self._callbacks.get((
-            event.get("button", -1),
             None,
         ), None)
-        return cb
+        cb = self._callbacks.get((
+            event.get("button", -1),
+            event.get("name", None),
+        ), cb)
+        cb = self._callbacks.get((
+            event.get("button", -1),
+            event.get("instance", None),
+        ), cb)
+        if inspect.isfunction(cb) or cb is None: return cb
+
+        return Command(cb)
 
     def wait(self):
         self._wait.wait(self._config.parameter("interval", 1))

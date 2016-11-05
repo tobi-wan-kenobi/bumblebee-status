@@ -48,7 +48,7 @@ class Module(object):
     def state(self, widget):
         return "default"
 
-    def instance(self, widget):
-        return self._alias if self._alias else self.__module__.split(".")[-1]
+    def instance(self, widget=None):
+        return self.__module__.split(".")[-1]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

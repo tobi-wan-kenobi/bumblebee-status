@@ -15,9 +15,7 @@ class Module(bumblebee.module.Module):
         super(Module, self).__init__(output, config, alias)
         self._perc = psutil.cpu_percent(percpu=False)
 
-# TODO
-#        output.add_callback(module=self.__module__, button=1,
-#            cmd="gnome-system-monitor")
+        output.add_callback(module=self.instance(), button=1, cmd="gnome-system-monitor")
 
     def widgets(self):
         self._perc = psutil.cpu_percent(percpu=False)

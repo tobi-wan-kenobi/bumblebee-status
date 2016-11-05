@@ -16,9 +16,7 @@ class Module(bumblebee.module.Module):
         super(Module, self).__init__(output, config, alias)
         self._path = self._config.parameter("path", "/")
 
-# TODO
-#        output.add_callback(module=self.__module__, button=1,
-#            cmd="nautilus {instance}")
+        output.add_callback(module=self.instance(), button=1, cmd="nautilus {instance}")
 
     def widgets(self):
         st = os.statvfs(self._path)
@@ -32,6 +30,9 @@ class Module(bumblebee.module.Module):
             bumblebee.util.bytefmt(self._used),
             bumblebee.util.bytefmt(self._size), self._perc)
         )
+
+    def instance(self, widget=None):
+        return self._path
 
     def warning(self, widget):
         return self._perc > self._config.parameter("warning", 80)

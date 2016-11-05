@@ -19,12 +19,11 @@ def read_input(output):
         event = json.loads(line)
         cb = output.callback(event)
         if cb:
-            cb = cb.format(
-                name = event.get("name", ""),
-                instance = event.get("instance", ""),
-                button = event.get("button", -1)
+            cb(
+                name=event.get("name", ""),
+                instance=event.get("instance", ""),
+                button=event.get("button", -1)
             )
-            subprocess.Popen(shlex.split(cb), stdout=DEVNULL, stderr=DEVNULL)
         output.redraw()
 
 class Output(bumblebee.output.Output):
@@ -32,12 +31,11 @@ class Output(bumblebee.output.Output):
         super(Output, self).__init__(args)
         self._data = []
 
-# TODO
-#        self.add_callback("i3-msg workspace prev_on_output", 4)
-#        self.add_callback("i3-msg workspace next_on_output", 5)
+        self.add_callback("i3-msg workspace prev_on_output", 4)
+        self.add_callback("i3-msg workspace next_on_output", 5)
 
-#        self._thread = threading.Thread(target=read_input, args=(self,))
-#        self._thread.start()
+        self._thread = threading.Thread(target=read_input, args=(self,))
+        self._thread.start()
 
     def start(self):
         print json.dumps({ "version": 1, "click_events": True }) + "["
@@ -61,7 +59,7 @@ class Output(bumblebee.output.Output):
                 ),
                 "color": theme.color(widget),
                 "background": theme.background(widget),
-                "name": widget.name(),
+                "name": widget.module(),
                 "instance": widget.instance(),
                 "separator": theme.default_separators(widget),
                 "separator_block_width": theme.separator_block_width(widget),
