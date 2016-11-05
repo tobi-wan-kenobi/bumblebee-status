@@ -17,7 +17,7 @@
 		"fg-warning": "#002b36",
 		"bg-warning": "#b58900",
 
-		"default_separators": false,
+		"default-separators": false,
 		"separator": ""
 	},
 	"date": {
@@ -98,23 +98,23 @@
 				"prefix": [ "  ", "  ", "  ", "  ", "  " ],
 				"suffix": "  "
 			},
-			"discharging_critical": {
+			"discharging-critical": {
 				"prefix": "  ",
 				"suffix": "  "
 			},
-			"discharging_low": {
+			"discharging-low": {
 				"prefix": "  ",
 				"suffix": "  "
 			},
-			"discharging_medium": {
+			"discharging-medium": {
 				"prefix": "  ",
 				"suffix": "  "
 			},
-			"discharging_high": {
+			"discharging-high": {
 				"prefix": "  ",
 				"suffix": "  "
 			},
-			"discharging_full": {
+			"discharging-full": {
 				"prefix": "  ",
 				"suffix": "  "
 			}

@@ -46,9 +46,9 @@ class Output(bumblebee.output.Output):
         for widget in widgets:
             if theme.separator(widget):
                 self._data.append({
-                    u"full_text": theme.separator(obj),
-                    "color": theme.separator_color(obj),
-                    "background": theme.separator_background(),
+                    u"full_text": theme.separator(widget),
+                    "color": theme.separator_color(widget),
+                    "background": theme.separator_background(widget),
                     "separator": False,
                     "separator_block_width": 0,
                 })
