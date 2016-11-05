@@ -1,14 +1,14 @@
 import bumblebee.module
 import psutil
 
-def usage():
-    return "cpu"
-
-def notes():
-    return "Warning is at 70%, Critical at 80%."
-
 def description():
     return "Displays CPU utilization across all CPUs."
+
+def parameters():
+    return [
+        "cpu.warning: Warning threshold in % of disk usage (defaults to 70%)",
+        "cpu.critical: Critical threshold in % of disk usage (defaults to 80%)",
+    ]
 
 class Module(bumblebee.module.Module):
     def __init__(self, output, config, alias):

@@ -2,14 +2,14 @@ import psutil
 import bumblebee.module
 import bumblebee.util
 
-def usage():
-    return "memory"
-
-def notes():
-    return "Warning is at 20% available RAM, Critical at 10%."
-
 def description():
     return "Shows available RAM, total amount of RAM and the percentage of available RAM."
+
+def parameters():
+    return [
+        "memory.warning: Warning threshold in % of memory still available (defaults to 20%)",
+        "memory.critical: Critical threshold in % of memory still available (defaults to 10%)",
+    ]
 
 class Module(bumblebee.module.Module):
     def __init__(self, output, config, alias):

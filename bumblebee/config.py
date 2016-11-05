@@ -26,13 +26,12 @@ class print_usage(argparse.Action):
 
     def print_modules(self):
         for m in bumblebee.module.modules():
-            print("{}{}: ".format(self._indent, m.name()))
-            print textwrap.fill("About : {}".format(m.description()),
-                80, initial_indent=self._indent*2, subsequent_indent=self._indent*4)
-            print textwrap.fill("Usage : {}".format(m.usage()),
-                80, initial_indent=self._indent*2, subsequent_indent=self._indent*4)
-            print textwrap.fill("Notes : {}".format(m.notes()),
-                80, initial_indent=self._indent*2, subsequent_indent=self._indent*4)
+            print textwrap.fill("{}: {}".format(m.name(), m.description()),
+                80, initial_indent=self._indent*2, subsequent_indent=self._indent*3)
+            print "{}Parameters:".format(self._indent*2)
+            for p in m.parameters():
+                print textwrap.fill("* {}".format(p),
+                    80, initial_indent=self._indent*3, subsequent_indent=self._indent*4)
             print ""
 
 class ModuleConfig(object):

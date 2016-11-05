@@ -8,14 +8,11 @@ import subprocess
 import bumblebee.module
 import bumblebee.util
 
-def usage():
-    return "dnf or dnf::<interval in seconds, defaults to 3600>"
-
-def notes():
-    return "Spawns a separate thread that invokes 'dnf updateinfo' every <interval> seconds. Critical status is if there is either more than 50 updates pending, or at least one of them is a security update."
-
 def description():
     return "Checks DNF for updated packages and displays the number of <security>/<bugfixes>/<enhancements>/<other> pending updates."
+
+def parameters():
+    return [ "dnf.interval: Time in seconds between two checks for updates (defaults to 1800)" ]
 
 def get_dnf_info(obj):
     loops = obj.interval()

@@ -1,14 +1,11 @@
 import bumblebee.module
 import bumblebee.util
 
-def usage():
-    return "spacer"
-
-def notes():
-    return "none"
-
 def description():
-    return "Draws an empty field."
+    return "Draws a widget with configurable content."
+
+def parameters():
+    return [ "spacer.text: Text to draw (defaults to '')" ]
 
 class Module(bumblebee.module.Module):
     def __init__(self, output, config, alias):

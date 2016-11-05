@@ -5,18 +5,6 @@ import subprocess
 import bumblebee.module
 import bumblebee.util
 
-def usage():
-    module = __name__.split(".")[-1]
-    if module == "pasource":
-        return "pasource"
-    if module == "pasink":
-        return "pasink"
-    return "pulseaudio"
-
-def notes():
-    return "Invokes 'pactl' to retrieve information."
-    pass
-
 def description():
     module = __name__.split(".")[-1]
     if module == "pasink":
@@ -24,6 +12,10 @@ def description():
     if module == "pasource":
         return "Shows volume and mute status of the default PulseAudio Source."
     return "See 'pasource'."
+
+def parameters():
+    return [ "none" ]
+    
 
 class Module(bumblebee.module.Module):
     def __init__(self, output, config, alias):

@@ -21,16 +21,10 @@ class ModuleDescription(object):
         return str(self._name)
 
     def description(self):
-        return getattr(self._mod, "description", self.na)()
+        return getattr(self._mod, "description", lambda: "n/a")()
 
-    def usage(self):
-        return getattr(self._mod, "usage", self.na)()
-
-    def notes(self):
-        return getattr(self._mod, "notes", self.na)()
-
-    def na(self):
-        return "n/a"
+    def parameters(self):
+        return getattr(self._mod, "parameters", lambda: [ "n/a" ])()
 
 class Module(object):
     def __init__(self, output, config, alias=None):
