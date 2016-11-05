@@ -54,7 +54,6 @@ class ModuleConfig(object):
 
 class Config(object):
     def __init__(self, args):
-        self._raw = args
         self._parser = self._parser()
         self._store = {}
 

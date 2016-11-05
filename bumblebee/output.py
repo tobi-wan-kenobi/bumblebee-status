@@ -71,18 +71,11 @@ class Output(object):
         )] = cmd
 
     def callback(self, event):
+        module = event.get("instance", event.get("name", None))
         cb = self._callbacks.get((
             event.get("button", -1),
-            None,
+            module,
         ), None)
-        cb = self._callbacks.get((
-            event.get("button", -1),
-            event.get("name", None),
-        ), cb)
-        cb = self._callbacks.get((
-            event.get("button", -1),
-            event.get("instance", None),
-        ), cb)
         if inspect.isfunction(cb) or cb is None: return cb
 
         return Command(cb)

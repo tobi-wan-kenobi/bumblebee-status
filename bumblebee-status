@@ -9,7 +9,6 @@ def main():
 
     engine = bumblebee.engine.Engine(config)
     engine.load_modules()
-    engine.register_events()
 
     engine.run()
 
