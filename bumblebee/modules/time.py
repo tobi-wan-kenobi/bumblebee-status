@@ -18,8 +18,8 @@ def description():
     return "Displays the current time, using the optional format string as input for strftime."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, args):
-        super(Module, self).__init__(args)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
 
         module = self.__module__.split(".")[-1]
         default = "%x %X"
@@ -28,8 +28,8 @@ class Module(bumblebee.module.Module):
         if module == "time":
             default = "%X"
 
-        self._fmt = args[0] if args else default
-
+        param_name = "{}.format".format(module)
+        self._fmt = config.parameter(param_name, default)
 
     def data(self):
         return datetime.datetime.now().strftime(self._fmt)

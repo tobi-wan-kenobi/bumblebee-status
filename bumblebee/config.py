@@ -8,7 +8,7 @@ import bumblebee.module
 class Config(object):
     def __init__(self, args):
         self._raw = args
-        self._parser = self.parser()
+        self._parser = self._parser()
         self._indent = " "*4
 
         if len(args) == 0:
@@ -24,21 +24,15 @@ class Config(object):
         if self._args.list:
             self._parser.exit()
 
-    def parser(self):
-        parser = argparse.ArgumentParser(description="display system data in the i3bar")
-        parser.add_argument("-m", "--modules", nargs="+",
-            help="List of modules to load. The order of the list determines "
-            "their order in the i3bar (from left to right)",
-            default=[])
-        parser.add_argument("-l", "--list",
-            help="List: 'modules', 'themes' ",
-            choices = [ "modules", "themes" ],
-            default="modules")
-        parser.add_argument("-t", "--theme", help="Specify which theme to use for "
-            "drawing the modules",
-            default="default")
+    def parameter(self, name, default):
+        # TODO
+        return default
 
-        return parser
+    def theme(self):
+        return self._args.theme
+
+    def modules(self):
+        return self._args.modules
 
     def print_themes(self):
         print(textwrap.fill(", ".join(bumblebee.theme.themes()),
@@ -56,5 +50,24 @@ class Config(object):
             print textwrap.fill("Notes : {}".format(m.notes()),
                 80, initial_indent=self._indent*2, subsequent_indent=self._indent*4)
             print ""
+
+    def _parser(self):
+        parser = argparse.ArgumentParser(description="display system data in the i3bar")
+        parser.add_argument("-m", "--modules", nargs="+",
+            help="List of modules to load. The order of the list determines "
+            "their order in the i3bar (from left to right)",
+            default=[],
+        )
+        parser.add_argument("-l", "--list",
+            help="List: 'modules', 'themes' ",
+            choices = [ "modules", "themes" ],
+        )
+        parser.add_argument("-t", "--theme", help="Specify which theme to use for "
+            "drawing the modules",
+            default="default",
+        )
+
+        return parser
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

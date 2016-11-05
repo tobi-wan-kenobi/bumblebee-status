@@ -12,10 +12,10 @@ def themes():
 class Theme:
     _cycle_index = 0
     _cycle = None
-    def __init__(self, args):
+    def __init__(self, config):
         self._data = None
         path = os.path.dirname(os.path.realpath(__file__))
-        with open("{}/{}.json".format(getpath(), args.theme)) as f:
+        with open("{}/{}.json".format(getpath(), config.theme())) as f:
             self._data = json.load(f)
         self._defaults = self._data.get("defaults", {})
         self._cycle = self._defaults.get("cycle", [])

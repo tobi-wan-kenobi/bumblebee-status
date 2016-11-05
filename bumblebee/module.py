@@ -32,7 +32,7 @@ class ModuleDescription(object):
         return "n/a"
 
 class Module(object):
-    def __init__(self, args):
+    def __init__(self, output, config):
         pass
 
     def data(self):
