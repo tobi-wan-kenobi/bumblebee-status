@@ -38,7 +38,8 @@ bar {
 You can retrieve a list of modules and themes by entering:
 ```
 $ cd bumblebee-status
-$ ./bumblebee-status -l
+$ ./bumblebee-status -l themes
+$ ./bumblebee-status -l modules
 ```
 
 As a simple example, this is what my i3 configuration looks like:
