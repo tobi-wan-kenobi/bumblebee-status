@@ -98,23 +98,23 @@
 				"prefix": [ "  ", "  ", "  ", "  ", "  " ],
 				"suffix": "  "
 			},
-			"discharging_critical": {
+			"discharging-10": {
 				"prefix": "  ",
 				"suffix": "  "
 			},
-			"discharging_low": {
+			"discharging-25": {
 				"prefix": "  ",
 				"suffix": "  "
 			},
-			"discharging_medium": {
+			"discharging-50": {
 				"prefix": "  ",
 				"suffix": "  "
 			},
-			"discharging_high": {
+			"discharging-80": {
 				"prefix": "  ",
 				"suffix": "  "
 			},
-			"discharging_full": {
+			"discharging-100": {
 				"prefix": "  ",
 				"suffix": "  "
 			}

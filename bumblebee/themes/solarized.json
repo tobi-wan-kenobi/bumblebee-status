@@ -96,20 +96,20 @@
 			"charging": {
 				"suffix": " chr "
 			},
-			"discharging_critical": {
+			"discharging-10": {
 				"prefix": " ! ",
 				"suffix": " dis "
 			},
-			"discharging_low": {
+			"discharging-25": {
 				"suffix": " dis "
 			},
-			"discharging_medium": {
+			"discharging-50": {
 				"suffix": " dis "
 			},
-			"discharging_high": {
+			"discharging-80": {
 				"suffix": " dis "
 			},
-			"discharging_full": {
+			"discharging-100": {
 				"suffix": " dis "
 			}
 		}
