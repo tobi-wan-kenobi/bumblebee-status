@@ -17,9 +17,9 @@ class Module(bumblebee.module.Module):
     def widgets(self):
         result = []
         interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
-        state = "down"
         for intf in interfaces:
             addr = []
+            state = "down"
             try:
                 if netifaces.AF_INET in netifaces.ifaddresses(intf):
                     for ip in netifaces.ifaddresses(intf)[netifaces.AF_INET]:
