@@ -16,7 +16,7 @@ class Module(bumblebee.module.Module):
         with open("/sys/class/backlight/intel_backlight/max_brightness") as f:
             self._max = int(f.read())
         self._brightness = self._brightness if self._brightness < self._max else self._max
-        self._percent = round(self._brightness * 100 / self._max)
+        self._percent = int(round(self._brightness * 100 / self._max))
 
         return bumblebee.output.Widget(self, "{:02d}%".format(self._percent))
 
