@@ -17,7 +17,7 @@ class Module(bumblebee.module.Module):
         self._query, self._error = self._process.communicate()
         self._query = self._query.decode("utf-8").split("\n")
         if b'cmus is not running' in self._error:
-            return bumblebee.output.Widget(self, "Cmus isn't running")
+            return bumblebee.output.Widget(self, "-")
         for line in self._query:
             if "status playing" in line:
                 self._status = 1
@@ -44,3 +44,4 @@ class Module(bumblebee.module.Module):
             return "stopped"
         return "default"
 
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
