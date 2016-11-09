@@ -45,6 +45,22 @@
 			}
 		}
 	},
+	"brightness": {
+		"prefix": "  "
+	},
+	"cmus": {
+		"states": {
+			"playing": {
+				"prefix": "  "
+			},
+			"paused": {
+				"prefix": "  "
+			},
+			"stopped": {
+				"prefix": "  "
+			}
+		}
+	},
 	"pasink": {
 		"states": {
 			"muted": {

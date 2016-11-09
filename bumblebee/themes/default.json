@@ -23,6 +23,22 @@
 	"dnf": {
 		"prefix": " dnf "
 	},
+	"brightness": {
+		"prefix": " o "
+	},
+	"cmus": {
+		"states": {
+			"playing": {
+				"prefix": " > "
+			},
+			"paused": {
+				"prefix": " || "
+			},
+			"stopped": {
+				"prefix": " [] "
+			}
+		}
+	},
 	"pasink": {
 		"states": {
 			"muted": {
