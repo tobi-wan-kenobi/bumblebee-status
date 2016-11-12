@@ -75,14 +75,20 @@ class Theme:
     def _get(self, widget, name):
         module = widget.module()
         state = widget.state()
+        inst = widget.instance()
+        inst = inst.replace("{}.".format(module), "")
         module_theme = self._data.get(module, {})
         state_theme = module_theme.get("states", {}).get(state, {})
+        instance_theme = module_theme.get(inst, {})
+        instance_state_theme = instance_theme.get("states", {}).get(state, {})
 
         value = None
         value = self._defaults.get(name, value)
         value = self._cycle.get(name, value)
         value = module_theme.get(name, value)
         value = state_theme.get(name, value)
+        value = instance_theme.get(name, value)
+        value = instance_state_theme.get(name, value)
 
         if type(value) is list:
             key = "{}{}".format(repr(widget), value)

@@ -58,6 +58,18 @@
 			"stopped": {
 				"prefix": "  "
 			}
+		},
+		"prev": {
+			"prefix": "  "
+		},
+		"next": {
+			"prefix": "  "
+		},
+		"shuffle": {
+			"states": { "on": { "prefix": "  " }, "off": { "prefix": "  " } }
+		},
+		"repeat": {
+			"states": { "on": { "prefix": "  " }, "off": { "prefix": "  " } }
 		}
 	},
 	"pasink": {

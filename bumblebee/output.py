@@ -9,10 +9,11 @@ def output(args):
     return bumblebee.outputs.i3.Output(args)
 
 class Widget(object):
-    def __init__(self, obj, text):
+    def __init__(self, obj, text, instance=None):
         self._obj = obj
         self._text = text
         self._store = {}
+        self._instance = instance
 
     def set(self, key, value):
         self._store[key] = value
@@ -33,7 +34,7 @@ class Widget(object):
         return self._obj.__module__.split(".")[-1]
 
     def instance(self):
-        return getattr(self._obj, "instance")(self)
+        return self._instance if self._instance else getattr(self._obj, "instance")(self)
 
     def text(self):
         return self._text

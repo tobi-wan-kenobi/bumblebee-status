@@ -37,6 +37,18 @@
 			"stopped": {
 				"prefix": " [] "
 			}
+		},
+		"prev": {
+			"prefix": " |< "
+		},
+		"next": {
+			"prefix": " >| "
+		},
+		"shuffle": {
+			"states": { "on": { "prefix": " S " }, "off": { "prefix": " [s] " } }
+		},
+		"repeat": {
+			"states": { "on": { "prefix": " R " }, "off": { "prefix": " [r] " } }
 		}
 	},
 	"pasink": {
