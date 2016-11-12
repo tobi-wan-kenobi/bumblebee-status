@@ -71,7 +71,6 @@ class Output(object):
         )] = cmd
 
     def callback(self, event):
-        module = event.get("instance", event.get("name", None))
         cb = self._callbacks.get((
             event.get("button", -1),
             None,
