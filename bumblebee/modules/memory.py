@@ -7,8 +7,8 @@ def description():
 
 def parameters():
     return [
-        "memory.warning: Warning threshold in % of memory still available (defaults to 20%)",
-        "memory.critical: Critical threshold in % of memory still available (defaults to 10%)",
+        "memory.warning: Warning threshold in % of memory used (defaults to 80%)",
+        "memory.critical: Critical threshold in % of memory used (defaults to 90%)",
     ]
 
 class Module(bumblebee.module.Module):
@@ -30,9 +30,9 @@ class Module(bumblebee.module.Module):
         )
 
     def warning(self, widget):
-        return self._mem.percent < self._config.parameter("warning", 20)
+        return self._mem.percent > self._config.parameter("warning", 80)
 
     def critical(self, widget):
-        return self._mem.percent < self._config.parameter("critical", 10)
+        return self._mem.percent > self._config.parameter("critical", 90)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
