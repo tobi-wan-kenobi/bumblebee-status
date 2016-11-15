@@ -34,6 +34,8 @@ class Module(bumblebee.module.Module):
 
     def _tags(self):
         tags = defaultdict(lambda: '')
+        self._repeat = False
+        self._shuffle = False
         for line in self._query:
             if line.startswith("status"):
                 status = line.split(" ", 2)[1]
