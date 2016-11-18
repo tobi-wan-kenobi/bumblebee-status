@@ -41,20 +41,19 @@ def get_rtt(obj):
             res = subprocess.check_output(shlex.split("ping -n -q -c {} -W {} {}".format(
                 obj.get("rtt-probes"), obj.get("rtt-timeout"), obj.get("address")
             )))
+            obj.set("rtt-unreachable", False)
+
+            for line in res.decode().split("\n"):
+                if not line.startswith("rtt"): continue
+                m = re.search(r'([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)', line)
+
+                obj.set("rtt-min", float(m.group(1)))
+                obj.set("rtt-avg", float(m.group(2)))
+                obj.set("rtt-max", float(m.group(3)))
+                obj.set("rtt-unit", m.group(5))
         except Exception as e:
             obj.set("rtt-unreachable", True)
-            break
 
-        obj.set("rtt-unreachable", False)
-
-        for line in res.decode().split("\n"):
-            if not line.startswith("rtt"): continue
-            m = re.search(r'([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)', line)
-
-            obj.set("rtt-min", float(m.group(1)))
-            obj.set("rtt-avg", float(m.group(2)))
-            obj.set("rtt-max", float(m.group(3)))
-            obj.set("rtt-unit", m.group(5))
 
 class Module(bumblebee.module.Module):
     def __init__(self, output, config, alias):
