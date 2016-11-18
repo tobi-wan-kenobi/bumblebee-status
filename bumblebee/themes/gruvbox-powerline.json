@@ -1,0 +1,157 @@
+{
+	"defaults": {
+		"prefix": " ",
+		"suffix" : " ",
+		"cycle": [
+			{
+				"fg": "#ebdbb2",
+				"bg": "#1d2021"
+			},
+			{
+				"fg": "#fbf1c7",
+				"bg": "#282828"
+			}
+		],
+		"fg-critical": "#fbf1c7",
+		"bg-critical": "#cc241d",
+		"fg-warning": "#1d2021",
+		"bg-warning": "#d79921",
+
+		"default-separators": false,
+		"separator-block-width": 0,
+		"separator": ""
+	},
+	"date": {
+		"prefix": "  "
+	},
+	"time": {
+		"prefix": "  "
+	},
+	"memory": {
+		"prefix": "  "
+	},
+	"cpu": {
+		"prefix": "  "
+	},
+	"disk": {
+		"prefix": "  "
+	},
+	"dnf": {
+		"prefix": "  ",
+		"states": {
+			"good": {
+				"fg": "#002b36",
+				"bg": "#859900"
+			}
+		}
+	},
+	"pasink": {
+		"states": {
+			"muted": {
+				"prefix": "  "
+			},
+			"unmuted": {
+				"prefix": "  "
+			}
+		}
+	},
+	"pasource": {
+		"states": {
+			"muted": {
+				"prefix": "  "
+			},
+			"unmuted": {
+				"prefix": "  "
+			}
+		}
+	},
+	"nic": {
+		"states": {
+			"wireless-up": {
+				"prefix": "  "
+			},
+			"wireless-down": {
+				"prefix": "  "
+			},
+			"wired-up": {
+				"prefix": "  "
+			},
+			"wired-down": {
+				"prefix": "  "
+			},
+			"tunnel-up": {
+				"prefix": "  "
+			},
+			"tunnel-down": {
+				"prefix": "  "
+			}
+		}
+	},
+	"battery": {
+		"states": {
+			"charged": {
+				"prefix": "  ",
+				"suffix": "  ",
+				"fg": "#1d2021",
+				"bg": "#b8bb26"
+			},
+			"AC": {
+				"suffix": "  ",
+				"fg": "#1d2021",
+				"bg": "#b8bb26"
+			},
+			"charging": {
+				"prefix": [ "  ", "  ", "  ", "  ", "  " ],
+				"suffix": "  "
+			},
+			"discharging-10": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging-25": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging-50": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging-80": {
+				"prefix": "  ",
+				"suffix": "  "
+			},
+			"discharging-100": {
+				"prefix": "  ",
+				"suffix": "  "
+			}
+		}
+	},
+	"cmus": {
+		"states": {
+			"playing": {
+				"prefix": "  "
+			},
+			"paused": {
+				"prefix": "  "
+			},
+			"stopped": {
+				"prefix": "  "
+			}
+		},
+		"prev": {
+			"prefix": "  "
+		},
+		"next": {
+			"prefix": "  "
+		},
+		"shuffle": {
+			"states": { "on": { "prefix": "  " }, "off": { "prefix": "  " } }
+		},
+		"repeat": {
+			"states": { "on": { "prefix": "  " }, "off": { "prefix": "  " } }
+		}
+	},
+	"brightness": {
+		"prefix": "  "
+	}
+}
