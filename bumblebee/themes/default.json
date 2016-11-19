@@ -101,6 +101,9 @@
 			"charging": {
 				"suffix": " chr "
 			},
+			"AC": {
+				"suffix": " ac "
+			},
 			"discharging-10": {
 				"prefix": " ! ",
 				"suffix": " dis "
