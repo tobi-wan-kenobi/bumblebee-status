@@ -44,9 +44,13 @@ class Command(object):
         self._command = command
 
     def __call__(self, *args, **kwargs):
-        cmd = self._command.format(*args, **kwargs)
-        DEVNULL = open(os.devnull, 'wb')
-        subprocess.Popen(shlex.split(cmd), stdout=DEVNULL, stderr=DEVNULL)
+        if not isinstance(self._command, list):
+            self._command = [ self._command ]
+
+        for cmd in self._command:
+            c = cmd.format(*args, **kwargs)
+            DEVNULL = open(os.devnull, 'wb')
+            subprocess.Popen(shlex.split(c), stdout=DEVNULL, stderr=DEVNULL).communicate()
 
 class Output(object):
     def __init__(self, config):
