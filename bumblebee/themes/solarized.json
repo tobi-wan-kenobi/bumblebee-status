@@ -146,5 +146,8 @@
 				"suffix": " dis "
 			}
 		}
+	},
+	"caffeine": {
+		"states": { "activated": {"prefix": " caf on " }, "deactivated": { "prefix": " caf off " } }
 	}
 }

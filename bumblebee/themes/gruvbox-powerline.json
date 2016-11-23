@@ -153,5 +153,8 @@
 	},
 	"brightness": {
 		"prefix": "  "
+	},
+	"caffeine": {
+		"states": { "activated": {"prefix": "   " }, "deactivated": { "prefix": "   " } }
 	}
 }
