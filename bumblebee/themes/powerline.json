@@ -152,5 +152,8 @@
 				"suffix": "  "
 			}
 		}
+	},
+	"caffeine": {
+		"states": { "activated": {"prefix": "   " }, "deactivated": { "prefix": "   " } }
 	}
 }
