@@ -13,7 +13,7 @@ class Module(bumblebee.module.Module):
         # output.add_callback(module="caffeine.activate", button=1, cmd='notify-send "Consuming caffeine"; xset s off')
         # output.add_callback(module="caffeine.deactivate", button=1, cmd='notify-send "Out of coffee"; xset s 600 600')
         output.add_callback(module="caffeine.activate", button=1, cmd='xset s off')
-        output.add_callback(module="caffeine.deactivate", button=1, cmd='xset s 600 600')
+        output.add_callback(module="caffeine.deactivate", button=1, cmd='xset s default')
 
     def widgets(self):
         output = subprocess.check_output(shlex.split("xset q"))
