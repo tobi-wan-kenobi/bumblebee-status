@@ -11,12 +11,10 @@ class Module(bumblebee.module.Module):
         self._count = 0
 
     def widgets(self):
-        #path = os.path.dirname(os.path.abspath(__file__))
-        path = os.path.realpath(__file__)
-        #path = "/home/pseudonick/bumblebee-status/bumblebee/"
+        path = os.path.dirname(os.path.abspath(__file__))
         if self._count == 0:
             self._out = "?/?/?/?"
-            process = subprocess.Popen([path[:-9]+"../bin/customupdates"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process = subprocess.Popen([ "{}/../../bin/customupdates".format(path) ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             
             self._query, self._error = process.communicate()
 
