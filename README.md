@@ -61,6 +61,10 @@ Restart i3wm and - that's it!
 # Examples
 Here are some screenshots for all themes that currently exist:
 
+Gruvbox Powerline (`-t gruvbox-powerline`) (contributed by @paxy97):
+
+![Gruvbox Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/powerline-gruvbox.png)
+
 Solarized Powerline (`-t solarized-powerline`):
 
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/powerline-solarized.png)
