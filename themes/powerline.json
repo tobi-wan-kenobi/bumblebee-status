@@ -32,6 +32,9 @@
 	"cpu": {
 		"prefix": "  "
 	},
+	"load": {
+		"prefix": "  "
+	},
 	"disk": {
 		"prefix": "  "
 	},

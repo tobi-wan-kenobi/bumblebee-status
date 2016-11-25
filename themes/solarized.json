@@ -32,6 +32,9 @@
 	"cpu": {
 		"prefix": " cpu "
 	},
+	"load": {
+		"prefix": " load "
+	},
 	"disk": {
 		"prefix": " hdd "
 	},
