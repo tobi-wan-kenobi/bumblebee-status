@@ -52,7 +52,7 @@ class Output(bumblebee.output.Output):
                 })
 
             self._data.append({
-                u"full_text": "{}{}{}".format(
+                u"full_text": " {} {} {} ".format(
                     theme.prefix(widget),
                     widget.text(),
                     theme.suffix(widget)

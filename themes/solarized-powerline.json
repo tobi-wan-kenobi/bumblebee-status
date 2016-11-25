@@ -1,7 +1,6 @@
 {
+	"icons": [ "awesome-fonts" ],
 	"defaults": {
-		"prefix": " ",
-		"suffix" : " ",
 		"cycle": [
 			{
 				"fg": "#93a1a1",
@@ -18,26 +17,9 @@
 		"bg-warning": "#b58900",
 
 		"default-separators": false,
-		"separator-block-width": 0,
-		"separator": ""
-	},
-	"date": {
-		"prefix": "  "
-	},
-	"time": {
-		"prefix": "  "
-	},
-	"memory": {
-		"prefix": "  "
-	},
-	"cpu": {
-		"prefix": "  "
-	},
-	"disk": {
-		"prefix": "  "
+		"separator-block-width": 0
 	},
 	"dnf": {
-		"prefix": "  ",
 		"states": {
 			"good": {
 				"fg": "#002b36",
@@ -45,116 +27,16 @@
 			}
 		}
 	},
-	"brightness": {
-		"prefix": "  "
-	},
-	"cmus": {
-		"states": {
-			"playing": {
-				"prefix": "  "
-			},
-			"paused": {
-				"prefix": "  "
-			},
-			"stopped": {
-				"prefix": "  "
-			}
-		},
-		"prev": {
-			"prefix": "  "
-		},
-		"next": {
-			"prefix": "  "
-		},
-		"shuffle": {
-			"states": { "on": { "prefix": "  " }, "off": { "prefix": "  " } }
-		},
-		"repeat": {
-			"states": { "on": { "prefix": "  " }, "off": { "prefix": "  " } }
-		}
-	},
-	"pasink": {
-		"states": {
-			"muted": {
-				"prefix": "  "
-			},
-			"unmuted": {
-				"prefix": "  "
-			}
-		}
-	},
-	"pasource": {
-		"states": {
-			"muted": {
-				"prefix": "  "
-			},
-			"unmuted": {
-				"prefix": "  "
-			}
-		}
-	},
-	"nic": {
-		"states": {
-			"wireless-up": {
-				"prefix": "  "
-			},
-			"wireless-down": {
-				"prefix": "  "
-			},
-			"wired-up": {
-				"prefix": "  "
-			},
-			"wired-down": {
-				"prefix": "  "
-			},
-			"tunnel-up": {
-				"prefix": "  "
-			},
-			"tunnel-down": {
-				"prefix": "  "
-			}
-		}
-	},
 	"battery": {
 		"states": {
 			"charged": {
-				"prefix": "  ",
-				"suffix": "  ",
 				"fg": "#002b36",
 				"bg": "#859900"
 			},
 			"AC": {
-				"suffix": "  ",
 				"fg": "#002b36",
 				"bg": "#859900"
-			},
-			"charging": {
-				"prefix": [ "  ", "  ", "  ", "  ", "  " ],
-				"suffix": "  "
-			},
-			"discharging-10": {
-				"prefix": "  ",
-				"suffix": "  "
-			},
-			"discharging-25": {
-				"prefix": "  ",
-				"suffix": "  "
-			},
-			"discharging-50": {
-				"prefix": "  ",
-				"suffix": "  "
-			},
-			"discharging-80": {
-				"prefix": "  ",
-				"suffix": "  "
-			},
-			"discharging-100": {
-				"prefix": "  ",
-				"suffix": "  "
 			}
 		}
-	},
-	"caffeine": {
-		"states": { "activated": {"prefix": "   " }, "deactivated": { "prefix": "   " } }
 	}
 }

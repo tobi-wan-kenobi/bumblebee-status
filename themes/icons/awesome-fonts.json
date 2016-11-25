@@ -1,0 +1,131 @@
+{
+	"defaults": {
+		"separator": ""
+	},
+	"date": {
+		"prefix": ""
+	},
+	"time": {
+		"prefix": ""
+	},
+	"memory": {
+		"prefix": ""
+	},
+	"cpu": {
+		"prefix": ""
+	},
+	"disk": {
+		"prefix": ""
+	},
+	"dnf": {
+		"prefix": ""
+	},
+	"brightness": {
+		"prefix": ""
+	},
+	"cmus": {
+		"states": {
+			"playing": {
+				"prefix": ""
+			},
+			"paused": {
+				"prefix": ""
+			},
+			"stopped": {
+				"prefix": ""
+			}
+		},
+		"prev": {
+			"prefix": ""
+		},
+		"next": {
+			"prefix": ""
+		},
+		"shuffle": {
+			"states": { "on": { "prefix": "" }, "off": { "prefix": "" } }
+		},
+		"repeat": {
+			"states": { "on": { "prefix": "" }, "off": { "prefix": "" } }
+		}
+	},
+	"pasink": {
+		"states": {
+			"muted": {
+				"prefix": ""
+			},
+			"unmuted": {
+				"prefix": ""
+			}
+		}
+	},
+	"pasource": {
+		"states": {
+			"muted": {
+				"prefix": ""
+			},
+			"unmuted": {
+				"prefix": ""
+			}
+		}
+	},
+	"nic": {
+		"states": {
+			"wireless-up": {
+				"prefix": ""
+			},
+			"wireless-down": {
+				"prefix": ""
+			},
+			"wired-up": {
+				"prefix": ""
+			},
+			"wired-down": {
+				"prefix": ""
+			},
+			"tunnel-up": {
+				"prefix": ""
+			},
+			"tunnel-down": {
+				"prefix": ""
+			}
+		}
+	},
+	"battery": {
+		"states": {
+			"charged": {
+				"prefix": "",
+				"suffix": ""
+			},
+			"AC": {
+				"suffix": ""
+			},
+			"charging": {
+				"prefix": [ "", "", "", "", "" ],
+				"suffix": ""
+			},
+			"discharging-10": {
+				"prefix": "",
+				"suffix": ""
+			},
+			"discharging-25": {
+				"prefix": "",
+				"suffix": ""
+			},
+			"discharging-50": {
+				"prefix": "",
+				"suffix": ""
+			},
+			"discharging-80": {
+				"prefix": "",
+				"suffix": ""
+			},
+			"discharging-100": {
+				"prefix": "",
+				"suffix": ""
+			}
+		}
+	},
+	"caffeine": {
+		"states": { "activated": {"prefix": " " }, "deactivated": { "prefix": " " } }
+	}
+}

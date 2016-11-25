@@ -1,7 +1,6 @@
 {
+	"icons": [ "ascii" ],
 	"defaults": {
-		"prefix": " ",
-		"suffix" : " ",
 		"cycle": [
 			{
 				"fg": "#93a1a1",
@@ -20,23 +19,7 @@
 		"default_separators": false,
 		"separator": "|"
 	},
-	"date": {
-		"prefix": " "
-	},
-	"time": {
-		"prefix": " "
-	},
-	"memory": {
-		"prefix": " ram "
-	},
-	"cpu": {
-		"prefix": " cpu "
-	},
-	"disk": {
-		"prefix": " hdd "
-	},
 	"dnf": {
-		"prefix": " dnf ",
 		"states": {
 			"good": {
 				"fg": "#002b36",
@@ -44,110 +27,15 @@
 			}
 		}
 	},
-	"brightness": {
-		"prefix": " o "
-	},
-	"cmus": {
-		"states": {
-			"playing": {
-				"prefix": " > "
-			},
-			"paused": {
-				"prefix": " || "
-			},
-			"stopped": {
-				"prefix": " [] "
-			}
-		},
-		"prev": {
-			"prefix": " |< "
-		},
-		"next": {
-			"prefix": " >| "
-		},
-		"shuffle": {
-			"states": { "on": { "prefix": " S " }, "off": { "prefix": " [s] " } }
-		},
-		"repeat": {
-			"states": { "on": { "prefix": " R " }, "off": { "prefix": " [r] " } }
-		}
-	},
-	"pasink": {
-		"states": {
-			"muted": {
-				"prefix": " audio(mute) "
-			},
-			"unmuted": {
-				"prefix": " audio "
-			}
-		}
-	},
-	"pasource": {
-		"states": {
-			"muted": {
-				"prefix": " mic(mute) "
-			},
-			"unmuted": {
-				"prefix": " mic "
-			}
-		}
-	},
-	"nic": {
-		"states": {
-			"wireless-up": {
-				"prefix": " wifi "
-			},
-			"wireless-down": {
-				"prefix": " wifi "
-			},
-			"wired-up": {
-				"prefix": " lan "
-			},
-			"wired-down": {
-				"prefix": " lan "
-			},
-			"tunnel-up": {
-				"prefix": " tun "
-			},
-			"tunnel-down": {
-				"prefix": " tun "
-			}
-		}
-	},
 	"battery": {
 		"states": {
 			"charged": {
-				"suffix": " full ",
 				"fg": "#002b36",
 				"bg": "#859900"
 			},
 			"AC": {
-				"suffix": " ac ",
 				"fg": "#002b36",
 				"bg": "#859900"
-			},
-			"charging": {
-				"suffix": " chr "
-			},
-			"discharging-10": {
-				"prefix": " ! ",
-				"suffix": " dis "
-			},
-			"discharging-25": {
-				"suffix": " dis "
-			},
-			"discharging-50": {
-				"suffix": " dis "
-			},
-			"discharging-80": {
-				"suffix": " dis "
-			},
-			"discharging-100": {
-				"suffix": " dis "
 			}
-		}
-	},
-	"caffeine": {
-		"states": { "activated": {"prefix": " caf on " }, "deactivated": { "prefix": " caf off " } }
 	}
 }

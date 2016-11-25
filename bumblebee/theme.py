@@ -1,4 +1,5 @@
 import os
+import copy
 import json
 import yaml
 import glob
@@ -14,15 +15,43 @@ class Theme:
     def __init__(self, config):
         self._config = config
 
-        if os.path.isfile("{}/{}.yaml".format(getpath(), config.theme())):
-            with open("{}/{}.yaml".format(getpath(), config.theme())) as f:
-                self._data = yaml.load(f)
-        else:
-            with open("{}/{}.json".format(getpath(), config.theme())) as f:
-                self._data = json.load(f)
+        self._data = self.get_theme(config.theme())
+
+        for iconset in self._data.get("icons", []):
+            self.merge(self._data, self.get_theme(iconset))
+
         self._defaults = self._data.get("defaults", {})
         self._cycles = self._defaults.get("cycle", [])
         self.begin()
+
+    def get_theme(self, name):
+        for path in [ getpath(), "{}/icons/".format(getpath()) ]:
+            if os.path.isfile("{}/{}.yaml".format(path, name)):
+                with open("{}/{}.yaml".format(path, name)) as f:
+                    return yaml.load(f)
+            if os.path.isfile("{}/{}.json".format(path, name)):
+                with open("{}/{}.json".format(path, name)) as f:
+                    return json.load(f)
+        return None
+
+    # algorithm copied from
+    # http://blog.impressiver.com/post/31434674390/deep-merge-multiple-python-dicts
+    # nicely done :)
+    def merge(self, target, *args):
+        if len(args) > 1:
+            for item in args:
+                self.merge(item)
+            return target
+
+        item = args[0]
+        if not isinstance(item, dict):
+            return item
+        for key, value in item.iteritems():
+            if key in target and isinstance(target[key], dict):
+                self.merge(target[key], value)
+            else:
+                target[key] = copy.deepcopy(value)
+        return target
 
     def begin(self):
         self._config.set("theme.cycleidx", 0)

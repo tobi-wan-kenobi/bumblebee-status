@@ -1,0 +1,116 @@
+{
+	"memory": {
+		"prefix": "ram"
+	},
+	"cpu": {
+		"prefix": "cpu"
+	},
+	"disk": {
+		"prefix": "hdd"
+	},
+	"dnf": {
+		"prefix": "dnf"
+	},
+	"brightness": {
+		"prefix": "o"
+	},
+	"cmus": {
+		"states": {
+			"playing": {
+				"prefix": ">"
+			},
+			"paused": {
+				"prefix": "||"
+			},
+			"stopped": {
+				"prefix": "[]"
+			}
+		},
+		"prev": {
+			"prefix": "|<"
+		},
+		"next": {
+			"prefix": ">|"
+		},
+		"shuffle": {
+			"states": { "on": { "prefix": "S" }, "off": { "prefix": "[s]" } }
+		},
+		"repeat": {
+			"states": { "on": { "prefix": "R" }, "off": { "prefix": "[r]" } }
+		}
+	},
+	"pasink": {
+		"states": {
+			"muted": {
+				"prefix": "audio(mute)"
+			},
+			"unmuted": {
+				"prefix": "audio"
+			}
+		}
+	},
+	"pasource": {
+		"states": {
+			"muted": {
+				"prefix": "mic(mute)"
+			},
+			"unmuted": {
+				"prefix": "mic"
+			}
+		}
+	},
+	"nic": {
+		"states": {
+			"wireless-up": {
+				"prefix": "wifi"
+			},
+			"wireless-down": {
+				"prefix": "wifi"
+			},
+			"wired-up": {
+				"prefix": "lan"
+			},
+			"wired-down": {
+				"prefix": "lan"
+			},
+			"tunnel-up": {
+				"prefix": "tun"
+			},
+			"tunnel-down": {
+				"prefix": "tun"
+			}
+		}
+	},
+	"battery": {
+		"states": {
+			"charged": {
+				"suffix": "full"
+			},
+			"charging": {
+				"suffix": "chr"
+			},
+			"AC": {
+				"suffix": "ac"
+			},
+			"discharging-10": {
+				"prefix": "!",
+				"suffix": "dis"
+			},
+			"discharging-25": {
+				"suffix": "dis"
+			},
+			"discharging-50": {
+				"suffix": "dis"
+			},
+			"discharging-80": {
+				"suffix": "dis"
+			},
+			"discharging-100": {
+				"suffix": "dis"
+			}
+		}
+	},
+	"caffeine": {
+		"states": { "activated": {"prefix": "caf-on" }, "deactivated": { "prefix": "caf-off " } }
+	}
+}
