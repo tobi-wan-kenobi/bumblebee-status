@@ -4,7 +4,7 @@ import yaml
 import glob
 
 def getpath():
-    return os.path.dirname("{}/themes/".format(os.path.dirname(os.path.realpath(__file__))))
+    return os.path.dirname("{}/../themes/".format(os.path.dirname(os.path.realpath(__file__))))
 
 def themes():
     d = getpath()
