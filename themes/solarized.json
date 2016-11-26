@@ -152,5 +152,8 @@
 	},
 	"caffeine": {
 		"states": { "activated": {"prefix": " caf on " }, "deactivated": { "prefix": " caf off " } }
+	},
+	"xrandr": {
+		"states": { "on": { "prefix": " off "}, "off": { "prefix": " on "} }
 	}
 }
