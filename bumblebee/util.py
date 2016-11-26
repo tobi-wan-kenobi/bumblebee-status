@@ -1,3 +1,6 @@
+import shlex
+import exceptions
+import subprocess
 
 def bytefmt(num):
     for unit in [ "", "Ki", "Mi", "Gi" ]:
@@ -13,3 +16,11 @@ def durationfmt(duration):
     if hours > 0: res = "{:02d}:{}".format(hours, res)
 
     return res
+
+def execute(cmd):
+    args = shlex.split(cmd)
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    out = p.communicate()
+
+    if p.returncode != 0:
+        raise exceptions.RuntimeError("{} exited with {}".format(cmd, p.returncode))
