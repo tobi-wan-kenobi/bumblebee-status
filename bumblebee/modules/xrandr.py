@@ -1,5 +1,6 @@
 import bumblebee.module
 import re
+import sys
 import subprocess
 
 def description():
@@ -25,9 +26,19 @@ class Module(bumblebee.module.Module):
             if not " connected" in line:
                 continue
             screen = line.split(" ", 2)[0]
-            m = re.search(r'\d+x\d+\+\d+\+\d+', line)
-            self._state = "on" if m else "off"
-            widgets.append(bumblebee.output.Widget(self, screen))
+            m = re.search(r'\d+x\d+\+(\d+)\+\d+', line)
+
+            widget = bumblebee.output.Widget(self, screen)
+            if m:
+                self._state = "on"
+                widget.set("pos", int(m.group(1)))
+            else:
+                self._state = "off"
+                widget.set("pos", sys.maxint());
+
+            widgets.append(widget)
+
+        widgets.sort(key=lambda widget : widget.get("pos"))
 
         return widgets
 
