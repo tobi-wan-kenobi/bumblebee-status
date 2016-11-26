@@ -126,6 +126,9 @@
 		}
 	},
 	"caffeine": {
-		"states": { "activated": {"prefix": "   " }, "deactivated": { "prefix": "   " } }
+		"states": { "activated": {"prefix": " caf on " }, "deactivated": { "prefix": " caf off " } }
+	},
+	"xrandr": {
+		"states": { "on": { "prefix": " off "}, "off": { "prefix": " on "} }
 	}
 }

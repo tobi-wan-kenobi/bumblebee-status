@@ -63,20 +63,20 @@ Here are some screenshots for all themes that currently exist:
 
 Gruvbox Powerline (`-t gruvbox-powerline`) (contributed by [@paxy97](https://github.com/paxy97)):
 
-![Gruvbox Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/powerline-gruvbox.png)
+![Gruvbox Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-gruvbox.png)
 
 Solarized Powerline (`-t solarized-powerline`):
 
-![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/powerline-solarized.png)
+![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
 
 Solarized (`-t solarized`):
 
-![Solarized](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/solarized.png)
+![Solarized](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/solarized.png)
 
 Powerline (`-t powerline`):
 
-![Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/powerline.png)
+![Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline.png)
 
 Default (nothing or `-t default`):
 
-![Default](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/default.png)
+![Default](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/default.png)

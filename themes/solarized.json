@@ -18,7 +18,7 @@
 		"bg-warning": "#b58900",
 
 		"default_separators": false,
-		"separator": "|"
+		"separator": ""
 	},
 	"date": {
 		"prefix": " "
@@ -152,5 +152,8 @@
 	},
 	"caffeine": {
 		"states": { "activated": {"prefix": " caf on " }, "deactivated": { "prefix": " caf off " } }
+	},
+	"xrandr": {
+		"states": { "on": { "prefix": " off "}, "off": { "prefix": " on "} }
 	}
 }
