@@ -51,6 +51,10 @@ class Output(bumblebee.output.Output):
                     "separator_block_width": 0,
                 })
 
+            sep = theme.default_separators(widget)
+            sep = sep if sep else False
+            width = theme.separator_block_width(widget)
+            width = width if width else 0
             self._data.append({
                 u"full_text": "{}{}{}".format(
                     theme.prefix(widget),
@@ -61,8 +65,8 @@ class Output(bumblebee.output.Output):
                 "background": theme.background(widget),
                 "name": widget.module(),
                 "instance": widget.instance(),
-                "separator": theme.default_separators(widget),
-                "separator_block_width": theme.separator_block_width(widget),
+                "separator": sep,
+                "separator_block_width": width,
             })
             theme.next_widget()
 

@@ -18,7 +18,7 @@
 		"bg-warning": "#b58900",
 
 		"default_separators": false,
-		"separator": "|"
+		"separator": ""
 	},
 	"date": {
 		"prefix": " "
