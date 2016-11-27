@@ -6,6 +6,11 @@ import bumblebee.util
 def description():
     return "Showws current keyboard layout and change it on click."
 
+#def parameters():
+#    module = __name__.split(".")[-1]
+#    return 
+
+
 class Module(bumblebee.module.Module):
     def __init__(self, output, config, alias):
         super(Module, self).__init__(output, config, alias)
