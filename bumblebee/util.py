@@ -1,6 +1,10 @@
 import shlex
-import exceptions
 import subprocess
+try:
+    from exceptions import RuntimeError
+except ImportError:
+    # Python3 doesn't require this anymore
+    pass
 
 def bytefmt(num):
     for unit in [ "", "Ki", "Mi", "Gi" ]:
@@ -23,4 +27,4 @@ def execute(cmd):
     out = p.communicate()
 
     if p.returncode != 0:
-        raise exceptions.RuntimeError("{} exited with {}".format(cmd, p.returncode))
+        raise RuntimeError("{} exited with {}".format(cmd, p.returncode))
