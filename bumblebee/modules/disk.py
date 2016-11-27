@@ -16,7 +16,7 @@ class Module(bumblebee.module.Module):
         super(Module, self).__init__(output, config, alias)
         self._path = self._config.parameter("path", "/")
 
-        output.add_callback(module=self.instance(), button=1, cmd="nautilus {instance}")
+        output.add_callback(module=self.instance(), button=1, cmd="nautilus {}".format(self._path))
 
     def widgets(self):
         st = os.statvfs(self._path)
