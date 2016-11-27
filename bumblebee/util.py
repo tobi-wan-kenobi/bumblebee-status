@@ -24,7 +24,9 @@ def durationfmt(duration):
 def execute(cmd):
     args = shlex.split(cmd)
     p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-    out = p.communicate()
+    out, err = p.communicate()
 
     if p.returncode != 0:
         raise RuntimeError("{} exited with {}".format(cmd, p.returncode))
+
+    return out.decode("utf-8")

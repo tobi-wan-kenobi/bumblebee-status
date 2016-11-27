@@ -39,7 +39,29 @@ class Module(bumblebee.module.Module):
         bumblebee.util.execute("setxkbmap -layout {} {}".format(layout, variant))
 
     def widgets(self):
+        res = bumblebee.util.execute("setxkbmap -query")
+        layout = None
+        variant = None
+        for line in res.split("\n"):
+            if not line:
+                continue
+            if "layout" in line:
+                layout = line.split(":")[1].strip()
+            if "variant" in line:
+                variant = line.split(":")[1].strip()
+        if variant:
+            layout += ":" + variant
+
         lang = self._languages[self._idx]
+
+        if lang != layout:
+            if layout in self._languages:
+                self._idx = self._languages.index(layout)
+            else:
+                self._languages.append(layout)
+                self._idx = len(self._languages) - 1
+        lang = layout
+
         return bumblebee.output.Widget(self, lang)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
