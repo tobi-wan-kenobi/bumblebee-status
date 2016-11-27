@@ -93,10 +93,10 @@ class Output(object):
         ), None)
         cb = self._callbacks.get((
             event.get("button", -1),
-            event.get("instance", event.get("name", None)),
+            event.get("instance", event.get("module", None)),
         ), cb)
 
-        identity = event.get("instance", event.get("name", None))
+        identity = event.get("instance", event.get("module", None))
         return Command(cb, event, self._widgets.get(identity, None))
 
     def wait(self):
