@@ -52,12 +52,13 @@ class Command(object):
             self._command = [ self._command ]
 
         for cmd in self._command:
+            if not cmd: continue
             if inspect.ismethod(cmd):
                 cmd(self._event, self._widget)
             else:
                 c = cmd.format(*args, **kwargs)
                 DEVNULL = open(os.devnull, 'wb')
-                subprocess.Popen(shlex.split(c), stdout=DEVNULL, stderr=DEVNULL).communicate()
+                subprocess.Popen(shlex.split(c), stdout=DEVNULL, stderr=DEVNULL)
 
 class Output(object):
     def __init__(self, config):
