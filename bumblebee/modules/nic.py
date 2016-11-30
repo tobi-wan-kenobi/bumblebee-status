@@ -10,7 +10,7 @@ def parameters():
 class Module(bumblebee.module.Module):
     def __init__(self, output, config, alias):
         super(Module, self).__init__(output, config, alias)
-        self._exclude = ( "lo", "virbr", "docker", "vboxnet" )
+        self._exclude = ( "lo", "virbr", "docker", "vboxnet", "veth" )
         self._state = "down"
         self._typecache = {}
 
