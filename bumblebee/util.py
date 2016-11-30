@@ -1,3 +1,10 @@
+import shlex
+import subprocess
+try:
+    from exceptions import RuntimeError
+except ImportError:
+    # Python3 doesn't require this anymore
+    pass
 
 def bytefmt(num):
     for unit in [ "", "Ki", "Mi", "Gi" ]:
@@ -13,3 +20,13 @@ def durationfmt(duration):
     if hours > 0: res = "{:02d}:{}".format(hours, res)
 
     return res
+
+def execute(cmd):
+    args = shlex.split(cmd)
+    p = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    out, err = p.communicate()
+
+    if p.returncode != 0:
+        raise RuntimeError("{} exited with {}".format(cmd, p.returncode))
+
+    return out.decode("utf-8")

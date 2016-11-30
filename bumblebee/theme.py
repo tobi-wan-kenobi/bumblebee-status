@@ -46,7 +46,7 @@ class Theme:
         item = args[0]
         if not isinstance(item, dict):
             return item
-        for key, value in item.iteritems():
+        for key, value in item.items():
             if key in target and isinstance(target[key], dict):
                 self.merge(target[key], value)
             else:
@@ -64,10 +64,10 @@ class Theme:
         self._cycle = self._cycles[idx] if len(self._cycles) > idx else {}
 
     def prefix(self, widget):
-        return self._get(widget, "prefix")
+        return self._get(widget, "prefix", "")
 
     def suffix(self, widget):
-        return self._get(widget, "suffix")
+        return self._get(widget, "suffix", "")
 
     def color(self, widget):
         result = self._get(widget, "fg")
@@ -101,7 +101,7 @@ class Theme:
     def separator_block_width(self, widget):
         return self._get(widget, "separator-block-width")
 
-    def _get(self, widget, name):
+    def _get(self, widget, name, default = None):
         module = widget.module()
         state = widget.state()
         inst = widget.instance()
@@ -125,6 +125,6 @@ class Theme:
             self._config.increase(key, len(value), 0)
             value = value[idx]
 
-        return value
+        return value if value else default
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

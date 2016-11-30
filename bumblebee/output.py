@@ -15,6 +15,8 @@ class Widget(object):
         self._store = {}
         self._instance = instance
 
+        obj._output.register_widget(self.instance(), self)
+
     def set(self, key, value):
         self._store[key] = value
 
@@ -40,17 +42,23 @@ class Widget(object):
         return self._text
 
 class Command(object):
-    def __init__(self, command):
+    def __init__(self, command, event, widget):
         self._command = command
+        self._event = event
+        self._widget = widget
 
     def __call__(self, *args, **kwargs):
         if not isinstance(self._command, list):
             self._command = [ self._command ]
 
         for cmd in self._command:
-            c = cmd.format(*args, **kwargs)
-            DEVNULL = open(os.devnull, 'wb')
-            subprocess.Popen(shlex.split(c), stdout=DEVNULL, stderr=DEVNULL).communicate()
+            if not cmd: continue
+            if inspect.ismethod(cmd):
+                cmd(self._event, self._widget)
+            else:
+                c = cmd.format(*args, **kwargs)
+                DEVNULL = open(os.devnull, 'wb')
+                subprocess.Popen(shlex.split(c), stdout=DEVNULL, stderr=DEVNULL)
 
 class Output(object):
     def __init__(self, config):
@@ -58,6 +66,10 @@ class Output(object):
         self._callbacks = {}
         self._wait = threading.Condition()
         self._wait.acquire()
+        self._widgets = {}
+
+    def register_widget(self, identity, widget):
+        self._widgets[identity] = widget
 
     def redraw(self):
         self._wait.acquire()
@@ -82,11 +94,11 @@ class Output(object):
         ), None)
         cb = self._callbacks.get((
             event.get("button", -1),
-            event.get("instance", event.get("name", None)),
+            event.get("instance", event.get("module", None)),
         ), cb)
-        if inspect.isfunction(cb) or cb is None: return cb
 
-        return Command(cb)
+        identity = event.get("instance", event.get("module", None))
+        return Command(cb, event, self._widgets.get(identity, None))
 
     def wait(self):
         self._wait.wait(self._config.parameter("interval", 1))
