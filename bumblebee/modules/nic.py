@@ -5,12 +5,14 @@ def description():
     return "Displays the names, IP addresses and status of each available interface."
 
 def parameters():
-    return [ "none" ]
+    return [
+            "nic.exclude: Comma-separated list of interface prefixes to exlude (defaults to: \"lo,virbr,docker,vboxnet,veth\")"
+    ]
 
 class Module(bumblebee.module.Module):
     def __init__(self, output, config, alias):
         super(Module, self).__init__(output, config, alias)
-        self._exclude = ( "lo", "virbr", "docker", "vboxnet", "veth" )
+        self._exclude = tuple(filter(len, self._config.parameter("exclude", "lo,virbr,docker,vboxnet,veth").split(",")))
         self._state = "down"
         self._typecache = {}
 
