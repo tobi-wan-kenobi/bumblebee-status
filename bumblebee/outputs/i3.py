@@ -14,8 +14,6 @@ def read_input(output):
         if line == "[": continue
         if line == "]": break
 
-        DEVNULL = open(os.devnull, 'wb')
-
         event = json.loads(line)
         cb = output.callback(event)
         if cb:

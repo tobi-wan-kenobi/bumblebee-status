@@ -35,9 +35,12 @@ class print_usage(argparse.Action):
             print("")
 
 class ModuleConfig(object):
-    def __init__(self, config, prefix):
-        self._prefix = prefix
+    def __init__(self, config, name, alias):
+        self._prefix = alias if alias else name
         self._config = config
+
+    def prefix(self):
+        return self._prefix
 
     def set(self, name, value):
         name = self._prefix + name

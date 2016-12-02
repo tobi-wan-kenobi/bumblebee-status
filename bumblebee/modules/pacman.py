@@ -6,8 +6,8 @@ def description():
     return "Displays available updates per repository for pacman."
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
         self._count = 0
 
     def widgets(self):

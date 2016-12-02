@@ -12,8 +12,8 @@ def parameters():
     ]
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
         self._path = self._config.parameter("path", "/")
 
         output.add_callback(module=self.instance(), button=1, cmd="nautilus {}".format(self._path))

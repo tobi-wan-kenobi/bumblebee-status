@@ -8,8 +8,8 @@ def parameters():
     return [ "spacer.text: Text to draw (defaults to '')" ]
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
 
     def widgets(self):
         return bumblebee.output.Widget(self, self._config.parameter("text", ""))

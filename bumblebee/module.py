@@ -2,7 +2,6 @@ import os
 import pkgutil
 import importlib
 
-import bumblebee.config
 import bumblebee.modules
 
 def modules():
@@ -27,12 +26,11 @@ class ModuleDescription(object):
         return getattr(self._mod, "parameters", lambda: [ "n/a" ])()
 
 class Module(object):
-    def __init__(self, output, config, alias=None):
+    def __init__(self, output, config):
         self._output = output
-        self._alias = alias
-        name = "{}.".format(alias if alias else self.__module__.split(".")[-1])
-        self._config = bumblebee.config.ModuleConfig(config, name)
+        self._config = config
 
+    def register_callbacks(self):
         buttons = [
             { "name": "left-click", "id": 1 },
             { "name": "middle-click", "id": 2 },
@@ -58,6 +56,6 @@ class Module(object):
         return "default"
 
     def instance(self, widget=None):
-        return self._alias if self._alias else self.__module__.split(".")[-1]
+        return self._config.prefix()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

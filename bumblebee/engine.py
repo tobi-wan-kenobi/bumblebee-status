@@ -1,6 +1,7 @@
 import importlib
 import bumblebee.theme
 import bumblebee.output
+import bumblebee.config
 import bumblebee.modules
 
 class Engine:
@@ -13,7 +14,10 @@ class Engine:
     def load_module(self, modulespec):
         name = modulespec["name"]
         module = importlib.import_module("bumblebee.modules.{}".format(name))
-        return getattr(module, "Module")(self._output, self._config, modulespec["alias"])
+        cfg = bumblebee.config.ModuleConfig(self._config, name, modulespec["alias"])
+        obj = getattr(module, "Module")(self._output, cfg)
+        obj.register_callbacks()
+        return obj
 
     def load_modules(self):
         for m in self._config.modules():

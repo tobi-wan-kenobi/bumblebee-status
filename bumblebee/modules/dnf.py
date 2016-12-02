@@ -59,8 +59,8 @@ def get_dnf_info(obj):
         obj.set("other", other)
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
 
         self._counter = {}
         self._thread = threading.Thread(target=get_dnf_info, args=(self,))

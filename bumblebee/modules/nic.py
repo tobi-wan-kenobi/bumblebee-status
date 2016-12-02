@@ -10,8 +10,8 @@ def parameters():
     ]
 
 class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
+    def __init__(self, output, config):
+        super(Module, self).__init__(output, config)
         self._exclude = tuple(filter(len, self._config.parameter("exclude", "lo,virbr,docker,vboxnet,veth").split(",")))
         self._state = "down"
         self._typecache = {}
