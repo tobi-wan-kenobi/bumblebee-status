@@ -1,8 +1,7 @@
 import os
-import shlex
 import inspect
 import threading
-import subprocess
+import bumblebee.util
 
 def output(args):
     import bumblebee.outputs.i3
@@ -57,8 +56,7 @@ class Command(object):
                 cmd(self._event, self._widget)
             else:
                 c = cmd.format(*args, **kwargs)
-                DEVNULL = open(os.devnull, 'wb')
-                subprocess.Popen(shlex.split(c), stdout=DEVNULL, stderr=DEVNULL)
+                bumblebee.util.execute(c, False)
 
 class Output(object):
     def __init__(self, config):
@@ -103,13 +101,13 @@ class Output(object):
     def wait(self):
         self._wait.wait(self._config.parameter("interval", 1))
 
-    def start(self):
-        pass
-
     def draw(self, widgets, theme):
         if not type(widgets) is list:
             widgets = [ widgets ]
         self._draw(widgets, theme)
+
+    def start(self):
+        pass
 
     def _draw(self, widgets, theme):
         pass

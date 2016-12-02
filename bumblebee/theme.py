@@ -89,8 +89,8 @@ class Theme:
     def separator(self, widget):
         return self._get(widget, "separator")
 
-    def default_separators(self, widget):
-        return self._get(widget, "default-separators")
+    def default_separators(self, widget, default):
+        return self._get(widget, "default-separators", default)
 
     def separator_color(self, widget):
         return self.background(widget)
@@ -98,8 +98,8 @@ class Theme:
     def separator_background(self, widget):
         return self._background[1]
 
-    def separator_block_width(self, widget):
-        return self._get(widget, "separator-block-width")
+    def separator_block_width(self, widget, default):
+        return self._get(widget, "separator-block-width", default)
 
     def _get(self, widget, name, default = None):
         module = widget.module()
