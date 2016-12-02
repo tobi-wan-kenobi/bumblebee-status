@@ -13,8 +13,6 @@ class Module(bumblebee.module.Module):
     def __init__(self, output, config):
         super(Module, self).__init__(output, config)
         self._exclude = tuple(filter(len, self._config.parameter("exclude", "lo,virbr,docker,vboxnet,veth").split(",")))
-        self._state = "down"
-        self._typecache = {}
 
     def widgets(self):
         result = []
@@ -50,12 +48,10 @@ class Module(bumblebee.module.Module):
     def state(self, widget):
         intf = widget.get("intf")
 
-        if not intf in self._typecache:
-            t = "wireless" if self._iswlan(intf) else "wired"
-            t = "tunnel" if self._istunnel(intf) else t
-            self._typecache[intf] = t
+        iftype = "wireless" if self._iswlan(intf) else "wired"
+        iftype = "tunnel" if self._istunnel(intf) else iftype
 
-        return "{}-{}".format(self._typecache[intf], widget.get("state"))
+        return "{}-{}".format(iftype, widget.get("state"))
 
     def warning(self, widget):
         return widget.get("state") != "up"
