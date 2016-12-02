@@ -78,6 +78,10 @@ class Config(object):
         return self._store.get(name, default)
 
     def increase(self, name, limit, default):
+        if not name in self._store:
+            self._store[name] = default
+            return default
+
         self._store[name] += 1
         if self._store[name] >= limit:
             self._store[name] = default

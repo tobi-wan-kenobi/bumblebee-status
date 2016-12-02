@@ -120,9 +120,8 @@ class Theme:
         value = instance_state_theme.get(name, value)
 
         if type(value) is list:
-            key = "{}{}".format(repr(widget), value)
-            idx = self._config.parameter(key, 0)
-            self._config.increase(key, len(value), 0)
+            key = "{}{}".format(widget.instance(), value)
+            idx = self._config.increase(key, len(value), 0)
             value = value[idx]
 
         return value if value else default
