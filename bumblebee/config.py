@@ -8,7 +8,10 @@ class Config(object):
         self._args = parser.parse_args(args)
 
     def modules(self):
-        return list(map(lambda x: { "name": x, "module": x }, self._args.modules))
+        return list(map(lambda x: {
+            "module": x.split(":")[0],
+            "name": x if not ":" in x else x.split(":")[1]
+        }, self._args.modules))
 
     def _create_parser(self):
         parser = argparse.ArgumentParser(description="display system data in the i3bar")
