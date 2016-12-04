@@ -1,6 +1,8 @@
 """Core application engine"""
 
+import time
 import importlib
+import bumblebee.error
 
 class Module(object):
     """Module instance base class
@@ -33,7 +35,10 @@ class Engine(object):
 
     def load_module(self, module_name):
         """Load specified module and return it as object"""
-        module = importlib.import_module("bumblebee.modules.{}".format(module_name))
+        try:
+            module = importlib.import_module("bumblebee.modules.{}".format(module_name))
+        except ImportError as error:
+            raise bumblebee.error.ModuleLoadError(error)
         return getattr(module, "Module")(self)
 
     def running(self):
@@ -53,6 +58,7 @@ class Engine(object):
                 widgets += module.widgets()
             self._output.draw(widgets)
             self._output.flush()
+            time.sleep(1)
 
         self._output.stop()
 

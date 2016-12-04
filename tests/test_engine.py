@@ -1,6 +1,7 @@
 # pylint: disable=C0103,C0111
 import unittest
 
+from bumblebee.error import ModuleLoadError
 from bumblebee.engine import Engine
 from bumblebee.config import Config
 
@@ -8,6 +9,7 @@ class TestEngine(unittest.TestCase):
     def setUp(self):
         self.engine = Engine(Config())
         self.testModule = "test"
+        self.invalidModule = "no-such-module"
         self.testModuleSpec = "bumblebee.modules.{}".format(self.testModule)
         self.testModules = [
             {"module": "test", "name": "a"},
@@ -22,6 +24,14 @@ class TestEngine(unittest.TestCase):
     def test_load_module(self):
         module = self.engine.load_module(self.testModule)
         self.assertEquals(module.__module__, self.testModuleSpec)
+
+    def test_load_invalid_module(self):
+        with self.assertRaises(ModuleLoadError):
+            self.engine.load_module(self.invalidModule)
+
+    def test_load_none(self):
+        with self.assertRaises(ModuleLoadError):
+            self.engine.load_module(None)
 
     def test_load_modules(self):
         modules = self.engine.load_modules(self.testModules)

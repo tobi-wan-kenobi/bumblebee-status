@@ -16,6 +16,10 @@ def main():
     engine.run()
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except bumblebee.error.BaseError as error:
+        sys.stderr.write("fatal: {}\n".format(error))
+        sys.exit(1)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
