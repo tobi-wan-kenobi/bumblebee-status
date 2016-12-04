@@ -19,7 +19,8 @@ class Engine(object):
     This class connects input/output, instantiates all
     required modules and drives the "event loop"
     """
-    def __init__(self, config):
+    def __init__(self, config, output=None):
+        self._output = output
         self._running = True
         self._modules = []
         self.load_modules(config.modules())
@@ -45,7 +46,10 @@ class Engine(object):
 
     def run(self):
         """Start the event loop"""
+        self._output.start()
         while self.running():
             pass
+
+        self._output.stop()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

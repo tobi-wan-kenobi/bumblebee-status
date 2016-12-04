@@ -1,3 +1,3 @@
 #!/bin/sh
 
-find . -name "*.py"|xargs pylint
+find . -name "*.py"|xargs pylint --disable=R0903

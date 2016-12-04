@@ -10,8 +10,8 @@ class TestEngine(unittest.TestCase):
         self.testModule = "test"
         self.testModuleSpec = "bumblebee.modules.{}".format(self.testModule)
         self.testModules = [
-            { "module": "test", "name": "a" },
-            { "module": "test", "name": "b" },
+            {"module": "test", "name": "a"},
+            {"module": "test", "name": "b"},
         ]
 
     def test_stop(self):
@@ -27,8 +27,8 @@ class TestEngine(unittest.TestCase):
         modules = self.engine.load_modules(self.testModules)
         self.assertEquals(len(modules), len(self.testModules))
         self.assertEquals(
-            [ module.__module__ for module in modules ],
-            [ self.testModuleSpec for module in modules ]
+            [module.__module__ for module in modules],
+            [self.testModuleSpec for module in modules]
         )
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
