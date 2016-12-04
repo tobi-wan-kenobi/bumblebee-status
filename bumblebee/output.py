@@ -29,4 +29,9 @@ class I3BarOutput(object):
             })
         sys.stdout.write(json.dumps(result))
 
+    def flush(self):
+        """Flushes output"""
+        sys.stdout.write(",\n")
+        sys.stdout.flush()
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

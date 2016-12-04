@@ -3,11 +3,14 @@
 import sys
 import bumblebee.engine
 import bumblebee.config
+import bumblebee.output
 
 def main():
     config = bumblebee.config.Config(sys.argv[1:])
+    output = bumblebee.output.I3BarOutput()
     engine = bumblebee.engine.Engine(
-        config=config
+        config=config,
+        output=output,
     )
 
     engine.run()

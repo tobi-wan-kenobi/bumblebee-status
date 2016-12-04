@@ -41,4 +41,10 @@ class TestI3BarOutput(unittest.TestCase):
         for res in result:
             self.assertEquals(res["full_text"], self.someWidget.text())
 
+    @mock.patch("sys.stdout", new_callable=StringIO)
+    def test_flush(self, stdout):
+        self.output.flush()
+        self.assertEquals(",\n", stdout.getvalue())
+
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

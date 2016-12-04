@@ -52,6 +52,7 @@ class Engine(object):
             for module in self._modules:
                 widgets += module.widgets()
             self._output.draw(widgets)
+            self._output.flush()
 
         self._output.stop()
 
