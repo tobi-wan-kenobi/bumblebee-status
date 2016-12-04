@@ -1,5 +1,18 @@
 """Core application engine"""
 
+import importlib
+
+class Module(object):
+    """Module instance base class
+
+    Objects of this type represent the modules that
+    the user configures. Concrete module implementations
+    (e.g. CPU utilization, disk usage, etc.) derive from
+    this base class.
+    """
+    def __init__(self, engine):
+        pass
+
 class Engine(object):
     """Engine for driving the application
 
@@ -8,6 +21,19 @@ class Engine(object):
     """
     def __init__(self, config):
         self._running = True
+        self._modules = []
+        self.load_modules(config.modules())
+
+    def load_modules(self, modules):
+        """Load specified modules and return them as list"""
+        for module in modules:
+            self._modules.append(self.load_module(module["module"]))
+        return self._modules
+
+    def load_module(self, module_name):
+        """Load specified module and return it as object"""
+        module = importlib.import_module("bumblebee.modules.{}".format(module_name))
+        return getattr(module, "Module")(self)
 
     def running(self):
         """Check whether the event loop is running"""
