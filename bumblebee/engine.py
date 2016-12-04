@@ -55,10 +55,12 @@ class Engine(object):
         while self.running():
             widgets = []
             for module in self._modules:
-                widgets += module.widgets()
-            self._output.draw(widgets)
+                module_widgets = module.widgets()
+                widgets += module_widgets if isinstance(module_widgets, list) else [module_widgets]
+            self._output.draw(widgets=widgets, engine=self)
             self._output.flush()
-            time.sleep(1)
+            if self.running():
+                time.sleep(1)
 
         self._output.stop()
 

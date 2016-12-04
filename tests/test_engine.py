@@ -1,13 +1,17 @@
 # pylint: disable=C0103,C0111
+
 import unittest
 
 from bumblebee.error import ModuleLoadError
 from bumblebee.engine import Engine
 from bumblebee.config import Config
 
+from tests.util import MockOutput
+
 class TestEngine(unittest.TestCase):
     def setUp(self):
-        self.engine = Engine(Config())
+        self.engine = Engine(config=Config(), output=MockOutput())
+        self.singleWidgetModule = [{"module": "test"}]
         self.testModule = "test"
         self.invalidModule = "no-such-module"
         self.testModuleSpec = "bumblebee.modules.{}".format(self.testModule)
@@ -40,5 +44,12 @@ class TestEngine(unittest.TestCase):
             [module.__module__ for module in modules],
             [self.testModuleSpec for module in modules]
         )
+
+    def test_run(self):
+        self.engine.load_modules(self.singleWidgetModule)
+        try:
+            self.engine.run()
+        except Exception as e:
+            self.fail(e)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

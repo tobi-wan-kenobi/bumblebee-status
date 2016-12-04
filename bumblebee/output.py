@@ -5,6 +5,15 @@
 import sys
 import json
 
+class Widget(object):
+    """Represents a single visible block in the status bar"""
+    def __init__(self, full_text):
+        self._full_text = full_text
+
+    def full_text(self):
+        """Retrieve the full text to display in the widget"""
+        return self._full_text
+
 class I3BarOutput(object):
     """Manage output according to the i3bar protocol"""
     def __init__(self):
@@ -18,14 +27,14 @@ class I3BarOutput(object):
         """Finish i3bar protocol"""
         sys.stdout.write("]\n")
 
-    def draw(self, widgets):
+    def draw(self, widgets, engine=None):
         """Draw a number of widgets"""
         if not isinstance(widgets, list):
             widgets = [widgets]
         result = []
         for widget in widgets:
             result.append({
-                u"full_text": widget.text()
+                u"full_text": widget.full_text()
             })
         sys.stdout.write(json.dumps(result))
 

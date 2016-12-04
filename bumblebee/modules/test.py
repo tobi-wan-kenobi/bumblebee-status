@@ -9,6 +9,6 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine)
 
     def widgets(self):
-        return []
+        return bumblebee.output.Widget(full_text="test")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

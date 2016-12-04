@@ -32,14 +32,14 @@ class TestI3BarOutput(unittest.TestCase):
     def test_draw_single_widget(self, stdout):
         self.output.draw(self.someWidget)
         result = json.loads(stdout.getvalue())[0]
-        self.assertEquals(result["full_text"], self.someWidget.text())
+        self.assertEquals(result["full_text"], self.someWidget.full_text())
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_draw_multiple_widgets(self, stdout):
         self.output.draw([self.someWidget, self.someWidget])
         result = json.loads(stdout.getvalue())
         for res in result:
-            self.assertEquals(res["full_text"], self.someWidget.text())
+            self.assertEquals(res["full_text"], self.someWidget.full_text())
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_flush(self, stdout):
