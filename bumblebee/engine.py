@@ -48,7 +48,10 @@ class Engine(object):
         """Start the event loop"""
         self._output.start()
         while self.running():
-            pass
+            widgets = []
+            for module in self._modules:
+                widgets += module.widgets()
+            self._output.draw(widgets)
 
         self._output.stop()
 

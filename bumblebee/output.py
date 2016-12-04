@@ -18,4 +18,15 @@ class I3BarOutput(object):
         """Finish i3bar protocol"""
         sys.stdout.write("]\n")
 
+    def draw(self, widgets):
+        """Draw a number of widgets"""
+        if not isinstance(widgets, list):
+            widgets = [widgets]
+        result = []
+        for widget in widgets:
+            result.append({
+                u"full_text": widget.text()
+            })
+        sys.stdout.write(json.dumps(result))
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
