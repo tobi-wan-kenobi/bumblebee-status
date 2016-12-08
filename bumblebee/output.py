@@ -30,15 +30,19 @@ class I3BarOutput(object):
         """Finish i3bar protocol"""
         sys.stdout.write("]\n")
 
+    def draw_widget(self, result, widget):
+        """Draw a single widget"""
+        result.append({
+            u"full_text": widget.full_text()
+        })
+
     def draw(self, widgets, engine=None):
         """Draw a number of widgets"""
         if not isinstance(widgets, list):
             widgets = [widgets]
         result = []
         for widget in widgets:
-            result.append({
-                u"full_text": widget.full_text()
-            })
+            self.draw_widget(result, widget)
         sys.stdout.write(json.dumps(result))
 
     def flush(self):
