@@ -13,6 +13,7 @@ class Module(object):
     this base class.
     """
     def __init__(self, engine, widgets):
+        self.name = self.__module__.split(".")[-1]
         self._widgets = []
         if widgets:
             self._widgets = widgets if isinstance(widgets, list) else [widgets]
@@ -59,10 +60,14 @@ class Engine(object):
         """Start the event loop"""
         self._output.start()
         while self.running():
+            self._output.begin()
             for module in self._modules:
                 module.update(module.widgets())
-                self._output.draw(widgets=module.widgets(), engine=self)
+                for widget in module.widgets():
+                    widget.set_module(module)
+                    self._output.draw(widget=widget, engine=self)
             self._output.flush()
+            self._output.end()
             if self.running():
                 time.sleep(1)
 

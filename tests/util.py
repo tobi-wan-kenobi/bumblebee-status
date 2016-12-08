@@ -13,10 +13,16 @@ class MockOutput(object):
     def stop(self):
         pass
 
-    def draw(self, widgets, engine):
+    def draw(self, widget, engine):
         engine.stop()
 
+    def begin(self):
+        pass
+
     def flush(self):
+        pass
+
+    def end(self):
         pass
 
 class MockWidget(object):

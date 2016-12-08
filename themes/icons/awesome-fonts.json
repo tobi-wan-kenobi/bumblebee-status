@@ -1,5 +1,5 @@
 {
-	"defaults": { "separator": "" },
+	"defaults": { "separator": "", "padding": " " },
 	"date": { "prefix": ""	},
 	"time": { "prefix": "" },
 	"memory": { "prefix": "" },

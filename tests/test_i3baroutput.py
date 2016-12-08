@@ -33,25 +33,34 @@ class TestI3BarOutput(unittest.TestCase):
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_draw_single_widget(self, stdout):
         self.output.draw(self.someWidget)
+        self.output.flush()
         result = json.loads(stdout.getvalue())[0]
         self.assertEquals(result["full_text"], self.someWidget.full_text())
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_draw_multiple_widgets(self, stdout):
-        self.output.draw([self.someWidget, self.someWidget])
+        for widget in [self.someWidget, self.someWidget]:
+            self.output.draw(widget)
+        self.output.flush()
         result = json.loads(stdout.getvalue())
         for res in result:
-            self.assertEquals(res["full_text"], self.someWidget.full_text())
+            self.assertEquals(res["full_text"], widget.full_text())
 
     @mock.patch("sys.stdout", new_callable=StringIO)
-    def test_flush(self, stdout):
-        self.output.flush()
+    def test_begin(self, stdout):
+        self.output.begin()
+        self.assertEquals("", stdout.getvalue())
+
+    @mock.patch("sys.stdout", new_callable=StringIO)
+    def test_end(self, stdout):
+        self.output.end()
         self.assertEquals(",\n", stdout.getvalue())
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_prefix(self, stdout):
         self.theme.set_prefix(" - ")
         self.output.draw(self.someWidget)
+        self.output.flush()
         result = json.loads(stdout.getvalue())[0]
         self.assertEquals(result["full_text"], "{}{}".format(
             self.theme.prefix(self.someWidget), self.someWidget.full_text())
@@ -61,6 +70,7 @@ class TestI3BarOutput(unittest.TestCase):
     def test_suffix(self, stdout):
         self.theme.set_suffix(" - ")
         self.output.draw(self.someWidget)
+        self.output.flush()
         result = json.loads(stdout.getvalue())[0]
         self.assertEquals(result["full_text"], "{}{}".format(
             self.someWidget.full_text(), self.theme.suffix(self.someWidget))
@@ -71,6 +81,7 @@ class TestI3BarOutput(unittest.TestCase):
         self.theme.set_suffix(" - ")
         self.theme.set_prefix(" * ")
         self.output.draw(self.someWidget)
+        self.output.flush()
         result = json.loads(stdout.getvalue())[0]
         self.assertEquals(result["full_text"], "{}{}{}".format(
             self.theme.prefix(self.someWidget), self.someWidget.full_text(), self.theme.suffix(self.someWidget))

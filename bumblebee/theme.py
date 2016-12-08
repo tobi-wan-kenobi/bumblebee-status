@@ -55,8 +55,15 @@ class Theme(object):
 
         module_theme = self._theme.get(widget.module(), {})
 
+        padding = None
+        if name != "padding":
+            padding = self._get(widget, "padding")
+
         value = self._defaults.get(name, default)
         value = module_theme.get(name, value)
+
+        if value and padding:
+            value = u"{}{}{}".format(padding, value, padding)
 
         return value
 
