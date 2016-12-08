@@ -9,8 +9,15 @@ class TestTheme(unittest.TestCase):
     def setUp(self):
         self.nonexistentThemeName = "no-such-theme"
         self.invalidThemeName = "invalid"
-        self.validThemeName = "solarized-powerline"
+        self.validThemeName = "test"
         self.someWidget = MockWidget("foo")
+        self.theme = Theme(self.validThemeName)
+
+        self.widgetTheme = "test-widget"
+        self.defaultPrefix = "default-prefix"
+        self.defaultSuffix = "default-suffix"
+        self.widgetPrefix = "widget-prefix"
+        self.widgetSuffix = "widget-suffix"
 
     def test_load_valid_theme(self):
         try:
@@ -26,14 +33,14 @@ class TestTheme(unittest.TestCase):
         with self.assertRaises(ThemeLoadError):
             Theme(self.invalidThemeName)
 
-    def test_prefix(self):
-        theme = Theme(self.validThemeName)
-        theme.loads('{"defaults": { "prefix": "test" }}')
-        self.assertEquals(theme.prefix(self.someWidget), "test")
+    def test_default_prefix(self):
+        self.assertEquals(self.theme.prefix(self.someWidget), self.defaultPrefix)
 
-    def test_suffix(self):
-        theme = Theme(self.validThemeName)
-        theme.loads('{"defaults": { "suffix": "test" }}')
-        self.assertEquals(theme.suffix(self.someWidget), "test")
+    def test_default_suffix(self):
+        self.assertEquals(self.theme.suffix(self.someWidget), self.defaultSuffix)
+
+    def test_widget_prefix(self):
+        self.someWidget.set_module(self.widgetTheme)
+        self.assertEquals(self.theme.prefix(self.someWidget), self.widgetPrefix)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

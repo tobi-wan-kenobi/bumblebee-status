@@ -1,0 +1,7 @@
+{
+	"icons": [ "test" ],
+	"defaults": {
+		"prefix": "default-prefix",
+		"suffix": "default-suffix"
+	}
+}

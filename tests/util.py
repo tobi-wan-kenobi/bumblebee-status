@@ -22,9 +22,16 @@ class MockOutput(object):
 class MockWidget(object):
     def __init__(self, text):
         self._text = text
+        self._module = None
+
+    def set_module(self, name):
+        self._module = name
 
     def update(self, widgets):
         pass
+
+    def module(self):
+        return self._module
 
     def full_text(self):
         return self._text
