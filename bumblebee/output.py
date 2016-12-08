@@ -19,8 +19,8 @@ class Widget(object):
 
 class I3BarOutput(object):
     """Manage output according to the i3bar protocol"""
-    def __init__(self):
-        pass
+    def __init__(self, theme):
+        self._theme = theme
 
     def start(self):
         """Print start preamble for i3bar protocol"""
@@ -32,8 +32,13 @@ class I3BarOutput(object):
 
     def draw_widget(self, result, widget):
         """Draw a single widget"""
+        full_text = widget.full_text()
+        if self._theme.prefix():
+            full_text = "{}{}".format(self._theme.prefix(), full_text)
+        if self._theme.suffix():
+            full_text = "{}{}".format(full_text, self._theme.suffix())
         result.append({
-            u"full_text": widget.full_text()
+            u"full_text": "{}".format(full_text)
         })
 
     def draw(self, widgets, engine=None):

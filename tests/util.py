@@ -29,4 +29,21 @@ class MockWidget(object):
     def full_text(self):
         return self._text
 
+class MockTheme(object):
+    def __init__(self):
+        self._prefix = None
+        self._suffix = None
+
+    def set_prefix(self, value):
+        self._prefix = value
+
+    def set_suffix(self, value):
+        self._suffix = value
+
+    def prefix(self):
+        return self._prefix
+
+    def suffix(self):
+        return self._suffix
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

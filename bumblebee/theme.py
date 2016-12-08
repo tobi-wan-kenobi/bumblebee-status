@@ -14,6 +14,14 @@ class Theme(object):
     def __init__(self, name):
         self._theme = self.load(name)
 
+    def prefix(self):
+        """Return the theme prefix for a widget's full text"""
+        return None
+
+    def suffix(self):
+        """Return the theme suffix for a widget's full text"""
+        return None
+
     def load(self, name):
         """Load and parse a theme file"""
         path = theme_path()

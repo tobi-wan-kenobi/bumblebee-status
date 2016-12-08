@@ -10,10 +10,12 @@ except ImportError:
 
 from bumblebee.output import I3BarOutput
 from tests.util import MockWidget
+from tests.util import MockTheme
 
 class TestI3BarOutput(unittest.TestCase):
     def setUp(self):
-        self.output = I3BarOutput()
+        self.theme = MockTheme()
+        self.output = I3BarOutput(self.theme)
         self.expectedStart = json.dumps({"version": 1, "click_events": True}) + "[\n"
         self.expectedStop = "]\n"
         self.someWidget = MockWidget("foo bar baz")
@@ -46,5 +48,32 @@ class TestI3BarOutput(unittest.TestCase):
         self.output.flush()
         self.assertEquals(",\n", stdout.getvalue())
 
+    @mock.patch("sys.stdout", new_callable=StringIO)
+    def test_prefix(self, stdout):
+        self.theme.set_prefix(" - ")
+        self.output.draw(self.someWidget)
+        result = json.loads(stdout.getvalue())[0]
+        self.assertEquals(result["full_text"], "{}{}".format(
+            self.theme.prefix(), self.someWidget.full_text())
+        )
+
+    @mock.patch("sys.stdout", new_callable=StringIO)
+    def test_suffix(self, stdout):
+        self.theme.set_suffix(" - ")
+        self.output.draw(self.someWidget)
+        result = json.loads(stdout.getvalue())[0]
+        self.assertEquals(result["full_text"], "{}{}".format(
+            self.someWidget.full_text(), self.theme.suffix())
+        )
+
+    @mock.patch("sys.stdout", new_callable=StringIO)
+    def test_bothfix(self, stdout):
+        self.theme.set_suffix(" - ")
+        self.theme.set_prefix(" * ")
+        self.output.draw(self.someWidget)
+        result = json.loads(stdout.getvalue())[0]
+        self.assertEquals(result["full_text"], "{}{}{}".format(
+            self.theme.prefix(), self.someWidget.full_text(), self.theme.suffix())
+        )
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
