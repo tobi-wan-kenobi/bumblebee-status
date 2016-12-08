@@ -40,10 +40,10 @@ class MockTheme(object):
     def set_suffix(self, value):
         self._suffix = value
 
-    def prefix(self):
+    def prefix(self, widget):
         return self._prefix
 
-    def suffix(self):
+    def suffix(self, widget):
         return self._suffix
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

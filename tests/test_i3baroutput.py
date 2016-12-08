@@ -54,7 +54,7 @@ class TestI3BarOutput(unittest.TestCase):
         self.output.draw(self.someWidget)
         result = json.loads(stdout.getvalue())[0]
         self.assertEquals(result["full_text"], "{}{}".format(
-            self.theme.prefix(), self.someWidget.full_text())
+            self.theme.prefix(self.someWidget), self.someWidget.full_text())
         )
 
     @mock.patch("sys.stdout", new_callable=StringIO)
@@ -63,7 +63,7 @@ class TestI3BarOutput(unittest.TestCase):
         self.output.draw(self.someWidget)
         result = json.loads(stdout.getvalue())[0]
         self.assertEquals(result["full_text"], "{}{}".format(
-            self.someWidget.full_text(), self.theme.suffix())
+            self.someWidget.full_text(), self.theme.suffix(self.someWidget))
         )
 
     @mock.patch("sys.stdout", new_callable=StringIO)
@@ -73,7 +73,7 @@ class TestI3BarOutput(unittest.TestCase):
         self.output.draw(self.someWidget)
         result = json.loads(stdout.getvalue())[0]
         self.assertEquals(result["full_text"], "{}{}{}".format(
-            self.theme.prefix(), self.someWidget.full_text(), self.theme.suffix())
+            self.theme.prefix(self.someWidget), self.someWidget.full_text(), self.theme.suffix(self.someWidget))
         )
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
