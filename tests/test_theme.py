@@ -6,7 +6,8 @@ from bumblebee.error import ThemeLoadError
 
 class TestTheme(unittest.TestCase):
     def setUp(self):
-        pass
+        self.nonexistentThemeName = "no-such-theme"
+        self.invalidThemeName = "invalid"
 
     def test_load_valid_theme(self):
         try:
@@ -16,10 +17,10 @@ class TestTheme(unittest.TestCase):
 
     def test_load_nonexistent_theme(self):
         with self.assertRaises(ThemeLoadError):
-            Theme("no-such-theme")
+            Theme(self.nonexistentThemeName)
 
     def test_load_invalid_theme(self):
         with self.assertRaises(ThemeLoadError):
-            Theme("invalid")
+            Theme(self.invalidThemeName)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
