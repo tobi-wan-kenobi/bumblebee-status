@@ -10,7 +10,14 @@ class TestCPUModule(unittest.TestCase):
         self.module = Module(None)
 
     def test_widgets(self):
-        widget = self.module.widgets()
-        assertWidgetAttributes(self, widget)
+        widgets = self.module.widgets()
+        for widget in widgets:
+            assertWidgetAttributes(self, widget)
+
+    def test_update(self):
+        widgets = self.module.widgets()
+        self.module.update(widgets)
+        self.test_widgets()
+        self.assertEquals(widgets, self.module.widgets())
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

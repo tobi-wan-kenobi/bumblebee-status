@@ -12,8 +12,14 @@ class Module(object):
     (e.g. CPU utilization, disk usage, etc.) derive from
     this base class.
     """
-    def __init__(self, engine):
-        pass
+    def __init__(self, engine, widgets):
+        self._widgets = []
+        if widgets:
+            self._widgets = widgets if isinstance(widgets, list) else [widgets]
+
+    def widgets(self):
+        """Return the widgets to draw for this module"""
+        return self._widgets
 
 class Engine(object):
     """Engine for driving the application
@@ -53,11 +59,9 @@ class Engine(object):
         """Start the event loop"""
         self._output.start()
         while self.running():
-            widgets = []
             for module in self._modules:
-                module_widgets = module.widgets()
-                widgets += module_widgets if isinstance(module_widgets, list) else [module_widgets]
-            self._output.draw(widgets=widgets, engine=self)
+                module.update(module.widgets())
+                self._output.draw(widgets=module.widgets(), engine=self)
             self._output.flush()
             if self.running():
                 time.sleep(1)

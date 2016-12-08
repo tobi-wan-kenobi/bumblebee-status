@@ -23,6 +23,9 @@ class MockWidget(object):
     def __init__(self, text):
         self._text = text
 
+    def update(self, widgets):
+        pass
+
     def full_text(self):
         return self._text
 

@@ -12,7 +12,10 @@ class Widget(object):
 
     def full_text(self):
         """Retrieve the full text to display in the widget"""
-        return self._full_text
+        if callable(self._full_text):
+            return self._full_text()
+        else:
+            return self._full_text
 
 class I3BarOutput(object):
     """Manage output according to the i3bar protocol"""
