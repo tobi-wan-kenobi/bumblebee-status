@@ -8,4 +8,8 @@ class ModuleLoadError(BaseError):
     """Raised whenever loading a module fails"""
     pass
 
+class ThemeLoadError(BaseError):
+    """Raised whenever loading a theme fails"""
+    pass
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
