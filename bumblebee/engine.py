@@ -7,7 +7,7 @@ import importlib
 import bumblebee.error
 import bumblebee.modules
 
-def modules():
+def all_modules():
     """Return a list of available modules"""
     result = []
     path = os.path.dirname(bumblebee.modules.__file__)
@@ -28,7 +28,7 @@ class Module(object):
     def __init__(self, engine, config={}, widgets=[]):
         self.name = self.__module__.split(".")[-1]
         self._config = config
-        if not "name" in self._config:
+        if "name" not in self._config:
             self._config["name"] = self.name
         self._widgets = []
         if widgets:
@@ -68,7 +68,7 @@ class Engine(object):
 
     def load_module(self, module_name, config_name=None):
         """Load specified module and return it as object"""
-        if config_name == None:
+        if config_name is None:
             config_name = module_name
         try:
             module = importlib.import_module("bumblebee.modules.{}".format(module_name))

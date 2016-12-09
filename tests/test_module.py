@@ -19,7 +19,7 @@ class TestModule(unittest.TestCase):
         self.anyConfigName = "cfg"
         self.anotherConfigName = "cfg2"
         self.anyModule = Module(engine=None, widgets=self.widget, config={
-            "name": self.anyConfigName, "config": self.config   
+            "name": self.anyConfigName, "config": self.config
         })
         self.anotherModule = Module(engine=None, widgets=self.widget, config={
             "name": self.anotherConfigName, "config": self.config
