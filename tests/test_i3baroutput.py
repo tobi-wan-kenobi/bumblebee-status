@@ -60,7 +60,7 @@ class TestI3BarOutput(unittest.TestCase):
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_prefix(self, stdout):
-        self.theme.set_prefix(" - ")
+        self.theme.attr_prefix = " - "
         self.output.draw(self.someWidget)
         self.output.flush()
         result = json.loads(stdout.getvalue())[0]
@@ -70,7 +70,7 @@ class TestI3BarOutput(unittest.TestCase):
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_suffix(self, stdout):
-        self.theme.set_suffix(" - ")
+        self.theme.attr_suffix = " - "
         self.output.draw(self.someWidget)
         self.output.flush()
         result = json.loads(stdout.getvalue())[0]
@@ -80,8 +80,8 @@ class TestI3BarOutput(unittest.TestCase):
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_bothfix(self, stdout):
-        self.theme.set_suffix(" - ")
-        self.theme.set_prefix(" * ")
+        self.theme.attr_suffix = " - "
+        self.theme.attr_prefix = " * "
         self.output.draw(self.someWidget)
         self.output.flush()
         result = json.loads(stdout.getvalue())[0]
@@ -93,8 +93,8 @@ class TestI3BarOutput(unittest.TestCase):
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_colors(self, stdout):
-        self.theme.set_fg(self.anyColor)
-        self.theme.set_bg(self.anotherColor)
+        self.theme.attr_fg = self.anyColor
+        self.theme.attr_bg = self.anotherColor
         self.output.draw(self.someWidget)
         self.output.flush()
         result = json.loads(stdout.getvalue())[0]
