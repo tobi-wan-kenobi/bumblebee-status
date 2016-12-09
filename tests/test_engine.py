@@ -11,7 +11,7 @@ from tests.util import MockOutput
 class TestEngine(unittest.TestCase):
     def setUp(self):
         self.engine = Engine(config=Config(), output=MockOutput())
-        self.singleWidgetModule = [{"module": "test"}]
+        self.singleWidgetModule = [{"module": "test", "name": "a"}]
         self.testModule = "test"
         self.invalidModule = "no-such-module"
         self.testModuleSpec = "bumblebee.modules.{}".format(self.testModule)

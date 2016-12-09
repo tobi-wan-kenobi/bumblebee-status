@@ -5,9 +5,11 @@ module parameters, etc.) to all other components
 """
 
 import argparse
+import bumblebee.store
 
 MODULE_HELP = ""
 THEME_HELP = ""
+PARAMETER_HELP = ""
 
 def create_parser():
     """Create the argument parser"""
@@ -15,17 +17,24 @@ def create_parser():
     parser.add_argument("-m", "--modules", nargs="+", default=[],
         help=MODULE_HELP)
     parser.add_argument("-t", "--theme", default="default", help=THEME_HELP)
+    parser.add_argument("-p", "--parameters", nargs="+", default=[],
+        help=PARAMETER_HELP)
     return parser
 
-class Config(object):
+class Config(bumblebee.store.Store):
     """Top-level configuration class
 
     Parses commandline arguments and provides non-module
     specific configuration information.
     """
     def __init__(self, args=None):
+        super(Config, self).__init__()
         parser = create_parser()
         self._args = parser.parse_args(args if args else [])
+
+        for param in self._args.parameters:
+            key, value = param.split("=")
+            self.set(key, value)
 
     def modules(self):
         """Return a list of all activated modules"""

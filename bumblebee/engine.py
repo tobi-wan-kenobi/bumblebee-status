@@ -39,6 +39,16 @@ class Module(object):
         """By default, update() is a NOP"""
         pass
 
+    def parameter(self, name, default=None):
+        """Return the config parameter 'name' for this module"""
+        name = "{}.{}".format(self._config_name, name)
+        return self._config.get(name, default)
+
+    def set_config(self, config, name):
+        """Set the config for this module"""
+        self._config = config
+        self._config_name = name
+
 class Engine(object):
     """Engine for driving the application
 
@@ -47,6 +57,7 @@ class Engine(object):
     """
     def __init__(self, config, output=None):
         self._output = output
+        self._config = config
         self._running = True
         self._modules = []
         self.load_modules(config.modules())
@@ -54,16 +65,20 @@ class Engine(object):
     def load_modules(self, modules):
         """Load specified modules and return them as list"""
         for module in modules:
-            self._modules.append(self.load_module(module["module"]))
+            self._modules.append(self.load_module(module["module"], module["name"]))
         return self._modules
 
-    def load_module(self, module_name):
+    def load_module(self, module_name, config_name=None):
         """Load specified module and return it as object"""
+        if config_name == None:
+            config_name = module_name
         try:
             module = importlib.import_module("bumblebee.modules.{}".format(module_name))
         except ImportError as error:
             raise bumblebee.error.ModuleLoadError(error)
-        return getattr(module, "Module")(self)
+        res = getattr(module, "Module")(self)
+        res.set_config(self._config, config_name)
+        return res
 
     def running(self):
         """Check whether the event loop is running"""

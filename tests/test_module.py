@@ -3,16 +3,31 @@
 import unittest
 
 from bumblebee.engine import Module
+from bumblebee.config import Config
 from tests.util import MockWidget
 
 class TestModule(unittest.TestCase):
     def setUp(self):
         self.widget = MockWidget("foo")
+        self.config = Config()
         self.moduleWithoutWidgets = Module(engine=None, widgets=None)
         self.moduleWithOneWidget = Module(engine=None, widgets=self.widget)
         self.moduleWithMultipleWidgets = Module(engine=None,
             widgets=[self.widget, self.widget, self.widget]
         )
+
+        self.anyModule = Module(engine=None, widgets = self.widget)
+        self.anotherModule = Module(engine=None, widgets = self.widget)
+        self.anyConfigName = "cfg"
+        self.anotherConfigName = "cfg2"
+        self.anyKey = "some-parameter"
+        self.anyValue = "value"
+        self.anotherValue = "another-value"
+        self.emptyKey = "i-do-not-exist"
+        self.config.set("{}.{}".format(self.anyConfigName, self.anyKey), self.anyValue)
+        self.config.set("{}.{}".format(self.anotherConfigName, self.anyKey), self.anotherValue)
+        self.anyModule.set_config(self.config, self.anyConfigName)
+        self.anotherModule.set_config(self.config, self.anotherConfigName)
 
     def test_empty_widgets(self):
         self.assertEquals(self.moduleWithoutWidgets.widgets(), [])
@@ -23,3 +38,11 @@ class TestModule(unittest.TestCase):
     def test_multiple_widgets(self):
         for widget in self.moduleWithMultipleWidgets.widgets():
             self.assertEquals(widget, self.widget)
+
+    def test_parameters(self):
+        self.assertEquals(self.anyModule.parameter(self.anyKey), self.anyValue)
+        self.assertEquals(self.anotherModule.parameter(self.anyKey), self.anotherValue)
+
+    def test_default_parameters(self):
+        self.assertEquals(self.anyModule.parameter(self.emptyKey), None)
+        self.assertEquals(self.anyModule.parameter(self.emptyKey, self.anyValue), self.anyValue)
