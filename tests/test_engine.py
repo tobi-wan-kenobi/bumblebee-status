@@ -6,11 +6,11 @@ from bumblebee.error import ModuleLoadError
 from bumblebee.engine import Engine
 from bumblebee.config import Config
 
-from tests.util import MockOutput
+from tests.util import MockOutput, MockInput
 
 class TestEngine(unittest.TestCase):
     def setUp(self):
-        self.engine = Engine(config=Config(), output=MockOutput())
+        self.engine = Engine(config=Config(), output=MockOutput(), inp=MockInput())
         self.singleWidgetModule = [{"module": "test", "name": "a"}]
         self.testModule = "test"
         self.invalidModule = "no-such-module"

@@ -5,23 +5,34 @@ import bumblebee.theme
 import bumblebee.engine
 import bumblebee.config
 import bumblebee.output
+import bumblebee.input
 
 def main():
     config = bumblebee.config.Config(sys.argv[1:])
     theme = bumblebee.theme.Theme(config.theme())
     output = bumblebee.output.I3BarOutput(theme=theme)
+    inp = bumblebee.input.I3BarInput()
     engine = bumblebee.engine.Engine(
         config=config,
         output=output,
+        inp=inp,
     )
 
-    engine.run()
-
-if __name__ == "__main__":
     try:
-        main()
+        engine.run()
+    except KeyboardInterrupt as error:
+        inp.stop()
+        sys.exit(0)
     except bumblebee.error.BaseError as error:
+        inp.stop()
         sys.stderr.write("fatal: {}\n".format(error))
         sys.exit(1)
+    except Exception as error:
+        inp.stop()
+        sys.stderr.write("fatal: {}\n".format(error))
+        sys.exit(2)
+
+if __name__ == "__main__":
+    main()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

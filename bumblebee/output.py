@@ -4,12 +4,14 @@
 
 import sys
 import json
+import uuid
 
 class Widget(object):
     """Represents a single visible block in the status bar"""
     def __init__(self, full_text):
         self._full_text = full_text
         self.module = None
+        self.id = str(uuid.uuid4())
 
     def link_module(self, module):
         """Set the module that spawned this widget
@@ -43,7 +45,7 @@ class I3BarOutput(object):
         """Finish i3bar protocol"""
         sys.stdout.write("]\n")
 
-    def draw(self, widget, engine=None):
+    def draw(self, widget, module=None, engine=None):
         """Draw a single widget"""
         full_text = widget.full_text()
         padding = self._theme.padding(widget)
@@ -68,6 +70,8 @@ class I3BarOutput(object):
             "background": self._theme.bg(widget),
             "separator_block_width": self._theme.separator_block_width(widget),
             "separator": True if separator is None else False,
+            "instance": widget.id,
+            "name": module.id,
         })
 
     def begin(self):

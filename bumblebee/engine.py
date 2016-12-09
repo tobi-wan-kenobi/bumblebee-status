@@ -30,6 +30,7 @@ class Module(object):
         self._config = config
         if "name" not in self._config:
             self._config["name"] = self.name
+        self.id = self._config["name"]
         self._widgets = []
         if widgets:
             self._widgets = widgets if isinstance(widgets, list) else [widgets]
@@ -53,12 +54,14 @@ class Engine(object):
     This class connects input/output, instantiates all
     required modules and drives the "event loop"
     """
-    def __init__(self, config, output=None):
+    def __init__(self, config, output=None, inp=None):
         self._output = output
         self._config = config
         self._running = True
         self._modules = []
+        self.input = inp
         self.load_modules(config.modules())
+        self.input.start()
 
     def load_modules(self, modules):
         """Load specified modules and return them as list"""
@@ -96,12 +99,13 @@ class Engine(object):
                 module.update(module.widgets())
                 for widget in module.widgets():
                     widget.link_module(module)
-                    self._output.draw(widget=widget, engine=self)
+                    self._output.draw(widget=widget, module=module, engine=self)
             self._output.flush()
             self._output.end()
             if self.running():
                 time.sleep(1)
 
         self._output.stop()
+        self.input.stop()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

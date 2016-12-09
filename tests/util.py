@@ -6,8 +6,19 @@ def assertWidgetAttributes(test, widget):
     test.assertTrue(isinstance(widget, Widget))
     test.assertTrue(hasattr(widget, "full_text"))
 
+class MockInput(object):
+    def start(self):
+        pass
+
+    def stop(self):
+        pass
+
+    def register_callback(self, obj, button, cmd):
+        pass
+
 class MockEngine(object):
-    pass
+    def __init__(self):
+        self.input = MockInput()
 
 class MockOutput(object):
     def start(self):
@@ -16,7 +27,7 @@ class MockOutput(object):
     def stop(self):
         pass
 
-    def draw(self, widget, engine):
+    def draw(self, widget, engine, module):
         engine.stop()
 
     def begin(self):
@@ -28,12 +39,17 @@ class MockOutput(object):
     def end(self):
         pass
 
+class MockModule(object):
+    def __init__(self, engine=None, config=None):
+        self.id = None
+
 class MockWidget(Widget):
     def __init__(self, text):
         super(MockWidget, self).__init__(text)
         self._text = text
         self.module = None
         self.attr_state = "state-default"
+        self.id = "none"
 
     def state(self):
         return self.attr_state
