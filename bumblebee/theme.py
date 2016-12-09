@@ -31,10 +31,12 @@ class Theme(object):
         return self._get(widget, "suffix", None)
 
     def loads(self, data):
+        """Initialize the theme from a JSON string"""
         theme = json.loads(data)
         self._init(theme)
 
     def _load_icons(self, name):
+        """Load icons for a theme"""
         path = "{}/icons/".format(theme_path())
         return self.load(name, path=path)
 
@@ -52,7 +54,7 @@ class Theme(object):
             raise bumblebee.error.ThemeLoadError("no such theme: {}".format(name))
 
     def _get(self, widget, name, default=None):
-
+        """Return the config value 'name' for 'widget'"""
         module_theme = self._theme.get(widget.module(), {})
 
         padding = None
@@ -71,6 +73,7 @@ class Theme(object):
     # http://blog.impressiver.com/post/31434674390/deep-merge-multiple-python-dicts
     # nicely done :)
     def _merge(self, target, *args):
+        """Merge two arbitrarily nested data structures"""
         if len(args) > 1:
             for item in args:
                 self._merge(item)

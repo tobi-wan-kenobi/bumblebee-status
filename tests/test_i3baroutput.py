@@ -44,7 +44,7 @@ class TestI3BarOutput(unittest.TestCase):
         self.output.flush()
         result = json.loads(stdout.getvalue())
         for res in result:
-            self.assertEquals(res["full_text"], widget.full_text())
+            self.assertEquals(res["full_text"], self.someWidget.full_text())
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_begin(self, stdout):
@@ -84,7 +84,9 @@ class TestI3BarOutput(unittest.TestCase):
         self.output.flush()
         result = json.loads(stdout.getvalue())[0]
         self.assertEquals(result["full_text"], "{}{}{}".format(
-            self.theme.prefix(self.someWidget), self.someWidget.full_text(), self.theme.suffix(self.someWidget))
-        )
+            self.theme.prefix(self.someWidget),
+            self.someWidget.full_text(),
+            self.theme.suffix(self.someWidget)
+        ))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -22,6 +22,10 @@ class Module(object):
         """Return the widgets to draw for this module"""
         return self._widgets
 
+    def update(self, widgets):
+        """By default, update() is a NOP"""
+        pass
+
 class Engine(object):
     """Engine for driving the application
 

@@ -12,9 +12,14 @@ class Widget(object):
         self._module = None
 
     def set_module(self, module):
+        """Set the module that spawned this widget
+
+        This is done outside the constructor to avoid having to
+        pass in the module name in every concrete module implementation"""
         self._module = module.name
 
     def module(self):
+        """Return the name of the module that spawned this widget"""
         return self._module
 
     def full_text(self):
