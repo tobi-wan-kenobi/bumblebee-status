@@ -10,18 +10,22 @@ class TestTheme(unittest.TestCase):
         self.nonexistentThemeName = "no-such-theme"
         self.invalidThemeName = "invalid"
         self.validThemeName = "test"
-        self.someWidget = MockWidget("foo")
+        self.themedWidget = MockWidget("foo")
         self.theme = Theme(self.validThemeName)
+        self.cycleTheme = Theme("test_cycle")
+        self.anyWidget = MockWidget("bla")
+        self.anotherWidget = MockWidget("blub")
 
+        data = self.theme.data()
         self.widgetTheme = "test-widget"
-        self.defaultColor = "#000000"
-        self.defaultBgColor = "#111111"
-        self.widgetBgColor = "#222222"
-        self.defaultPrefix = "default-prefix"
-        self.defaultSuffix = "default-suffix"
-        self.widgetPrefix = "widget-prefix"
-        self.widgetSuffix = "widget-suffix"
-        self.widgetColor = "#ababab"
+        self.defaultColor = data["defaults"]["fg"]
+        self.defaultBgColor = data["defaults"]["bg"]
+        self.widgetColor = data[self.widgetTheme]["fg"]
+        self.widgetBgColor = data[self.widgetTheme]["bg"]
+        self.defaultPrefix = data["defaults"]["prefix"]
+        self.defaultSuffix = data["defaults"]["suffix"]
+        self.widgetPrefix = data[self.widgetTheme]["prefix"]
+        self.widgetSuffix = data[self.widgetTheme]["suffix"]
 
     def test_load_valid_theme(self):
         try:
@@ -38,23 +42,32 @@ class TestTheme(unittest.TestCase):
             Theme(self.invalidThemeName)
 
     def test_default_prefix(self):
-        self.assertEquals(self.theme.prefix(self.someWidget), self.defaultPrefix)
+        self.assertEquals(self.theme.prefix(self.themedWidget), self.defaultPrefix)
 
     def test_default_suffix(self):
-        self.assertEquals(self.theme.suffix(self.someWidget), self.defaultSuffix)
+        self.assertEquals(self.theme.suffix(self.themedWidget), self.defaultSuffix)
 
     def test_widget_prefix(self):
-        self.someWidget.module = self.widgetTheme
-        self.assertEquals(self.theme.prefix(self.someWidget), self.widgetPrefix)
+        self.themedWidget.module = self.widgetTheme
+        self.assertEquals(self.theme.prefix(self.themedWidget), self.widgetPrefix)
 
     def test_widget_fg(self):
-        self.assertEquals(self.theme.fg(self.someWidget), self.defaultColor)
-        self.someWidget.module = self.widgetTheme
-        self.assertEquals(self.theme.fg(self.someWidget), self.widgetColor)
+        self.assertEquals(self.theme.fg(self.themedWidget), self.defaultColor)
+        self.themedWidget.module = self.widgetTheme
+        self.assertEquals(self.theme.fg(self.themedWidget), self.widgetColor)
 
     def test_widget_bg(self):
-        self.assertEquals(self.theme.bg(self.someWidget), self.defaultBgColor)
-        self.someWidget.module = self.widgetTheme
-        self.assertEquals(self.theme.bg(self.someWidget), self.widgetBgColor)
+        self.assertEquals(self.theme.bg(self.themedWidget), self.defaultBgColor)
+        self.themedWidget.module = self.widgetTheme
+        self.assertEquals(self.theme.bg(self.themedWidget), self.widgetBgColor)
+
+    def test_reset(self):
+        theme = self.cycleTheme
+        data = theme.data()
+        theme.reset()
+        self.assertEquals(theme.fg(self.anyWidget), data["cycle"][0]["fg"])
+        self.assertEquals(theme.fg(self.anotherWidget), data["cycle"][1]["fg"])
+        theme.reset()
+        self.assertEquals(theme.fg(self.anyWidget), data["cycle"][0]["fg"])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -46,6 +46,9 @@ class MockTheme(object):
         self.attr_fg = None
         self.attr_bg = None
 
+    def reset(self):
+        pass
+
     def prefix(self, widget):
         return self.attr_prefix
 

@@ -57,6 +57,7 @@ class I3BarOutput(object):
     def begin(self):
         """Start one output iteration"""
         self._widgets = []
+        self._theme.reset()
 
     def flush(self):
         """Flushes output"""

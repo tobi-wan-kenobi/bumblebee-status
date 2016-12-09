@@ -3,10 +3,6 @@
 	"defaults": {
 		"default-separators": false,
 		"separator-block-width": 0,
-		"cycle": [
-			{ "fg": "#93a1a1", "bg": "#002b36" },
-			{ "fg": "#eee8d5", "bg": "#586e75" }
-		],
 		"warning": {
 			"fg": "#002b36",
 			"bg": "#b58900"
@@ -16,6 +12,10 @@
 			"bg": "#dc322f"
 		}
 	},
+	"cycle": [
+		{ "fg": "#93a1a1", "bg": "#002b36" },
+		{ "fg": "#eee8d5", "bg": "#586e75" }
+	],
 	"dnf": {
 		"good": {
 			"fg": "#002b36",

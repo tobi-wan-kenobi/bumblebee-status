@@ -16,6 +16,7 @@ class Theme(object):
     """Represents a collection of icons and colors"""
     def __init__(self, name):
         self._init(self.load(name))
+        self._widget = None
 
     def _init(self, data):
         """Initialize theme from data structure"""
@@ -23,14 +24,30 @@ class Theme(object):
             self._merge(data, self._load_icons(iconset))
         self._theme = data
         self._defaults = data.get("defaults", {})
+        self._cycles = self._theme.get("cycle", [])
+        self.reset()
+
+    def data(self):
+        """Return the raw theme data"""
+        return self._theme
+
+    def reset(self):
+        """Reset theme to initial state"""
+        self._cycle = self._cycles[0] if len(self._cycles) > 0 else {}
+        self._cycle_idx = 0
+        self._widget = None
 
     def prefix(self, widget):
         """Return the theme prefix for a widget's full text"""
-        return self._get(widget, "prefix", None)
+        padding = self._get(widget, "padding", "")
+        pre = self._get(widget, "prefix", None)
+        return u"{}{}{}".format(padding, pre, padding) if pre else None
 
     def suffix(self, widget):
         """Return the theme suffix for a widget's full text"""
-        return self._get(widget, "suffix", None)
+        padding = self._get(widget, "padding", "")
+        suf = self._get(widget, "suffix", None)
+        return u"{}{}{}".format(padding, suf, padding) if suf else None
 
     def fg(self, widget):
         """Return the foreground color for this widget"""
@@ -65,17 +82,20 @@ class Theme(object):
 
     def _get(self, widget, name, default=None):
         """Return the config value 'name' for 'widget'"""
+
+        if not self._widget:
+            self._widget = widget
+
+        if self._widget != widget:
+            self._widget = widget
+            self._cycle_idx = (self._cycle_idx + 1) % len(self._cycles)
+            self._cycle = self._cycles[self._cycle_idx]
+
         module_theme = self._theme.get(widget.module, {})
 
-        padding = None
-        if name != "padding":
-            padding = self._get(widget, "padding")
-
         value = self._defaults.get(name, default)
+        value = self._cycle.get(name, value)
         value = module_theme.get(name, value)
-
-        if value and padding:
-            value = u"{}{}{}".format(padding, value, padding)
 
         return value
 
