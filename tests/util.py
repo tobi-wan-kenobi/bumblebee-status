@@ -48,6 +48,9 @@ class MockTheme(object):
         self.attr_separator = None
         self.attr_separator_block_width = 0
 
+    def padding(self, widget):
+        return ""
+
     def reset(self):
         pass
 
@@ -57,10 +60,10 @@ class MockTheme(object):
     def separator(self, widget):
         return self.attr_separator
 
-    def prefix(self, widget):
+    def prefix(self, widget, default=None):
         return self.attr_prefix
 
-    def suffix(self, widget):
+    def suffix(self, widget, default=None):
         return self.attr_suffix
 
     def fg(self, widget):

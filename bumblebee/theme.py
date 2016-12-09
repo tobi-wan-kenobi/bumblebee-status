@@ -38,17 +38,21 @@ class Theme(object):
         self._widget = None
         self._prevbg = None
 
-    def prefix(self, widget):
-        """Return the theme prefix for a widget's full text"""
-        padding = self._get(widget, "padding", "")
-        pre = self._get(widget, "prefix", None)
-        return u"{}{}{}".format(padding, pre, padding) if pre else None
+    def padding(self, widget):
+        """Return padding for widget"""
+        return self._get(widget, "padding", "")
 
-    def suffix(self, widget):
+    def prefix(self, widget, default=None):
+        """Return the theme prefix for a widget's full text"""
+        padding = self.padding(widget)
+        pre = self._get(widget, "prefix", None)
+        return u"{}{}{}".format(padding, pre, padding) if pre else default
+
+    def suffix(self, widget, default=None):
         """Return the theme suffix for a widget's full text"""
         padding = self._get(widget, "padding", "")
         suf = self._get(widget, "suffix", None)
-        return u"{}{}{}".format(padding, suf, padding) if suf else None
+        return u"{}{}{}".format(padding, suf, padding) if suf else default
 
     def fg(self, widget):
         """Return the foreground color for this widget"""

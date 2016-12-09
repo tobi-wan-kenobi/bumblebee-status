@@ -42,8 +42,9 @@ class I3BarOutput(object):
     def draw(self, widget, engine=None):
         """Draw a single widget"""
         full_text = widget.full_text()
-        prefix = self._theme.prefix(widget)
-        suffix = self._theme.suffix(widget)
+        padding = self._theme.padding(widget)
+        prefix = self._theme.prefix(widget, padding)
+        suffix = self._theme.suffix(widget, padding)
         if prefix:
             full_text = u"{}{}".format(prefix, full_text)
         if suffix:
