@@ -20,6 +20,8 @@ class TestGenericModules(unittest.TestCase):
         for mod in self.objects:
             widgets = self.objects[mod].widgets()
             for widget in widgets:
+                widget.link_module(self.objects[mod])
+                self.assertEquals(widget.module, mod)
                 assertWidgetAttributes(self, widget)
 
     def test_update(self):

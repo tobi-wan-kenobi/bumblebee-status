@@ -31,13 +31,10 @@ class MockOutput(object):
 class MockWidget(object):
     def __init__(self, text):
         self._text = text
-        self.attr_module = None
+        self.module = None
 
     def update(self, widgets):
         pass
-
-    def module(self):
-        return self.attr_module
 
     def full_text(self):
         return self._text

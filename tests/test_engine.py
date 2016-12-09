@@ -26,16 +26,16 @@ class TestEngine(unittest.TestCase):
         self.assertFalse(self.engine.running())
 
     def test_load_module(self):
-        module = self.engine.load_module(self.testModule)
+        module = self.engine._load_module(self.testModule)
         self.assertEquals(module.__module__, self.testModuleSpec)
 
     def test_load_invalid_module(self):
         with self.assertRaises(ModuleLoadError):
-            self.engine.load_module(self.invalidModule)
+            self.engine._load_module(self.invalidModule)
 
     def test_load_none(self):
         with self.assertRaises(ModuleLoadError):
-            self.engine.load_module(None)
+            self.engine._load_module(None)
 
     def test_load_modules(self):
         modules = self.engine.load_modules(self.testModules)

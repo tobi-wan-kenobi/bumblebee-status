@@ -44,17 +44,17 @@ class TestTheme(unittest.TestCase):
         self.assertEquals(self.theme.suffix(self.someWidget), self.defaultSuffix)
 
     def test_widget_prefix(self):
-        self.someWidget.attr_module = self.widgetTheme
+        self.someWidget.module = self.widgetTheme
         self.assertEquals(self.theme.prefix(self.someWidget), self.widgetPrefix)
 
     def test_widget_fg(self):
         self.assertEquals(self.theme.fg(self.someWidget), self.defaultColor)
-        self.someWidget.attr_module = self.widgetTheme
+        self.someWidget.module = self.widgetTheme
         self.assertEquals(self.theme.fg(self.someWidget), self.widgetColor)
 
     def test_widget_bg(self):
         self.assertEquals(self.theme.bg(self.someWidget), self.defaultBgColor)
-        self.someWidget.attr_module = self.widgetTheme
+        self.someWidget.module = self.widgetTheme
         self.assertEquals(self.theme.bg(self.someWidget), self.widgetBgColor)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

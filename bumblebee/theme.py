@@ -63,7 +63,7 @@ class Theme(object):
 
     def _get(self, widget, name, default=None):
         """Return the config value 'name' for 'widget'"""
-        module_theme = self._theme.get(widget.module(), {})
+        module_theme = self._theme.get(widget.module, {})
 
         padding = None
         if name != "padding":

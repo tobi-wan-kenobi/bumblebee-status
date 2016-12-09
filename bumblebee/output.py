@@ -9,18 +9,14 @@ class Widget(object):
     """Represents a single visible block in the status bar"""
     def __init__(self, full_text):
         self._full_text = full_text
-        self._module = None
+        self.module = None
 
-    def set_module(self, module):
+    def link_module(self, module):
         """Set the module that spawned this widget
 
         This is done outside the constructor to avoid having to
         pass in the module name in every concrete module implementation"""
-        self._module = module.name
-
-    def module(self):
-        """Return the name of the module that spawned this widget"""
-        return self._module
+        self.module = module.name
 
     def full_text(self):
         """Retrieve the full text to display in the widget"""

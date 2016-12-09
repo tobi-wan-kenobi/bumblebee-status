@@ -63,10 +63,10 @@ class Engine(object):
     def load_modules(self, modules):
         """Load specified modules and return them as list"""
         for module in modules:
-            self._modules.append(self.load_module(module["module"], module["name"]))
+            self._modules.append(self._load_module(module["module"], module["name"]))
         return self._modules
 
-    def load_module(self, module_name, config_name=None):
+    def _load_module(self, module_name, config_name=None):
         """Load specified module and return it as object"""
         if config_name is None:
             config_name = module_name
@@ -95,7 +95,7 @@ class Engine(object):
             for module in self._modules:
                 module.update(module.widgets())
                 for widget in module.widgets():
-                    widget.set_module(module)
+                    widget.link_module(module)
                     self._output.draw(widget=widget, engine=self)
             self._output.flush()
             self._output.end()
