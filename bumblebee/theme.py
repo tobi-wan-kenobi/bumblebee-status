@@ -1,3 +1,5 @@
+# pylint: disable=C0103
+
 """Theme support"""
 
 import os
