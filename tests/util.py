@@ -30,6 +30,7 @@ class MockOutput(object):
 
 class MockWidget(Widget):
     def __init__(self, text):
+        super(MockWidget, self).__init__(text)
         self._text = text
         self.module = None
         self.attr_state = "state-default"

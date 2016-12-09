@@ -82,11 +82,12 @@ class TestTheme(unittest.TestCase):
         theme = self.theme
         data = theme.data()
 
-        self.assertEquals(theme.separator_block_width(self.anyWidget), data["defaults"]["separator-block-width"])
+        self.assertEquals(theme.separator_block_width(self.anyWidget),
+            data["defaults"]["separator-block-width"]
+        )
 
     def test_separator(self):
         for theme in [self.theme, self.cycleTheme]:
-            data = theme.data()
             theme.reset()
             prev_bg = theme.bg(self.anyWidget)
             theme.bg(self.anotherWidget)

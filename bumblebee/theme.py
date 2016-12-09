@@ -17,6 +17,9 @@ class Theme(object):
     def __init__(self, name):
         self._init(self.load(name))
         self._widget = None
+        self._cycle_idx = 0
+        self._cycle = {}
+        self._prevbg = None
 
     def _init(self, data):
         """Initialize theme from data structure"""
@@ -67,9 +70,11 @@ class Theme(object):
         return self._get(widget, "separator", None)
 
     def separator_fg(self, widget):
+        """Return the separator's foreground/text color"""
         return self.bg(widget)
 
     def separator_bg(self, widget):
+        """Return the separator's background color"""
         return self._prevbg
 
     def separator_block_width(self, widget):

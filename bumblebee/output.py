@@ -19,6 +19,7 @@ class Widget(object):
         self.module = module.name
 
     def state(self):
+        """Return the widget's state"""
         return "state-default"
 
     def full_text(self):
