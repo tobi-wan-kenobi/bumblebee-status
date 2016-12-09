@@ -2,6 +2,12 @@
 	"icons": [ "test" ],
 	"defaults": {
 		"prefix": "default-prefix",
-		"suffix": "default-suffix"
+		"suffix": "default-suffix",
+		"fg": "#000000",
+		"bg": "#111111"
+	},
+	"test-widget": {
+		"fg": "#ababab",
+		"bg": "#222222"
 	}
 }

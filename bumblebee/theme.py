@@ -30,6 +30,14 @@ class Theme(object):
         """Return the theme suffix for a widget's full text"""
         return self._get(widget, "suffix", None)
 
+    def fg(self, widget):
+        """Return the foreground color for this widget"""
+        return self._get(widget, "fg", None)
+
+    def bg(self, widget):
+        """Return the background color for this widget"""
+        return self._get(widget, "bg", None)
+
     def loads(self, data):
         """Initialize the theme from a JSON string"""
         theme = json.loads(data)

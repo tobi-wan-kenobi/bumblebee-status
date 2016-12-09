@@ -53,7 +53,9 @@ class I3BarOutput(object):
         if suffix:
             full_text = u"{}{}".format(full_text, suffix)
         self._widgets.append({
-            u"full_text": u"{}".format(full_text)
+            u"full_text": u"{}".format(full_text),
+            "color": self._theme.fg(widget),
+            "background": self._theme.bg(widget),
         })
 
     def begin(self):

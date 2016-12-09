@@ -49,6 +49,8 @@ class MockTheme(object):
     def __init__(self):
         self._prefix = None
         self._suffix = None
+        self._fg = None
+        self._bg = None
 
     def set_prefix(self, value):
         self._prefix = value
@@ -56,10 +58,22 @@ class MockTheme(object):
     def set_suffix(self, value):
         self._suffix = value
 
+    def set_fg(self, value):
+        self._fg = value
+
+    def set_bg(self, value):
+        self._bg = value
+
     def prefix(self, widget):
         return self._prefix
 
     def suffix(self, widget):
         return self._suffix
+
+    def fg(self, widget):
+        return self._fg
+
+    def bg(self, widget):
+        return self._bg
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

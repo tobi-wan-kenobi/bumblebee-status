@@ -19,6 +19,8 @@ class TestI3BarOutput(unittest.TestCase):
         self.expectedStart = json.dumps({"version": 1, "click_events": True}) + "[\n"
         self.expectedStop = "]\n"
         self.someWidget = MockWidget("foo bar baz")
+        self.anyColor = "#ababab"
+        self.anotherColor = "#cccccc"
 
     @mock.patch("sys.stdout", new_callable=StringIO)
     def test_start(self, stdout):
@@ -88,5 +90,15 @@ class TestI3BarOutput(unittest.TestCase):
             self.someWidget.full_text(),
             self.theme.suffix(self.someWidget)
         ))
+
+    @mock.patch("sys.stdout", new_callable=StringIO)
+    def test_colors(self, stdout):
+        self.theme.set_fg(self.anyColor)
+        self.theme.set_bg(self.anotherColor)
+        self.output.draw(self.someWidget)
+        self.output.flush()
+        result = json.loads(stdout.getvalue())[0]
+        self.assertEquals(result["color"], self.anyColor)
+        self.assertEquals(result["background"], self.anotherColor)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

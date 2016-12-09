@@ -14,10 +14,14 @@ class TestTheme(unittest.TestCase):
         self.theme = Theme(self.validThemeName)
 
         self.widgetTheme = "test-widget"
+        self.defaultColor = "#000000"
+        self.defaultBgColor = "#111111"
+        self.widgetBgColor = "#222222"
         self.defaultPrefix = "default-prefix"
         self.defaultSuffix = "default-suffix"
         self.widgetPrefix = "widget-prefix"
         self.widgetSuffix = "widget-suffix"
+        self.widgetColor = "#ababab"
 
     def test_load_valid_theme(self):
         try:
@@ -42,5 +46,15 @@ class TestTheme(unittest.TestCase):
     def test_widget_prefix(self):
         self.someWidget.set_module(self.widgetTheme)
         self.assertEquals(self.theme.prefix(self.someWidget), self.widgetPrefix)
+
+    def test_widget_fg(self):
+        self.assertEquals(self.theme.fg(self.someWidget), self.defaultColor)
+        self.someWidget.set_module(self.widgetTheme)
+        self.assertEquals(self.theme.fg(self.someWidget), self.widgetColor)
+
+    def test_widget_bg(self):
+        self.assertEquals(self.theme.bg(self.someWidget), self.defaultBgColor)
+        self.someWidget.set_module(self.widgetTheme)
+        self.assertEquals(self.theme.bg(self.someWidget), self.widgetBgColor)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
