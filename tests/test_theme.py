@@ -61,6 +61,14 @@ class TestTheme(unittest.TestCase):
         self.themedWidget.module = self.widgetTheme
         self.assertEquals(self.theme.bg(self.themedWidget), self.widgetBgColor)
 
+    def test_absent_cycle(self):
+        theme = self.theme
+        try:
+            theme.fg(self.anyWidget)
+            theme.fg(self.anotherWidget)
+        except Exception as e:
+            self.fail(e)
+
     def test_reset(self):
         theme = self.cycleTheme
         data = theme.data()
@@ -69,5 +77,21 @@ class TestTheme(unittest.TestCase):
         self.assertEquals(theme.fg(self.anotherWidget), data["cycle"][1]["fg"])
         theme.reset()
         self.assertEquals(theme.fg(self.anyWidget), data["cycle"][0]["fg"])
+
+    def test_separator_block_width(self):
+        theme = self.theme
+        data = theme.data()
+
+        self.assertEquals(theme.separator_block_width(self.anyWidget), data["defaults"]["separator-block-width"])
+
+    def test_separator(self):
+        for theme in [self.theme, self.cycleTheme]:
+            data = theme.data()
+            theme.reset()
+            prev_bg = theme.bg(self.anyWidget)
+            theme.bg(self.anotherWidget)
+
+            self.assertEquals(theme.separator_fg(self.anotherWidget), theme.bg(self.anotherWidget))
+            self.assertEquals(theme.separator_bg(self.anotherWidget), prev_bg)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

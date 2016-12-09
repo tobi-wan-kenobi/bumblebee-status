@@ -36,6 +36,7 @@ class Theme(object):
         self._cycle = self._cycles[0] if len(self._cycles) > 0 else {}
         self._cycle_idx = 0
         self._widget = None
+        self._prevbg = None
 
     def prefix(self, widget):
         """Return the theme prefix for a widget's full text"""
@@ -56,6 +57,20 @@ class Theme(object):
     def bg(self, widget):
         """Return the background color for this widget"""
         return self._get(widget, "bg", None)
+
+    def separator(self, widget):
+        """Return the separator between widgets"""
+        return self._get(widget, "separator", None)
+
+    def separator_fg(self, widget):
+        return self.bg(widget)
+
+    def separator_bg(self, widget):
+        return self._prevbg
+
+    def separator_block_width(self, widget):
+        """Return the SBW"""
+        return self._get(widget, "separator-block-width", None)
 
     def loads(self, data):
         """Initialize the theme from a JSON string"""
@@ -87,9 +102,11 @@ class Theme(object):
             self._widget = widget
 
         if self._widget != widget:
+            self._prevbg = self.bg(self._widget)
             self._widget = widget
-            self._cycle_idx = (self._cycle_idx + 1) % len(self._cycles)
-            self._cycle = self._cycles[self._cycle_idx]
+            if len(self._cycles) > 0:
+                self._cycle_idx = (self._cycle_idx + 1) % len(self._cycles)
+                self._cycle = self._cycles[self._cycle_idx]
 
         module_theme = self._theme.get(widget.module, {})
 

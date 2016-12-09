@@ -45,9 +45,17 @@ class MockTheme(object):
         self.attr_suffix = None
         self.attr_fg = None
         self.attr_bg = None
+        self.attr_separator = None
+        self.attr_separator_block_width = 0
 
     def reset(self):
         pass
+
+    def separator_block_width(self, widget):
+        return self.attr_separator_block_width
+
+    def separator(self, widget):
+        return self.attr_separator
 
     def prefix(self, widget):
         return self.attr_prefix

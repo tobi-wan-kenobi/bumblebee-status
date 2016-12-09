@@ -48,10 +48,21 @@ class I3BarOutput(object):
             full_text = u"{}{}".format(prefix, full_text)
         if suffix:
             full_text = u"{}{}".format(full_text, suffix)
+        separator = self._theme.separator(widget)
+        if separator:
+            self._widgets.append({
+                u"full_text": separator,
+                "separator": False,
+                "color": self._theme.separator_fg(widget),
+                "background": self._theme.separator_bg(widget),
+                "separator_block_width": self._theme.separator_block_width(widget),
+            })
         self._widgets.append({
-            u"full_text": u"{}".format(full_text),
+            u"full_text": full_text,
             "color": self._theme.fg(widget),
             "background": self._theme.bg(widget),
+            "separator_block_width": self._theme.separator_block_width(widget),
+            "separator": True if separator is None else False,
         })
 
     def begin(self):

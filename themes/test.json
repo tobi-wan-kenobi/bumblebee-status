@@ -4,7 +4,9 @@
 		"prefix": "default-prefix",
 		"suffix": "default-suffix",
 		"fg": "#000000",
-		"bg": "#111111"
+		"bg": "#111111",
+		"separator": " * ",
+		"separator-block-width": 10
 	},
 	"test-widget": {
 		"fg": "#ababab",
