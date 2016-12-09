@@ -1,10 +1,20 @@
 # pylint: disable=C0103,C0111,W0613
 
+import shlex
+import subprocess
+
 from bumblebee.output import Widget
 
 def assertWidgetAttributes(test, widget):
     test.assertTrue(isinstance(widget, Widget))
     test.assertTrue(hasattr(widget, "full_text"))
+
+def assertPopen(output, cmd):
+    res = shlex.split(cmd)
+    output.assert_called_with(res,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.STDOUT
+    )
 
 class MockInput(object):
     def start(self):

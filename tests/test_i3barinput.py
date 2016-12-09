@@ -7,12 +7,12 @@ import mock
 
 import bumblebee.input
 from bumblebee.input import I3BarInput
-from tests.util import MockWidget, MockModule
+from tests.util import MockWidget, MockModule, assertPopen
 
 class TestI3BarInput(unittest.TestCase):
     def setUp(self):
-        self.inp = I3BarInput()
-        self.inp.need_event = True
+        self.input = I3BarInput()
+        self.input.need_event = True
         self.anyModule = MockModule()
         self.anyWidget = MockWidget("test")
         self.anyModule.id = "test-module"
@@ -24,16 +24,16 @@ class TestI3BarInput(unittest.TestCase):
     @mock.patch("sys.stdin")
     def test_basic_read_event(self, mock_input):
         mock_input.readline.return_value = ""
-        self.inp.start()
-        self.inp.stop()
+        self.input.start()
+        self.input.stop()
         mock_input.readline.assert_any_call()
 
     @mock.patch("sys.stdin")
     def test_ignore_invalid_data(self, mock_input):
         mock_input.readline.return_value = "garbage"
-        self.inp.start()
-        self.assertEquals(self.inp.alive(), True)
-        self.assertEquals(self.inp.stop(), True)
+        self.input.start()
+        self.assertEquals(self.input.alive(), True)
+        self.assertEquals(self.input.stop(), True)
         mock_input.readline.assert_any_call()
 
     @mock.patch("sys.stdin")
@@ -43,9 +43,9 @@ class TestI3BarInput(unittest.TestCase):
             "instance": None,
             "button": None,
         })
-        self.inp.start()
-        self.assertEquals(self.inp.alive(), True)
-        self.assertEquals(self.inp.stop(), True)
+        self.input.start()
+        self.assertEquals(self.input.alive(), True)
+        self.assertEquals(self.input.stop(), True)
         mock_input.readline.assert_any_call()
 
     @mock.patch("sys.stdin")
@@ -55,9 +55,9 @@ class TestI3BarInput(unittest.TestCase):
             "instance": "someinstance",
             "button": bumblebee.input.LEFT_MOUSE,
         })
-        self.inp.register_callback(None, button=1, cmd=self.callback)
-        self.inp.start()
-        self.assertEquals(self.inp.stop(), True)
+        self.input.register_callback(None, button=1, cmd=self.callback)
+        self.input.start()
+        self.assertEquals(self.input.stop(), True)
         mock_input.readline.assert_any_call()
         self.assertTrue(self._called > 0)
 
@@ -68,9 +68,9 @@ class TestI3BarInput(unittest.TestCase):
             "instance": "someinstance",
             "button": bumblebee.input.RIGHT_MOUSE,
         })
-        self.inp.register_callback(None, button=1, cmd=self.callback)
-        self.inp.start()
-        self.assertEquals(self.inp.stop(), True)
+        self.input.register_callback(None, button=1, cmd=self.callback)
+        self.input.start()
+        self.assertEquals(self.input.stop(), True)
         mock_input.readline.assert_any_call()
         self.assertTrue(self._called == 0)
 
@@ -81,9 +81,9 @@ class TestI3BarInput(unittest.TestCase):
             "instance": None,
             "button": bumblebee.input.LEFT_MOUSE,
         })
-        self.inp.register_callback(self.anyModule, button=1, cmd=self.callback)
-        self.inp.start()
-        self.assertEquals(self.inp.stop(), True)
+        self.input.register_callback(self.anyModule, button=1, cmd=self.callback)
+        self.input.start()
+        self.assertEquals(self.input.stop(), True)
         mock_input.readline.assert_any_call()
         self.assertTrue(self._called > 0)
 
@@ -94,9 +94,9 @@ class TestI3BarInput(unittest.TestCase):
             "instance": self.anyWidget.id,
             "button": bumblebee.input.LEFT_MOUSE,
         })
-        self.inp.register_callback(self.anyWidget, button=1, cmd=self.callback)
-        self.inp.start()
-        self.assertEquals(self.inp.stop(), True)
+        self.input.register_callback(self.anyWidget, button=1, cmd=self.callback)
+        self.input.start()
+        self.assertEquals(self.input.stop(), True)
         mock_input.readline.assert_any_call()
         self.assertTrue(self._called > 0)
 
@@ -108,13 +108,10 @@ class TestI3BarInput(unittest.TestCase):
             "instance": self.anyWidget.id,
             "button": bumblebee.input.LEFT_MOUSE,
         })
-        self.inp.register_callback(self.anyWidget, button=1, cmd="echo")
-        self.inp.start()
-        self.assertEquals(self.inp.stop(), True)
+        self.input.register_callback(self.anyWidget, button=1, cmd="echo")
+        self.input.start()
+        self.assertEquals(self.input.stop(), True)
         mock_input.readline.assert_any_call()
-        mock_output.assert_called_with(["echo"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.STDOUT
-        )
+        assertPopen(mock_output, "echo")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
