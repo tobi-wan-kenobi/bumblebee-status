@@ -113,10 +113,16 @@ class Theme(object):
                 self._cycle = self._cycles[self._cycle_idx]
 
         module_theme = self._theme.get(widget.module, {})
+        if name != widget.state():
+            # avoid infinite recursion
+            state_theme = self._get(widget, widget.state(), {})
+        else:
+            state_theme = {}
 
         value = self._defaults.get(name, default)
         value = self._cycle.get(name, value)
         value = module_theme.get(name, value)
+        value = state_theme.get(name, value)
 
         return value
 

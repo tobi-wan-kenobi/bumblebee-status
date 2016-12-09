@@ -10,7 +10,7 @@ class TestTheme(unittest.TestCase):
         self.nonexistentThemeName = "no-such-theme"
         self.invalidThemeName = "invalid"
         self.validThemeName = "test"
-        self.themedWidget = MockWidget("foo")
+        self.themedWidget = MockWidget("bla")
         self.theme = Theme(self.validThemeName)
         self.cycleTheme = Theme("test_cycle")
         self.anyWidget = MockWidget("bla")
@@ -18,6 +18,7 @@ class TestTheme(unittest.TestCase):
 
         data = self.theme.data()
         self.widgetTheme = "test-widget"
+        self.themedWidget.module = self.widgetTheme
         self.defaultColor = data["defaults"]["fg"]
         self.defaultBgColor = data["defaults"]["bg"]
         self.widgetColor = data[self.widgetTheme]["fg"]
@@ -42,24 +43,23 @@ class TestTheme(unittest.TestCase):
             Theme(self.invalidThemeName)
 
     def test_default_prefix(self):
-        self.assertEquals(self.theme.prefix(self.themedWidget), self.defaultPrefix)
+        self.assertEquals(self.theme.prefix(self.anyWidget), self.defaultPrefix)
 
     def test_default_suffix(self):
-        self.assertEquals(self.theme.suffix(self.themedWidget), self.defaultSuffix)
+        self.assertEquals(self.theme.suffix(self.anyWidget), self.defaultSuffix)
 
     def test_widget_prefix(self):
-        self.themedWidget.module = self.widgetTheme
         self.assertEquals(self.theme.prefix(self.themedWidget), self.widgetPrefix)
 
     def test_widget_fg(self):
-        self.assertEquals(self.theme.fg(self.themedWidget), self.defaultColor)
-        self.themedWidget.module = self.widgetTheme
-        self.assertEquals(self.theme.fg(self.themedWidget), self.widgetColor)
+        self.assertEquals(self.theme.fg(self.anyWidget), self.defaultColor)
+        self.anyWidget.module = self.widgetTheme
+        self.assertEquals(self.theme.fg(self.anyWidget), self.widgetColor)
 
     def test_widget_bg(self):
-        self.assertEquals(self.theme.bg(self.themedWidget), self.defaultBgColor)
-        self.themedWidget.module = self.widgetTheme
-        self.assertEquals(self.theme.bg(self.themedWidget), self.widgetBgColor)
+        self.assertEquals(self.theme.bg(self.anyWidget), self.defaultBgColor)
+        self.anyWidget.module = self.widgetTheme
+        self.assertEquals(self.theme.bg(self.anyWidget), self.widgetBgColor)
 
     def test_absent_cycle(self):
         theme = self.theme
@@ -93,5 +93,22 @@ class TestTheme(unittest.TestCase):
 
             self.assertEquals(theme.separator_fg(self.anotherWidget), theme.bg(self.anotherWidget))
             self.assertEquals(theme.separator_bg(self.anotherWidget), prev_bg)
+
+    def test_state(self):
+        theme = self.theme
+        data = theme.data()
+
+        self.assertEquals(theme.fg(self.anyWidget), data["defaults"]["fg"])
+        self.assertEquals(theme.bg(self.anyWidget), data["defaults"]["bg"])
+
+        self.anyWidget.attr_state = "critical"
+        self.assertEquals(theme.fg(self.anyWidget), data["defaults"]["critical"]["fg"])
+        self.assertEquals(theme.bg(self.anyWidget), data["defaults"]["critical"]["bg"])
+
+        self.themedWidget.attr_state = "critical"
+        self.assertEquals(theme.fg(self.themedWidget), data[self.widgetTheme]["critical"]["fg"])
+        # if elements are missing in the state theme, they are taken from the
+        # widget theme instead (i.e. no fallback to a more general state theme)
+        self.assertEquals(theme.bg(self.themedWidget), data[self.widgetTheme]["bg"])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

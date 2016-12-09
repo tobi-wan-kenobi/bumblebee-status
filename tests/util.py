@@ -28,10 +28,14 @@ class MockOutput(object):
     def end(self):
         pass
 
-class MockWidget(object):
+class MockWidget(Widget):
     def __init__(self, text):
         self._text = text
         self.module = None
+        self.attr_state = "state-default"
+
+    def state(self):
+        return self.attr_state
 
     def update(self, widgets):
         pass

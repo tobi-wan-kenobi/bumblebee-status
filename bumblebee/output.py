@@ -18,6 +18,9 @@ class Widget(object):
         pass in the module name in every concrete module implementation"""
         self.module = module.name
 
+    def state(self):
+        return "state-default"
+
     def full_text(self):
         """Retrieve the full text to display in the widget"""
         if callable(self._full_text):

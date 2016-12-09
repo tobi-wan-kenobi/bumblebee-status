@@ -6,10 +6,17 @@
 		"fg": "#000000",
 		"bg": "#111111",
 		"separator": " * ",
-		"separator-block-width": 10
+		"separator-block-width": 10,
+		"critical": {
+			"fg": "#ffffff",
+			"bg": "#010101"
+		}
 	},
 	"test-widget": {
 		"fg": "#ababab",
-		"bg": "#222222"
+		"bg": "#222222",
+		"critical": {
+			"fg": "#bababa"
+		}
 	}
 }
