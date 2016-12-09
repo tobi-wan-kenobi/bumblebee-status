@@ -15,15 +15,12 @@ def default_format(module):
     return default
 
 class Module(bumblebee.engine.Module):
-    def __init__(self, engine):
-        super(Module, self).__init__(engine,
+    def __init__(self, engine, config):
+        super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.get_time)
         )
         module = self.__module__.split(".")[-1]
-
-        self._fmt = default_format(module)
-
-#        self._fmt = self._config.parameter("format", default_format(module))
+        self._fmt = self.parameter("format", default_format(module))
 
     def get_time(self):
         return datetime.datetime.now().strftime(self._fmt)

@@ -5,15 +5,17 @@ import importlib
 
 from bumblebee.modules.cpu import Module
 from bumblebee.engine import modules
+from bumblebee.config import Config
 from tests.util import assertWidgetAttributes, MockEngine
 
 class TestGenericModules(unittest.TestCase):
     def setUp(self):
         engine = MockEngine()
+        config = Config()
         self.objects = {}
         for mod in modules():
             cls = importlib.import_module("bumblebee.modules.{}".format(mod["name"]))
-            self.objects[mod["name"]] = getattr(cls, "Module")(engine)
+            self.objects[mod["name"]] = getattr(cls, "Module")(engine, { "config": config })
 
     def test_widgets(self):
         for mod in self.objects:

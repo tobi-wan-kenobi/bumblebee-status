@@ -16,18 +16,20 @@ class TestModule(unittest.TestCase):
             widgets=[self.widget, self.widget, self.widget]
         )
 
-        self.anyModule = Module(engine=None, widgets = self.widget)
-        self.anotherModule = Module(engine=None, widgets = self.widget)
         self.anyConfigName = "cfg"
         self.anotherConfigName = "cfg2"
+        self.anyModule = Module(engine=None, widgets=self.widget, config={
+            "name": self.anyConfigName, "config": self.config   
+        })
+        self.anotherModule = Module(engine=None, widgets=self.widget, config={
+            "name": self.anotherConfigName, "config": self.config
+        })
         self.anyKey = "some-parameter"
         self.anyValue = "value"
         self.anotherValue = "another-value"
         self.emptyKey = "i-do-not-exist"
         self.config.set("{}.{}".format(self.anyConfigName, self.anyKey), self.anyValue)
         self.config.set("{}.{}".format(self.anotherConfigName, self.anyKey), self.anotherValue)
-        self.anyModule.set_config(self.config, self.anyConfigName)
-        self.anotherModule.set_config(self.config, self.anotherConfigName)
 
     def test_empty_widgets(self):
         self.assertEquals(self.moduleWithoutWidgets.widgets(), [])

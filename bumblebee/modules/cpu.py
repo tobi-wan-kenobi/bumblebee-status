@@ -6,8 +6,8 @@ import psutil
 import bumblebee.engine
 
 class Module(bumblebee.engine.Module):
-    def __init__(self, engine):
-        super(Module, self).__init__(engine,
+    def __init__(self, engine, config):
+        super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.utilization)
         )
         self._utilization = psutil.cpu_percent(percpu=False)

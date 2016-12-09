@@ -25,8 +25,11 @@ class Module(object):
     (e.g. CPU utilization, disk usage, etc.) derive from
     this base class.
     """
-    def __init__(self, engine, widgets):
+    def __init__(self, engine, config={}, widgets=[]):
         self.name = self.__module__.split(".")[-1]
+        self._config = config
+        if not "name" in self._config:
+            self._config["name"] = self.name
         self._widgets = []
         if widgets:
             self._widgets = widgets if isinstance(widgets, list) else [widgets]
@@ -41,13 +44,8 @@ class Module(object):
 
     def parameter(self, name, default=None):
         """Return the config parameter 'name' for this module"""
-        name = "{}.{}".format(self._config_name, name)
-        return self._config.get(name, default)
-
-    def set_config(self, config, name):
-        """Set the config for this module"""
-        self._config = config
-        self._config_name = name
+        name = "{}.{}".format(self._config["name"], name)
+        return self._config["config"].get(name, default)
 
 class Engine(object):
     """Engine for driving the application
@@ -76,9 +74,10 @@ class Engine(object):
             module = importlib.import_module("bumblebee.modules.{}".format(module_name))
         except ImportError as error:
             raise bumblebee.error.ModuleLoadError(error)
-        res = getattr(module, "Module")(self)
-        res.set_config(self._config, config_name)
-        return res
+        return getattr(module, "Module")(self, {
+            "name": config_name,
+            "config": self._config
+        })
 
     def running(self):
         """Check whether the event loop is running"""
