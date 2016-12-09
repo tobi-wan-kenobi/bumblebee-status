@@ -1,8 +1,21 @@
 """Core application engine"""
 
+import os
 import time
+import pkgutil
 import importlib
 import bumblebee.error
+import bumblebee.modules
+
+def modules():
+    """Return a list of available modules"""
+    result = []
+    path = os.path.dirname(bumblebee.modules.__file__)
+    for mod in [name for _, name, _ in pkgutil.iter_modules([path])]:
+        result.append({
+            "name": mod
+        })
+    return result
 
 class Module(object):
     """Module instance base class

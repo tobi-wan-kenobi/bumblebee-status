@@ -6,6 +6,9 @@ def assertWidgetAttributes(test, widget):
     test.assertTrue(isinstance(widget, Widget))
     test.assertTrue(hasattr(widget, "full_text"))
 
+class MockEngine(object):
+    pass
+
 class MockOutput(object):
     def start(self):
         pass
