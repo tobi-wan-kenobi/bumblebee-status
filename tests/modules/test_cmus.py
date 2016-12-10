@@ -29,9 +29,10 @@ class TestCmusModule(unittest.TestCase):
     def test_widgets(self):
         self.assertTrue(len(self.module.widgets()), 5)
 
+    @mock.patch("select.select")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
-    def test_interaction(self, mock_input, mock_output):
+    def test_interaction(self, mock_input, mock_output, mock_select):
         events = [
             {"widget": "cmus.shuffle", "action": "cmus-remote -S"},
             {"widget": "cmus.repeat", "action": "cmus-remote -R"},
@@ -39,6 +40,8 @@ class TestCmusModule(unittest.TestCase):
             {"widget": "cmus.prev", "action": "cmus-remote -r"},
             {"widget": "cmus.main", "action": "cmus-remote -u"},
         ]
+
+        mock_select.return_value = (1,2,3)
 
         for event in events:
             mock_input.readline.return_value = json.dumps({

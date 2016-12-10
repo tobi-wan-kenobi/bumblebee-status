@@ -4,6 +4,7 @@ import sys
 import json
 import uuid
 import time
+import select
 import threading
 import bumblebee.util
 
@@ -15,6 +16,13 @@ WHEEL_DOWN = 5
 def read_input(inp):
     """Read i3bar input and execute callbacks"""
     while inp.running:
+        for thread in threading.enumerate():
+            if thread.name == "MainThread" and not thread.is_alive():
+                return
+
+        rlist, _, _ = select.select([sys.stdin], [], [], 1)
+        if not rlist:
+            continue
         line = sys.stdin.readline().strip(",").strip()
         inp.has_event = True
         try:

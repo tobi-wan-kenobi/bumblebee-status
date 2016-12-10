@@ -24,14 +24,16 @@ class TestCPUModule(unittest.TestCase):
         for widget in self.module.widgets():
             self.assertEquals(len(widget.full_text()), len("100.00%"))
 
+    @mock.patch("select.select")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
-    def test_leftclick(self, mock_input, mock_output):
+    def test_leftclick(self, mock_input, mock_output, mock_select):
         mock_input.readline.return_value = json.dumps({
             "name": self.module.id,
             "button": bumblebee.input.LEFT_MOUSE,
             "instance": None
         })
+        mock_select.return_value = (1,2,3)
         self.engine.input.start()
         self.engine.input.stop()
         mock_input.readline.assert_any_call()
