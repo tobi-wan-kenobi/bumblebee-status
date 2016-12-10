@@ -28,10 +28,12 @@ def read_input(inp):
         try:
             event = json.loads(line)
             inp.callback(event)
+            inp.has_valid_event = True
             inp.redraw()
         except ValueError:
             pass
     inp.has_event = True
+    inp.has_valid_event = True
     inp.clean_exit = True
 
 class I3BarInput(object):
@@ -42,12 +44,15 @@ class I3BarInput(object):
         self.clean_exit = False
         self.global_id = str(uuid.uuid4())
         self.need_event = False
+        self.need_valid_event = False
         self.has_event = False
+        self.has_valid_event = False
         self._condition = threading.Condition()
 
     def start(self):
         """Start asynchronous input processing"""
         self.has_event = False
+        self.has_valid_event = False
         self.running = True
         self._condition.acquire()
         self._thread = threading.Thread(target=read_input, args=(self,))
@@ -65,16 +70,20 @@ class I3BarInput(object):
     def wait(self, timeout):
         self._condition.wait(timeout)
 
-    def _wait(self):
+    def _wait(self, valid=False):
         while not self.has_event:
             time.sleep(0.1)
+        if valid:
+            while not self.has_valid_event:
+                time.sleep(0.1)
         self.has_event = False
+        self.has_valid_event = False
 
     def stop(self):
         """Stop asynchronous input processing"""
         self._condition.release()
         if self.need_event:
-            self._wait()
+            self._wait(self.need_valid_event)
         self.running = False
         self._thread.join()
         return self.clean_exit

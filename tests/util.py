@@ -11,7 +11,7 @@ def assertWidgetAttributes(test, widget):
 
 def assertPopen(output, cmd):
     res = shlex.split(cmd)
-    output.assert_called_with(res,
+    output.assert_any_call(res,
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT
     )
