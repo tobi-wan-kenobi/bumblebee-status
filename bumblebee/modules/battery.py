@@ -24,7 +24,7 @@ class Module(bumblebee.engine.Module):
         self._capacity = 100
 
     def capacity(self):
-        return "{:02d}%".format(self._capacity)
+        return "{:03d}%".format(self._capacity)
 
     def update(self, widgets):
         widget = widgets[0]
@@ -38,9 +38,9 @@ class Module(bumblebee.engine.Module):
 
     def state(self, widget):
         state = []
-        if self._capacity < self.parameter("critical", 10):
+        if self._capacity < int(self.parameter("critical", 10)):
             state.append("critical")
-        elif self._capacity < self.parameter("warning", 20):
+        elif self._capacity < int(self.parameter("warning", 20)):
             state.append("warning")
 
         if self._ac:
