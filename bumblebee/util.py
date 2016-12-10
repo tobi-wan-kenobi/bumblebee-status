@@ -18,4 +18,12 @@ def execute(cmd, wait=True):
         return out.decode("utf-8")
     return None
 
+def durationfmt(duration):
+    minutes, seconds = divmod(duration, 60)
+    hours, minutes = divmod(minutes, 60)
+    res = "{:02d}:{:02d}".format(minutes, seconds)
+    if hours > 0: res = "{:02d}:{}".format(hours, res)
+
+    return res
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

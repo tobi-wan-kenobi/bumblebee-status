@@ -30,6 +30,10 @@ class MockEngine(object):
     def __init__(self):
         self.input = MockInput()
 
+class MockConfig(object):
+    def get(self, name, default):
+        return default
+
 class MockOutput(object):
     def start(self):
         pass

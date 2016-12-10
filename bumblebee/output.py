@@ -8,9 +8,10 @@ import uuid
 
 class Widget(object):
     """Represents a single visible block in the status bar"""
-    def __init__(self, full_text):
+    def __init__(self, full_text="", name=""):
         self._full_text = full_text
         self.module = None
+        self.name = name
         self.id = str(uuid.uuid4())
 
     def link_module(self, module):

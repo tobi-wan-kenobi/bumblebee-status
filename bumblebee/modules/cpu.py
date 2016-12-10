@@ -3,6 +3,8 @@
 """Displays CPU utilization across all CPUs."""
 
 import psutil
+import bumblebee.input
+import bumblebee.output
 import bumblebee.engine
 
 class Module(bumblebee.engine.Module):
