@@ -132,6 +132,12 @@ class Theme(object):
         for theme in state_themes:
             value = theme.get(name, value)
 
+        if isinstance(value, list):
+            key = "{}-idx".format(name)
+            idx = widget.get(key, 0)
+            widget.set(key, (idx + 1) % len(value))
+            value = value[idx]
+
         return value
 
     # algorithm copied from
