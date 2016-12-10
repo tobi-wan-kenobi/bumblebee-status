@@ -66,6 +66,12 @@ class Engine(object):
         self._modules = []
         self.input = inp
         self.load_modules(config.modules())
+
+        self.input.register_callback(None, bumblebee.input.WHEEL_UP,
+            "i3-msg workspace prev_on_output")
+        self.input.register_callback(None, bumblebee.input.WHEEL_DOWN,
+            "i3-msg workspace next_on_output")
+
         self.input.start()
 
     def load_modules(self, modules):

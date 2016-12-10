@@ -9,6 +9,8 @@ import bumblebee.util
 
 LEFT_MOUSE = 1
 RIGHT_MOUSE = 3
+WHEEL_UP = 4
+WHEEL_DOWN = 5
 
 def read_input(inp):
     """Read i3bar input and execute callbacks"""
