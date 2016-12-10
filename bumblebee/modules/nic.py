@@ -45,6 +45,10 @@ class Module(bumblebee.engine.Module):
 
     def _update_widgets(self, widgets):
         interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
+
+        for widget in widgets:
+            widget.set("visited", False)
+
         for intf in interfaces:
             addr = []
             state = "down"
@@ -63,5 +67,10 @@ class Module(bumblebee.engine.Module):
             widget.full_text("{} {} {}".format(intf, state, ", ".join(addr)))
             widget.set("intf", intf)
             widget.set("state", state)
+            widget.set("visited", True)
+
+        for widget in widgets:
+            if widget.get("visited") == False:
+                widgets.remove(widget)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
