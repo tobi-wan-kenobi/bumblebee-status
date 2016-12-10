@@ -8,4 +8,5 @@ python:
 install:
   - pip install psutil
   - pip install netifaces
+  - pip install mock
 script: nosetests -v tests/
