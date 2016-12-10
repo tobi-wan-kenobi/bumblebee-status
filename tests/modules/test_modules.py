@@ -28,7 +28,8 @@ class TestGenericModules(unittest.TestCase):
                 widget.set("variable", "value")
                 self.assertEquals(widget.get("variable", None), "value")
 
-    def test_update(self):
+    @mock.patch("subprocess.Popen")
+    def test_update(self, mock_output):
         for mod in self.objects:
             widgets = self.objects[mod].widgets()
             self.objects[mod].update(widgets)
