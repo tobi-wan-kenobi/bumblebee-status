@@ -108,7 +108,7 @@ class Engine(object):
             self._output.flush()
             self._output.end()
             if self.running():
-                time.sleep(1)
+                self.input.wait(self._config.get("interval", 1))
 
         self._output.stop()
         self.input.stop()

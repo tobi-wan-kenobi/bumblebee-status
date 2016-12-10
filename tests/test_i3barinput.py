@@ -62,6 +62,20 @@ class TestI3BarInput(unittest.TestCase):
         self.assertTrue(self._called > 0)
 
     @mock.patch("sys.stdin")
+    def test_remove_global_callback(self, mock_input):
+        mock_input.readline.return_value = json.dumps({
+            "name": "somename",
+            "instance": "someinstance",
+            "button": bumblebee.input.LEFT_MOUSE,
+        })
+        self.input.register_callback(None, button=1, cmd=self.callback)
+        self.input.deregister_callbacks(None)
+        self.input.start()
+        self.assertEquals(self.input.stop(), True)
+        mock_input.readline.assert_any_call()
+        self.assertTrue(self._called == 0)
+
+    @mock.patch("sys.stdin")
     def test_global_callback_button_missmatch(self, mock_input):
         mock_input.readline.return_value = json.dumps({
             "name": "somename",
@@ -86,6 +100,20 @@ class TestI3BarInput(unittest.TestCase):
         self.assertEquals(self.input.stop(), True)
         mock_input.readline.assert_any_call()
         self.assertTrue(self._called > 0)
+
+    @mock.patch("sys.stdin")
+    def test_remove_module_callback(self, mock_input):
+        mock_input.readline.return_value = json.dumps({
+            "name": self.anyModule.id,
+            "instance": None,
+            "button": bumblebee.input.LEFT_MOUSE,
+        })
+        self.input.register_callback(self.anyModule, button=1, cmd=self.callback)
+        self.input.deregister_callbacks(self.anyModule)
+        self.input.start()
+        self.assertEquals(self.input.stop(), True)
+        mock_input.readline.assert_any_call()
+        self.assertTrue(self._called == 0)
 
     @mock.patch("sys.stdin")
     def test_widget_callback(self, mock_input):
