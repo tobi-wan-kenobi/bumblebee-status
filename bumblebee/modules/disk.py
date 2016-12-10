@@ -26,25 +26,22 @@ class Module(bumblebee.engine.Module):
             cmd="nautilus {}".format(self._path))
 
     def diskspace(self):
-        st = os.statvfs(self._path)
-        size = st.f_frsize*st.f_blocks
-        used = size - st.f_frsize*st.f_bavail
-        self._perc = 100.0*used/size
-
         return "{} {}/{} ({:05.02f}%)".format(self._path,
-            bumblebee.util.bytefmt(used),
-            bumblebee.util.bytefmt(size), self._perc
+            bumblebee.util.bytefmt(self._used),
+            bumblebee.util.bytefmt(self._size), self._perc
         )
 
     def update(self, widgets):
-        pass
+        st = os.statvfs(self._path)
+        self._size = st.f_frsize*st.f_blocks
+        self._used = self._size - st.f_frsize*st.f_bavail
+        self._perc = 100.0*self._used/self._size
 
     def state(self, widget):
-        pass
-    def warning(self, widget):
-        return self._perc > self._config.parameter("warning", 80)
-
-    def critical(self, widget):
-        return self._perc > self._config.parameter("critical", 90)
+        if self._perc > float(self.parameter("critical", 90)):
+            return "critical"
+        if self._perc > float(self.parameter("warning", 80)):
+            return "warning"
+        return None
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

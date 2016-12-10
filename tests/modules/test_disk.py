@@ -9,6 +9,12 @@ from bumblebee.input import I3BarInput
 from bumblebee.modules.disk import Module
 from tests.util import MockEngine, MockConfig, assertPopen
 
+class MockVFS(object):
+    def __init__(self, perc):
+        self.f_blocks = 1024*1024
+        self.f_frsize = 1
+        self.f_bavail = self.f_blocks - self.f_blocks*(perc/100.0)
+
 class TestDiskModule(unittest.TestCase):
     def setUp(self):
         self.engine = MockEngine()
@@ -17,6 +23,8 @@ class TestDiskModule(unittest.TestCase):
         self.config = MockConfig()
         self.config.set("disk.path", "somepath")
         self.module = Module(engine=self.engine, config={"config": self.config})
+        for widget in self.module.widgets():
+            widget.link_module(self.module)
 
     @mock.patch("select.select")
     @mock.patch("subprocess.Popen")
@@ -32,5 +40,22 @@ class TestDiskModule(unittest.TestCase):
         self.engine.input.stop()
         mock_input.readline.assert_any_call()
         assertPopen(mock_output, "nautilus {}".format(self.module.parameter("path")))
+
+    @mock.patch("os.statvfs")
+    def test_warning(self, mock_stat):
+        self.config.set("disk.critical", "80")
+        self.config.set("disk.warning", "70")
+        mock_stat.return_value = MockVFS(75.0)
+        self.module.update(self.module.widgets())
+        self.assertEquals(self.module.widgets()[0].state(), ["warning"])
+
+    @mock.patch("os.statvfs")
+    def test_warning(self, mock_stat):
+        self.config.set("disk.critical", "80")
+        self.config.set("disk.warning", "70")
+        mock_stat.return_value = MockVFS(85.0)
+        self.module.update(self.module.widgets())
+        self.assertEquals(self.module.widgets()[0].state(), ["critical"])
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
