@@ -1,6 +1,12 @@
 # pylint: disable=C0111,R0903
 
-"""Displays the current time, using the optional format string as input for strftime."""
+"""Displays the current date and time.
+
+Parameters:
+    * datetime.format: strftime()-compatible formatting string
+    * date.format    : alias for datetime.format
+    * time.format    : alias for datetime.format
+"""
 
 from __future__ import absolute_import
 import datetime
