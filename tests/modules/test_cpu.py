@@ -22,7 +22,7 @@ class TestCPUModule(unittest.TestCase):
     @mock.patch("sys.stdout")
     def test_format(self, mock_output):
         for widget in self.module.widgets():
-            self.assertEquals(len(widget.full_text()), len("00.00%"))
+            self.assertEquals(len(widget.full_text()), len("100.00%"))
 
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
