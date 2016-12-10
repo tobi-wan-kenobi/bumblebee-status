@@ -22,12 +22,26 @@ class Module(bumblebee.engine.Module):
         ]
         super(Module, self).__init__(engine, config, widgets)
         self._fmt = self.parameter("format", "{artist} - {title} {position}/{duration}")
+        self._status = None
+        self._shuffle = False
+        self._repeat = False
 
     def description(self):
         return string.Formatter().vformat(self._fmt, (), self._tags)
 
     def update(self, widgets):
         self._load_song()
+
+    def state(self, widget):
+        if widget.name == "cmus.shuffle":
+            return "shuffle-on" if self._shuffle else "shuffle-off"
+        if widget.name == "cmus.repeat":
+            return "repeat-on" if self._repeat else "repeat-off"
+        if widget.name == "cmus.prev":
+            return "prev"
+        if widget.name == "cmus.next":
+            return "next"
+        return self._status
 
     def _load_song(self):
         info = ""
