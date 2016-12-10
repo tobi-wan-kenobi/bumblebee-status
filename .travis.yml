@@ -5,4 +5,7 @@ python:
   - "3.3"
   - "3.4"
   - "3.5"
+install:
+  - pip install psutil
+  - pip install netifaces
 script: nosetests -v tests/
