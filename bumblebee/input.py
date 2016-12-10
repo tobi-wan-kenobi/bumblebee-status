@@ -27,7 +27,6 @@ class I3BarInput(object):
     """Process incoming events from the i3bar"""
     def __init__(self):
         self.running = True
-        self._thread = threading.Thread(target=read_input, args=(self,))
         self._callbacks = {}
         self.clean_exit = False
         self.global_id = str(uuid.uuid4())
@@ -36,17 +35,24 @@ class I3BarInput(object):
 
     def start(self):
         """Start asynchronous input processing"""
+        self.has_event = False
+        self.running = True
+        self._thread = threading.Thread(target=read_input, args=(self,))
         self._thread.start()
 
     def alive(self):
         """Check whether the input processing is still active"""
         return self._thread.is_alive()
 
+    def _wait(self):
+        while not self.has_event:
+            time.sleep(0.1)
+        self.has_event = False
+
     def stop(self):
         """Stop asynchronous input processing"""
         if self.need_event:
-            while not self.has_event:
-                time.sleep(0.1)
+            self._wait()
         self.running = False
         self._thread.join()
         return self.clean_exit

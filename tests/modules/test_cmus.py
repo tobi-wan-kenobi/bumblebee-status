@@ -12,6 +12,8 @@ from tests.util import MockEngine, MockConfig, assertPopen
 class TestCmusModule(unittest.TestCase):
     def setUp(self):
         self.engine = MockEngine()
+        self.engine.input = I3BarInput()
+        self.engine.input.need_event = True
         self.module = Module(engine=self.engine, config={"config": MockConfig()})
 
     @mock.patch("subprocess.Popen")
@@ -26,5 +28,27 @@ class TestCmusModule(unittest.TestCase):
 
     def test_widgets(self):
         self.assertTrue(len(self.module.widgets()), 5)
+
+    @mock.patch("subprocess.Popen")
+    @mock.patch("sys.stdin")
+    def test_interaction(self, mock_input, mock_output):
+        events = [
+            {"widget": "cmus.shuffle", "action": "cmus-remote -S"},
+            {"widget": "cmus.repeat", "action": "cmus-remote -R"},
+            {"widget": "cmus.next", "action": "cmus-remote -n"},
+            {"widget": "cmus.prev", "action": "cmus-remote -r"},
+            {"widget": "cmus.main", "action": "cmus-remote -u"},
+        ]
+
+        for event in events:
+            mock_input.readline.return_value = json.dumps({
+                "name": self.module.id,
+                "button": bumblebee.input.LEFT_MOUSE,
+                "instance": self.module.widget(event["widget"]).id
+            })
+            self.engine.input.start()
+            self.engine.input.stop()
+            mock_input.readline.assert_any_call()
+            assertPopen(mock_output, event["action"])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

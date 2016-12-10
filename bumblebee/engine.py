@@ -39,6 +39,11 @@ class Module(object):
         """Return the widgets to draw for this module"""
         return self._widgets
 
+    def widget(self, name):
+        for widget in self._widgets:
+            if widget.name == name:
+                return widget
+
     def update(self, widgets):
         """By default, update() is a NOP"""
         pass
