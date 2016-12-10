@@ -11,6 +11,7 @@ class Widget(object):
     def __init__(self, full_text="", name=""):
         self._full_text = full_text
         self.module = None
+        self._module = None
         self.name = name
         self.id = str(uuid.uuid4())
 
@@ -20,10 +21,13 @@ class Widget(object):
         This is done outside the constructor to avoid having to
         pass in the module name in every concrete module implementation"""
         self.module = module.name
+        self._module = module
 
     def state(self):
         """Return the widget's state"""
-        return "state-default"
+        if self._module and hasattr(self._module, "state"):
+            return self._module.state(self)
+        return None
 
     def full_text(self):
         """Retrieve the full text to display in the widget"""

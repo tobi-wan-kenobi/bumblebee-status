@@ -31,8 +31,16 @@ class MockEngine(object):
         self.input = MockInput()
 
 class MockConfig(object):
+    def __init__(self):
+        self._data = {}
+
     def get(self, name, default):
+        if name in self._data:
+            return self._data[name]
         return default
+
+    def set(self, name, value):
+        self._data[name] = value
 
 class MockOutput(object):
     def start(self):

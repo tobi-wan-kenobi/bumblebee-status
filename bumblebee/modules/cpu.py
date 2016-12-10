@@ -1,6 +1,11 @@
 # pylint: disable=C0111,R0903
 
-"""Displays CPU utilization across all CPUs."""
+"""Displays CPU utilization across all CPUs.
+
+Parameters:
+    * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
+    * cpu.critical: Critical threshold in % of CPU usage (defaults to 80%)
+"""
 
 import psutil
 import bumblebee.input
@@ -21,5 +26,12 @@ class Module(bumblebee.engine.Module):
 
     def update(self, widgets):
         self._utilization = psutil.cpu_percent(percpu=False)
+
+    def state(self, widget):
+        if self._utilization > int(self.parameter("critical", 80)):
+            return "critical"
+        if self._utilization > int(self.parameter("warning", 70)):
+            return "warning"
+        return None
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
