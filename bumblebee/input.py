@@ -98,6 +98,6 @@ class I3BarInput(object):
         if callable(cmd):
             cmd(event)
         else:
-            bumblebee.util.execute(cmd)
+            bumblebee.util.execute(cmd, False)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
