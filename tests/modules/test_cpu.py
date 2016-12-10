@@ -7,7 +7,7 @@ import mock
 import bumblebee.input
 from bumblebee.input import I3BarInput
 from bumblebee.modules.cpu import Module
-from tests.util import MockEngine, MockConfig, assertPopen
+from tests.util import MockEngine, MockConfig, assertPopen, assertMouseEvent, assertStateContains
 
 class TestCPUModule(unittest.TestCase):
     def setUp(self):
@@ -16,8 +16,6 @@ class TestCPUModule(unittest.TestCase):
         self.engine.input.need_event = True
         self.config = MockConfig()
         self.module = Module(engine=self.engine, config={ "config": self.config })
-        for widget in self.module.widgets():
-            widget.link_module(self.module)
 
     @mock.patch("sys.stdout")
     def test_format(self, mock_output):
@@ -28,31 +26,23 @@ class TestCPUModule(unittest.TestCase):
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_leftclick(self, mock_input, mock_output, mock_select):
-        mock_input.readline.return_value = json.dumps({
-            "name": self.module.id,
-            "button": bumblebee.input.LEFT_MOUSE,
-            "instance": None
-        })
-        mock_select.return_value = (1,2,3)
-        self.engine.input.start()
-        self.engine.input.stop()
-        mock_input.readline.assert_any_call()
-        assertPopen(mock_output, "gnome-system-monitor")
+        assertMouseEvent(mock_input, mock_output, mock_select, self.engine,
+            self.module, bumblebee.input.LEFT_MOUSE,
+            "gnome-system-monitor"
+        )
 
     @mock.patch("psutil.cpu_percent")
     def test_warning(self, mock_psutil):
         self.config.set("cpu.critical", "20")
         self.config.set("cpu.warning", "18")
         mock_psutil.return_value = 19.0
-        self.module.update(self.module.widgets())
-        self.assertEquals(self.module.widgets()[0].state(), ["warning"])
+        assertStateContains(self, self.module, "warning")
 
     @mock.patch("psutil.cpu_percent")
     def test_critical(self, mock_psutil):
         self.config.set("cpu.critical", "20")
         self.config.set("cpu.warning", "19")
         mock_psutil.return_value = 21.0
-        self.module.update(self.module.widgets())
-        self.assertEquals(self.module.widgets()[0].state(), ["critical"])
+        assertStateContains(self, self.module, "critical")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

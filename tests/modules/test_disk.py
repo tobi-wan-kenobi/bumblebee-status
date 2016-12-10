@@ -7,7 +7,7 @@ import mock
 import bumblebee.input
 from bumblebee.input import I3BarInput
 from bumblebee.modules.disk import Module
-from tests.util import MockEngine, MockConfig, assertPopen
+from tests.util import MockEngine, MockConfig, assertPopen, assertStateContains
 
 class MockVFS(object):
     def __init__(self, perc):
@@ -23,8 +23,6 @@ class TestDiskModule(unittest.TestCase):
         self.config = MockConfig()
         self.config.set("disk.path", "somepath")
         self.module = Module(engine=self.engine, config={"config": self.config})
-        for widget in self.module.widgets():
-            widget.link_module(self.module)
 
     @mock.patch("select.select")
     @mock.patch("subprocess.Popen")
@@ -46,16 +44,13 @@ class TestDiskModule(unittest.TestCase):
         self.config.set("disk.critical", "80")
         self.config.set("disk.warning", "70")
         mock_stat.return_value = MockVFS(75.0)
-        self.module.update(self.module.widgets())
-        self.assertEquals(self.module.widgets()[0].state(), ["warning"])
+        assertStateContains(self, self.module, "warning")
 
     @mock.patch("os.statvfs")
     def test_warning(self, mock_stat):
         self.config.set("disk.critical", "80")
         self.config.set("disk.warning", "70")
         mock_stat.return_value = MockVFS(85.0)
-        self.module.update(self.module.widgets())
-        self.assertEquals(self.module.widgets()[0].state(), ["critical"])
-
+        assertStateContains(self, self.module, "critical")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

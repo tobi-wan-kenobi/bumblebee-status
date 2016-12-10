@@ -1,5 +1,6 @@
 # pylint: disable=C0103,C0111,W0613
 
+import json
 import shlex
 import subprocess
 
@@ -15,6 +16,24 @@ def assertPopen(output, cmd):
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT
     )
+
+def assertStateContains(test, module, state):
+    for widget in module.widgets():
+        widget.link_module(module)
+    module.update(module.widgets())
+    test.assertTrue(state in module.widgets()[0].state())
+
+def assertMouseEvent(mock_input, mock_output, mock_select, engine, module, button, cmd):
+        mock_input.readline.return_value = json.dumps({
+            "name": module.id,
+            "button": button,
+            "instance": None
+        })
+        mock_select.return_value = (1,2,3)
+        engine.input.start()
+        engine.input.stop()
+        mock_input.readline.assert_any_call()
+        assertPopen(mock_output, cmd)
 
 class MockInput(object):
     def start(self):

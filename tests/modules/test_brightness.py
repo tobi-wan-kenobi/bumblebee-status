@@ -7,7 +7,7 @@ import mock
 import bumblebee.input
 from bumblebee.input import I3BarInput
 from bumblebee.modules.brightness import Module
-from tests.util import MockEngine, MockConfig, assertPopen
+from tests.util import MockEngine, MockConfig, assertPopen, assertMouseEvent
 
 class TestBrightnessModule(unittest.TestCase):
     def setUp(self):
@@ -28,31 +28,19 @@ class TestBrightnessModule(unittest.TestCase):
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_wheel_up(self, mock_input, mock_output, mock_select):
-        mock_input.readline.return_value = json.dumps({
-            "name": self.module.id,
-            "button": bumblebee.input.WHEEL_UP,
-            "instance": None
-        })
-        mock_select.return_value = (1,2,3)
-        self.engine.input.start()
-        self.engine.input.stop()
-        mock_input.readline.assert_any_call()
-        assertPopen(mock_output, "xbacklight +2%")
+        assertMouseEvent(mock_input, mock_output, mock_select, self.engine,
+            self.module, bumblebee.input.WHEEL_UP,
+            "xbacklight +2%"
+        )
 
     @mock.patch("select.select")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_wheel_down(self, mock_input, mock_output, mock_select):
-        mock_input.readline.return_value = json.dumps({
-            "name": self.module.id,
-            "button": bumblebee.input.WHEEL_DOWN,
-            "instance": None
-        })
-        mock_select.return_value = (1,2,3)
-        self.engine.input.start()
-        self.engine.input.stop()
-        mock_input.readline.assert_any_call()
-        assertPopen(mock_output, "xbacklight -2%")
+        assertMouseEvent(mock_input, mock_output, mock_select, self.engine,
+            self.module, bumblebee.input.WHEEL_DOWN,
+            "xbacklight -2%"
+        )
 
     @mock.patch("select.select")
     @mock.patch("subprocess.Popen")
@@ -60,13 +48,9 @@ class TestBrightnessModule(unittest.TestCase):
     def test_custom_step(self, mock_input, mock_output, mock_select):
         self.config.set("brightness.step", "10")
         module = Module(engine=self.engine, config={ "config": self.config })
-        mock_input.readline.return_value = json.dumps({
-            "name": module.id,
-            "button": bumblebee.input.WHEEL_DOWN,
-            "instance": None
-        })
-        mock_select.return_value = (1,2,3)
-        self.engine.input.start()
-        self.engine.input.stop()
-        mock_input.readline.assert_any_call()
-        assertPopen(mock_output, "xbacklight -10%")
+        assertMouseEvent(mock_input, mock_output, mock_select, self.engine,
+            module, bumblebee.input.WHEEL_DOWN,
+            "xbacklight -10%"
+        )
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
