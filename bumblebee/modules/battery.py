@@ -1,5 +1,13 @@
 # pylint: disable=C0111,R0903
 
+"""Displays battery status, remaining percentage and charging information.
+
+Parameters:
+    * battery.device  : The device to read information from (defaults to BAT0)
+    * battery.warning : Warning threshold in % of remaining charge (defaults to 20)
+    * battery.critical: Critical threshold in % of remaining charge (defaults to 10)
+"""
+
 import os
 
 import bumblebee.input

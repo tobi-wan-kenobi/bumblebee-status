@@ -1,6 +1,10 @@
 # pylint: disable=C0111,R0903
 
-"""Displays information about the current song in cmus."""
+"""Displays information about the current song in cmus.
+
+Parameters:
+    * cmus.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
+"""
 
 from collections import defaultdict
 

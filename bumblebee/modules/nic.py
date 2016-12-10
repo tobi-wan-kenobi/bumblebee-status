@@ -1,13 +1,17 @@
 #pylint: disable=C0111,R0903
 
+"""Displays the name, IP address(es) and status of each available network interface.
+
+Parameters:
+    * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
+"""
+
 import netifaces
 
 import bumblebee.util
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
-
-"""Displays the name, IP address(es) and status of each available network interface."""
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
