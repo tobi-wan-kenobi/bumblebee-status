@@ -2,10 +2,18 @@
 
 import unittest
 import importlib
+import mock
 
 from bumblebee.engine import all_modules
 from bumblebee.config import Config
 from tests.util import assertWidgetAttributes, MockEngine
+
+class MockCommunicate(object):
+    def __init__(self):
+        self.returncode = 0
+
+    def communicate(self):
+        return (str.encode("1"), "error")
 
 class TestGenericModules(unittest.TestCase):
     def setUp(self):
@@ -30,6 +38,7 @@ class TestGenericModules(unittest.TestCase):
 
     @mock.patch("subprocess.Popen")
     def test_update(self, mock_output):
+        mock_output.return_value = MockCommunicate()
         for mod in self.objects:
             widgets = self.objects[mod].widgets()
             self.objects[mod].update(widgets)
