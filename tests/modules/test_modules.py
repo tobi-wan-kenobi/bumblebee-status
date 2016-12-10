@@ -15,6 +15,8 @@ class TestGenericModules(unittest.TestCase):
         for mod in all_modules():
             cls = importlib.import_module("bumblebee.modules.{}".format(mod["name"]))
             self.objects[mod["name"]] = getattr(cls, "Module")(engine, {"config": config})
+            for widget in self.objects[mod["name"]].widgets():
+                self.assertEquals(widget.get("variable", None), None)
 
     def test_widgets(self):
         for mod in self.objects:
@@ -23,6 +25,8 @@ class TestGenericModules(unittest.TestCase):
                 widget.link_module(self.objects[mod])
                 self.assertEquals(widget.module, mod)
                 assertWidgetAttributes(self, widget)
+                widget.set("variable", "value")
+                self.assertEquals(widget.get("variable", None), "value")
 
     def test_update(self):
         for mod in self.objects:

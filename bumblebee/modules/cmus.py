@@ -80,3 +80,5 @@ class Module(bumblebee.engine.Module):
                 self._repeat = False if "false" in line else True
             if line.startswith("set shuffle "):
                 self._shuffle = False if "false" in line else True
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

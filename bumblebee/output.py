@@ -6,9 +6,12 @@ import sys
 import json
 import uuid
 
-class Widget(object):
+import bumblebee.store
+
+class Widget(bumblebee.store.Store):
     """Represents a single visible block in the status bar"""
     def __init__(self, full_text="", name=""):
+        super(Widget, self).__init__()
         self._full_text = full_text
         self.module = None
         self._module = None
@@ -26,15 +29,21 @@ class Widget(object):
     def state(self):
         """Return the widget's state"""
         if self._module and hasattr(self._module, "state"):
-            return self._module.state(self)
-        return None
+            states = self._module.state(self)
+            if not isinstance(states, list):
+                return [states]
+            return states
+        return []
 
-    def full_text(self):
-        """Retrieve the full text to display in the widget"""
-        if callable(self._full_text):
-            return self._full_text()
+    def full_text(self, value=None):
+        """Set or retrieve the full text to display in the widget"""
+        if value:
+            self._full_text = value
         else:
-            return self._full_text
+            if callable(self._full_text):
+                return self._full_text()
+            else:
+                return self._full_text
 
 class I3BarOutput(object):
     """Manage output according to the i3bar protocol"""

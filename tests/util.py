@@ -70,7 +70,7 @@ class MockWidget(Widget):
         super(MockWidget, self).__init__(text)
         self._text = text
         self.module = None
-        self.attr_state = "state-default"
+        self.attr_state = ["state-default"]
         self.id = "none"
 
     def state(self):

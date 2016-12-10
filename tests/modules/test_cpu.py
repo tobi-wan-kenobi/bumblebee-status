@@ -43,7 +43,7 @@ class TestCPUModule(unittest.TestCase):
         self.config.set("cpu.warning", "18")
         mock_psutil.return_value = 19.0
         self.module.update(self.module.widgets())
-        self.assertEquals(self.module.widgets()[0].state(), "warning")
+        self.assertEquals(self.module.widgets()[0].state(), ["warning"])
 
     @mock.patch("psutil.cpu_percent")
     def test_critical(self, mock_psutil):
@@ -51,6 +51,6 @@ class TestCPUModule(unittest.TestCase):
         self.config.set("cpu.warning", "19")
         mock_psutil.return_value = 21.0
         self.module.update(self.module.widgets())
-        self.assertEquals(self.module.widgets()[0].state(), "critical")
+        self.assertEquals(self.module.widgets()[0].state(), ["critical"])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

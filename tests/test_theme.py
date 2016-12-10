@@ -102,11 +102,11 @@ class TestTheme(unittest.TestCase):
         self.assertEquals(theme.fg(self.anyWidget), data["defaults"]["fg"])
         self.assertEquals(theme.bg(self.anyWidget), data["defaults"]["bg"])
 
-        self.anyWidget.attr_state = "critical"
+        self.anyWidget.attr_state = ["critical"]
         self.assertEquals(theme.fg(self.anyWidget), data["defaults"]["critical"]["fg"])
         self.assertEquals(theme.bg(self.anyWidget), data["defaults"]["critical"]["bg"])
 
-        self.themedWidget.attr_state = "critical"
+        self.themedWidget.attr_state = ["critical"]
         self.assertEquals(theme.fg(self.themedWidget), data[self.widgetTheme]["critical"]["fg"])
         # if elements are missing in the state theme, they are taken from the
         # widget theme instead (i.e. no fallback to a more general state theme)
