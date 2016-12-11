@@ -51,6 +51,13 @@ class Module(object):
         name = "{}.{}".format(self.name, name)
         return self._config["config"].get(name, default)
 
+    def threshold_state(self, value, warn, crit):
+        if value > float(self.parameter("critical", crit)):
+            return "critical"
+        if value > float(self.parameter("warning", warn)):
+            return "warning"
+        return None
+
 class Engine(object):
     """Engine for driving the application
 

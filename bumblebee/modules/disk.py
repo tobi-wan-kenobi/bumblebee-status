@@ -38,10 +38,6 @@ class Module(bumblebee.engine.Module):
         self._perc = 100.0*self._used/self._size
 
     def state(self, widget):
-        if self._perc > float(self.parameter("critical", 90)):
-            return "critical"
-        if self._perc > float(self.parameter("warning", 80)):
-            return "warning"
-        return None
+        return self.threshold_state(self._perc, 80, 90)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

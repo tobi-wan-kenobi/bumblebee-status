@@ -28,10 +28,6 @@ class Module(bumblebee.engine.Module):
         self._utilization = psutil.cpu_percent(percpu=False)
 
     def state(self, widget):
-        if self._utilization > int(self.parameter("critical", 80)):
-            return "critical"
-        if self._utilization > int(self.parameter("warning", 70)):
-            return "warning"
-        return None
+        return self.threshold_state(self._utilization, 70, 80)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

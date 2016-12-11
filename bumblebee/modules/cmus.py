@@ -72,14 +72,10 @@ class Module(bumblebee.engine.Module):
             if line.startswith("tag"):
                 key, value = line.split(" ", 2)[1:]
                 self._tags.update({ key: value })
-            if line.startswith("duration"):
-                self._tags.update({
-                    "duration": bumblebee.util.durationfmt(int(line.split(" ")[1]))
-                })
-            if line.startswith("position"):
-                self._tags.update({
-                    "position": bumblebee.util.durationfmt(int(line.split(" ")[1]))
-                })
+            for key in  ["duration", "position"]:
+                if line.startswith(key):
+                    dur = int(line.split(" ")[1])
+                    self._tags.update({key:bumblebee.util.durationfmt(dur)})
             if line.startswith("set repeat "):
                 self._repeat = False if "false" in line else True
             if line.startswith("set shuffle "):

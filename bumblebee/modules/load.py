@@ -35,9 +35,6 @@ class Module(bumblebee.engine.Module):
         self._load = os.getloadavg()
 
     def state(self, widget):
-        if self._load[0] > float(self.parameter("critical", self._cpus*0.8)):
-            return "critical"
-        if self._load[0] > float(self.parameter("warning", self._cpus*0.7)):
-            return "warning"
+        return self.threshold_state(self._load[0], self._cpus*0.7, self._cpus*0.8)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
