@@ -19,11 +19,15 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.capacity)
         )
-        battery = self.parameter("device", "BAT1")
+        battery = self.parameter("device", "BAT0")
         self._path = "/sys/class/power_supply/{}".format(battery)
         self._capacity = 100
 
     def capacity(self):
+        if self._ac:
+            return "ac"
+        if self._capacity == -1:
+            return "n/a"
         return "{:03d}%".format(self._capacity)
 
     def update(self, widgets):
@@ -31,16 +35,22 @@ class Module(bumblebee.engine.Module):
         self._ac = False
         if not os.path.exists(self._path):
             self._ac = True
+            self._capacity = 100
+            return
 
         try:
             with open(self._path + "/capacity") as f:
                 self._capacity = int(f.read())
         except IOError:
-            self._capacity = 100
+            self._capacity = -1
         self._capacity = self._capacity if self._capacity < 100 else 100
 
     def state(self, widget):
         state = []
+
+        if self._capacity < 0:
+            return ["critical", "unknown"]
+
         if self._capacity < int(self.parameter("critical", 10)):
             state.append("critical")
         elif self._capacity < int(self.parameter("warning", 20)):

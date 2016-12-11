@@ -121,8 +121,9 @@ class Theme(object):
 
         state_themes = []
         # avoid infinite recursion
-        if name not in widget.state():
-            for state in widget.state():
+        states = widget.state()
+        if name not in states:
+            for state in states:
                 state_themes.append(self._get(widget, state, {}))
 
         value = self._defaults.get(name, default)
