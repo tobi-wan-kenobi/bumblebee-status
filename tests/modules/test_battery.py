@@ -41,11 +41,13 @@ class TestBatteryModule(unittest.TestCase):
         for widget in self.module.widgets():
             self.assertEquals(len(widget.full_text()), len("100%"))
 
+    @mock.patch("os.path.exists")
     @mock.patch("{}.open".format("__builtin__" if sys.version_info[0] < 3 else "builtins"))
     @mock.patch("subprocess.Popen")
-    def test_critical(self, mock_output, mock_open):
+    def test_critical(self, mock_output, mock_open, mock_exists):
         mock_open.return_value = MockOpen()
         mock_open.return_value.returns("19")
+        mock_exists.return_value = True
         self.config.set("battery.critical", "20")
         self.config.set("battery.warning", "25")
         self.module.update(self.module.widgets())
