@@ -1,41 +1,40 @@
 {
 	"icons": [ "awesome-fonts" ],
 	"defaults": {
-		"cycle": [
-			{
-				"fg": "#ffd700",
-				"bg": "#d75f00"
-			},
-			{
-				"fg": "#ffffff",
-				"bg": "#0087af"
-			}
-		],
-		"fg-critical": "#ffffff",
-		"bg-critical": "#ff0000",
-		"fg-warning": "#d75f00",
-		"bg-warning": "#ffd700",
-
+		"critical": {
+			"fg": "#ffffff",
+			"bg": "#ff0000"
+		},
+		"warning": {
+			"fg": "#d75f00",
+			"bg": "#ffd700"
+		},
 		"default_separators": false
 	},
+	"cycle": [
+		{
+			"fg": "#ffd700",
+			"bg": "#d75f00"
+		},
+		{
+			"fg": "#ffffff",
+			"bg": "#0087af"
+		}
+	],
 	"dnf": {
-		"states": {
-			"good": {
-				"fg": "#494949",
-				"bg": "#41db00"
-			}
+		"good": {
+			"fg": "#494949",
+			"bg": "#41db00"
 		}
 	},
 	"battery": {
-		"states": {
-			"charged": {
-				"fg": "#494949",
-				"bg": "#41db00"
-			},
-			"AC": {
-				"fg": "#494949",
-				"bg": "#41db00"
-			}
+		"charged": {
+			"fg": "#494949",
+			"bg": "#41db00"
+		},
+		"AC": {
+			"fg": "#494949",
+			"bg": "#41db00"
 		}
 	}
 }

@@ -1,123 +1,105 @@
-import os
-import shlex
-import inspect
-import threading
-import subprocess
+# pylint: disable=R0201
 
-def output(args):
-    import bumblebee.outputs.i3
-    return bumblebee.outputs.i3.Output(args)
+"""Output classes"""
 
-class Widget(object):
-    def __init__(self, obj, text, instance=None):
-        self._obj = obj
-        self._text = text
-        self._store = {}
-        self._instance = instance
+import sys
+import json
+import uuid
 
-        obj._output.register_widget(self.instance(), self)
+import bumblebee.store
 
-    def set(self, key, value):
-        self._store[key] = value
+class Widget(bumblebee.store.Store):
+    """Represents a single visible block in the status bar"""
+    def __init__(self, full_text="", name=""):
+        super(Widget, self).__init__()
+        self._full_text = full_text
+        self.module = None
+        self._module = None
+        self.name = name
+        self.id = str(uuid.uuid4())
 
-    def get(self, key, default=None):
-        return self._store.get(key, default)
+    def link_module(self, module):
+        """Set the module that spawned this widget
+
+        This is done outside the constructor to avoid having to
+        pass in the module name in every concrete module implementation"""
+        self.module = module.name
+        self._module = module
 
     def state(self):
-        return self._obj.state(self)
+        """Return the widget's state"""
+        if self._module and hasattr(self._module, "state"):
+            states = self._module.state(self)
+            if not isinstance(states, list):
+                return [states]
+            return states
+        return []
 
-    def warning(self):
-        return self._obj.warning(self)
-
-    def critical(self):
-        return self._obj.critical(self)
-
-    def module(self):
-        return self._obj.__module__.split(".")[-1]
-
-    def instance(self):
-        return self._instance if self._instance else getattr(self._obj, "instance")(self)
-
-    def text(self):
-        return self._text
-
-class Command(object):
-    def __init__(self, command, event, widget):
-        self._command = command
-        self._event = event
-        self._widget = widget
-
-    def __call__(self, *args, **kwargs):
-        if not isinstance(self._command, list):
-            self._command = [ self._command ]
-
-        for cmd in self._command:
-            if not cmd: continue
-            if inspect.ismethod(cmd):
-                cmd(self._event, self._widget)
+    def full_text(self, value=None):
+        """Set or retrieve the full text to display in the widget"""
+        if value:
+            self._full_text = value
+        else:
+            if callable(self._full_text):
+                return self._full_text(self)
             else:
-                c = cmd.format(*args, **kwargs)
-                DEVNULL = open(os.devnull, 'wb')
-                subprocess.Popen(shlex.split(c), stdout=DEVNULL, stderr=DEVNULL)
+                return self._full_text
 
-class Output(object):
-    def __init__(self, config):
-        self._config = config
-        self._callbacks = {}
-        self._wait = threading.Condition()
-        self._wait.acquire()
-        self._widgets = {}
-
-    def register_widget(self, identity, widget):
-        self._widgets[identity] = widget
-
-    def redraw(self):
-        self._wait.acquire()
-        self._wait.notify()
-        self._wait.release()
-
-    def add_callback(self, cmd, button, module=None):
-        if module:
-            module = module.replace("bumblebee.modules.", "")
-
-        if self._callbacks.get((button, module)): return
-
-        self._callbacks[(
-            button,
-            module,
-        )] = cmd
-
-    def callback(self, event):
-        cb = self._callbacks.get((
-            event.get("button", -1),
-            None,
-        ), None)
-        cb = self._callbacks.get((
-            event.get("button", -1),
-            event.get("instance", event.get("module", None)),
-        ), cb)
-
-        identity = event.get("instance", event.get("module", None))
-        return Command(cb, event, self._widgets.get(identity, None))
-
-    def wait(self):
-        self._wait.wait(self._config.parameter("interval", 1))
+class I3BarOutput(object):
+    """Manage output according to the i3bar protocol"""
+    def __init__(self, theme):
+        self._theme = theme
+        self._widgets = []
 
     def start(self):
-        pass
-
-    def draw(self, widgets, theme):
-        if not type(widgets) is list:
-            widgets = [ widgets ]
-        self._draw(widgets, theme)
-
-    def _draw(self, widgets, theme):
-        pass
-
-    def flush(self):
-        pass
+        """Print start preamble for i3bar protocol"""
+        sys.stdout.write(json.dumps({"version": 1, "click_events": True}) + "[\n")
 
     def stop(self):
-        pass
+        """Finish i3bar protocol"""
+        sys.stdout.write("]\n")
+
+    def draw(self, widget, module=None, engine=None):
+        """Draw a single widget"""
+        full_text = widget.full_text()
+        padding = self._theme.padding(widget)
+        prefix = self._theme.prefix(widget, padding)
+        suffix = self._theme.suffix(widget, padding)
+        if prefix:
+            full_text = u"{}{}".format(prefix, full_text)
+        if suffix:
+            full_text = u"{}{}".format(full_text, suffix)
+        separator = self._theme.separator(widget)
+        if separator:
+            self._widgets.append({
+                u"full_text": separator,
+                "separator": False,
+                "color": self._theme.separator_fg(widget),
+                "background": self._theme.separator_bg(widget),
+                "separator_block_width": self._theme.separator_block_width(widget),
+            })
+        self._widgets.append({
+            u"full_text": full_text,
+            "color": self._theme.fg(widget),
+            "background": self._theme.bg(widget),
+            "separator_block_width": self._theme.separator_block_width(widget),
+            "separator": True if separator is None else False,
+            "instance": widget.id,
+            "name": module.id,
+        })
+
+    def begin(self):
+        """Start one output iteration"""
+        self._widgets = []
+        self._theme.reset()
+
+    def flush(self):
+        """Flushes output"""
+        sys.stdout.write(json.dumps(self._widgets))
+
+    def end(self):
+        """Finalizes output"""
+        sys.stdout.write(",\n")
+        sys.stdout.flush()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

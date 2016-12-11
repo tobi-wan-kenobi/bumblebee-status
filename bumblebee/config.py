@@ -1,116 +1,50 @@
-import os
+"""Configuration handling
+
+This module provides configuration information (loaded modules,
+module parameters, etc.) to all other components
+"""
+
 import argparse
-import textwrap
+import bumblebee.store
 
-import bumblebee.theme
-import bumblebee.module
+MODULE_HELP = ""
+THEME_HELP = ""
+PARAMETER_HELP = ""
 
-class print_usage(argparse.Action):
-    def __init__(self, option_strings, dest, nargs=None, **kwargs):
-        argparse.Action.__init__(self, option_strings, dest, nargs, **kwargs)
-        self._indent = " "*4
+def create_parser():
+    """Create the argument parser"""
+    parser = argparse.ArgumentParser(description="display system data in the i3bar")
+    parser.add_argument("-m", "--modules", nargs="+", default=[],
+        help=MODULE_HELP)
+    parser.add_argument("-t", "--theme", default="default", help=THEME_HELP)
+    parser.add_argument("-p", "--parameters", nargs="+", default=[],
+        help=PARAMETER_HELP)
+    return parser
 
-    def __call__(self, parser, namespace, value, option_string=None):
-        if value == "modules":
-            self.print_modules()
-        elif value == "themes":
-            self.print_themes()
-        else:
-            parser.print_help()
-        parser.exit()
+class Config(bumblebee.store.Store):
+    """Top-level configuration class
 
-    def print_themes(self):
-        print(textwrap.fill(", ".join(bumblebee.theme.themes()),
-            80, initial_indent = self._indent, subsequent_indent = self._indent
-        ))
+    Parses commandline arguments and provides non-module
+    specific configuration information.
+    """
+    def __init__(self, args=None):
+        super(Config, self).__init__()
+        parser = create_parser()
+        self._args = parser.parse_args(args if args else [])
 
-    def print_modules(self):
-        for m in bumblebee.module.modules():
-            print(textwrap.fill("{}: {}".format(m.name(), m.description()),
-                80, initial_indent=self._indent*2, subsequent_indent=self._indent*3))
-            print("{}Parameters:".format(self._indent*2))
-            for p in m.parameters():
-                print(textwrap.fill("* {}".format(p),
-                    80, initial_indent=self._indent*3, subsequent_indent=self._indent*4))
-            print("")
-
-class ModuleConfig(object):
-    def __init__(self, config, prefix):
-        self._prefix = prefix
-        self._config = config
-
-    def set(self, name, value):
-        name = self._prefix + name
-        return self._config.set(name, value)
-
-    def parameter(self, name, default=None):
-        name = self._prefix + name
-        return self._config.parameter(name, default)
-
-    def increase(self, name, limit, default):
-        name = self._prefix + name
-        return self._config.increase(name, limit, default)
-
-class Config(object):
-    def __init__(self, args):
-        self._parser = self._parser()
-        self._store = {}
-
-        if len(args) == 0:
-            self._parser.print_help()
-            self._parser.exit()
-
-        self._args = self._parser.parse_args(args)
-
-        for p in self._args.parameters:
-            key, value = p.split("=")
-            self.parameter(key, value)
-
-    def set(self, name, value):
-        self._store[name] = value
-
-    def parameter(self, name, default=None):
-        if not name in self._store:
-            self.set(name, default)
-        return self._store.get(name, default)
-
-    def increase(self, name, limit, default):
-        self._store[name] += 1
-        if self._store[name] >= limit:
-            self._store[name] = default
-        return self._store[name]
-
-    def theme(self):
-        return self._args.theme
+        for param in self._args.parameters:
+            key, value = param.split("=")
+            self.set(key, value)
 
     def modules(self):
-        result = []
-        for m in self._args.modules:
-            items = m.split(":")
-            result.append({ "name": items[0], "alias": items[1] if len(items) > 1 else None })
-        return result
+        """Return a list of all activated modules"""
+        return [{
+            "module": x.split(":")[0],
+            "name": x if not ":" in x else x.split(":")[1],
+        } for x in self._args.modules]
 
-    def _parser(self):
-        parser = argparse.ArgumentParser(description="display system data in the i3bar")
-        parser.add_argument("-m", "--modules", nargs="+",
-            help="List of modules to load. The order of the list determines "
-            "their order in the i3bar (from left to right)",
-            default=[],
-        )
-        parser.add_argument("-l", "--list",
-            help="List: 'modules', 'themes' ",
-            choices = [ "modules", "themes" ],
-            action=print_usage,
-        )
-        parser.add_argument("-p", "--parameters", nargs="+",
-            help="Provide configuration parameters to individual modules.",
-            default=[]
-        )
-        parser.add_argument("-t", "--theme", help="Specify which theme to use for "
-            "drawing the modules",
-            default="default",
-        )
-
-        return parser
+    def theme(self):
+        """Return the name of the selected theme"""
+        return self._args.theme
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -1,89 +1,72 @@
-import bumblebee.module
-import bumblebee.util
-import re
+# pylint: disable=C0111,R0903
+
+"""Shows a widget for each connected screen and allows the user to enable/disable screens.
+
+"""
+
 import os
+import re
 import sys
-import subprocess
 
-def description():
-    return "Shows all connected screens"
+import bumblebee.util
+import bumblebee.input
+import bumblebee.output
+import bumblebee.engine
 
-def parameters():
-    return [
-    ]
-
-class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
-
-        self._widgets = []
-
-    def toggle(self, event, widget):
-        path = os.path.dirname(os.path.abspath(__file__))
-        toggle_cmd = "{}/../../bin/toggle-display.sh".format(path)
-
-        if widget.get("state") == "on":
-            bumblebee.util.execute("{} --output {} --off".format(toggle_cmd, widget.get("display")))
-        else:
-            neighbor = None
-            for w in self._widgets:
-                if w.get("state") == "on":
-                    neighbor = w
-                    if event.get("button") == 1:
-                        break
-    
-            if neighbor == None:
-                bumblebee.util.execute("{} --output {} --auto".format(toggle_cmd,
-                    widget.get("display")))
-            else:
-                bumblebee.util.execute("{} --output {} --auto --{}-of {}".format(toggle_cmd,
-                    widget.get("display"), "left" if event.get("button") == 1 else "right",
-                    neighbor.get("display")))
-
-    def widgets(self):
-        process = subprocess.Popen([ "xrandr", "-q" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output, error = process.communicate()
-
+class Module(bumblebee.engine.Module):
+    def __init__(self, engine, config):
         widgets = []
+        self._engine = engine
+        super(Module, self).__init__(engine, config, widgets)
+        self.update_widgets(widgets)
 
-        for line in output.split("\n"):
+    def update_widgets(self, widgets):
+        new_widgets = []
+        for line in bumblebee.util.execute("xrandr -q").split("\n"):
             if not " connected" in line:
                 continue
             display = line.split(" ", 2)[0]
             m = re.search(r'\d+x\d+\+(\d+)\+\d+', line)
 
-            widget = bumblebee.output.Widget(self, display, instance=display)
-            widget.set("display", display)
+            widget = self.widget(display)
+            if not widget:
+                widget = bumblebee.output.Widget(full_text=display, name=display)
+                self._engine.input.register_callback(widget, button=1, cmd=self._toggle)
+                self._engine.input.register_callback(widget, button=3, cmd=self._toggle)
+            new_widgets.append(widget)
+            widget.set("state", "on" if m else "off")
+            widget.set("pos", int(m.group(1)) if m else sys.maxint)
 
-            # not optimal (add callback once per interval), but since
-            # add_callback() just returns if the callback has already
-            # been registered, it should be "ok"
-            self._output.add_callback(module=display, button=1,
-                cmd=self.toggle)
-            self._output.add_callback(module=display, button=3,
-                cmd=self.toggle)
-            if m:
-                widget.set("state", "on")
-                widget.set("pos", int(m.group(1)))
-            else:
-                widget.set("state", "off")
-                widget.set("pos", sys.maxint)
-
+        while len(widgets) > 0:
+            del widgets[0]
+        for widget in new_widgets:
             widgets.append(widget)
 
-        widgets.sort(key=lambda widget : widget.get("pos"))
-
-        self._widgets = widgets
-
-        return widgets
+    def update(self, widgets):
+        self.update_widgets(widgets)
 
     def state(self, widget):
         return widget.get("state", "off")
 
-    def warning(self, widget):
-        return False
+    def _toggle(self, event):
+        path = os.path.dirname(os.path.abspath(__file__))
+        toggle_cmd = "{}/../../bin/toggle-display.sh".format(path)
 
-    def critical(self, widget):
-        return False
+        widget = self.widget_by_id(event["instance"])
+
+        if widget.get("state") == "on":
+            bumblebee.util.execute("{} --output {} --off".format(toggle_cmd, widget.name))
+        else:
+            first_neighbor = next((widget for widget in self.widgets() if widget.get("state") == "on"), None)
+            last_neighbor = next((widget for widget in reversed(self.widgets()) if widget.get("state") == "on"), None)
+
+            neighbor = first_neighbor if event["button"] == bumblebee.input.LEFT_MOUSE else last_neighbor
+    
+            if neighbor == None:
+                bumblebee.util.execute("{} --output {} --auto".format(toggle_cmd, widget.name))
+            else:
+                bumblebee.util.execute("{} --output {} --auto --{}-of {}".format(toggle_cmd, widget.name,
+                    "left" if event.get("button") == bumblebee.input.LEFT_MOUSE else "right",
+                    neighbor.name))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

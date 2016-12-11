@@ -1,4 +1,5 @@
 #!/usr/bin/bash
+
 if ! type -P fakeroot >/dev/null; then
 	error 'Cannot find the fakeroot binary.'
 	exit 1

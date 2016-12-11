@@ -1,38 +1,44 @@
-import subprocess
-import shlex
+# pylint: disable=C0111,R0903
 
-import bumblebee.module
+"""Enable/disable automatic screen locking.
+"""
 
-def description():
-    return "Enable/disable auto screen lock."
+import bumblebee.input
+import bumblebee.output
+import bumblebee.engine
 
-class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
-        self._activated = 0
-        output.add_callback(module="caffeine.activate", button=1, cmd=[ 'notify-send "Consuming caffeine"', 'xset s off' ])
-        output.add_callback(module="caffeine.deactivate", button=1, cmd=[ 'notify-send "Out of coffee"', 'xset s default' ])
+class Module(bumblebee.engine.Module):
+    def __init__(self, engine, config):
+        super(Module, self).__init__(engine, config,
+            bumblebee.output.Widget(full_text=self.caffeine)
+        )
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+            cmd=self._toggle
+        )
 
-    def widgets(self):
-        output = subprocess.check_output(shlex.split("xset q"))
-        xset_out = output.decode().split("\n")
-        for line in xset_out:
-            if line.startswith("  timeout"):
-                timeout = int(line.split(" ")[4])
-                if timeout == 0:
-                    self._activated = 1;
-                else:
-                    self._activated = 0;
-                break
-
-        if self._activated == 0:
-            return bumblebee.output.Widget(self, "", instance="caffeine.activate")
-        elif self._activated == 1:
-            return bumblebee.output.Widget(self, "", instance="caffeine.deactivate")
+    def caffeine(self, widget):
+        return ""
 
     def state(self, widget):
-        if self._activated == 1:
+        if self._active():
             return "activated"
-        else:
-            return "deactivated"
+        return "deactivated"
 
+    def _active(self):
+        for line in bumblebee.util.execute("xset q").split("\n"):
+            if "timeout" in line:
+                timeout = int(line.split(" ")[4])
+                if timeout == 0:
+                    return True
+                return False
+        return False
+
+    def _toggle(self, widget):
+        if self._active():
+            bumblebee.util.execute("xset s default")
+            bumblebee.util.execute("notify-send \"Out of coffee\"")
+        else:
+            bumblebee.util.execute("xset s off")
+            bumblebee.util.execute("notify-send \"Consuming caffeine\"")
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

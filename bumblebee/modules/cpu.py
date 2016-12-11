@@ -1,30 +1,33 @@
-import bumblebee.module
+# pylint: disable=C0111,R0903
+
+"""Displays CPU utilization across all CPUs.
+
+Parameters:
+    * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
+    * cpu.critical: Critical threshold in % of CPU usage (defaults to 80%)
+"""
+
 import psutil
+import bumblebee.input
+import bumblebee.output
+import bumblebee.engine
 
-def description():
-    return "Displays CPU utilization across all CPUs."
+class Module(bumblebee.engine.Module):
+    def __init__(self, engine, config):
+        super(Module, self).__init__(engine, config,
+            bumblebee.output.Widget(full_text=self.utilization)
+        )
+        self._utilization = psutil.cpu_percent(percpu=False)
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+            cmd="gnome-system-monitor")
 
-def parameters():
-    return [
-        "cpu.warning: Warning threshold in % of disk usage (defaults to 70%)",
-        "cpu.critical: Critical threshold in % of disk usage (defaults to 80%)",
-    ]
+    def utilization(self, widget):
+        return "{:06.02f}%".format(self._utilization)
 
-class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
-        self._perc = psutil.cpu_percent(percpu=False)
+    def update(self, widgets):
+        self._utilization = psutil.cpu_percent(percpu=False)
 
-        output.add_callback(module=self.instance(), button=1, cmd="gnome-system-monitor")
-
-    def widgets(self):
-        self._perc = psutil.cpu_percent(percpu=False)
-        return bumblebee.output.Widget(self, "{:05.02f}%".format(self._perc))
-
-    def warning(self, widget):
-        return self._perc > self._config.parameter("warning", 70)
-
-    def critical(self, widget):
-        return self._perc > self._config.parameter("critical", 80)
+    def state(self, widget):
+        return self.threshold_state(self._utilization, 70, 80)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

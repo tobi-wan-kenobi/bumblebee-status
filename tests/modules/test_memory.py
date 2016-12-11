@@ -6,21 +6,20 @@ import mock
 
 import bumblebee.input
 from bumblebee.input import I3BarInput
-from bumblebee.modules.cpu import Module
+from bumblebee.modules.memory import Module
 from tests.util import MockEngine, MockConfig, assertPopen, assertMouseEvent, assertStateContains
 
-class TestCPUModule(unittest.TestCase):
+class VirtualMemory(object):
+    def __init__(self, percent):
+        self.percent = percent
+
+class TestMemoryModule(unittest.TestCase):
     def setUp(self):
         self.engine = MockEngine()
         self.engine.input = I3BarInput()
         self.engine.input.need_event = True
         self.config = MockConfig()
         self.module = Module(engine=self.engine, config={ "config": self.config })
-
-    @mock.patch("sys.stdout")
-    def test_format(self, mock_output):
-        for widget in self.module.widgets():
-            self.assertEquals(len(widget.full_text()), len("100.00%"))
 
     @mock.patch("select.select")
     @mock.patch("subprocess.Popen")
@@ -31,18 +30,18 @@ class TestCPUModule(unittest.TestCase):
             "gnome-system-monitor"
         )
 
-    @mock.patch("psutil.cpu_percent")
-    def test_warning(self, mock_psutil):
-        self.config.set("cpu.critical", "20")
-        self.config.set("cpu.warning", "18")
-        mock_psutil.return_value = 19.0
+    @mock.patch("psutil.virtual_memory")
+    def test_warning(self, mock_vmem):
+        self.config.set("memory.critical", "80")
+        self.config.set("memory.warning", "70")
+        mock_vmem.return_value = VirtualMemory(75)
         assertStateContains(self, self.module, "warning")
 
-    @mock.patch("psutil.cpu_percent")
-    def test_critical(self, mock_psutil):
-        self.config.set("cpu.critical", "20")
-        self.config.set("cpu.warning", "19")
-        mock_psutil.return_value = 21.0
+    @mock.patch("psutil.virtual_memory")
+    def test_critical(self, mock_vmem):
+        self.config.set("memory.critical", "80")
+        self.config.set("memory.warning", "70")
+        mock_vmem.return_value = VirtualMemory(85)
         assertStateContains(self, self.module, "critical")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

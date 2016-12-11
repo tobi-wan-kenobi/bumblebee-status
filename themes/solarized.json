@@ -1,41 +1,41 @@
 {
 	"icons": [ "ascii" ],
 	"defaults": {
-		"cycle": [
-			{
-				"fg": "#93a1a1",
-				"bg": "#002b36"
-			},
-			{
-				"fg": "#eee8d5",
-				"bg": "#586e75"
-			}
-		],
-		"fg-critical": "#002b36",
-		"bg-critical": "#dc322f",
-		"fg-warning": "#002b36",
-		"bg-warning": "#b58900",
-
+		"critical": {
+			"fg": "#002b36",
+			"bg": "#dc322f"
+		},
+		"warning": {
+			"fg": "#002b36",
+			"bg": "#b58900"
+		},
 		"default_separators": false,
 		"separator": ""
 	},
+	"cycle": [
+		{
+			"fg": "#93a1a1",
+			"bg": "#002b36"
+		},
+		{
+			"fg": "#eee8d5",
+			"bg": "#586e75"
+		}
+	],
 	"dnf": {
-		"states": {
-			"good": {
-				"fg": "#002b36",
-				"bg": "#859900"
-			}
+		"good": {
+			"fg": "#002b36",
+			"bg": "#859900"
 		}
 	},
 	"battery": {
-		"states": {
-			"charged": {
-				"fg": "#002b36",
-				"bg": "#859900"
-			},
-			"AC": {
-				"fg": "#002b36",
-				"bg": "#859900"
-			}
+		"charged": {
+			"fg": "#002b36",
+			"bg": "#859900"
+		},
+		"AC": {
+			"fg": "#002b36",
+			"bg": "#859900"
+		}
 	}
 }

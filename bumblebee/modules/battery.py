@@ -1,52 +1,76 @@
-import datetime
-import bumblebee.module
-import os.path
+# pylint: disable=C0111,R0903
 
-def description():
-    return "Displays battery status, percentage and whether it's charging or discharging."
+"""Displays battery status, remaining percentage and charging information.
 
-def parameters():
-    return [ "battery.device: The device to read from (defaults to BAT0)" ]
+Parameters:
+    * battery.device  : The device to read information from (defaults to BAT0)
+    * battery.warning : Warning threshold in % of remaining charge (defaults to 20)
+    * battery.critical: Critical threshold in % of remaining charge (defaults to 10)
+"""
 
-class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
-        self._battery = config.parameter("device", "BAT0")
+import os
+
+import bumblebee.input
+import bumblebee.output
+import bumblebee.engine
+
+class Module(bumblebee.engine.Module):
+    def __init__(self, engine, config):
+        super(Module, self).__init__(engine, config,
+            bumblebee.output.Widget(full_text=self.capacity)
+        )
+        battery = self.parameter("device", "BAT0")
+        self._path = "/sys/class/power_supply/{}".format(battery)
         self._capacity = 100
-        self._status = "Unknown"
+        self._ac = False
 
-    def widgets(self):
-        self._AC = False;
-        self._path = "/sys/class/power_supply/{}".format(self._battery)
+    def capacity(self, widget):
+        if self._ac:
+            return "ac"
+        if self._capacity == -1:
+            return "n/a"
+        return "{:03d}%".format(self._capacity)
+
+    def update(self, widgets):
+        widget = widgets[0]
+        self._ac = False
         if not os.path.exists(self._path):
-            self._AC = True;
-            return bumblebee.output.Widget(self,"AC")
+            self._ac = True
+            self._capacity = 100
+            return
 
-        with open(self._path + "/capacity") as f:
-            self._capacity = int(f.read())
+        try:
+            with open(self._path + "/capacity") as f:
+                self._capacity = int(f.read())
+        except IOError:
+            self._capacity = -1
         self._capacity = self._capacity if self._capacity < 100 else 100
 
-        return bumblebee.output.Widget(self,"{:02d}%".format(self._capacity))
-
-    def warning(self, widget):
-        return self._capacity < self._config.parameter("warning", 20)
-
-    def critical(self, widget):
-        return self._capacity < self._config.parameter("critical", 10)
-
     def state(self, widget):
-        if self._AC:
-            return "AC"
+        state = []
 
-        with open(self._path + "/status") as f:
-            self._status = f.read().strip()
+        if self._capacity < 0:
+            return ["critical", "unknown"]
 
-        if self._status == "Discharging":
-            status = "discharging-{}".format(min([ 10, 25, 50, 80, 100] , key=lambda i:abs(i-self._capacity)))
-            return status
+        if self._capacity < int(self.parameter("critical", 10)):
+            state.append("critical")
+        elif self._capacity < int(self.parameter("warning", 20)):
+            state.append("warning")
+
+        if self._ac:
+            state.append("AC")
         else:
-            if self._capacity > 95:
-                return "charged"
-            return "charging"
+            charge = ""
+            with open(self._path + "/status") as f:
+                charge = f.read().strip()
+            if charge == "Discharging":
+                state.append("discharging-{}".format(min([10, 25, 50, 80, 100] , key=lambda i:abs(i-self._capacity))))
+            else:
+                if self._capacity > 95:
+                    state.append("charged")
+                else:
+                    state.append("charging")
+
+        return state
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

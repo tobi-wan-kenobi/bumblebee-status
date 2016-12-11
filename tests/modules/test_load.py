@@ -6,21 +6,16 @@ import mock
 
 import bumblebee.input
 from bumblebee.input import I3BarInput
-from bumblebee.modules.cpu import Module
-from tests.util import MockEngine, MockConfig, assertPopen, assertMouseEvent, assertStateContains
+from bumblebee.modules.load import Module
+from tests.util import MockEngine, MockConfig, assertStateContains, assertMouseEvent
 
-class TestCPUModule(unittest.TestCase):
+class TestLoadModule(unittest.TestCase):
     def setUp(self):
         self.engine = MockEngine()
         self.engine.input = I3BarInput()
         self.engine.input.need_event = True
         self.config = MockConfig()
         self.module = Module(engine=self.engine, config={ "config": self.config })
-
-    @mock.patch("sys.stdout")
-    def test_format(self, mock_output):
-        for widget in self.module.widgets():
-            self.assertEquals(len(widget.full_text()), len("100.00%"))
 
     @mock.patch("select.select")
     @mock.patch("subprocess.Popen")
@@ -31,18 +26,22 @@ class TestCPUModule(unittest.TestCase):
             "gnome-system-monitor"
         )
 
-    @mock.patch("psutil.cpu_percent")
-    def test_warning(self, mock_psutil):
-        self.config.set("cpu.critical", "20")
-        self.config.set("cpu.warning", "18")
-        mock_psutil.return_value = 19.0
+    @mock.patch("multiprocessing.cpu_count")
+    @mock.patch("os.getloadavg")
+    def test_warning(self, mock_loadavg, mock_cpucount):
+        self.config.set("load.critical", "1")
+        self.config.set("load.warning", "0.8")
+        mock_cpucount.return_value = 1
+        mock_loadavg.return_value = [ 0.9, 0, 0 ]
         assertStateContains(self, self.module, "warning")
 
-    @mock.patch("psutil.cpu_percent")
-    def test_critical(self, mock_psutil):
-        self.config.set("cpu.critical", "20")
-        self.config.set("cpu.warning", "19")
-        mock_psutil.return_value = 21.0
+    @mock.patch("multiprocessing.cpu_count")
+    @mock.patch("os.getloadavg")
+    def test_critical(self, mock_loadavg, mock_cpucount):
+        self.config.set("load.critical", "1")
+        self.config.set("load.warning", "0.8")
+        mock_cpucount.return_value = 1
+        mock_loadavg.return_value = [ 1.1, 0, 0 ]
         assertStateContains(self, self.module, "critical")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

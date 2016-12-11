@@ -1,46 +1,154 @@
+# pylint: disable=C0103
+
+"""Theme support"""
+
 import os
 import copy
 import json
-import yaml
-import glob
 
-def getpath():
+import bumblebee.error
+
+def theme_path():
+    """Return the path of the theme directory"""
     return os.path.dirname("{}/../themes/".format(os.path.dirname(os.path.realpath(__file__))))
 
-def themes():
-    d = getpath()
-    return [ os.path.basename(f).replace(".json", "") for f in glob.iglob("{}/*.json".format(d)) ]
+class Theme(object):
+    """Represents a collection of icons and colors"""
+    def __init__(self, name):
+        self._init(self.load(name))
+        self._widget = None
+        self._cycle_idx = 0
+        self._cycle = {}
+        self._prevbg = None
 
-class Theme:
-    def __init__(self, config):
-        self._config = config
+    def _init(self, data):
+        """Initialize theme from data structure"""
+        for iconset in data.get("icons", []):
+            self._merge(data, self._load_icons(iconset))
+        self._theme = data
+        self._defaults = data.get("defaults", {})
+        self._cycles = self._theme.get("cycle", [])
+        self.reset()
 
-        self._data = self.get_theme(config.theme())
+    def data(self):
+        """Return the raw theme data"""
+        return self._theme
 
-        for iconset in self._data.get("icons", []):
-            self.merge(self._data, self.get_theme(iconset))
+    def reset(self):
+        """Reset theme to initial state"""
+        self._cycle = self._cycles[0] if len(self._cycles) > 0 else {}
+        self._cycle_idx = 0
+        self._widget = None
+        self._prevbg = None
 
-        self._defaults = self._data.get("defaults", {})
-        self._cycles = self._defaults.get("cycle", [])
-        self.begin()
+    def padding(self, widget):
+        """Return padding for widget"""
+        return self._get(widget, "padding", "")
 
-    def get_theme(self, name):
-        for path in [ getpath(), "{}/icons/".format(getpath()) ]:
-            if os.path.isfile("{}/{}.yaml".format(path, name)):
-                with open("{}/{}.yaml".format(path, name)) as f:
-                    return yaml.load(f)
-            if os.path.isfile("{}/{}.json".format(path, name)):
-                with open("{}/{}.json".format(path, name)) as f:
-                    return json.load(f)
-        return None
+    def prefix(self, widget, default=None):
+        """Return the theme prefix for a widget's full text"""
+        padding = self.padding(widget)
+        pre = self._get(widget, "prefix", None)
+        return u"{}{}{}".format(padding, pre, padding) if pre else default
+
+    def suffix(self, widget, default=None):
+        """Return the theme suffix for a widget's full text"""
+        padding = self._get(widget, "padding", "")
+        suf = self._get(widget, "suffix", None)
+        return u"{}{}{}".format(padding, suf, padding) if suf else default
+
+    def fg(self, widget):
+        """Return the foreground color for this widget"""
+        return self._get(widget, "fg", None)
+
+    def bg(self, widget):
+        """Return the background color for this widget"""
+        return self._get(widget, "bg", None)
+
+    def separator(self, widget):
+        """Return the separator between widgets"""
+        return self._get(widget, "separator", None)
+
+    def separator_fg(self, widget):
+        """Return the separator's foreground/text color"""
+        return self.bg(widget)
+
+    def separator_bg(self, widget):
+        """Return the separator's background color"""
+        return self._prevbg
+
+    def separator_block_width(self, widget):
+        """Return the SBW"""
+        return self._get(widget, "separator-block-width", None)
+
+    def loads(self, data):
+        """Initialize the theme from a JSON string"""
+        theme = json.loads(data)
+        self._init(theme)
+
+    def _load_icons(self, name):
+        """Load icons for a theme"""
+        path = "{}/icons/".format(theme_path())
+        return self.load(name, path=path)
+
+    def load(self, name, path=theme_path()):
+        """Load and parse a theme file"""
+        themefile = "{}/{}.json".format(path, name)
+
+        if os.path.isfile(themefile):
+            try:
+                with open(themefile) as data:
+                    return json.load(data)
+            except ValueError as exception:
+                raise bumblebee.error.ThemeLoadError("JSON error: {}".format(exception))
+        else:
+            raise bumblebee.error.ThemeLoadError("no such theme: {}".format(name))
+
+    def _get(self, widget, name, default=None):
+        """Return the config value 'name' for 'widget'"""
+
+        if not self._widget:
+            self._widget = widget
+
+        if self._widget != widget:
+            self._prevbg = self.bg(self._widget)
+            self._widget = widget
+            if len(self._cycles) > 0:
+                self._cycle_idx = (self._cycle_idx + 1) % len(self._cycles)
+                self._cycle = self._cycles[self._cycle_idx]
+
+        module_theme = self._theme.get(widget.module, {})
+
+        state_themes = []
+        # avoid infinite recursion
+        states = widget.state()
+        if name not in states:
+            for state in states:
+                state_themes.append(self._get(widget, state, {}))
+
+        value = self._defaults.get(name, default)
+        value = self._cycle.get(name, value)
+        value = module_theme.get(name, value)
+
+        for theme in state_themes:
+            value = theme.get(name, value)
+
+        if isinstance(value, list):
+            key = "{}-idx".format(name)
+            idx = widget.get(key, 0)
+            widget.set(key, (idx + 1) % len(value))
+            value = value[idx]
+
+        return value
 
     # algorithm copied from
     # http://blog.impressiver.com/post/31434674390/deep-merge-multiple-python-dicts
     # nicely done :)
-    def merge(self, target, *args):
+    def _merge(self, target, *args):
+        """Merge two arbitrarily nested data structures"""
         if len(args) > 1:
             for item in args:
-                self.merge(item)
+                self._merge(item)
             return target
 
         item = args[0]
@@ -48,83 +156,9 @@ class Theme:
             return item
         for key, value in item.items():
             if key in target and isinstance(target[key], dict):
-                self.merge(target[key], value)
+                self._merge(target[key], value)
             else:
                 target[key] = copy.deepcopy(value)
         return target
-
-    def begin(self):
-        self._config.set("theme.cycleidx", 0)
-        self._cycle = self._cycles[0] if len(self._cycles) > 0 else {}
-        self._background = [ None, None ]
-
-    def next_widget(self):
-        self._background[1] = self._background[0]
-        idx = self._config.increase("theme.cycleidx", len(self._cycles), 0)
-        self._cycle = self._cycles[idx] if len(self._cycles) > idx else {}
-
-    def prefix(self, widget):
-        return self._get(widget, "prefix", "")
-
-    def suffix(self, widget):
-        return self._get(widget, "suffix", "")
-
-    def color(self, widget):
-        result = self._get(widget, "fg")
-        if widget.warning():
-            result = self._get(widget, "fg-warning")
-        if widget.critical():
-            result = self._get(widget, "fg-critical")
-        return result
-
-    def background(self, widget):
-        result = self._get(widget, "bg")
-        if widget.warning():
-            result = self._get(widget, "bg-warning")
-        if widget.critical():
-            result = self._get(widget, "bg-critical")
-        self._background[0] = result
-        return result
-
-    def separator(self, widget):
-        return self._get(widget, "separator")
-
-    def default_separators(self, widget):
-        return self._get(widget, "default-separators")
-
-    def separator_color(self, widget):
-        return self.background(widget)
-
-    def separator_background(self, widget):
-        return self._background[1]
-
-    def separator_block_width(self, widget):
-        return self._get(widget, "separator-block-width")
-
-    def _get(self, widget, name, default = None):
-        module = widget.module()
-        state = widget.state()
-        inst = widget.instance()
-        inst = inst.replace("{}.".format(module), "")
-        module_theme = self._data.get(module, {})
-        state_theme = module_theme.get("states", {}).get(state, {})
-        instance_theme = module_theme.get(inst, {})
-        instance_state_theme = instance_theme.get("states", {}).get(state, {})
-
-        value = None
-        value = self._defaults.get(name, value)
-        value = self._cycle.get(name, value)
-        value = module_theme.get(name, value)
-        value = state_theme.get(name, value)
-        value = instance_theme.get(name, value)
-        value = instance_state_theme.get(name, value)
-
-        if type(value) is list:
-            key = "{}{}".format(repr(widget), value)
-            idx = self._config.parameter(key, 0)
-            self._config.increase(key, len(value), 0)
-            value = value[idx]
-
-        return value if value else default
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -1,17 +1,23 @@
-import bumblebee.module
-import bumblebee.util
+# pylint: disable=C0111,R0903
 
-def description():
-    return "Draws a widget with configurable content."
+"""Draws a widget with configurable text content.
 
-def parameters():
-    return [ "spacer.text: Text to draw (defaults to '')" ]
+Parameters:
+    * spacer.text: Widget contents (defaults to empty string)
+"""
 
-class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
+import bumblebee.input
+import bumblebee.output
+import bumblebee.engine
 
-    def widgets(self):
-        return bumblebee.output.Widget(self, self._config.parameter("text", ""))
+class Module(bumblebee.engine.Module):
+    def __init__(self, engine, config):
+        super(Module, self).__init__(engine, config,
+            bumblebee.output.Widget(full_text=self.text)
+        )
+        self._text = self.parameter("text", "")
+
+    def text(self, widget):
+        return self._text
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

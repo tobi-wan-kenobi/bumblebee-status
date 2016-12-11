@@ -1,60 +1,68 @@
+# pylint: disable=C0111,R0903
+
+"""Displays volume and mute status of PulseAudio devices.
+
+Aliases: pasink, pasource
+"""
+
 import re
-import shlex
-import subprocess
 
-import bumblebee.module
 import bumblebee.util
+import bumblebee.input
+import bumblebee.output
+import bumblebee.engine
 
-def description():
-    module = __name__.split(".")[-1]
-    if module == "pasink":
-        return "Shows volume and mute status of the default PulseAudio Sink."
-    if module == "pasource":
-        return "Shows volume and mute status of the default PulseAudio Source."
-    return "See 'pasource'."
+ALIASES = [ "pasink", "pasource" ]
 
-def parameters():
-    return [ "none" ]
-    
+class Module(bumblebee.engine.Module):
+    def __init__(self, engine, config):
+        super(Module, self).__init__(engine, config,
+            bumblebee.output.Widget(full_text=self.volume)
+        )
 
-class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
-
-        self._module = self.__module__.split(".")[-1]
         self._left = 0
         self._right = 0
         self._mono = 0
         self._mute = False
-        channel = "sink" if self._module == "pasink" else "source"
+        channel = "sink" if self.name == "pasink" else "source"
 
-        output.add_callback(module=self.instance(), button=3,
-            cmd="pavucontrol")
-        output.add_callback(module=self.instance(), button=1,
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd="pavucontrol")
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="pactl set-{}-mute @DEFAULT_{}@ toggle".format(channel, channel.upper()))
-        output.add_callback(module=self.instance(), button=4,
+        engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
             cmd="pactl set-{}-volume @DEFAULT_{}@ +2%".format(channel, channel.upper()))
-        output.add_callback(module=self.instance(), button=5,
+        engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
             cmd="pactl set-{}-volume @DEFAULT_{}@ -2%".format(channel, channel.upper()))
 
-    def widgets(self):
-        res = subprocess.check_output(shlex.split("pactl info"))
-        channel = "sinks" if self._module == "pasink" else "sources"
-        name = None
-        for line in res.decode().split("\n"):
-            if line.startswith("Default Sink: ") and channel == "sinks":
-                name = line[14:]
-            if line.startswith("Default Source: ") and channel == "sources":
-                name = line[16:]
-        
-        res = subprocess.check_output(shlex.split("pactl list {}".format(channel)))
+    def _default_device(self):
+        output = bumblebee.util.execute("pactl info")
+        pattern = "Default Sink: " if self.name == "pasink" else "Default Source: "
+        for line in output.split("\n"):
+            if line.startswith(pattern):
+                return line.replace(pattern, "")
+        return "n/a"
 
+    def volume(self, widget):
+        if int(self._mono) > 0:
+            return "{}%".format(self._mono)
+        elif self._left == self._right:
+            return "{}%".format(self._left)
+        else:
+            return "{}%/{}%".format(self._left, self._right)
+        return "n/a"
+
+    def update(self, widgets):
+        channel = "sinks" if self.name == "pasink" else "sources"
+        device = self._default_device()
+
+        result = bumblebee.util.execute("pactl list {}".format(channel))
         found = False
-        for line in res.decode().split("\n"):
+        for line in result.split("\n"):
             if "Name:" in line and found == True:
                 break
-            if name in line:
+            if device in line:
                 found = True
+
             if "Mute:" in line and found == True:
                 self._mute = False if " no" in line.lower() else True
 
@@ -71,22 +79,10 @@ class Module(bumblebee.module.Module):
                 else:
                     self._left = m.group(1)
                     self._right = m.group(2)
-        result = ""
-        if int(self._mono) > 0:
-            result = "{}%".format(self._mono)
-        elif self._left == self._right:
-            result = "{}%".format(self._left)
-        else:
-            result="{}%/{}%".format(self._left, self._right)
-        return bumblebee.output.Widget(self, result)
 
     def state(self, widget):
-        return "muted" if self._mute is True else "unmuted"
-
-    def warning(self, widget):
-        return self._mute
-
-    def critical(self, widget):
-        return False
+        if self._mute:
+            return [ "warning", "muted" ]
+        return [ "unmuted" ]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

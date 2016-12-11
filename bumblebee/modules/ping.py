@@ -1,97 +1,74 @@
-from __future__ import absolute_import
+# pylint: disable=C0111,R0903
+
+"""Periodically checks the RTT of a configurable host using ICMP echos
+
+Parameters:
+    * ping.interval: Time in seconds between two RTT checks (defaults to 60)
+    * ping.address : IP address to check
+    * ping.timeout : Timeout for waiting for a reply (defaults to 5.0)
+    * ping.probes  : Number of probes to send (defaults to 5)
+    * ping.warning : Threshold for warning state, in seconds (defaults to 1.0)
+    * ping.critical: Threshold for critical state, in seconds (defaults to 2.0)
+"""
 
 import re
 import time
-import shlex
 import threading
-import subprocess
 
-import bumblebee.module
-import bumblebee.util
+import bumblebee.input
+import bumblebee.output
+import bumblebee.engine
 
-def description():
-    return "Periodically checks the RTT of a configurable IP"
+def get_rtt(module, widget):
+    try:
+        widget.set("rtt-unreachable", False)
+        res = bumblebee.util.execute("ping -n -q -c {} -W {} {}".format(
+            widget.get("rtt-probes"), widget.get("rtt-timeout"), widget.get("address")
+        ))
 
-def parameters():
-    return [
-        "ping.interval: Time in seconds between two RTT checks (defaults to 60)",
-        "ping.address: IP address to check",
-        "ping.warning: Threshold for warning state, in seconds (defaults to 1.0)",
-        "ping.critical: Threshold for critical state, in seconds (defaults to 2.0)",
-        "ping.timeout: Timeout for waiting for a reply (defaults to 5.0)",
-        "ping.probes: Number of probes to send (defaults to 5)",
-    ]
+        for line in res.split("\n"):
+            if not line.startswith("rtt"): continue
+            m = re.search(r'([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)', line)
 
-def get_rtt(obj):
-    loops = obj.get("interval")
+            widget.set("rtt-min", float(m.group(1)))
+            widget.set("rtt-avg", float(m.group(2)))
+            widget.set("rtt-max", float(m.group(3)))
+            widget.set("rtt-unit", m.group(5))
+    except Exception as e:
+        widget.set("rtt-unreachable", True)
 
-    for thread in threading.enumerate():
-        if thread.name == "MainThread":
-            main = thread
+class Module(bumblebee.engine.Module):
+    def __init__(self, engine, config):
+        widget = bumblebee.output.Widget(full_text=self.rtt)
+        super(Module, self).__init__(engine, config, widget)
 
-    interval = obj.get("interval")
-    while main.is_alive():
-        loops += 1
-        if loops < interval:
-            time.sleep(1)
-            continue
+        widget.set("address", self.parameter("address", "8.8.8.8"))
+        widget.set("interval", self.parameter("interval", 60))
+        widget.set("rtt-probes", self.parameter("probes", 5))
+        widget.set("rtt-timeout", self.parameter("timeout", 5.0))
+        widget.set("rtt-avg", 0.0)
+        widget.set("rtt-unit", "")
 
-        loops = 0
-        try:
-            res = subprocess.check_output(shlex.split("ping -n -q -c {} -W {} {}".format(
-                obj.get("rtt-probes"), obj.get("rtt-timeout"), obj.get("address")
-            )))
-            obj.set("rtt-unreachable", False)
+        self._next_check = 0
 
-            for line in res.decode().split("\n"):
-                if not line.startswith("rtt"): continue
-                m = re.search(r'([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)', line)
-
-                obj.set("rtt-min", float(m.group(1)))
-                obj.set("rtt-avg", float(m.group(2)))
-                obj.set("rtt-max", float(m.group(3)))
-                obj.set("rtt-unit", m.group(5))
-        except Exception as e:
-            obj.set("rtt-unreachable", True)
-
-
-class Module(bumblebee.module.Module):
-    def __init__(self, output, config, alias):
-        super(Module, self).__init__(output, config, alias)
-
-        self._counter = {}
-
-        self.set("address", self._config.parameter("address", "8.8.8.8"))
-        self.set("interval", self._config.parameter("interval", 60))
-        self.set("rtt-probes", self._config.parameter("probes", 5))
-        self.set("rtt-timeout", self._config.parameter("timeout", 5.0))
-
-        self._thread = threading.Thread(target=get_rtt, args=(self,))
-        self._thread.start()
-
-    def set(self, what, value):
-        self._counter[what] = value
-
-    def get(self, what):
-        return self._counter.get(what, 0)
-
-    def widgets(self):
-        text = "{}: {:.1f}{}".format(
-            self.get("address"),
-            self.get("rtt-avg"),
-            self.get("rtt-unit")
+    def rtt(self, widget):
+        if widget.get("rtt-unreachable"):
+            return "{}: unreachable".format(widget.get("address"))
+        return "{}: {:.1f}{}".format(
+            widget.get("address"),
+            widget.get("rtt-avg"),
+            widget.get("rtt-unit")
         )
 
-        if self.get("rtt-unreachable"):
-            text = "{}: unreachable".format(self.get("address"))
+    def state(self, widget):
+        if widget.get("rtt-unreachable"): return ["critical"]
+        return self.threshold_state(widget.get("rtt-avg"), 1000.0, 2000.0)
 
-        return bumblebee.output.Widget(self, text)
-
-    def warning(self, widget):
-        return self.get("rtt-avg") > float(self._config.parameter("warning", 1.0))*1000.0
-
-    def critical(self, widget):
-        if self.get("rtt-unreachable"): return True
-        return self.get("rtt-avg") > float(self._config.parameter("critical", 2.0))*1000.0
+    def update(self, widgets):
+        if int(time.time()) < self._next_check:
+            return
+        thread = threading.Thread(target=get_rtt, args=(self,widgets[0],))
+        thread.start()
+        self._next_check = int(time.time()) + widgets[0].get("interval")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
