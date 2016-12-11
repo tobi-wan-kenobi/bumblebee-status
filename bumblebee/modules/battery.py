@@ -22,6 +22,7 @@ class Module(bumblebee.engine.Module):
         battery = self.parameter("device", "BAT0")
         self._path = "/sys/class/power_supply/{}".format(battery)
         self._capacity = 100
+        self._ac = False
 
     def capacity(self):
         if self._ac:

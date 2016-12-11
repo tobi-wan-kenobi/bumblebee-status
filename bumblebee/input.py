@@ -79,30 +79,39 @@ class I3BarInput(object):
         self._thread.join()
         return self.clean_exit
 
-    def _uid(self, obj):
+    def _uuidstr(self, name, button):
+        return "{}::{}".format(name, button)
+
+    def _uid(self, obj, button):
         uid = self.global_id
         if obj:
             uid = obj.id
-        return uid
+        return self._uuidstr(uid, button)
 
     def deregister_callbacks(self, obj):
-        uid = self._uid(obj)
-        if uid in self._callbacks:
-            del self._callbacks[uid]
+        to_delete = []
+        uid = obj.id if obj else self.global_id
+        for key in self._callbacks:
+            if uid in key:
+                to_delete.append(key)
+        for key in to_delete:
+            del self._callbacks[key]
 
     def register_callback(self, obj, button, cmd):
         """Register a callback function or system call"""
-        uid = self._uid(obj)
+        uid = self._uid(obj, button)
         if uid not in self._callbacks:
             self._callbacks[uid] = {}
-        self._callbacks[uid][button] = cmd
+        self._callbacks[uid] = cmd
 
     def callback(self, event):
         """Execute callback action for an incoming event"""
-        cmd = self._callbacks.get(self.global_id, {})
-        cmd = self._callbacks.get(event["name"], cmd)
-        cmd = self._callbacks.get(event["instance"], cmd)
-        cmd = cmd.get(event["button"], None)
+        button = event["button"]
+
+        cmd = self._callbacks.get(self._uuidstr(self.global_id, button), None)
+        cmd = self._callbacks.get(self._uuidstr(event["name"], button), cmd)
+        cmd = self._callbacks.get(self._uuidstr(event["instance"], button), cmd)
+
         if cmd is None:
             return
         if callable(cmd):
