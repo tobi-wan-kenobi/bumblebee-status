@@ -12,6 +12,8 @@ from __future__ import absolute_import
 import datetime
 import bumblebee.engine
 
+ALIASES = [ "date", "time" ]
+
 def default_format(module):
     default = "%x %X"
     if module == "date":
@@ -25,8 +27,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.get_time)
         )
-        module = self.__module__.split(".")[-1]
-        self._fmt = self.parameter("format", default_format(module))
+        self._fmt = self.parameter("format", default_format(self.name))
 
     def get_time(self):
         return datetime.datetime.now().strftime(self._fmt)

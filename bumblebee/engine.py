@@ -26,11 +26,9 @@ class Module(object):
     this base class.
     """
     def __init__(self, engine, config={}, widgets=[]):
-        self.name = self.__module__.split(".")[-1]
+        self.name = config.get("name", self.__module__.split(".")[-1])
         self._config = config
-        if "name" not in self._config:
-            self._config["name"] = self.name
-        self.id = self._config["name"]
+        self.id = self.name
         self._widgets = []
         if widgets:
             self._widgets = widgets if isinstance(widgets, list) else [widgets]
@@ -50,7 +48,7 @@ class Module(object):
 
     def parameter(self, name, default=None):
         """Return the config parameter 'name' for this module"""
-        name = "{}.{}".format(self._config["name"], name)
+        name = "{}.{}".format(self.name, name)
         return self._config["config"].get(name, default)
 
 class Engine(object):
@@ -65,6 +63,7 @@ class Engine(object):
         self._running = True
         self._modules = []
         self.input = inp
+        self._aliases = self._read_aliases()
         self.load_modules(config.modules())
 
         self.input.register_callback(None, bumblebee.input.WHEEL_UP,
@@ -80,8 +79,19 @@ class Engine(object):
             self._modules.append(self._load_module(module["module"], module["name"]))
         return self._modules
 
+    def _read_aliases(self):
+        result = {}
+        for module in all_modules():
+            mod = importlib.import_module("bumblebee.modules.{}".format(module["name"]))
+            for alias in getattr(mod, "ALIASES", []):
+                result[alias] = module["name"]
+        return result
+
     def _load_module(self, module_name, config_name=None):
         """Load specified module and return it as object"""
+        if module_name in self._aliases:
+            config_name is config_name if config_name else module_name
+            module_name = self._aliases[module_name]
         if config_name is None:
             config_name = module_name
         try:
