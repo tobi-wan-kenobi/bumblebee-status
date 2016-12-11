@@ -26,7 +26,9 @@ class TestGenericModules(unittest.TestCase):
             for widget in self.objects[mod["name"]].widgets():
                 self.assertEquals(widget.get("variable", None), None)
 
-    def test_widgets(self):
+    @mock.patch("subprocess.Popen")
+    def test_widgets(self, mock_output):
+        mock_output.return_value = MockCommunicate()
         for mod in self.objects:
             widgets = self.objects[mod].widgets()
             for widget in widgets:
