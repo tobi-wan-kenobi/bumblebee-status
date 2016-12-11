@@ -42,7 +42,7 @@ class Module(bumblebee.engine.Module):
                 return line.replace(pattern, "")
         return "n/a"
 
-    def volume(self):
+    def volume(self, widget):
         if int(self._mono) > 0:
             return "{}%".format(self._mono)
         elif self._left == self._right:

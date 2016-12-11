@@ -16,7 +16,7 @@ class Module(bumblebee.engine.Module):
             cmd=self._toggle
         )
 
-    def caffeine(self):
+    def caffeine(self, widget):
         return ""
 
     def state(self, widget):
@@ -32,9 +32,6 @@ class Module(bumblebee.engine.Module):
                     return True
                 return False
         return False
-
-    def update(self, widgets):
-        pass
 
     def _toggle(self, widget):
         if self._active():

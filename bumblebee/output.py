@@ -41,7 +41,7 @@ class Widget(bumblebee.store.Store):
             self._full_text = value
         else:
             if callable(self._full_text):
-                return self._full_text()
+                return self._full_text(self)
             else:
                 return self._full_text
 

@@ -24,7 +24,7 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
             cmd="xbacklight -{}%".format(step))
 
-    def brightness(self):
+    def brightness(self, widget):
         return "{:03.0f}%".format(self._brightness)
 
     def update(self, widgets):

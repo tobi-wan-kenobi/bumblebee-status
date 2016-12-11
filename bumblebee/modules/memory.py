@@ -23,7 +23,7 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="gnome-system-monitor")
 
-    def memory_usage(self):
+    def memory_usage(self, widget):
         used = self._mem.total - self._mem.available
         return "{}/{} ({:05.02f}%)".format(
             bumblebee.util.bytefmt(used),

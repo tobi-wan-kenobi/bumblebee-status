@@ -10,7 +10,4 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text="test")
         )
 
-    def update(self, widgets):
-        pass
-
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

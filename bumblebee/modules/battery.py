@@ -24,7 +24,7 @@ class Module(bumblebee.engine.Module):
         self._capacity = 100
         self._ac = False
 
-    def capacity(self):
+    def capacity(self, widget):
         if self._ac:
             return "ac"
         if self._capacity == -1:

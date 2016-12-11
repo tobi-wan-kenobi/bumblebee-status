@@ -21,7 +21,7 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="gnome-system-monitor")
 
-    def utilization(self):
+    def utilization(self, widget):
         return "{:06.02f}%".format(self._utilization)
 
     def update(self, widgets):

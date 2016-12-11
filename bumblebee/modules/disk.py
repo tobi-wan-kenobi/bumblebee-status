@@ -21,11 +21,13 @@ class Module(bumblebee.engine.Module):
         )
         self._path = self.parameter("path", "/")
         self._perc = 0
+        self._used = 0
+        self._size = 0
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="nautilus {}".format(self._path))
 
-    def diskspace(self):
+    def diskspace(self, widget):
         return "{} {}/{} ({:05.02f}%)".format(self._path,
             bumblebee.util.bytefmt(self._used),
             bumblebee.util.bytefmt(self._size), self._perc

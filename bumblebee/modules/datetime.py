@@ -29,7 +29,7 @@ class Module(bumblebee.engine.Module):
         )
         self._fmt = self.parameter("format", default_format(self.name))
 
-    def get_time(self):
+    def get_time(self, widget):
         return datetime.datetime.now().strftime(self._fmt)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -17,10 +17,7 @@ class Module(bumblebee.engine.Module):
         )
         self._text = self.parameter("text", "")
 
-    def text(self):
+    def text(self, widget):
         return self._text
-
-    def update(self, widgets):
-        pass
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

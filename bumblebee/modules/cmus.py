@@ -41,8 +41,9 @@ class Module(bumblebee.engine.Module):
         self._status = None
         self._shuffle = False
         self._repeat = False
+        self._tags = defaultdict(lambda: '')
 
-    def description(self):
+    def description(self, widget):
         return string.Formatter().vformat(self._fmt, (), self._tags)
 
     def update(self, widgets):
