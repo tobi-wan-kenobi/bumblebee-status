@@ -47,7 +47,7 @@ class TestDiskModule(unittest.TestCase):
         assertStateContains(self, self.module, "warning")
 
     @mock.patch("os.statvfs")
-    def test_warning(self, mock_stat):
+    def test_critical(self, mock_stat):
         self.config.set("disk.critical", "80")
         self.config.set("disk.warning", "70")
         mock_stat.return_value = MockVFS(85.0)
