@@ -10,6 +10,7 @@
 	"disk": { "prefix": "" },
 	"dnf": { "prefix": "" },
 	"brightness": { "prefix": "" },
+	"load": { "prefix": "" },
 	"cmus": {
 		"playing": { "prefix": "" },
 		"paused": { "prefix": "" },
