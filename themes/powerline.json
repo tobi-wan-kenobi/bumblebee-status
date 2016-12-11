@@ -1,6 +1,7 @@
 {
 	"icons": [ "awesome-fonts" ],
 	"defaults": {
+		"separator-block-width": 0,
 		"critical": {
 			"fg": "#ffffff",
 			"bg": "#ff0000"
