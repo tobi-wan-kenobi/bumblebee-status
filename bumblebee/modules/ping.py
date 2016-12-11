@@ -20,35 +20,22 @@ import bumblebee.output
 import bumblebee.engine
 
 def get_rtt(module, widget):
+    try:
+        widget.set("rtt-unreachable", False)
+        res = bumblebee.util.execute("ping -n -q -c {} -W {} {}".format(
+            widget.get("rtt-probes"), widget.get("rtt-timeout"), widget.get("address")
+        ))
 
-    main = None
-    for thread in threading.enumerate():
-        if thread.name == "MainThread":
-            main = thread
+        for line in res.split("\n"):
+            if not line.startswith("rtt"): continue
+            m = re.search(r'([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)', line)
 
-    interval = widget.get("interval")
-    next_check = 0
-    while main.is_alive():
-        try:
-            if int(time.time()) < next_check:
-                time.sleep(1)
-                continue
-            widget.set("rtt-unreachable", False)
-            res = bumblebee.util.execute("ping -n -q -c {} -W {} {}".format(
-                widget.get("rtt-probes"), widget.get("rtt-timeout"), widget.get("address")
-            ))
-            next_check = int(time.time()) + interval
-
-            for line in res.split("\n"):
-                if not line.startswith("rtt"): continue
-                m = re.search(r'([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)', line)
-
-                widget.set("rtt-min", float(m.group(1)))
-                widget.set("rtt-avg", float(m.group(2)))
-                widget.set("rtt-max", float(m.group(3)))
-                widget.set("rtt-unit", m.group(5))
-        except Exception as e:
-            widget.set("rtt-unreachable", True)
+            widget.set("rtt-min", float(m.group(1)))
+            widget.set("rtt-avg", float(m.group(2)))
+            widget.set("rtt-max", float(m.group(3)))
+            widget.set("rtt-unit", m.group(5))
+    except Exception as e:
+        widget.set("rtt-unreachable", True)
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -62,8 +49,7 @@ class Module(bumblebee.engine.Module):
         widget.set("rtt-avg", 0.0)
         widget.set("rtt-unit", "")
 
-        self._thread = threading.Thread(target=get_rtt, args=(self,widget,))
-        self._thread.start()
+        self._next_check = 0
 
     def rtt(self, widget):
         if widget.get("rtt-unreachable"):
@@ -77,5 +63,12 @@ class Module(bumblebee.engine.Module):
     def state(self, widget):
         if widget.get("rtt-unreachable"): return ["critical"]
         return self.threshold_state(widget.get("rtt-avg"), 1000.0, 2000.0)
+
+    def update(self, widgets):
+        if int(time.time()) < self._next_check:
+            return
+        thread = threading.Thread(target=get_rtt, args=(self,widgets[0],))
+        thread.start()
+        self._next_check = int(time.time()) + widgets[0].get("interval")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
