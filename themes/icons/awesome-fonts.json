@@ -11,6 +11,7 @@
 	"dnf": { "prefix": "" },
 	"brightness": { "prefix": "" },
 	"load": { "prefix": "" },
+	"layout": { "prefix": "" },
 	"cmus": {
 		"playing": { "prefix": "" },
 		"paused": { "prefix": "" },
