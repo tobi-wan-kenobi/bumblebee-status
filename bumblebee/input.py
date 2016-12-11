@@ -27,6 +27,8 @@ def read_input(inp):
         inp.has_event = True
         try:
             event = json.loads(line)
+            if not "instance" in event:
+                continue
             inp.callback(event)
             inp.redraw()
         except ValueError:

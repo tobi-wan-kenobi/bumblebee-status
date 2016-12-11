@@ -47,7 +47,20 @@ class TestI3BarInput(unittest.TestCase):
         mock_input.readline.return_value = json.dumps({
             "name": None,
             "instance": None,
-            "button": None,
+            "button": 1,
+        })
+        self.input.start()
+        self.assertEquals(self.input.alive(), True)
+        self.assertEquals(self.input.stop(), True)
+        mock_input.readline.assert_any_call()
+
+    @mock.patch("select.select")
+    @mock.patch("sys.stdin")
+    def test_ignore_partial_event(self, mock_input, mock_select):
+        mock_select.return_value = (1,2,3)
+        self.input.register_callback(None, button=1, cmd=self.callback)
+        mock_input.readline.return_value = json.dumps({
+            "button": 1,
         })
         self.input.start()
         self.assertEquals(self.input.alive(), True)
