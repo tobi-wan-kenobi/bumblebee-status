@@ -16,7 +16,9 @@ class MockCommunicate(object):
         return (str.encode("1"), "error")
 
 class TestGenericModules(unittest.TestCase):
-    def setUp(self):
+    @mock.patch("subprocess.Popen")
+    def setUp(self, mock_output):
+        mock_output.return_value = MockCommunicate()
         engine = MockEngine()
         config = Config()
         self.objects = {}
@@ -42,6 +44,10 @@ class TestGenericModules(unittest.TestCase):
     @mock.patch("subprocess.Popen")
     def test_update(self, mock_output):
         mock_output.return_value = MockCommunicate()
+        rv = mock.Mock()
+        rv.configure_mock(**{
+            "communicate.return_value": ("out", None)
+        })
         for mod in self.objects:
             widgets = self.objects[mod].widgets()
             self.objects[mod].update(widgets)
