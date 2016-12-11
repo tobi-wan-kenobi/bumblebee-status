@@ -42,6 +42,12 @@ class Module(object):
             if widget.name == name:
                 return widget
 
+    def widget_by_id(self, uid):
+        for widget in self._widgets:
+            if widget.id == uid:
+                return widget
+        return None
+
     def update(self, widgets):
         """By default, update() is a NOP"""
         pass
