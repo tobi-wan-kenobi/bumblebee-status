@@ -1,8 +1,6 @@
 {
 	"icons": [ "paxy97", "awesome-fonts" ],
 	"defaults": {
-		"prefix": " ",
-		"suffix" : " ",
 		"warning": {
 			"fg": "#1d2021",
 			"bg": "#d79921"
