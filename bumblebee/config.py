@@ -7,9 +7,9 @@ module parameters, etc.) to all other components
 import argparse
 import bumblebee.store
 
-MODULE_HELP = ""
-THEME_HELP = ""
-PARAMETER_HELP = ""
+MODULE_HELP = "Specify a space-separated list of modules to load. The order of the list determines their order in the i3bar (from left to right). Use <module>:<alias> to provide an alias in case you want to load the same module multiple times, but specify different parameters."
+THEME_HELP = "Specify the theme to use for drawing modules"
+PARAMETER_HELP = "Provide configuration parameters in the form of <module>.<key>=<value>"
 
 def create_parser():
     """Create the argument parser"""
