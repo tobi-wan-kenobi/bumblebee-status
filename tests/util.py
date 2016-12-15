@@ -37,14 +37,24 @@ def assertMouseEvent(mock_input, mock_output, mock_select, engine, module, butto
             assertPopen(mock_output, cmd)
 
 class MockInput(object):
+    def __init__(self):
+        self._callbacks = {}
     def start(self):
         pass
 
     def stop(self):
         pass
 
+    def get_callback(self, uid):
+        return self._callbacks.get(uid, None)
+
     def register_callback(self, obj, button, cmd):
-        pass
+        if not obj:
+            return
+        self._callbacks[obj.id] = {
+            "button": button,
+            "command": cmd,
+        }
 
 class MockEngine(object):
     def __init__(self):

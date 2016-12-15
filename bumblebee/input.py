@@ -9,6 +9,7 @@ import threading
 import bumblebee.util
 
 LEFT_MOUSE = 1
+MIDDLE_MOUSE = 2
 RIGHT_MOUSE = 3
 WHEEL_UP = 4
 WHEEL_DOWN = 5

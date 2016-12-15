@@ -1,10 +1,12 @@
 # pylint: disable=C0103,C0111,W0703,W0212
 
+import shlex
 import unittest
 
 from bumblebee.error import ModuleLoadError
 from bumblebee.engine import Engine
 from bumblebee.config import Config
+import bumblebee.input
 
 from tests.util import MockOutput, MockInput
 
@@ -51,5 +53,31 @@ class TestEngine(unittest.TestCase):
             self.engine.run()
         except Exception as e:
             self.fail(e)
+
+    def test_custom_cmd(self):
+        testmodules = [
+            { "name": "test", "button": "test.left-click", "action": "echo" },
+            { "name": "test:alias", "button": "alias.right-click", "action": "echo2" },
+        ]
+        cmd = "-m"
+        for test in testmodules:
+            cmd += " " + test["name"]
+        cmd += " -p"
+        for test in testmodules:
+            cmd += " " + test["button"] + "=" + test["action"]
+        cfg = Config(shlex.split(cmd))
+        inp = MockInput()
+        engine = Engine(config=cfg, output=MockOutput(), inp=inp)
+
+        i = 0
+        for module in engine.modules():
+            callback = inp.get_callback(module.id)
+            self.assertTrue(callback is not None)
+            self.assertEquals(callback["command"], testmodules[i]["action"])
+            if "left" in testmodules[i]["button"]:
+                self.assertTrue(callback["button"], bumblebee.input.LEFT_MOUSE)
+            if "right" in testmodules[i]["button"]:
+                self.assertTrue(callback["button"], bumblebee.input.RIGHT_MOUSE)
+            i += 1
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

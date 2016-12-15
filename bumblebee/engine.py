@@ -86,11 +86,29 @@ class Engine(object):
 
         self.input.start()
 
+    def modules(self):
+        return self._modules
+
     def load_modules(self, modules):
         """Load specified modules and return them as list"""
         for module in modules:
-            self._modules.append(self._load_module(module["module"], module["name"]))
+            mod = self._load_module(module["module"], module["name"])
+            self._modules.append(mod)
+            self._register_module_callbacks(mod)
         return self._modules
+
+    def _register_module_callbacks(self, module):
+        buttons = [
+            { "name": "left-click", "id": bumblebee.input.LEFT_MOUSE },
+            { "name": "middle-click", "id": bumblebee.input.MIDDLE_MOUSE },
+            { "name": "right-click", "id": bumblebee.input.RIGHT_MOUSE },
+            { "name": "wheel-up", "id": bumblebee.input.WHEEL_UP },
+            { "name": "wheel-down", "id": bumblebee.input.WHEEL_DOWN },
+        ]
+        for button in buttons:
+            if module.parameter(button["name"], None):
+                self.input.register_callback(obj=module,
+                    button=button["id"], cmd=module.parameter(button["name"]))
 
     def _read_aliases(self):
         result = {}
