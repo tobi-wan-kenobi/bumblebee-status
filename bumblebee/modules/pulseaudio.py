@@ -26,6 +26,12 @@ class Module(bumblebee.engine.Module):
         self._mute = False
         channel = "sink" if self.name == "pasink" else "source"
 
+        self._patterns = [
+            { "expr": "Name:", "callback": (lambda line: False) },
+            { "expr": "Mute:", "callback": (lambda line: self.mute(False if " no" in line.lower() else True)) },
+            { "expr": "Volume:", "callback": self.getvolume },
+        ]
+
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd="pavucontrol")
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="pactl set-{}-mute @DEFAULT_{}@ toggle".format(channel, channel.upper()))
@@ -33,6 +39,21 @@ class Module(bumblebee.engine.Module):
             cmd="pactl set-{}-volume @DEFAULT_{}@ +2%".format(channel, channel.upper()))
         engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
             cmd="pactl set-{}-volume @DEFAULT_{}@ -2%".format(channel, channel.upper()))
+
+    def mute(self, value):
+        self._mute = value
+
+    def getvolume(self, line):
+        if "mono" in line:
+            m = re.search(r'mono:.*\s*\/\s*(\d+)%', line)
+            if m:
+                self._mono = m.group(1)
+        else:
+            m = re.search(r'left:.*\s*\/\s*(\d+)%.*right:.*\s*\/\s*(\d+)%', line)
+            if m:
+                self._left = m.group(1)
+                self._right = m.group(2)
+        return True
 
     def _default_device(self):
         output = bumblebee.util.execute("pactl info")
@@ -57,28 +78,17 @@ class Module(bumblebee.engine.Module):
 
         result = bumblebee.util.execute("pactl list {}".format(channel))
         found = False
+
         for line in result.split("\n"):
-            if "Name:" in line and found == True:
-                break
             if device in line:
                 found = True
-
-            if "Mute:" in line and found == True:
-                self._mute = False if " no" in line.lower() else True
-
-            if "Volume:" in line and found == True:
-                m = None
-                if "mono" in line:
-                    m = re.search(r'mono:.*\s*\/\s*(\d+)%', line)
-                else:
-                    m = re.search(r'left:.*\s*\/\s*(\d+)%.*right:.*\s*\/\s*(\d+)%', line)
-                if not m: continue
-
-                if "mono" in line:
-                    self._mono = m.group(1)
-                else:
-                    self._left = m.group(1)
-                    self._right = m.group(2)
+            if found == False:
+                continue
+            for pattern in self._patterns:
+                if not pattern["expr"] in line:
+                    continue
+                if pattern["callback"](line) == False:
+                    break
 
     def state(self, widget):
         if self._mute:
