@@ -23,13 +23,27 @@ def assertStateContains(test, module, state):
     module.update(module.widgets())
     test.assertTrue(state in module.widgets()[0].state())
 
+class MockEpoll(object):
+    def register(self, fileno, event):
+        pass
+
+    def poll(self, timeout):
+        return [(1,2)]
+
+    def unregister(self, fileno):
+        pass
+
+    def close(self):
+        pass
+
 def assertMouseEvent(mock_input, mock_output, mock_select, engine, module, button, cmd, instance_id=None):
         mock_input.readline.return_value = json.dumps({
             "name": module.id if module else "test",
             "button": button,
             "instance": instance_id
         })
-        mock_select.return_value = (1, 2, 3)
+        mock_input.fileno.return_value = 1
+        mock_select.return_value = MockEpoll()
         engine.input.start()
         engine.input.stop()
         mock_input.readline.assert_any_call()

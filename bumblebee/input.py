@@ -16,24 +16,27 @@ WHEEL_DOWN = 5
 
 def read_input(inp):
     """Read i3bar input and execute callbacks"""
+    epoll = select.epoll()
+    epoll.register(sys.stdin.fileno(), select.EPOLLIN)
     while inp.running:
         for thread in threading.enumerate():
             if thread.name == "MainThread" and not thread.is_alive():
                 return
 
-        rlist, _, _ = select.select([sys.stdin], [], [], 1)
-        if not rlist:
-            continue
-        line = sys.stdin.readline().strip(",").strip()
-        inp.has_event = True
-        try:
-            event = json.loads(line)
-            if not "instance" in event:
-                continue
-            inp.callback(event)
-            inp.redraw()
-        except ValueError:
-            pass
+        events = epoll.poll(1)
+
+        for fileno, event in events:
+            line = sys.stdin.readline().strip(",").strip()
+            inp.has_event = True
+            try:
+                event = json.loads(line)
+                if "instance" in event:
+                    inp.callback(event)
+                    inp.redraw()
+            except ValueError:
+                pass
+    epoll.unregister(sys.stdin.fileno())
+    epoll.close()
     inp.has_event = True
     inp.clean_exit = True
 

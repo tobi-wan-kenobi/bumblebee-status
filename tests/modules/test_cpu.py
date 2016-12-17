@@ -22,7 +22,7 @@ class TestCPUModule(unittest.TestCase):
         for widget in self.module.widgets():
             self.assertEquals(len(widget.full_text()), len("100.00%"))
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_leftclick(self, mock_input, mock_output, mock_select):

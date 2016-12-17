@@ -7,7 +7,7 @@ import mock
 import bumblebee.input
 from bumblebee.input import I3BarInput
 from bumblebee.modules.cmus import Module
-from tests.util import MockEngine, MockConfig, assertPopen
+from tests.util import MockEngine, MockConfig, assertPopen, MockEpoll
 
 class TestCmusModule(unittest.TestCase):
     def setUp(self):
@@ -29,7 +29,7 @@ class TestCmusModule(unittest.TestCase):
     def test_widgets(self):
         self.assertTrue(len(self.module.widgets()), 5)
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_interaction(self, mock_input, mock_output, mock_select):
@@ -41,7 +41,8 @@ class TestCmusModule(unittest.TestCase):
             {"widget": "cmus.main", "action": "cmus-remote -u"},
         ]
 
-        mock_select.return_value = (1,2,3)
+        mock_input.fileno.return_value = 1
+        mock_select.return_value = MockEpoll()
 
         for event in events:
             mock_input.readline.return_value = json.dumps({

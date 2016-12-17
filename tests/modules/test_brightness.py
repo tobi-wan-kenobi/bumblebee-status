@@ -24,7 +24,7 @@ class TestBrightnessModule(unittest.TestCase):
         for widget in self.module.widgets():
             self.assertEquals(len(widget.full_text()), len("100%"))
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_wheel_up(self, mock_input, mock_output, mock_select):
@@ -33,7 +33,7 @@ class TestBrightnessModule(unittest.TestCase):
             "xbacklight +2%"
         )
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_wheel_down(self, mock_input, mock_output, mock_select):
@@ -42,7 +42,7 @@ class TestBrightnessModule(unittest.TestCase):
             "xbacklight -2%"
         )
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_custom_step(self, mock_input, mock_output, mock_select):

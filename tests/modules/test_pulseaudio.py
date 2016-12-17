@@ -17,7 +17,7 @@ class TestPulseAudioModule(unittest.TestCase):
         self.config = MockConfig()
         self.module = Module(engine=self.engine, config={ "config": self.config })
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_leftclick(self, mock_input, mock_output, mock_select):
@@ -26,7 +26,7 @@ class TestPulseAudioModule(unittest.TestCase):
             "pactl set-source-mute @DEFAULT_SOURCE@ toggle"
         )
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_rightclick(self, mock_input, mock_output, mock_select):
@@ -35,7 +35,7 @@ class TestPulseAudioModule(unittest.TestCase):
             "pavucontrol"
         )
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_wheelup(self, mock_input, mock_output, mock_select):
@@ -44,7 +44,7 @@ class TestPulseAudioModule(unittest.TestCase):
             "pactl set-source-volume @DEFAULT_SOURCE@ +2%"
         )
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_wheeldown(self, mock_input, mock_output, mock_select):

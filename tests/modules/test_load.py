@@ -17,7 +17,7 @@ class TestLoadModule(unittest.TestCase):
         self.config = MockConfig()
         self.module = Module(engine=self.engine, config={ "config": self.config })
 
-    @mock.patch("select.select")
+    @mock.patch("select.epoll")
     @mock.patch("subprocess.Popen")
     @mock.patch("sys.stdin")
     def test_leftclick(self, mock_input, mock_output, mock_select):
