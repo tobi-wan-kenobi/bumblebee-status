@@ -4,6 +4,7 @@ This module provides configuration information (loaded modules,
 module parameters, etc.) to all other components
 """
 
+import sys
 import argparse
 import textwrap
 import importlib
@@ -26,7 +27,7 @@ class print_usage(argparse.Action):
             self.print_themes()
         else:
             parser.print_help()
-        parser.exit()
+        sys.exit(0)
 
     def print_themes(self):
         print(textwrap.fill(", ".join(bumblebee.theme.themes()),
