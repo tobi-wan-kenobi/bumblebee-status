@@ -23,7 +23,7 @@ def bytefmt(num):
         if num < 1024.0:
             return "{:.2f}{}B".format(num, unit)
         num /= 1024.0
-    return "{:05.2f%}{}GiB".format(num)
+    return "{:.2f}GiB".format(num*1024.0)
 
 def durationfmt(duration):
     minutes, seconds = divmod(duration, 60)
