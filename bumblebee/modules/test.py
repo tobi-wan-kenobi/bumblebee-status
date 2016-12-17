@@ -1,6 +1,7 @@
 # pylint: disable=C0111,R0903
 
-"""Test module"""
+"""Test module
+"""
 
 import bumblebee.engine
 

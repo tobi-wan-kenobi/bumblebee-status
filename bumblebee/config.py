@@ -5,11 +5,42 @@ module parameters, etc.) to all other components
 """
 
 import argparse
+import textwrap
+import importlib
 import bumblebee.store
 
 MODULE_HELP = "Specify a space-separated list of modules to load. The order of the list determines their order in the i3bar (from left to right). Use <module>:<alias> to provide an alias in case you want to load the same module multiple times, but specify different parameters."
 THEME_HELP = "Specify the theme to use for drawing modules"
 PARAMETER_HELP = "Provide configuration parameters in the form of <module>.<key>=<value>"
+LIST_HELP = "Display a list of either available themes or available modules along with their parameters."
+
+class print_usage(argparse.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        argparse.Action.__init__(self, option_strings, dest, nargs, **kwargs)
+        self._indent = " "*2
+
+    def __call__(self, parser, namespace, value, option_string=None):
+        if value == "modules":
+            self.print_modules()
+        elif value == "themes":
+            self.print_themes()
+        else:
+            parser.print_help()
+        parser.exit()
+
+    def print_themes(self):
+        print(textwrap.fill(", ".join(bumblebee.theme.themes()),
+            80, initial_indent = self._indent, subsequent_indent = self._indent
+        ))
+
+    def print_modules(self):
+        for m in bumblebee.engine.all_modules():
+            mod = importlib.import_module("bumblebee.modules.{}".format(m["name"]))
+            print(textwrap.fill("{}:".format(m["name"]), 80,
+                    initial_indent=self._indent*2, subsequent_indent=self._indent*2))
+            for line in mod.__doc__.split("\n"):
+                print(textwrap.fill(line, 80,
+                    initial_indent=self._indent*3, subsequent_indent=self._indent*6))
 
 def create_parser():
     """Create the argument parser"""
@@ -19,6 +50,8 @@ def create_parser():
     parser.add_argument("-t", "--theme", default="default", help=THEME_HELP)
     parser.add_argument("-p", "--parameters", nargs="+", default=[],
         help=PARAMETER_HELP)
+    parser.add_argument("-l", "--list", choices=["modules", "themes"], action=print_usage,
+        help=LIST_HELP)
     return parser
 
 class Config(bumblebee.store.Store):

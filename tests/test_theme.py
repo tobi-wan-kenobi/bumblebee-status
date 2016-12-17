@@ -8,7 +8,7 @@ from tests.util import MockWidget
 class TestTheme(unittest.TestCase):
     def setUp(self):
         self.nonexistentThemeName = "no-such-theme"
-        self.invalidThemeName = "invalid"
+        self.invalidThemeName = "test_invalid"
         self.validThemeName = "test"
         self.themedWidget = MockWidget("bla")
         self.theme = Theme(self.validThemeName)

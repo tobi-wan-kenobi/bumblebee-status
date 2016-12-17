@@ -3,6 +3,7 @@
 """Theme support"""
 
 import os
+import glob
 import copy
 import json
 
@@ -11,6 +12,14 @@ import bumblebee.error
 def theme_path():
     """Return the path of the theme directory"""
     return os.path.dirname("{}/../themes/".format(os.path.dirname(os.path.realpath(__file__))))
+
+def themes():
+    result = []
+
+    for filename in glob.iglob("{}/*.json".format(theme_path())):
+        if "test" not in filename:
+            result.append(os.path.basename(filename).replace(".json", ""))
+    return result
 
 class Theme(object):
     """Represents a collection of icons and colors"""
