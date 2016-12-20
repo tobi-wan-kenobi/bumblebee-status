@@ -87,13 +87,14 @@ class Module(bumblebee.engine.Module):
         for line in result.split("\n"):
             if device in line:
                 found = True
+                continue
             if found == False:
                 continue
             for pattern in self._patterns:
                 if not pattern["expr"] in line:
                     continue
-                if pattern["callback"](line) == False:
-                    break
+                if pattern["callback"](line) == False and found == True:
+                    return
 
     def state(self, widget):
         if self._mute:
