@@ -23,6 +23,13 @@
 		"repeat-on": { "prefix": "" },
 		"repeat-off": { "prefix": "" }
 	},
+	"gpmdp": {
+		"playing": { "prefix": "" },
+		"paused": { "prefix": "" },
+		"stopped": { "prefix": "" },
+		"prev": { "prefix": "" },
+		"next": { "prefix": "" }
+	},
 	"pasink": {
 		"muted": { "prefix": "" },
 		"unmuted": { "prefix": "" }
