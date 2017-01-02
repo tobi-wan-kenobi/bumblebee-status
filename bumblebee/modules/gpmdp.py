@@ -31,7 +31,7 @@ class Module(bumblebee.engine.Module):
         self._tags = None
 
     def description(self, widget):
-        return self._tags
+        return self._tags if self._tags else "n/a"
 
     def update(self, widgets):
         self._load_song()

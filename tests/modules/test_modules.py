@@ -39,7 +39,7 @@ class TestGenericModules(unittest.TestCase):
                 assertWidgetAttributes(self, widget)
                 widget.set("variable", "value")
                 self.assertEquals(widget.get("variable", None), "value")
-                self.assertTrue(isinstance(widget.full_text(), str))
+                self.assertTrue(isinstance(widget.full_text(), str) or isinstance(widget.full_text(), unicode))
 
     @mock.patch("subprocess.Popen")
     def test_update(self, mock_output):
