@@ -2,6 +2,9 @@
 
 """Displays information about the current song in cmus.
 
+Requires the following executable:
+    * cmus-remote
+
 Parameters:
     * cmus.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
 """

@@ -3,6 +3,9 @@
 """Displays volume and mute status of PulseAudio devices.
 
 Aliases: pasink, pasource
+
+Requires the following executable:
+    * pactl
 """
 
 import re

@@ -2,6 +2,8 @@
 
 """Shows a widget for each connected screen and allows the user to enable/disable screens.
 
+Requires the following executable:
+    * xrandr
 """
 
 import os

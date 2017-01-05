@@ -2,6 +2,8 @@
 
 """Displays information about the current song in Google Play music player.
 
+Requires the following executable:
+    * gpmdp-remote
 """
 
 import string

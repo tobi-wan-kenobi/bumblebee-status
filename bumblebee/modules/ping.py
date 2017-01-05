@@ -2,6 +2,9 @@
 
 """Periodically checks the RTT of a configurable host using ICMP echos
 
+Requires the following executable:
+    * ping
+
 Parameters:
     * ping.interval: Time in seconds between two RTT checks (defaults to 60)
     * ping.address : IP address to check

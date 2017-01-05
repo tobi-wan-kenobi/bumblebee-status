@@ -2,8 +2,12 @@
 
 """Displays the brightness of a display
 
+Requires the following executable:
+    * xbacklight
+
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
+
 """
 
 import bumblebee.input

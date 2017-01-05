@@ -1,6 +1,10 @@
 # pylint: disable=C0111,R0903
 
 """Enable/disable automatic screen locking.
+
+Requires the following executables:
+    * xset
+    * notify-send
 """
 
 import bumblebee.input

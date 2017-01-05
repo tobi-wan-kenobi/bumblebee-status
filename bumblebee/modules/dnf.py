@@ -2,6 +2,9 @@
 
 """Displays DNF package update information (<security>/<bugfixes>/<enhancements>/<other>)
 
+Requires the following executable:
+    * dnf
+
 Parameters:
     * dnf.interval: Time in seconds between two consecutive update checks (defaulst to 1800)
 

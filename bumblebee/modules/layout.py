@@ -2,6 +2,9 @@
 
 """Displays and changes the current keyboard layout
 
+Requires the following executable:
+    * setxkbmap
+
 Parameters:
     * layout.lang: pipe-separated list of languages to cycle through (e.g. us|rs|de). Default: en
 """

@@ -1,6 +1,10 @@
 # pylint: disable=C0111,R0903
 
 """Displays update information per repository for pacman."
+
+Requires the following executables:
+    * fakeroot
+    * pacman
 """
 
 import os
