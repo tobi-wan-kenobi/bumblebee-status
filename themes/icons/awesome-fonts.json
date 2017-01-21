@@ -63,6 +63,9 @@
 		"activated": {"prefix": " " }, "deactivated": { "prefix": " " }
 	},
 	"xrandr": {
-		"on": { "prefix": " "}, "off": { "prefix": " "}
+		"on": { "prefix": " "}, "off": { "prefix": " " }
+	},
+	"redshift": {
+		"day": { "prefix": "" }, "night": { "prefix": "" }, "transition": { "prefix": "" }
 	}
 }

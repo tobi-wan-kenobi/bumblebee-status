@@ -52,5 +52,8 @@
 	},
 	"xrandr": {
 		"on": { "prefix": " off "}, "off": { "prefix": " on "}
+	},
+	"redshift": {
+		"day": { "prefix": "day" }, "night": { "prefix": "night" }, "transition": { "prefix": "trans" }
 	}
 }
