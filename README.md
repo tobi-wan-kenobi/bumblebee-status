@@ -16,6 +16,10 @@ I hope you like it and appreciate any kind of feedback: Bug reports, Feature req
 
 Thanks a lot!
 
+Supported Python versions: 2.7, 3.3, 3.4, 3.5, 3.6
+
+Explicitly unsupported Python versions: 3.2 (missing unicode literals)
+
 # Documentation
 See [the wiki](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki) for documentation.
 
