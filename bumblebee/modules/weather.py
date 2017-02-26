@@ -4,7 +4,7 @@
 """Displays the temperature on the current location based on the ip
 
 Requires the following python packages:
-    * urllib
+    * requests
 
 Parameters:
     * weather.interval: Interval (in minutes) for updating weather information
@@ -17,7 +17,7 @@ import bumblebee.output
 import bumblebee.engine
 import json
 import time
-from urllib import urlopen
+import requests
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -52,12 +52,12 @@ class Module(bumblebee.engine.Module):
             weather_url = "{}&units={}".format(weather_url, self._unit)
             if self._location == "auto":
                 location_url = "http://ipinfo.io/json"
-                location = json.loads(urlopen(location_url).read())
+                location = json.loads(requests.get(location_url).text)
                 coord = location["loc"].split(",")
                 weather_url = "{url}&lat={lat}&lon={lon}".format(url=weather_url, lat=coord[0], lon=coord[1])
             else:
                 weather_url = "{url}&q={city}".format(url=weather_url, city=self._location)
-            weather = json.loads(urlopen(weather_url).read())
+            weather = json.loads(requests.get(weather_url).text)
             self._temperature = weather['main']['temp']
             self._timer += 1
             return
