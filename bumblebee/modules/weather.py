@@ -25,7 +25,6 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.temperature)
         )
-        self._timer = 0
         self._temperature = 0
         self._apikey = self.parameter("apikey", "af7bfe22287c652d032a3064ffa44088")
         self._location = self.parameter("location", "auto")
@@ -60,7 +59,5 @@ class Module(bumblebee.engine.Module):
                 weather_url = "{url}&q={city}".format(url=weather_url, city=self._location)
             weather = json.loads(requests.get(weather_url).text)
             self._temperature = int(weather['main']['temp'])
-            self._timer += 1
-            return
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
