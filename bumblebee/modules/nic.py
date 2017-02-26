@@ -47,6 +47,16 @@ class Module(bumblebee.engine.Module):
     def _istunnel(self, intf):
         return intf.startswith("tun")
 
+    def get_addresses(self, intf):
+        retval = []
+        try:
+            for ip in netifaces.ifaddresses(intf).get(netifaces.AF_INET, []):
+                if ip.get("addr", "") != "":
+                    retval.append(ip.get("addr"))
+        except Exception:
+            return []
+        return retval
+
     def _update_widgets(self, widgets):
         interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
 
@@ -56,14 +66,9 @@ class Module(bumblebee.engine.Module):
         for intf in interfaces:
             addr = []
             state = "down"
-            try:
-                if netifaces.AF_INET in netifaces.ifaddresses(intf):
-                    for ip in netifaces.ifaddresses(intf)[netifaces.AF_INET]:
-                        if "addr" in ip and ip["addr"] != "":
-                            addr.append(ip["addr"])
-                            state = "up"
-            except Exception as e:
-                addr = []
+            for ip in self.get_addresses(intf):
+                addr.append(ip)
+                state = "up"
             widget = self.widget(intf)
             if not widget:
                 widget = bumblebee.output.Widget(name=intf)
