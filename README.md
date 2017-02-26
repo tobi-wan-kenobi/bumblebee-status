@@ -66,6 +66,29 @@ bar {
 
 Restart i3wm and - that's it!
 
+# Required Modules
+
+Modules and commandline utilities are only required for modules, the core itself has no external dependencies at all.
+
+* psutil (for the modules 'cpu', 'memory')
+* netifaces (for the module 'nic')
+* requests (for the module 'weather')
+
+# Required commandline utilities
+
+* xbacklight (for the module 'brightness')
+* xset (for the module 'caffeine')
+* notify-send (for the module 'caffeine')
+* cmus-remote (for the module 'cmus')
+* dnf (for the module 'dnf')
+* gpmdp-remote (for the module 'gpmdp')
+* setxkbmap (for the module 'layout')
+* fakeroot (for the module 'pacman')
+* pacman (for the module 'pacman')
+* pactl (for the module 'pulseaudio')
+* ping (for the module 'ping')
+* redshift (for the module 'redshift')
+* xrandr (for the module 'xrandr')
 
 # Examples
 Here are some screenshots for all themes that currently exist:
