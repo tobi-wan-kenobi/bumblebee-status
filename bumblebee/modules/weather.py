@@ -10,6 +10,7 @@ Parameters:
     * weather.interval: Interval (in minutes) for updating weather information
     * weather.location: Set location (ISO 3166 country code), defaults to 'auto' for getting location from http://ipinfo.io
     * weather.unit: metric (default), kelvin, imperial
+    * weather.apikey: API key from http://api.openweathermap.org
 """
 
 import bumblebee.input
@@ -58,7 +59,7 @@ class Module(bumblebee.engine.Module):
             else:
                 weather_url = "{url}&q={city}".format(url=weather_url, city=self._location)
             weather = json.loads(requests.get(weather_url).text)
-            self._temperature = weather['main']['temp']
+            self._temperature = int(weather['main']['temp'])
             self._timer += 1
             return
 
