@@ -14,15 +14,19 @@ RIGHT_MOUSE = 3
 WHEEL_UP = 4
 WHEEL_DOWN = 5
 
+def is_terminated():
+    for thread in threading.enumerate():
+        if thread.name == "MainThread" and not thread.is_alive():
+            return True
+    return False
+
 def read_input(inp):
     """Read i3bar input and execute callbacks"""
     epoll = select.epoll()
     epoll.register(sys.stdin.fileno(), select.EPOLLIN)
-    f = open("/tmp/bee.log", "a")
     while inp.running:
-        for thread in threading.enumerate():
-            if thread.name == "MainThread" and not thread.is_alive():
-                return
+        if is_terminated():
+            return
 
         events = epoll.poll(1)
         for fileno, event in events:
