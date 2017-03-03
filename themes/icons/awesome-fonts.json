@@ -38,6 +38,9 @@
 		"muted": { "prefix": "" },
 		"unmuted": { "prefix": "" }
 	},
+  "kernel": {
+    "prefix": "\uf17c"
+  },
 	"nic": {
 		"wireless-up": { "prefix": "" },
 		"wireless-down": { "prefix": "" },
