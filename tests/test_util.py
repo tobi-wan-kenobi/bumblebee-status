@@ -37,6 +37,12 @@ class TestUtil(unittest.TestCase):
         self.popen.mock.popen.assert_call(self.some_command_with_args)
         self.assertTrue(self.popen.mock.communicate.called)
 
+    def test_execute_nowait(self):
+        execute(self.some_command_with_args, False)
+        self.assertTrue(self.popen.mock.popen.called)
+        self.popen.mock.popen.assert_call(self.some_command_with_args)
+        self.assertFalse(self.popen.mock.communicate.called)
+
     def test_execute_utf8(self):
         self.popen.mock.communicate.return_value = [ self.some_utf8, None ]
         self.test_execute()
