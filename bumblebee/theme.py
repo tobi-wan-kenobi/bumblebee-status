@@ -90,11 +90,6 @@ class Theme(object):
         """Return the SBW"""
         return self._get(widget, "separator-block-width", None)
 
-    def loads(self, data):
-        """Initialize the theme from a JSON string"""
-        theme = json.loads(data)
-        self._init(theme)
-
     def _load_icons(self, name):
         """Load icons for a theme"""
         path = "{}/icons/".format(theme_path())
