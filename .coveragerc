@@ -8,6 +8,3 @@ omit =
 	/usr/lib*
 
 [report]
-	exclude_lines =
-		except ImportError:
-		pass
