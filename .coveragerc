@@ -5,6 +5,7 @@ omit =
 	*funcsigs*
 	*pbr*
 	*six*
+	/usr/lib*
 
 [report]
 	exclude_lines =

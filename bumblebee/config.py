@@ -25,8 +25,6 @@ class print_usage(argparse.Action):
             self.print_modules()
         elif value == "themes":
             self.print_themes()
-        else:
-            parser.print_help()
         sys.exit(0)
 
     def print_themes(self):
