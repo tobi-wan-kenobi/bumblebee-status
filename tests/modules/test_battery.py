@@ -18,7 +18,7 @@ class TestBatteryModule(unittest.TestCase):
     def setUp(self):
         self._stdout = mock.patch("sys.stdout", new_callable=StringIO)
         self._exists = mock.patch("bumblebee.modules.battery.os.path.exists")
-        self._open = mock.patch("bumblebee.modules.battery.open")
+        self._open = mock.patch("bumblebee.modules.battery.open", create=True)
 
         self.stdout = self._stdout.start()
         self.exists = self._exists.start()
