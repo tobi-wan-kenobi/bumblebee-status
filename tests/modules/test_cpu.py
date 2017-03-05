@@ -1,8 +1,7 @@
 # pylint: disable=C0103,C0111
 
-import json
-import unittest
 import mock
+import unittest
 
 import tests.mocks as mocks
 
