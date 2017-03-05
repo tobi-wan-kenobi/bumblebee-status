@@ -7,10 +7,10 @@ import subprocess
 
 from bumblebee.output import Widget
 
-import random, string
+import random
 
 def rand(cnt):
-    return "".join(random.choice(string.lowercase) for i in range(cnt))
+    return "".join(random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for i in range(cnt))
 
 def mouseEvent(stdin, button, inp, module=None, instance=None):
     stdin.readline.return_value = json.dumps({
