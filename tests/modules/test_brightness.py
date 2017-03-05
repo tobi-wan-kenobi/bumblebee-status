@@ -10,7 +10,6 @@ except ImportError:
 
 import tests.mocks as mocks
 
-import bumblebee.input
 from bumblebee.config import Config
 from bumblebee.input import I3BarInput, WHEEL_UP, WHEEL_DOWN
 from bumblebee.modules.brightness import Module
