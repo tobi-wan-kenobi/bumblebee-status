@@ -53,9 +53,7 @@ class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widget = bumblebee.output.Widget(full_text=self.updates)
         super(Module, self).__init__(engine, config, widget)
-
         self._next_check = 0
-        widget
 
     def updates(self, widget):
         result = []
