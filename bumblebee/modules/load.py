@@ -22,7 +22,7 @@ class Module(bumblebee.engine.Module):
         self._load = [0, 0, 0]
         try:
             self._cpus = multiprocessing.cpu_count()
-        except multiprocessing.NotImplementedError as e:
+        except NotImplementedError as e:
             self._cpus = 1
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="gnome-system-monitor")
