@@ -12,15 +12,11 @@ import tests.mocks as mocks
 
 import bumblebee.input
 from bumblebee.config import Config
-from bumblebee.engine import Engine
 from bumblebee.input import I3BarInput, WHEEL_UP, WHEEL_DOWN
 from bumblebee.modules.brightness import Module
 
 class TestBrightnessModule(unittest.TestCase):
     def setUp(self):
-        self._stdout = mock.patch("sys.stdout", new_callable=StringIO)
-        self.stdout = self._stdout.start()
-
         self._stdin, self._select, self.stdin, self.select = mocks.epoll_mock("bumblebee.input")
 
         self.popen = mocks.MockPopen()
@@ -37,7 +33,6 @@ class TestBrightnessModule(unittest.TestCase):
             self.anyWidget = widget
 
     def tearDown(self):
-        self._stdout.stop()
         self._stdin.stop()
         self._select.stop()
         self.popen.cleanup()
