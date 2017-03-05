@@ -32,7 +32,6 @@ class TestBatteryModule(unittest.TestCase):
         self.engine = mock.Mock()
         self.config = Config()
         self.module = Module(engine=self.engine, config={"config":self.config})
-        self.popen = mocks.MockPopen()
 
         self.config.set("battery.critical", "20")
         self.config.set("battery.warning", "25")
@@ -49,7 +48,6 @@ class TestBatteryModule(unittest.TestCase):
         self._stdout.stop()
         self._exists.stop()
         self._open.stop()
-        self.popen.cleanup()
 
     def test_format(self):
         for widget in self.module.widgets():
