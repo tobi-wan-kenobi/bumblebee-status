@@ -25,8 +25,10 @@ class TestI3BarInput(unittest.TestCase):
 
         epoll.poll.return_value = [(self.stdin.fileno.return_value, 2)]
 
-        self.anyModule = mocks.MockModule()
-        self.anotherModule = mocks.MockModule()
+        self.anyModule = mock.Mock()
+        self.anyModule.id = mocks.rand(10)
+        self.anotherModule = mock.Mock()
+        self.anotherModule.id = mocks.rand(10)
         self.anyWidget = mocks.MockWidget("some-widget")
         self.anotherWidget = mocks.MockWidget("another-widget")
         self.anyData = self.invalidData = "any data"

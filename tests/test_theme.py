@@ -1,5 +1,6 @@
 # pylint: disable=C0103,C0111,W0703
 
+import mock
 import unittest
 from bumblebee.theme import Theme
 from bumblebee.error import ThemeLoadError
@@ -14,8 +15,14 @@ class TestTheme(unittest.TestCase):
         self.themedWidget = MockWidget("bla")
         self.theme = Theme(self.validThemeName)
         self.cycleTheme = Theme("test_cycle")
+        self.anyModule = mock.Mock()
         self.anyWidget = MockWidget("bla")
         self.anotherWidget = MockWidget("blub")
+
+        self.anyModule.state.return_value = "state-default"
+
+        self.anyWidget.link_module(self.anyModule)
+        self.themedWidget.link_module(self.anyModule)
 
         data = self.theme.data()
         self.widgetTheme = "test-widget"
@@ -103,11 +110,9 @@ class TestTheme(unittest.TestCase):
         self.assertEquals(theme.fg(self.anyWidget), data["defaults"]["fg"])
         self.assertEquals(theme.bg(self.anyWidget), data["defaults"]["bg"])
 
-        self.anyWidget.attr_state = ["critical"]
+        self.anyModule.state.return_value = "critical"
         self.assertEquals(theme.fg(self.anyWidget), data["defaults"]["critical"]["fg"])
         self.assertEquals(theme.bg(self.anyWidget), data["defaults"]["critical"]["bg"])
-
-        self.themedWidget.attr_state = ["critical"]
         self.assertEquals(theme.fg(self.themedWidget), data[self.widgetTheme]["critical"]["fg"])
         # if elements are missing in the state theme, they are taken from the
         # widget theme instead (i.e. no fallback to a more general state theme)
@@ -119,7 +124,7 @@ class TestTheme(unittest.TestCase):
     def test_list(self):
         theme = self.theme
         data = theme.data()[self.widgetTheme]["cycle-test"]["fg"]
-        self.themedWidget.attr_state = ["cycle-test"]
+        self.anyModule.state.return_value = "cycle-test"
         self.assertTrue(len(data) > 1)
 
         for idx in range(0, len(data)):

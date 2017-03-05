@@ -1,14 +1,31 @@
 # pylint: disable=C0103,C0111
 
 import mock
+import json
 import shlex
 import subprocess
 
 from bumblebee.output import Widget
 
+import random, string
+
+def rand(cnt):
+    return "".join(random.choice(string.lowercase) for i in range(cnt))
+
+def mouseEvent(stdin, button, inp, module=None, instance=None):
+    stdin.readline.return_value = json.dumps({
+        "name": module.id if module else rand(10),
+        "button": button,
+        "instance": instance
+    })
+    inp.start()
+    inp.stop()
+    stdin.readline.assert_any_call()
+
 class MockPopen(object):
-    def __init__(self, module):
-        self._patch = mock.patch("{}.subprocess.Popen".format(module))
+    def __init__(self, module=""):
+        if len(module) > 0: module = "{}.".format(module)
+        self._patch = mock.patch("{}subprocess.Popen".format(module))
         self._popen = self._patch.start()
         self.mock = mock.Mock()
         # for a nicer, more uniform interface
@@ -72,18 +89,16 @@ class MockEngine(object):
 class MockWidget(Widget):
     def __init__(self, text):
         super(MockWidget, self).__init__(text)
-        self._text = text
         self.module = None
         self.attr_state = ["state-default"]
-        self.id = "none"
+        self.id = rand(10)
 
-    def state(self):
-        return self.attr_state
+        self.full_text(text)
+
+#    def state(self):
+#        return self.attr_state
 
     def update(self, widgets):
         pass
-
-    def full_text(self):
-        return self._text
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
