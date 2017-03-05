@@ -3,14 +3,35 @@
 import mock
 import json
 import shlex
+import random
 import subprocess
 
+from bumblebee.input import I3BarInput
 from bumblebee.output import Widget
-
-import random
+from bumblebee.config import Config
 
 def rand(cnt):
     return "".join(random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for i in range(cnt))
+
+def setup_test(test, Module):
+    test._stdin, test._select, test.stdin, test.select = epoll_mock("bumblebee.input")
+
+    test.popen = MockPopen()
+
+    test.config = Config()
+    test.input = I3BarInput()
+    test.engine = mock.Mock()
+    test.engine.input = test.input
+    test.input.need_event = True
+    test.module = Module(engine=test.engine, config={ "config": test.config })
+    for widget in test.module.widgets():
+        widget.link_module(test.module)
+        test.anyWidget = widget
+
+def teardown_test(test):
+    test._stdin.stop()
+    test._select.stop()
+    test.popen.cleanup()
 
 def epoll_mock(module=""):
     if len(module) > 0: module = "{}.".format(module)

@@ -5,26 +5,12 @@ import unittest
 
 import tests.mocks as mocks
 
-from bumblebee.config import Config
-from bumblebee.input import I3BarInput, LEFT_MOUSE
+from bumblebee.input import LEFT_MOUSE
 from bumblebee.modules.cmus import Module
 
 class TestCmusModule(unittest.TestCase):
     def setUp(self):
-        self._stdin, self._select, self.stdin, self.select = mocks.epoll_mock("bumblebee.input")
-
-        self.popen = mocks.MockPopen()
-
-        self.config = Config()
-        self.input = I3BarInput()
-        self.engine = mock.Mock()
-        self.engine.input = self.input
-        self.input.need_event = True
-
-        self.module = Module(engine=self.engine, config={ "config": self.config })
-        for widget in self.module.widgets():
-            widget.link_module(self.module)
-            self.anyWidget = widget
+        mocks.setup_test(self, Module)
 
         self.songTemplate = """
 status {status}
@@ -40,9 +26,7 @@ tag comment comment
         """
 
     def tearDown(self):
-        self._stdin.stop()
-        self._select.stop()
-        self.popen.cleanup()
+        mocks.teardown_test(self)
 
     def test_read_song(self):
         self.popen.mock.communicate.return_value = ("song", None)

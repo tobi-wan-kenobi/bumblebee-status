@@ -10,31 +10,15 @@ except ImportError:
 
 import tests.mocks as mocks
 
-from bumblebee.config import Config
-from bumblebee.input import I3BarInput, WHEEL_UP, WHEEL_DOWN
+from bumblebee.input import WHEEL_UP, WHEEL_DOWN
 from bumblebee.modules.brightness import Module
 
 class TestBrightnessModule(unittest.TestCase):
     def setUp(self):
-        self._stdin, self._select, self.stdin, self.select = mocks.epoll_mock("bumblebee.input")
-
-        self.popen = mocks.MockPopen()
-
-        self.config = Config()
-        self.input = I3BarInput()
-        self.engine = mock.Mock()
-        self.engine.input = self.input
-        self.input.need_event = True
-
-        self.module = Module(engine=self.engine, config={ "config": self.config })
-        for widget in self.module.widgets():
-            widget.link_module(self.module)
-            self.anyWidget = widget
+        mocks.setup_test(self, Module)
 
     def tearDown(self):
-        self._stdin.stop()
-        self._select.stop()
-        self.popen.cleanup()
+        mocks.teardown_test(self)
 
     def test_format(self):
         for widget in self.module.widgets():

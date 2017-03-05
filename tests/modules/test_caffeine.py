@@ -11,35 +11,19 @@ except ImportError:
 
 import tests.mocks as mocks
 
-import bumblebee.input
 from bumblebee.config import Config
-from bumblebee.input import I3BarInput, LEFT_MOUSE
+from bumblebee.input import LEFT_MOUSE
 from bumblebee.modules.caffeine import Module
 
 class TestCaffeineModule(unittest.TestCase):
     def setUp(self):
-        self._stdin, self._select, self.stdin, self.select = mocks.epoll_mock("bumblebee.input")
-
-        self.popen = mocks.MockPopen()
-
-        self.input = I3BarInput()
-        self.engine = mock.Mock()
-        self.config = Config()
-        self.engine.input = self.input
-        self.engine.input.need_event = True
-
-        self.module = Module(engine=self.engine, config={ "config": self.config })
-        for widget in self.module.widgets():
-            widget.link_module(self.module)
-            self.anyWidget = widget
+        mocks.setup_test(self, Module)
 
         self.xset_active = "  timeout:  0    cycle:  123"
         self.xset_inactive = "  timeout:  600    cycle:  123"
 
     def tearDown(self):
-        self._stdin.stop()
-        self._select.stop()
-        self.popen.cleanup()
+        mocks.teardown_test(self)
 
     def test_text(self):
         self.assertEquals(self.module.caffeine(self.anyWidget), "")
