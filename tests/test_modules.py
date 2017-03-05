@@ -12,10 +12,6 @@ from bumblebee.config import Config
 
 class TestGenericModules(unittest.TestCase):
     def setUp(self):
-        self.popen = mocks.MockPopen()
-        self.popen.mock.communicate.return_value = (str.encode("1"), "error")
-        self.popen.mock.returncode = 0
-
         engine = mock.Mock()
         engine.input = mock.Mock()
         config = Config()
@@ -26,10 +22,11 @@ class TestGenericModules(unittest.TestCase):
             for widget in self.objects[mod["name"]].widgets():
                 self.assertEquals(widget.get("variable", None), None)
 
-    def tearDown(self):
-        self.popen.cleanup()
-
     def test_widgets(self):
+        popen = mocks.MockPopen()
+        popen.mock.communicate.return_value = (str.encode("1"), "error")
+        popen.mock.returncode = 0
+
         for mod in self.objects:
             widgets = self.objects[mod].widgets()
             for widget in widgets:
@@ -40,12 +37,17 @@ class TestGenericModules(unittest.TestCase):
                 widget.set("variable", "value")
                 self.assertEquals(widget.get("variable", None), "value")
                 self.assertTrue(isinstance(widget.full_text(), str) or isinstance(widget.full_text(), unicode))
+        popen.cleanup()
 
     def test_update(self):
+        popen = mocks.MockPopen()
+        popen.mock.communicate.return_value = (str.encode("1"), "error")
+        popen.mock.returncode = 0
         for mod in self.objects:
             widgets = self.objects[mod].widgets()
             self.objects[mod].update(widgets)
             self.test_widgets()
             self.assertEquals(widgets, self.objects[mod].widgets())
+        popen.cleanup()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
