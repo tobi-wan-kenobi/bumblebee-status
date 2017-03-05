@@ -4,7 +4,7 @@ import unittest
 
 from bumblebee.engine import Module
 from bumblebee.config import Config
-from mocks import MockWidget
+from tests.mocks import MockWidget
 
 class TestModule(unittest.TestCase):
     def setUp(self):

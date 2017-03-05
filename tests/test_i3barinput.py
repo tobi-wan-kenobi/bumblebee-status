@@ -4,7 +4,7 @@ import json
 import mock
 import unittest
 
-import mocks
+import tests.mocks as mocks
 
 from bumblebee.input import I3BarInput, LEFT_MOUSE, RIGHT_MOUSE
 

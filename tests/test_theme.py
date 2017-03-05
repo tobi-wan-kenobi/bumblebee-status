@@ -4,7 +4,7 @@ import mock
 import unittest
 from bumblebee.theme import Theme
 from bumblebee.error import ThemeLoadError
-from mocks import MockWidget
+from tests.mocks import MockWidget
 
 class TestTheme(unittest.TestCase):
     def setUp(self):

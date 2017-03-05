@@ -3,7 +3,7 @@
 import mock
 import unittest
 
-import mocks
+import tests.mocks as mocks
 
 from bumblebee.util import *
 

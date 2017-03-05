@@ -9,7 +9,7 @@ try:
 except ImportError:
     from io import StringIO
 
-import mocks
+import tests.mocks as mocks
 
 from bumblebee.output import I3BarOutput
 

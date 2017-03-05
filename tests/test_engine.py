@@ -8,7 +8,7 @@ from bumblebee.engine import Engine
 from bumblebee.config import Config
 import bumblebee.input
 
-from mocks import MockOutput, MockInput
+from tests.mocks import MockOutput, MockInput
 
 class TestEngine(unittest.TestCase):
     def setUp(self):
