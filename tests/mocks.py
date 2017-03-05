@@ -54,7 +54,7 @@ class MockPopen(object):
         self.mock.returncode = 0
 
     def assert_call(self, cmd):
-        self.mock.popen.assert_called_with(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        self.mock.popen.assert_any_call(shlex.split(cmd), stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
     def cleanup(self):
         self._patch.stop()
