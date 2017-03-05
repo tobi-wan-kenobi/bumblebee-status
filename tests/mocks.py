@@ -12,6 +12,22 @@ import random
 def rand(cnt):
     return "".join(random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for i in range(cnt))
 
+def epoll_mock(module=""):
+    if len(module) > 0: module = "{}.".format(module)
+
+    stdin = mock.patch("{}sys.stdin".format(module))
+    select = mock.patch("{}select".format(module))
+    epoll = mock.Mock()
+
+    stdin_mock = stdin.start()
+    select_mock = select.start()
+
+    stdin_mock.fileno.return_value = 1
+    select_mock.epoll.return_value = epoll
+    epoll.poll.return_value = [(stdin_mock.fileno.return_value, 100)]
+
+    return stdin, select, stdin_mock, select_mock
+
 def mouseEvent(stdin, button, inp, module=None, instance=None):
     stdin.readline.return_value = json.dumps({
         "name": module.id if module else rand(10),
