@@ -52,6 +52,9 @@ class Module(object):
         """By default, update() is a NOP"""
         pass
 
+    def update_all(self):
+        self.update(self._widgets)
+
     def parameter(self, name, default=None):
         """Return the config parameter 'name' for this module"""
         name = "{}.{}".format(self.name, name)

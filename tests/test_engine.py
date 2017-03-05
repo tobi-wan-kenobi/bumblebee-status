@@ -8,13 +8,15 @@ from bumblebee.engine import Engine
 from bumblebee.config import Config
 import bumblebee.input
 
-from tests.util import MockOutput, MockInput
+from tests.mocks import MockOutput, MockInput
 
 class TestEngine(unittest.TestCase):
     def setUp(self):
         self.engine = Engine(config=Config(), output=MockOutput(), inp=MockInput())
-        self.singleWidgetModule = [{"module": "test", "name": "a"}]
         self.testModule = "test"
+        self.testAlias = "test-alias"
+        self.singleWidgetModule = [{"module": self.testModule, "name": "a"}]
+        self.singleWidgetAlias = [{"module": self.testAlias, "name": "a" }]
         self.invalidModule = "no-such-module"
         self.testModuleSpec = "bumblebee.modules.{}".format(self.testModule)
         self.testModules = [
@@ -53,6 +55,11 @@ class TestEngine(unittest.TestCase):
             self.engine.run()
         except Exception as e:
             self.fail(e)
+
+    def test_aliases(self):
+        modules = self.engine.load_modules(self.singleWidgetAlias)
+        self.assertEquals(len(modules), 1)
+        self.assertEquals(modules[0].__module__, self.testModuleSpec)
 
     def test_custom_cmd(self):
         testmodules = [

@@ -1,13 +1,12 @@
 # pylint: disable=C0103,C0111
 
-import json
-import unittest
 import mock
+import unittest
 
-import bumblebee.input
-from bumblebee.input import I3BarInput
+import tests.mocks as mocks
+
+from bumblebee.input import LEFT_MOUSE
 from bumblebee.modules.disk import Module
-from tests.util import MockEngine, MockConfig, assertPopen, assertStateContains, MockEpoll
 
 class MockVFS(object):
     def __init__(self, perc):
@@ -17,40 +16,32 @@ class MockVFS(object):
 
 class TestDiskModule(unittest.TestCase):
     def setUp(self):
-        self.engine = MockEngine()
-        self.engine.input = I3BarInput()
-        self.engine.input.need_event = True
-        self.config = MockConfig()
+        mocks.setup_test(self, Module)
+        self._os = mock.patch("bumblebee.modules.disk.os")
+        self.os = self._os.start()
         self.config.set("disk.path", "somepath")
-        self.module = Module(engine=self.engine, config={"config": self.config})
 
-    @mock.patch("select.epoll")
-    @mock.patch("subprocess.Popen")
-    @mock.patch("sys.stdin")
-    def test_leftclick(self, mock_input, mock_output, mock_select):
-        mock_input.readline.return_value = json.dumps({
-            "name": self.module.id,
-            "button": bumblebee.input.LEFT_MOUSE,
-            "instance": None
-        })
-        mock_select.return_value = MockEpoll()
-        self.engine.input.start()
-        self.engine.input.stop()
-        mock_input.readline.assert_any_call()
-        assertPopen(mock_output, "nautilus {}".format(self.module.parameter("path")))
+    def tearDown(self):
+        self._os.stop()
+        mocks.teardown_test(self)
 
-    @mock.patch("os.statvfs")
-    def test_warning(self, mock_stat):
+    def test_leftclick(self):
+        module = Module(engine=self.engine, config={"config":self.config})
+        mocks.mouseEvent(stdin=self.stdin, button=LEFT_MOUSE, inp=self.input, module=module)
+        self.popen.assert_call("nautilus {}".format(self.module.parameter("path")))
+
+    def test_warning(self):
         self.config.set("disk.critical", "80")
         self.config.set("disk.warning", "70")
-        mock_stat.return_value = MockVFS(75.0)
-        assertStateContains(self, self.module, "warning")
+        self.os.statvfs.return_value = MockVFS(75.0)
+        self.module.update_all()
+        self.assertTrue("warning" in self.module.state(self.anyWidget))
 
-    @mock.patch("os.statvfs")
-    def test_critical(self, mock_stat):
+    def test_critical(self):
         self.config.set("disk.critical", "80")
         self.config.set("disk.warning", "70")
-        mock_stat.return_value = MockVFS(85.0)
-        assertStateContains(self, self.module, "critical")
+        self.os.statvfs.return_value = MockVFS(85.0)
+        self.module.update_all()
+        self.assertTrue("critical" in self.module.state(self.anyWidget))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

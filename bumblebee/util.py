@@ -15,6 +15,8 @@ def execute(cmd, wait=True):
         out, _ = proc.communicate()
         if proc.returncode != 0:
             raise RuntimeError("{} exited with {}".format(cmd, proc.returncode))
+        if type(out) == str:
+            return out
         return out.decode("utf-8")
     return None
 

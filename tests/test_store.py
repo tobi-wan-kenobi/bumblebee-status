@@ -22,3 +22,5 @@ class TestStore(unittest.TestCase):
     def test_get_invalid_with_default_value(self):
         result = self.store.get(self.unsetKey, self.anyValue)
         self.assertEquals(result, self.anyValue)
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

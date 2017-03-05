@@ -1,47 +1,57 @@
 # pylint: disable=C0103,C0111
 
 import json
-import unittest
 import mock
+import unittest
 
-import bumblebee.input
-from bumblebee.input import I3BarInput
+import tests.mocks as mocks
+
+from bumblebee.input import LEFT_MOUSE
 from bumblebee.modules.load import Module
-from tests.util import MockEngine, MockConfig, assertStateContains, assertMouseEvent
 
 class TestLoadModule(unittest.TestCase):
     def setUp(self):
-        self.engine = MockEngine()
-        self.engine.input = I3BarInput()
-        self.engine.input.need_event = True
-        self.config = MockConfig()
-        self.module = Module(engine=self.engine, config={ "config": self.config })
+        mocks.setup_test(self, Module)
 
-    @mock.patch("select.epoll")
-    @mock.patch("subprocess.Popen")
-    @mock.patch("sys.stdin")
-    def test_leftclick(self, mock_input, mock_output, mock_select):
-        assertMouseEvent(mock_input, mock_output, mock_select, self.engine,
-            self.module, bumblebee.input.LEFT_MOUSE,
-            "gnome-system-monitor"
-        )
+        self._mp = mock.patch("bumblebee.modules.load.multiprocessing")
+        self._os = mock.patch("bumblebee.modules.load.os")
 
-    @mock.patch("multiprocessing.cpu_count")
-    @mock.patch("os.getloadavg")
-    def test_warning(self, mock_loadavg, mock_cpucount):
+        self.mp = self._mp.start()
+        self.os = self._os.start()
+
+        self.mp.cpu_count.return_value = 1
+
+    def tearDown(self):
+        self._mp.stop()
+        self._os.stop()
+        mocks.teardown_test(self)
+
+    def test_leftclick(self):
+        mocks.mouseEvent(stdin=self.stdin, button=LEFT_MOUSE, inp=self.input, module=self.module)
+        self.popen.assert_call("gnome-system-monitor")
+
+    def test_load_format(self):
+        self.os.getloadavg.return_value = [ 5.9, 1.2, 0.8 ]
+        self.module.update_all()
+        self.assertEquals(self.module.load(self.anyWidget), "5.90/1.20/0.80")
+
+    def test_warning(self):
         self.config.set("load.critical", "1")
         self.config.set("load.warning", "0.8")
-        mock_cpucount.return_value = 1
-        mock_loadavg.return_value = [ 0.9, 0, 0 ]
-        assertStateContains(self, self.module, "warning")
+        self.os.getloadavg.return_value = [ 0.9, 0, 0 ]
+        self.module.update_all()
+        self.assertTrue("warning" in self.module.state(self.anyWidget))
 
-    @mock.patch("multiprocessing.cpu_count")
-    @mock.patch("os.getloadavg")
-    def test_critical(self, mock_loadavg, mock_cpucount):
+    def test_critical(self):
         self.config.set("load.critical", "1")
         self.config.set("load.warning", "0.8")
-        mock_cpucount.return_value = 1
-        mock_loadavg.return_value = [ 1.1, 0, 0 ]
-        assertStateContains(self, self.module, "critical")
+        self.os.getloadavg.return_value = [ 1.1, 0, 0 ]
+        self.module.update_all()
+        self.assertTrue("critical" in self.module.state(self.anyWidget))
+
+    def test_assume_single_core(self):
+        self.mp.cpu_count.side_effect = NotImplementedError
+        module = Module(engine=self.engine, config={"config": mock.Mock() })
+        self.assertEquals(1, module._cpus)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -1,13 +1,12 @@
 # pylint: disable=C0103,C0111
 
-import json
-import unittest
 import mock
+import unittest
 
-import bumblebee.input
-from bumblebee.input import I3BarInput
+import tests.mocks as mocks
+
+from bumblebee.input import LEFT_MOUSE
 from bumblebee.modules.memory import Module
-from tests.util import MockEngine, MockConfig, assertPopen, assertMouseEvent, assertStateContains
 
 class VirtualMemory(object):
     def __init__(self, percent):
@@ -15,33 +14,39 @@ class VirtualMemory(object):
 
 class TestMemoryModule(unittest.TestCase):
     def setUp(self):
-        self.engine = MockEngine()
-        self.engine.input = I3BarInput()
-        self.engine.input.need_event = True
-        self.config = MockConfig()
-        self.module = Module(engine=self.engine, config={ "config": self.config })
+        mocks.setup_test(self, Module)
+        self._psutil = mock.patch("bumblebee.modules.memory.psutil")
+        self.psutil = self._psutil.start()
 
-    @mock.patch("select.epoll")
-    @mock.patch("subprocess.Popen")
-    @mock.patch("sys.stdin")
-    def test_leftclick(self, mock_input, mock_output, mock_select):
-        assertMouseEvent(mock_input, mock_output, mock_select, self.engine,
-            self.module, bumblebee.input.LEFT_MOUSE,
-            "gnome-system-monitor"
-        )
+    def tearDown(self):
+        self._psutil.stop()
+        mocks.teardown_test(self)
 
-    @mock.patch("psutil.virtual_memory")
-    def test_warning(self, mock_vmem):
+    def test_leftclick(self):
+        mocks.mouseEvent(stdin=self.stdin, button=LEFT_MOUSE, inp=self.input, module=self.module)
+        self.popen.assert_call("gnome-system-monitor")
+
+    def test_warning(self):
         self.config.set("memory.critical", "80")
         self.config.set("memory.warning", "70")
-        mock_vmem.return_value = VirtualMemory(75)
-        assertStateContains(self, self.module, "warning")
+        self.psutil.virtual_memory.return_value = VirtualMemory(75)
+        self.module.update_all()
+        self.assertTrue("warning" in self.module.state(self.anyWidget))
 
-    @mock.patch("psutil.virtual_memory")
-    def test_critical(self, mock_vmem):
+    def test_critical(self):
         self.config.set("memory.critical", "80")
         self.config.set("memory.warning", "70")
-        mock_vmem.return_value = VirtualMemory(85)
-        assertStateContains(self, self.module, "critical")
+        self.psutil.virtual_memory.return_value = VirtualMemory(81)
+        self.module.update_all()
+        self.assertTrue("critical" in self.module.state(self.anyWidget))
+
+    def test_usage(self):
+        rv = VirtualMemory(50)
+        rv.total = 1000
+        rv.available = 500
+        self.psutil.virtual_memory.return_value = rv
+        self.module.update_all()
+        self.assertEquals("500.00B/1000.00B (50.00%)", self.module.memory_usage(self.anyWidget))
+        self.assertEquals(None, self.module.state(self.anyWidget))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

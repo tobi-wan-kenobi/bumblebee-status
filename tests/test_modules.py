@@ -1,53 +1,54 @@
 # pylint: disable=C0103,C0111
 
+import mock
 import unittest
 import importlib
-import mock
+
+import tests.mocks as mocks
 
 from bumblebee.engine import all_modules
+from bumblebee.output import Widget
 from bumblebee.config import Config
-from tests.util import assertWidgetAttributes, MockEngine
-
-class MockCommunicate(object):
-    def __init__(self):
-        self.returncode = 0
-
-    def communicate(self):
-        return (str.encode("1"), "error")
 
 class TestGenericModules(unittest.TestCase):
-    @mock.patch("subprocess.Popen")
-    def setUp(self, mock_output):
-        mock_output.return_value = MockCommunicate()
-        engine = MockEngine()
+    def setUp(self):
+        engine = mock.Mock()
+        engine.input = mock.Mock()
         config = Config()
         self.objects = {}
+
+        self.popen = mocks.MockPopen()
+        self.popen.mock.communicate.return_value = (str.encode("1"), "error")
+        self.popen.mock.returncode = 0
+
+        self._platform = mock.patch("bumblebee.modules.kernel.platform")
+        self.platform = self._platform.start()
+        self.platform.release.return_value = "unknown linux v1"
+
         for mod in all_modules():
-            cls = importlib.import_module("bumblebee.modules.{}".format(mod["name"]))
+            name = "bumblebee.modules.{}".format(mod["name"])
+            cls = importlib.import_module(name)
             self.objects[mod["name"]] = getattr(cls, "Module")(engine, {"config": config})
             for widget in self.objects[mod["name"]].widgets():
                 self.assertEquals(widget.get("variable", None), None)
 
-    @mock.patch("subprocess.Popen")
-    def test_widgets(self, mock_output):
-        mock_output.return_value = MockCommunicate()
+    def tearDown(self):
+        self._platform.stop()
+        self.popen.cleanup()
+
+    def test_widgets(self):
         for mod in self.objects:
             widgets = self.objects[mod].widgets()
             for widget in widgets:
                 widget.link_module(self.objects[mod])
                 self.assertEquals(widget.module, mod)
-                assertWidgetAttributes(self, widget)
+                self.assertTrue(isinstance(widget, Widget))
+                self.assertTrue(hasattr(widget, "full_text"))
                 widget.set("variable", "value")
                 self.assertEquals(widget.get("variable", None), "value")
                 self.assertTrue(isinstance(widget.full_text(), str) or isinstance(widget.full_text(), unicode))
 
-    @mock.patch("subprocess.Popen")
-    def test_update(self, mock_output):
-        mock_output.return_value = MockCommunicate()
-        rv = mock.Mock()
-        rv.configure_mock(**{
-            "communicate.return_value": ("out", None)
-        })
+    def test_update(self):
         for mod in self.objects:
             widgets = self.objects[mod].widgets()
             self.objects[mod].update(widgets)
