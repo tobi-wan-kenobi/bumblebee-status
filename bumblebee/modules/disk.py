@@ -1,14 +1,13 @@
 # pylint: disable=C0111,R0903
 
 """Shows free diskspace, total diskspace and the percentage of free disk space.
-
 Parameters:
     * disk.warning: Warning threshold in % of disk space (defaults to 80%)
     * disk.critical: Critical threshold in % of disk space (defaults ot 90%)
     * disk.path: Path to calculate disk usage from (defaults to /)
 """
 
-import shutil
+import os
 
 import bumblebee.input
 import bumblebee.output
@@ -34,9 +33,9 @@ class Module(bumblebee.engine.Module):
         )
 
     def update(self, widgets):
-        st = shutil.disk_usage(self._path)
-        self._size = st.total
-        self._used = st.used
+        st = os.statvfs(self._path)
+        self._size = st.f_blocks * st.f_frsize
+        self._used = (st.f_blocks - st.f_bfree) * st.f_frsize
         self._perc = 100.0*self._used/self._size
 
     def state(self, widget):
