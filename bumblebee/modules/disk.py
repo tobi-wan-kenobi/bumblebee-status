@@ -1,6 +1,7 @@
 # pylint: disable=C0111,R0903
 
 """Shows free diskspace, total diskspace and the percentage of free disk space.
+-
 Parameters:
     * disk.warning: Warning threshold in % of disk space (defaults to 80%)
     * disk.critical: Critical threshold in % of disk space (defaults ot 90%)
