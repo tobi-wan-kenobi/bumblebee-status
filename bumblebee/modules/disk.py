@@ -8,7 +8,7 @@ Parameters:
     * disk.path: Path to calculate disk usage from (defaults to /)
 """
 
-import os
+import shutil
 
 import bumblebee.input
 import bumblebee.output
@@ -34,9 +34,9 @@ class Module(bumblebee.engine.Module):
         )
 
     def update(self, widgets):
-        st = os.statvfs(self._path)
-        self._size = st.f_frsize*st.f_blocks
-        self._used = self._size - st.f_frsize*st.f_bavail
+        st = shutil.disk_usage(self._path)
+        self._size = st.total
+        self._used = st.used
         self._perc = 100.0*self._used/self._size
 
     def state(self, widget):
