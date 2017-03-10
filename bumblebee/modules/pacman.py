@@ -21,8 +21,6 @@ repos = ["core", "extra", "community", "multilib", "testing", "other"]
 def get_pacman_info(widget, path):
     try:
         result = bumblebee.util.execute("{}/../../bin/pacman-updates".format(path))
-    except BaseException as a:
-        raise a
     except:
         pass
 
