@@ -27,7 +27,7 @@ def get_pacman_info(widget, path):
     count = len(repos)*[0]
 
     for line in result.splitlines():
-        if line.startswith("http"):
+        if line.startswith(("http", "rsync")):
             for i in range(len(repos)-1):
                 if "/" + repos[i] + "/" in line:
                     count[i] += 1
