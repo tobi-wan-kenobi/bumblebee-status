@@ -14,8 +14,9 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
-#list of repositories the last one sould always be other
-repos = ["community", "core", "extra", "other"]
+#list of repositories.
+#the last one sould always be other
+repos = ["core", "extra", "community", "multilib", "testing", "other"]
 
 def get_pacman_info(widget, path):
     try:
