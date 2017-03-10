@@ -62,8 +62,11 @@ class Module(bumblebee.engine.Module):
         self._count = 0 if self._count > 300 else self._count
 
     def state(self, widget):
-        sumUpdates = sum(map(lambda x: widget.get(x,0), repos))
-        if sumUpdates > 0:
-            return "critical"
+        weightedCount = sum(map(lambda x: (len(repos)-x[0]) * widget.get(x[1],0), enumerate(repos)))
+
+        if weightedCount < 10:
+            return "good"
+
+        return self.threshold_state(weightedCount, 100, 150)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
