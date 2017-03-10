@@ -12,7 +12,7 @@ class MockVFS(object):
     def __init__(self, perc):
         self.f_blocks = 1024*1024
         self.f_frsize = 1
-        self.f_bavail = self.f_blocks - self.f_blocks*(perc/100.0)
+        self.f_bfree = self.f_blocks*(1.0 - perc/100.0)
 
 class TestDiskModule(unittest.TestCase):
     def setUp(self):
