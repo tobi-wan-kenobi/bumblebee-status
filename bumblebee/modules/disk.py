@@ -28,7 +28,7 @@ class Module(bumblebee.engine.Module):
             cmd="nautilus {}".format(self._path))
 
     def diskspace(self, widget):
-        return "\uf0a0{} {}/{} ({:05.02f}%)".format(self._path,
+        return "{} {}/{} ({:05.02f}%)".format(self._path,
             bumblebee.util.bytefmt(self._used),
             bumblebee.util.bytefmt(self._size), self._perc
         )
