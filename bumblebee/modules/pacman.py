@@ -8,12 +8,37 @@ Requires the following executables:
 """
 
 import os
+import threading
+
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
 #list of repositories the last one sould always be other
 repos = ["community", "core", "extra", "other"]
+
+def get_pacman_info(widget, path):
+    try:
+        result = bumblebee.util.execute("{}/../../bin/pacman-updates".format(path))
+    except BaseException as a:
+        raise a
+    except:
+        pass
+
+    count = len(repos)*[0]
+
+    for line in result.splitlines():
+        if line.startswith("http"):
+            for i in range(len(repos)-1):
+                if "/" + repos[i] + "/" in line:
+                    count[i] += 1
+                    break
+            else:
+                result[-1] += 1
+
+    for i in range(len(repos)):
+        widget.set(repos[i], count[i])
+
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -28,25 +53,8 @@ class Module(bumblebee.engine.Module):
     def update(self, widgets):
         path = os.path.dirname(os.path.abspath(__file__))
         if self._count == 0:
-            try:
-                result = bumblebee.util.execute("{}/../../bin/pacman-updates".format(path))
-
-                count = len(repos)*[0]
-
-                for line in result.splitlines():
-                    if line.startswith("http"):
-                        for i in range(len(repos)-1):
-                            if "/" + repos[i] + "/" in line:
-                                count[i] += 1
-                                break
-                        else:
-                            result[-1] += 1
-
-                for i in range(len(repos)):
-                    widgets[0].set(repos[i], count[i])
-
-            except BaseException as a:
-                raise a
+            thread = threading.Thread(target=get_pacman_info, args=(widgets[0],path))
+            thread.start()
  
         # TODO: improve this waiting mechanism a bit
         self._count += 1
