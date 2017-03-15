@@ -13,17 +13,19 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.volume)
         )
         self._level = "0"
-        self._muted = False
+        self._muted = True
         device = self.parameter("device", "Master,0")
         self._cmdString = "amixer get {}".format(device)
 
     def volume(self, widget):
         m = re.search(r'([\d]+)\%', self._level)
-        self._muted = False
-        if m == "0":
-            self._muted = True
-
-        return "{}%".format(m.group(1))
+        self._muted = True
+        if m:
+            if m.group(1) != "0":
+                self._muted = False
+            return "{}%".format(m.group(1))
+        else:
+            return "0%"
 
     def update(self, widgets):
         self._level = bumblebee.util.execute(self._cmdString)
