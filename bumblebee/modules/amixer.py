@@ -12,7 +12,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.volume)
         )
-        self._level = 0
+        self._level = "0"
         self._muted = False
         device = self.parameter("device", "Master,0")
         self._cmdString = "amixer get {}".format(device)
