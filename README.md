@@ -51,6 +51,11 @@ $ ./bumblebee-status -l themes
 $ ./bumblebee-status -l modules
 ```
 
+To change the update interval, use:
+```
+$ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
+```
+
 As a simple example, this is what my i3 configuration looks like:
 
 ```
