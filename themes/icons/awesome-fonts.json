@@ -9,7 +9,6 @@
 	"cpu": { "prefix": "" },
 	"disk": { "prefix": "" },
 	"dnf": { "prefix": "" },
-	"pacman": { "prefix": "" },
 	"brightness": { "prefix": "" },
 	"load": { "prefix": "" },
 	"layout": { "prefix": "" },
@@ -32,6 +31,10 @@
 		"next": { "prefix": "" }
 	},
 	"pasink": {
+		"muted": { "prefix": "" },
+		"unmuted": { "prefix": "" }
+	},
+	"amixer": {
 		"muted": { "prefix": "" },
 		"unmuted": { "prefix": "" }
 	},
