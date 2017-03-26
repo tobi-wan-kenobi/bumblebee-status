@@ -6,7 +6,10 @@ Parameters:
     * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
 """
 
-import netifaces
+try:
+    import netifaces
+except ImportError:
+    pass
 
 import bumblebee.util
 import bumblebee.input

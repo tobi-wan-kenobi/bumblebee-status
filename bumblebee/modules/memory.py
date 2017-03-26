@@ -7,7 +7,10 @@ Parameters:
     * cpu.critical: Critical threshold in % of memory used (defaults to 90%)
 """
 
-import psutil
+try:
+    import psutil
+except ImportError:
+    pass
 
 import bumblebee.util
 import bumblebee.input

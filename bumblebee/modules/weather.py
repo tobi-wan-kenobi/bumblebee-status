@@ -18,7 +18,10 @@ import bumblebee.output
 import bumblebee.engine
 import json
 import time
-import requests
+try:
+    import requests
+except ImportError:
+    pass
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):

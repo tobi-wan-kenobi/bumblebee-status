@@ -7,7 +7,11 @@ Parameters:
     * cpu.critical: Critical threshold in % of CPU usage (defaults to 80%)
 """
 
-import psutil
+try:
+    import psutil
+except ImportError:
+    pass
+
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
