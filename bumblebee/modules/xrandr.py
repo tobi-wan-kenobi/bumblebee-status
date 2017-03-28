@@ -37,7 +37,7 @@ class Module(bumblebee.engine.Module):
                 self._engine.input.register_callback(widget, button=3, cmd=self._toggle)
             new_widgets.append(widget)
             widget.set("state", "on" if m else "off")
-            widget.set("pos", int(m.group(1)) if m else sys.maxint)
+            widget.set("pos", int(m.group(1)) if m else sys.maxsize)
 
         while len(widgets) > 0:
             del widgets[0]
