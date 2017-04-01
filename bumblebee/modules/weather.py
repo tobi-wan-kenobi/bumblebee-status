@@ -35,6 +35,7 @@ class Module(bumblebee.engine.Module):
         self._interval = int(self.parameter("interval", "15"))
         self._unit = self.parameter("unit", "metric")
         self._nextcheck = 0
+        self._valid = False
 
     def _unit_suffix(self):
         if self._unit == "metric":
@@ -46,6 +47,8 @@ class Module(bumblebee.engine.Module):
         return ""
 
     def temperature(self, widget):
+        if not self._valid:
+            return u"?"
         return u"{}°{}".format(self._temperature, self._unit_suffix())
 
     def update(self, widgets):
@@ -64,7 +67,8 @@ class Module(bumblebee.engine.Module):
                     weather_url = "{url}&q={city}".format(url=weather_url, city=self._location)
                 weather = json.loads(requests.get(weather_url).text)
                 self._temperature = int(weather['main']['temp'])
+                self._valid = True
             except RequestException:
-                pass
+                self._valid = False
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
