@@ -1,4 +1,5 @@
 # pylint: disable=C0111,R0903
+# -*- coding: utf-8 -*-
 
 """Displays information about the current song in cmus.
 
