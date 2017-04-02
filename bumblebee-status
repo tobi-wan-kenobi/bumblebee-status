@@ -8,6 +8,7 @@ import bumblebee.engine
 import bumblebee.config
 import bumblebee.output
 import bumblebee.input
+import bumblebee.modules.error
 
 def main():
     logging.basicConfig(
