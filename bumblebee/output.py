@@ -50,9 +50,14 @@ class I3BarOutput(object):
     def __init__(self, theme):
         self._theme = theme
         self._widgets = []
+        self._started = False
+
+    def started(self):
+        return self._started
 
     def start(self):
         """Print start preamble for i3bar protocol"""
+        self._started = True
         sys.stdout.write(json.dumps({"version": 1, "click_events": True}) + "[\n")
 
     def stop(self):

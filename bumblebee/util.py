@@ -1,4 +1,5 @@
 import shlex
+import logging
 import subprocess
 
 try:
@@ -8,17 +9,21 @@ except ImportError:
     pass
 
 def execute(cmd, wait=True):
+    logging.info("executing command '{}'".format(cmd))
     args = shlex.split(cmd)
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    rv = None
 
     if wait:
         out, _ = proc.communicate()
         if proc.returncode != 0:
             raise RuntimeError("{} exited with {}".format(cmd, proc.returncode))
         if type(out) == str:
-            return out
-        return out.decode("utf-8")
-    return None
+            rv = out
+        else:
+            rv = out.decode("utf-8")
+    logging.info("command returned '{}'".format("" if not rv else rv))
+    return rv
 
 def bytefmt(num):
     for unit in [ "", "Ki", "Mi", "Gi" ]:

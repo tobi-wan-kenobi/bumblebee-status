@@ -4,7 +4,9 @@ This module provides configuration information (loaded modules,
 module parameters, etc.) to all other components
 """
 
+import os
 import sys
+import logging
 import argparse
 import textwrap
 import importlib
@@ -14,6 +16,7 @@ MODULE_HELP = "Specify a space-separated list of modules to load. The order of t
 THEME_HELP = "Specify the theme to use for drawing modules"
 PARAMETER_HELP = "Provide configuration parameters in the form of <module>.<key>=<value>"
 LIST_HELP = "Display a list of either available themes or available modules along with their parameters."
+DEBUG_HELP = "Enable debug log ('debug.log' located in the same directory as the bumblebee-status executable)"
 
 class print_usage(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
@@ -51,6 +54,8 @@ def create_parser():
         help=PARAMETER_HELP)
     parser.add_argument("-l", "--list", choices=["modules", "themes"], action=print_usage,
         help=LIST_HELP)
+    parser.add_argument("-d", "--debug", action="store_true",
+        help=DEBUG_HELP)
     return parser
 
 class Config(bumblebee.store.Store):
@@ -63,6 +68,9 @@ class Config(bumblebee.store.Store):
         super(Config, self).__init__()
         parser = create_parser()
         self._args = parser.parse_args(args if args else [])
+
+        if not self._args.debug:
+            logger = logging.getLogger().disabled = True
 
         for param in self._args.parameters:
             key, value = param.split("=")
