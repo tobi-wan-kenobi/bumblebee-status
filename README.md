@@ -35,7 +35,7 @@ $ git clone git://github.com/tobi-wan-kenobi/bumblebee-status
 ```
 
 # Usage
-
+## Normal usage
 Next, open your i3wm configuration and modify the *status_command* for your i3bar like this:
 
 ```
@@ -68,8 +68,16 @@ bar {
 
 ```
 
-
 Restart i3wm and - that's it!
+
+## Errors
+If errors occur, you should see them in the i3bar itself. If that does not work, or you need more information for troubleshooting, you can activate a debug log using the `-d` or `--debug` switch:
+
+```
+$ ./bumblebee-status -d -m <list of modules>
+```
+
+This will create a file called `debug.log` in the same directory as the executable `bumblebee-status`.
 
 # Required Modules
 
