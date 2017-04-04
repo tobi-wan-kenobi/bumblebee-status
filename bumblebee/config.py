@@ -56,6 +56,9 @@ def create_parser():
         help=LIST_HELP)
     parser.add_argument("-d", "--debug", action="store_true",
         help=DEBUG_HELP)
+    parser.add_argument("-f", "--logfile", default="~/bumblebee-status-debug.log",
+        help="Location of the debug log file")
+
     return parser
 
 class Config(bumblebee.store.Store):
@@ -86,5 +89,11 @@ class Config(bumblebee.store.Store):
     def theme(self):
         """Return the name of the selected theme"""
         return self._args.theme
+    
+    def debug(self):
+        return self._args.debug
+
+    def logfile(self):
+        return self._args.logfile
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
