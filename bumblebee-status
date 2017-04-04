@@ -11,12 +11,21 @@ import bumblebee.input
 import bumblebee.modules.error
 
 def main():
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format="[%(asctime)s] %(levelname)-8s %(message)s",
-        filename="{}/debug.log".format(os.path.dirname(os.path.realpath(__file__)))
-    )
     config = bumblebee.config.Config(sys.argv[1:])
+
+    if config.debug():
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="[%(asctime)s] %(levelname)-8s %(message)s",
+            filename=os.path.expanduser(config.logfile())
+        )
+    else:
+        logging.basicConfig(
+            level=logging.DEBUG,
+            format="[%(asctime)s] %(levelname)-8s %(message)s",
+            stream=sys.stderr
+        )
+
     theme = bumblebee.theme.Theme(config.theme())
     output = bumblebee.output.I3BarOutput(theme=theme)
     inp = bumblebee.input.I3BarInput()
