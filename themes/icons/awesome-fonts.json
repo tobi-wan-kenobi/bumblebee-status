@@ -75,5 +75,8 @@
 	},
 	"redshift": {
 		"day": { "prefix": "" }, "night": { "prefix": "" }, "transition": { "prefix": "" }
-	}
+	},
+  "sensors": {
+    "prefix": "🌡"
+  }
 }

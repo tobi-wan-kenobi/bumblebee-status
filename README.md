@@ -102,6 +102,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * ping (for the module 'ping')
 * redshift (for the module 'redshift')
 * xrandr (for the module 'xrandr')
+* sensors (for the module 'sensors')
 
 # Examples
 Here are some screenshots for all themes that currently exist:
