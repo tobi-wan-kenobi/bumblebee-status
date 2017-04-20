@@ -32,7 +32,7 @@ class Module(bumblebee.engine.Module):
         matching_temp = self._pattern.findall(temperatures)
         temperature = "unknown"
         if matching_temp:
-            temperature = matching_temp[self._match_number]
+            temperature = int(float(matching_temp[self._match_number]))
 
         return temperature
 
