@@ -32,7 +32,6 @@ class Module(bumblebee.engine.Module):
         return "{:03d}%".format(self._capacity)
 
     def update(self, widgets):
-        widget = widgets[0]
         self._ac = False
         if not os.path.exists(self._path):
             self._ac = True
