@@ -117,6 +117,10 @@ Solarized Powerline (`-t solarized-powerline`):
 
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
 
+Gruvbox (`-t gruvbox`):
+
+![Gruvbox](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/gruvbox.png)
+
 Solarized (`-t solarized`):
 
 ![Solarized](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/solarized.png)
