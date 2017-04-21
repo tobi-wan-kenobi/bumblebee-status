@@ -78,5 +78,8 @@
 	},
   "sensors": {
     "prefix": "🌡"
+  },
+  "traffic":{
+	"prefix": ""
   }
 }
