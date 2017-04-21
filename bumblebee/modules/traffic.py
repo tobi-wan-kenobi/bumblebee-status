@@ -38,7 +38,7 @@ class Module(bumblebee.engine.Module):
         _prev_down = widget.get("absdown", 0)
         _speed_down = bumblebee.util.bytefmt(int(_current_down) - int(_prev_down))
         _speed_up = bumblebee.util.bytefmt(int(_current_up) - int(_prev_up))
-        widget.full_text("{} {} {}".format(interface, _speed_down, _speed_up))
+        widget.full_text("{} {}".format(_speed_down, _speed_up))
         widget.set("absdown", _current_down)
         widget.set("absup", _current_up)
 
