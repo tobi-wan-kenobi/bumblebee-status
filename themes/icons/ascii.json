@@ -60,4 +60,7 @@
 	"redshift": {
 		"day": { "prefix": "day" }, "night": { "prefix": "night" }, "transition": { "prefix": "trans" }
 	}
+	"traffic": {
+		"prefix": "traffic"
+	}
 }
