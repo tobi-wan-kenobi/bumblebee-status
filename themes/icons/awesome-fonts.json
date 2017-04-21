@@ -80,6 +80,7 @@
     "prefix": "🌡"
   },
   "traffic":{
-	"prefix": ""
+	  "down": { "prefix": "" },
+	  "up": { "prefix": "" }
   }
 }
