@@ -35,11 +35,15 @@ class Module(bumblebee.engine.Module):
         if interface is '':
             interface = 'lo'
 
-        _block = re.compile(r"" + interface + ":(.*\n)*", re.MULTILINE)
-        _down = re.compile(r"RX packets .*  bytes (.*) \(", re.MULTILINE)
-        _current_down = re.search(_down,re.search(_block,_ifconfdata).group(0)).group(1)
-        _up = re.compile(r"TX packets .*  bytes (.*) \(", re.MULTILINE)
-        _current_up = re.search(_up,re.search(_block,_ifconfdata).group(0)).group(1)
+        try:
+            _block = re.compile(r"" + interface + ":(.*\n)*", re.MULTILINE)
+            _down = re.compile(r"RX packets .*  bytes (.*) \(", re.MULTILINE)
+            _current_down = re.search(_down,re.search(_block,_ifconfdata).group(0)).group(1)
+            _up = re.compile(r"TX packets .*  bytes (.*) \(", re.MULTILINE)
+            _current_up = re.search(_up,re.search(_block,_ifconfdata).group(0)).group(1)
+        except:
+            _current_up = -1
+            _current_down = -1
 
         widget_down = self.widget("traffic.down")
         widget_up = self.widget("traffic.up")
@@ -51,13 +55,21 @@ class Module(bumblebee.engine.Module):
             widgets.append(widget_up)
 
         _prev_down = widget_down.get("absdown", 0)
-        _speed_down = bumblebee.util.bytefmt(int(_current_down) - int(_prev_down))
+        if _current_down is not -1:
+            _speed_down = bumblebee.util.bytefmt(int(_current_down) - int(_prev_down))
+            widget_down.set("absdown", _current_down)
+        else:
+            _speed_down = bumblebee.util.bytefmt(0)
+            widget_down.set("absdown", _prev_down)
         widget_down.full_text("{}".format(_speed_down))
-        widget_down.set("absdown", _current_down)
 
         _prev_up = widget_up.get("absup", 0)
-        _speed_up = bumblebee.util.bytefmt(int(_current_up) - int(_prev_up))
+        if _current_up is not -1:
+            _speed_up = bumblebee.util.bytefmt(int(_current_up) - int(_prev_up))
+            widget_up.set("absup", _current_up)
+        else:
+            _speed_up = bumblebee.util.bytefmt(0)
+            widget_up.set("absup", _prev_up)
         widget_up.full_text("{}".format(_speed_up))
-        widget_up.set("absup", _current_up)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
