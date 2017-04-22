@@ -1,3 +1,11 @@
+# pylint: disable=C0111,R0903
+
+"""Displays network IO for interfaces.
+
+Parameters:
+    * traffic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
+"""
+
 import re
 import psutil
 import netifaces
@@ -6,12 +14,6 @@ import bumblebee.util
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
-
-"""Displays network IO for interfaces.
-
-Parameters:
-    * traffic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
-"""
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
