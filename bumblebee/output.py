@@ -89,6 +89,8 @@ class I3BarOutput(object):
             "background": self._theme.bg(widget),
             "separator_block_width": self._theme.separator_block_width(widget),
             "separator": True if separator is None else False,
+            "min_width": self._theme.minwidth(widget),
+            "align": self._theme.align(widget),
             "instance": widget.id,
             "name": module.id,
         })

@@ -74,6 +74,14 @@ class Theme(object):
         """Return the background color for this widget"""
         return self._get(widget, "bg", None)
 
+    def align(self, widget):
+        """Return the widget alignment"""
+        return self._get(widget, "align", None)
+
+    def minwidth(self, widget):
+        """Return the minimum width string for this widget"""
+        return self._get(widget, "minwidth", "")
+
     def separator(self, widget):
         """Return the separator between widgets"""
         return self._get(widget, "separator", None)
@@ -131,6 +139,7 @@ class Theme(object):
                 state_themes.append(self._get(widget, state, {}))
 
         value = self._defaults.get(name, default)
+        value = widget.get("theme-{}".format(name), value)
         value = self._cycle.get(name, value)
         value = module_theme.get(name, value)
 
