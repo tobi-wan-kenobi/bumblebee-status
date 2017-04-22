@@ -139,7 +139,7 @@ class Theme(object):
                 state_themes.append(self._get(widget, state, {}))
 
         value = self._defaults.get(name, default)
-        value = widget.get("theme-{}".format(name), value)
+        value = widget.get("theme.{}".format(name), value)
         value = self._cycle.get(name, value)
         value = module_theme.get(name, value)
 
