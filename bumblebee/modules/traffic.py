@@ -1,75 +1,73 @@
-import netifaces
 import re
+import psutil
+import netifaces
 
 import bumblebee.util
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+"""Displays network IO for interfaces.
+
+Parameters:
+    * traffic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
+"""
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        widgets = [
-            bumblebee.output.Widget(name="traffic.down"),
-            bumblebee.output.Widget(name="traffic.up"),
-        ]
+        widgets = []
         super(Module, self).__init__(engine, config, widgets)
         self._exclude = tuple(filter(len, self.parameter("exclude", "lo,virbr,docker,vboxnet,veth").split(",")))
         self._update_widgets(widgets)
-        self._status = None
+        self._status = ""
 
     def state(self, widget):
-        if widget.name == "traffic.down":
-            return "down"
-        if widget.name == "traffic.up":
-            return "up"
+        if "traffic.rx" in widget.name:
+            return "rx"
+        if "traffic.tx" in widget.name:
+            return "tx"
         return self._status
 
     def update(self, widgets):
         self._update_widgets(widgets)
 
     def _update_widgets(self, widgets):
-        _ifconfdata = bumblebee.util.execute('ifconfig')
         interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
 
-        interface = interfaces[0]
-        if interface is '':
-            interface = 'lo'
+        counters = psutil.net_io_counters(pernic=True)
+        for interface in interfaces:
+            if not interface: interface = "lo"
+            rx = counters[interface].bytes_recv
+            tx = counters[interface].bytes_sent
 
-        try:
-            _block = re.compile(r"" + interface + ":(.*\n)*", re.MULTILINE)
-            _down = re.compile(r"RX packets .*  bytes (.*) \(", re.MULTILINE)
-            _current_down = re.search(_down,re.search(_block,_ifconfdata).group(0)).group(1)
-            _up = re.compile(r"TX packets .*  bytes (.*) \(", re.MULTILINE)
-            _current_up = re.search(_up,re.search(_block,_ifconfdata).group(0)).group(1)
-        except:
-            _current_up = -1
-            _current_down = -1
+            name = "traffic-{}".format(interface)
+            txname = "traffic.tx-{}".format(interface)
+            rxname = "traffic.rx-{}".format(interface)
 
-        widget_down = self.widget("traffic.down")
-        widget_up = self.widget("traffic.up")
-        if not widget_down:
-            widget_down = bumblebee.output.Widget(name="traffic.down")
-            widgets.append(widget_down)
-        if not widget_up:
-            widget_up = bumblebee.output.Widget(name="traffic.down")
-            widgets.append(widget_up)
+            widget = self.widget(name)
+            if not widget:
+                widget = bumblebee.output.Widget(name=name)
+                widgets.append(widget)
+                widget.full_text(interface)
 
-        _prev_down = widget_down.get("absdown", 0)
-        if _current_down is not -1:
-            _speed_down = bumblebee.util.bytefmt(int(_current_down) - int(_prev_down))
-            widget_down.set("absdown", _current_down)
-        else:
-            _speed_down = bumblebee.util.bytefmt(0)
-            widget_down.set("absdown", _prev_down)
-        widget_down.full_text("{}".format(_speed_down))
+            widget_rx = self.widget(rxname)
+            widget_tx = self.widget(txname)
+            if not widget_rx:
+                widget_rx = bumblebee.output.Widget(name=rxname)
+                widgets.append(widget_rx)
+            if not widget_tx:
+                widget_tx = bumblebee.output.Widget(name=txname)
+                widgets.append(widget_tx)
 
-        _prev_up = widget_up.get("absup", 0)
-        if _current_up is not -1:
-            _speed_up = bumblebee.util.bytefmt(int(_current_up) - int(_prev_up))
-            widget_up.set("absup", _current_up)
-        else:
-            _speed_up = bumblebee.util.bytefmt(0)
-            widget_up.set("absup", _prev_up)
-        widget_up.full_text("{}".format(_speed_up))
+            prev_rx = widget_rx.get("rx", 0)
+            prev_tx = widget_tx.get("tx", 0)
+            rxspeed = bumblebee.util.bytefmt(int(rx) - int(prev_rx))
+            txspeed = bumblebee.util.bytefmt(int(tx) - int(prev_tx))
+
+            widget_rx.full_text(rxspeed)
+            widget_tx.full_text(txspeed)
+
+            widget_rx.set("rx", rx)
+            widget_tx.set("tx", tx)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
