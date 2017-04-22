@@ -8,6 +8,27 @@ import uuid
 
 import bumblebee.store
 
+def scrollable(func):
+    def wrapper(module, widget):
+        text = func(module, widget)
+        width = widget.get("theme.width", module.parameter("width", 30))
+        widget.set("theme.minwidth", "A"*width)
+        if len(text) <= width:
+            return text
+        # we need to shorten
+        start = widget.get("scrolling.start", -1)
+        direction = widget.get("scrolling.direction", "right")
+        start += 1 if direction == "right" else -1
+        widget.set("scrolling.start", start)
+        if width + start >= len(text):
+            widget.set("scrolling.direction", "left")
+        if start <= 0:
+            widget.set("scrolling.direction", "right")
+        text = text[start:width+start]
+
+        return text
+    return wrapper
+
 class Widget(bumblebee.store.Store):
     """Represents a single visible block in the status bar"""
     def __init__(self, full_text="", name=""):
@@ -83,13 +104,14 @@ class I3BarOutput(object):
                 "background": self._theme.separator_bg(widget),
                 "separator_block_width": self._theme.separator_block_width(widget),
             })
+        width = self._theme.minwidth(widget)
         self._widgets.append({
             u"full_text": full_text,
             "color": self._theme.fg(widget),
             "background": self._theme.bg(widget),
             "separator_block_width": self._theme.separator_block_width(widget),
             "separator": True if separator is None else False,
-            "min_width": self._theme.minwidth(widget),
+            "min_width": width + "A"*(len(prefix) + len(suffix)) if width else None,
             "align": self._theme.align(widget),
             "instance": widget.id,
             "name": module.id,
