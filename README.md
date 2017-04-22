@@ -107,7 +107,7 @@ Modules and commandline utilities are only required for modules, the core itself
 # Examples
 Here are some screenshots for all themes that currently exist:
 
-:exclamation: Some themes (all 'Powerline' themes) require [Font Awesome](http://fontawesome.io/) to display icons correctly.
+:exclamation: Some themes (all 'Powerline' themes) require [Font Awesome](http://fontawesome.io/) and a powerline-compatible font ([powerline-fonts](https://github.com/powerline/fonts), for example) to display all icons correctly.
 
 Gruvbox Powerline (`-t gruvbox-powerline`) (contributed by [@paxy97](https://github.com/paxy97)):
 
