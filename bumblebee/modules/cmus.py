@@ -19,6 +19,8 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+from bumblebee.output import scrollable
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widgets = [
@@ -47,6 +49,7 @@ class Module(bumblebee.engine.Module):
         self._repeat = False
         self._tags = defaultdict(lambda: '')
 
+    @scrollable
     def description(self, widget):
         return string.Formatter().vformat(self._fmt, (), self._tags)
 
