@@ -24,6 +24,8 @@ class TestI3BarOutput(unittest.TestCase):
         self.theme.separator_block_width.return_value = 1
         self.theme.fg.return_value = "#ababab"
         self.theme.bg.return_value = "#ababab"
+        self.theme.align.return_value = None
+        self.theme.minwidth.return_value = ""
         self.output = I3BarOutput(self.theme)
 
         self._stdout = mock.patch("bumblebee.output.sys.stdout", new_callable=StringIO)
