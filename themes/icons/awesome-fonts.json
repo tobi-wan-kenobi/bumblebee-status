@@ -78,5 +78,9 @@
 	},
   "sensors": {
     "prefix": "🌡"
+  },
+  "traffic":{
+	  "down": { "prefix": "" },
+	  "up": { "prefix": "" }
   }
 }
