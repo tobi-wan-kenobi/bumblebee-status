@@ -44,8 +44,20 @@ tag comment comment
             album="an album", status="irrelevant"
         ), None)
         self.module.update_all()
+        self.anyWidget.set("theme.width", 1000)
         self.assertEquals(self.module.description(self.anyWidget),
             "an artist - a title 00:20/01:40"
+        )
+
+    def test_scrollable_format(self):
+        self.popen.mock.communicate.return_value = (self.songTemplate.format(
+            artist="an artist", title="a title", duration="100", position="20",
+            album="an album", status="irrelevant"
+        ), None)
+        self.module.update_all()
+        self.anyWidget.set("theme.width", 10)
+        self.assertEquals(self.module.description(self.anyWidget),
+            "an artist - a title 00:20/01:40"[:10]
         )
 
     def test_repeat(self):
