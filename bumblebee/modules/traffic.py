@@ -56,13 +56,11 @@ class Module(bumblebee.engine.Module):
             widget_tx = self.widget(txname)
             if not widget_rx:
                 widget_rx = bumblebee.output.Widget(name=rxname)
-                widget_rx.set("theme.minwidth", "down 1000MB")
-                widget_rx.set("theme.align", "right")
+                widget_rx.set("theme.minwidth", "1000.00MB")
                 widgets.append(widget_rx)
             if not widget_tx:
                 widget_tx = bumblebee.output.Widget(name=txname)
-                widget_tx.set("theme.minwidth", "down 1000MB")
-                widget_tx.set("theme.align", "right")
+                widget_tx.set("theme.minwidth", "1000.00MB")
                 widgets.append(widget_tx)
 
             prev_rx = widget_rx.get("rx", 0)

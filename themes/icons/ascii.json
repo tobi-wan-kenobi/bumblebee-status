@@ -64,7 +64,7 @@
 		"prefix": "sensors"
 	},
 	"traffic": {
-		"rx": { "suffix": "down"},
-		"tx": {"suffix": "up"}
+		"rx": { "prefix": "down"},
+		"tx": { "prefix": "up"}
 	}
 }
