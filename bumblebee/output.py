@@ -70,10 +70,13 @@ class I3BarOutput(object):
         padding = self._theme.padding(widget)
         prefix = self._theme.prefix(widget, padding)
         suffix = self._theme.suffix(widget, padding)
+        minwidth = self._theme.minwidth(widget)
         if prefix:
             full_text = u"{}{}".format(prefix, full_text)
+            if minwidth: minwidth += "A"*len(prefix)
         if suffix:
             full_text = u"{}{}".format(full_text, suffix)
+            if minwidth: minwidth += "A"*len(suffix)
         separator = self._theme.separator(widget)
         if separator:
             self._widgets.append({
@@ -89,7 +92,7 @@ class I3BarOutput(object):
             "background": self._theme.bg(widget),
             "separator_block_width": self._theme.separator_block_width(widget),
             "separator": True if separator is None else False,
-            "min_width": self._theme.minwidth(widget),
+            "min_width": minwidth,
             "align": self._theme.align(widget),
             "instance": widget.id,
             "name": module.id,
