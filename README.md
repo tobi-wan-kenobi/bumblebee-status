@@ -83,8 +83,8 @@ This will create a file called `debug.log` in the same directory as the executab
 
 Modules and commandline utilities are only required for modules, the core itself has no external dependencies at all.
 
-* psutil (for the modules 'cpu', 'memory')
-* netifaces (for the module 'nic')
+* psutil (for the modules 'cpu', 'memory', 'traffic')
+* netifaces (for the module 'nic', 'traffic')
 * requests (for the module 'weather')
 
 # Required commandline utilities
