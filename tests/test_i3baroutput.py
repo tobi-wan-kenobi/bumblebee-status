@@ -36,7 +36,7 @@ class TestI3BarOutput(unittest.TestCase):
         self.anyModule.id = mocks.rand(10)
         self.anyModule.name = mocks.rand(10)
 
-        self.expectedStart = json.dumps({"version": 1, "click_events": True}) + "[\n"
+        self.expectedStart = json.dumps({"version": 1, "click_events": True}) + "\n[\n"
         self.expectedStop = "]\n"
 
         self.anyColor = "#ffffff"
