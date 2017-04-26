@@ -79,7 +79,7 @@ class I3BarOutput(object):
     def start(self):
         """Print start preamble for i3bar protocol"""
         self._started = True
-        sys.stdout.write(json.dumps({"version": 1, "click_events": True}) + "[\n")
+        sys.stdout.write(json.dumps({"version": 1, "click_events": True}) + "\n[\n")
 
     def stop(self):
         """Finish i3bar protocol"""
