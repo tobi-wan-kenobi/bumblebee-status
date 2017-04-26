@@ -52,13 +52,7 @@ class Module(bumblebee.engine.Module):
             status = bumblebee.util.execute("gpmdp-remote status")
         except RuntimeError:
             pass
-        try:
-            unicode_status = status.decode('utf-8')
-            unicode_info = info.decode('utf-8')
-        except AttributeError:
-            unicode_status = status
-            unicode_info = info
-        self._status = unicode_status.split("\n")[0].lower()
-        self._tags = unicode_info.split("\n")[0]
+        self._status = status.split("\n")[0].lower()
+        self._tags = info.split("\n")[0]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

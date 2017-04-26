@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import shlex
 import logging
 import subprocess
@@ -18,11 +20,13 @@ def execute(cmd, wait=True):
         out, _ = proc.communicate()
         if proc.returncode != 0:
             raise RuntimeError("{} exited with {}".format(cmd, proc.returncode))
-        if type(out) == str:
-            rv = out
-        else:
+
+        if hasattr(out, "decode"):
             rv = out.decode("utf-8")
-    logging.info("command returned '{}'".format("" if not rv else rv))
+        else:
+            rv = out
+
+    logging.info(u"command returned '{}'".format("" if not rv else rv))
     return rv
 
 def bytefmt(num):
