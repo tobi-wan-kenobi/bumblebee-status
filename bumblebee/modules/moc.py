@@ -93,11 +93,19 @@ class Module(bumblebee.engine.Module):
                     self._tags.update({key:bumblebee.util.durationfmt(dur)})
 
     def _toggle_shuffle(self, widget):
-        bumblebee.util.execute("mocp -t shuffle")
-        self._shuffle = False if self._shuffle else True
+        if self._shuffle:
+            bumblebee.util.execute("mocp -u shuffle")
+            self._shuffle = False
+        else:
+            bumblebee.util.execute("mocp -o shuffle")
+            self._shuffle = True
 
     def _toggle_repeat(self, widget):
-        bumblebee.util.execute("mocp -t repeat")
-        self._repeat = False if self._repeat else True
+        if self._repeat:
+            bumblebee.util.execute("mocp -u repeat")
+            self._repeat = False
+        else:
+            bumblebee.util.execute("mocp -o repeat")
+            self._repeat = True
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
