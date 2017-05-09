@@ -18,6 +18,17 @@
 		"repeat-on": { "prefix": "R" },
 		"repeat-off": { "prefix": "[r]" }
 	},
+	"moc": {
+		"playing": { "prefix": ">" },
+		"paused": { "prefix": "||" },
+		"stopped": { "prefix": "[]" },
+		"prev": { "prefix": "|<" },
+		"next": { "prefix": ">|" },
+		"shuffle-on": { "prefix": "S" },
+		"shuffle-off": { "prefix": "[s]" },
+		"repeat-on": { "prefix": "R" },
+		"repeat-off": { "prefix": "[r]" }
+	},
 	"pasink": {
 		"muted": { "prefix": "audio(mute)" },
 		"unmuted": { "prefix": "audio" }
