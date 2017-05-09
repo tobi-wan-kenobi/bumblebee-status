@@ -24,6 +24,17 @@
 		"repeat-on": { "prefix": "" },
 		"repeat-off": { "prefix": "" }
 	},
+	"moc": {
+		"playing": { "prefix": "" },
+		"paused": { "prefix": "" },
+		"stopped": { "prefix": "" },
+		"prev": { "prefix": "" },
+		"next": { "prefix": "" },
+		"shuffle-on": { "prefix": "" },
+		"shuffle-off": { "prefix": "" },
+		"repeat-on": { "prefix": "" },
+		"repeat-off": { "prefix": "" }
+	},
 	"gpmdp": {
 		"playing": { "prefix": "" },
 		"paused": { "prefix": "" },
