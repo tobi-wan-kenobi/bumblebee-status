@@ -47,6 +47,11 @@ class Widget(bumblebee.store.Store):
         self.module = module.name
         self._module = module
 
+    def cls(self):
+        if not self._module:
+            return None
+        return self._module.__module__.replace("bumblebee.modules.", "")
+
     def state(self):
         """Return the widget's state"""
         if self._module and hasattr(self._module, "state"):
