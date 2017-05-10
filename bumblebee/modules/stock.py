@@ -9,6 +9,7 @@ Requires the following python packages:
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
     * stock.change : Should we fetch change in stock value (defaults to True)
+    * stock.currencies : List of symbols to go with the values (default $)
 """
 
 import bumblebee.input
@@ -24,12 +25,25 @@ class Module(bumblebee.engine.Module):
         )
         self._symbols = self.parameter("symbols", "")
         self._change = self.parameter("change", True)
+        self._currencies = self.parameter('currencies', None)
         self._baseurl = 'http://download.finance.yahoo.com/d/quotes.csv'
         self._value = self.fetch()
 
+        if not self._currencies:
+            self._currencies = '$' * len(self._symbols)
+
+        # The currencies could be unicode, like the € symbol. Convert to a unicode object.
+        self._currencies = self._currencies.decode('utf-8', 'ignore')
+
     def value(self, widget):
-        results = ["$%s" % val for val in self._value.split('\n')]
-        return ' '.join(results)
+        results = []
+        for i, val in enumerate(self._value.split('\n')):
+            try:
+                currency_symbol = self._currencies[i]
+            except:
+                currency_symbol = '$'
+            results.append('%s%s' % (currency_symbol, val))
+        return u' '.join(results)
 
     def fetch(self):
         if self._symbols:
