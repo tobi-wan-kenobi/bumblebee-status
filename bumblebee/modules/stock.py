@@ -33,7 +33,8 @@ class Module(bumblebee.engine.Module):
             self._currencies = '$' * len(self._symbols)
 
         # The currencies could be unicode, like the € symbol. Convert to a unicode object.
-        self._currencies = self._currencies.decode('utf-8', 'ignore')
+        if hasattr(self._currencies, "decode"):
+            self._currencies = self._currencies.decode("utf-8", "ignore")
 
     def value(self, widget):
         results = []
