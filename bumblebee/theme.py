@@ -6,6 +6,7 @@ import os
 import glob
 import copy
 import json
+import sys
 
 import bumblebee.error
 
@@ -109,8 +110,12 @@ class Theme(object):
 
         if os.path.isfile(themefile):
             try:
-                with open(themefile, encoding="utf-8") as data:
-                    return json.load(data)
+                if(sys.version_info > (3,0)):
+                    with open(themefile,encoding="utf-8") as data:
+                        return json.load(data)
+                else:
+                    with open(themefile) as data:
+                        return json.load(data)
             except ValueError as exception:
                 raise bumblebee.error.ThemeLoadError("JSON error: {}".format(exception))
         else:
