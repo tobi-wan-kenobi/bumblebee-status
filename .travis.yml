@@ -8,6 +8,7 @@ python:
 install:
   - pip install psutil
   - pip install netifaces
+  - pip install -U coverage==4.3
   - pip install codeclimate-test-reporter
 script:
   - nosetests -v --with-coverage --cover-erase tests/
