@@ -38,6 +38,9 @@ def main():
             inp=inp,
         )
         engine.run()
+    except KeyboardInterrupt as error:
+        inp.stop()
+        sys.exit(0)
     except BaseException as e:
         logging.exception(e)
         if output.started():
@@ -56,18 +59,6 @@ def main():
             output.flush()
             output.end()
             time.sleep(1)
-#    try:
-#    except KeyboardInterrupt as error:
-#        inp.stop()
-#        sys.exit(0)
-#    except bumblebee.error.BaseError as error:
-#        inp.stop()
-#        sys.stderr.write("fatal: {}\n".format(error))
-#        sys.exit(1)
-#    except Exception as error:
-#        inp.stop()
-#        sys.stderr.write("fatal: {}\n".format(error))
-#        sys.exit(2)
 
 if __name__ == "__main__":
     main()
