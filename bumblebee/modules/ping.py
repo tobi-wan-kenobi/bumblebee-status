@@ -72,6 +72,6 @@ class Module(bumblebee.engine.Module):
             return
         thread = threading.Thread(target=get_rtt, args=(self,widgets[0],))
         thread.start()
-        self._next_check = int(time.time()) + widgets[0].get("interval")
+        self._next_check = int(time.time()) + int(widgets[0].get("interval"))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
