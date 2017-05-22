@@ -4,6 +4,7 @@
 
 Parameters:
     * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
+    * nic.states: Comma-separated list of states to show (prefix with "^" to invert - i.e. ^down -> show all devices that are not in state down)
 """
 
 try:
@@ -21,6 +22,16 @@ class Module(bumblebee.engine.Module):
         widgets = []
         super(Module, self).__init__(engine, config, widgets)
         self._exclude = tuple(filter(len, self.parameter("exclude", "lo,virbr,docker,vboxnet,veth").split(",")))
+
+        self._states = {}
+        self._states["include"] = []
+        self._states["exclude"] = []
+        for state in tuple(filter(len, self.parameter("states", "").split(","))):
+            if state[0] == "^":
+                self._states["exclude"].append(state[1:])
+            else:
+                self._states["include"].append(state)
+
         self._update_widgets(widgets)
 
     def update(self, widgets):
@@ -72,6 +83,10 @@ class Module(bumblebee.engine.Module):
             for ip in self.get_addresses(intf):
                 addr.append(ip)
                 state = "up"
+
+            if len(self._states["exclude"]) > 0 and state in self._states["exclude"]: continue
+            if len(self._states["include"]) > 0 and state not in self._states["include"]: continue
+
             widget = self.widget(intf)
             if not widget:
                 widget = bumblebee.output.Widget(name=intf)
