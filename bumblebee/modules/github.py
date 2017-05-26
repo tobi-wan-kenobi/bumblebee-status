@@ -1,6 +1,6 @@
 # pylint: disable=C0111,R0903
 
-"""Displays the unread github requests of a user
+"""Displays the unread GitHub notifications for a GitHub user
 
 Requires the following executable:
     * curl
