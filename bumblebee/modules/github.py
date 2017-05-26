@@ -15,6 +15,13 @@ import bumblebee.output
 import bumblebee.engine
 import re
 import time
+import json
+
+try:
+    import requests
+    from requests.exceptions import RequestException
+except ImportError:
+    pass
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -26,7 +33,7 @@ class Module(bumblebee.engine.Module):
         self._nextcheck = 0
 
     def github(self, widget):
-        return self._count
+        return str(self._count)
 
     def update(self, widgets):
         if self._nextcheck < int(time.time()):
@@ -37,11 +44,11 @@ class Module(bumblebee.engine.Module):
                  self._count = 0
                  return
 
-            result = bumblebee.util.execute("curl -s https://api.github.com/notifications\?access_token\=" + token)
-
-            pattern = 'unread'
-            lines = '\n'.join(re.findall(r'^.*%s.*?$'%pattern,result,flags=re.M))
-
-            self._count = len(lines.split('\n'))
+            notifications = requests.get("https://api.github.com/notifications?access_token={}".format(token)).text
+            unread = 0
+            for notification in json.loads(notifications):
+                if "unread" in notification and notification["unread"] == True:
+                    unread += 1
+            self._count = unread
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
