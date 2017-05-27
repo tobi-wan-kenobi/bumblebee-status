@@ -77,5 +77,11 @@
 		"shuffle-off": { "prefix": "[s]" },
 		"repeat-on": { "prefix": "R" },
 		"repeat-off": { "prefix": "[r]" }
+	},
+	"github": {
+		"prefix": "github"
+	},
+	"spotify": {
+		"prefix": ""
 	}
 }

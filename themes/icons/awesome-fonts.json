@@ -93,5 +93,11 @@
 		"shuffle-off": { "prefix": "" },
 		"repeat-on": { "prefix": "" },
 		"repeat-off": { "prefix": "" }
-	}
+	},
+  "github": {
+	  "prefix": "  "
+  },
+  "spotify": {
+	  "prefix": "  "
+  }
 }
