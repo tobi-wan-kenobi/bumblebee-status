@@ -14,7 +14,6 @@ import bumblebee.engine
 
 try:
     import dbus
-    from dbus.exceptions import DBusException
 except ImportError:
     pass
 
@@ -36,7 +35,7 @@ class Module(bumblebee.engine.Module):
             spotify_iface = dbus.Interface(spotify, 'org.freedesktop.DBus.Properties')
             props = spotify_iface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
             self._song = (str(props['xesam:artist'][0]) + " - " + str(props['xesam:title']))
-        except DBusException:
+        except Exception:
             self._song = ""
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
