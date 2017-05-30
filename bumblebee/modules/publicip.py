@@ -1,8 +1,5 @@
 """Displays public IP address
 
-Parameter:
-    * Test
-    * Test
 """
 
 try:
