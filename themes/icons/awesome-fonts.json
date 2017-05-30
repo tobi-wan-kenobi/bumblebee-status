@@ -99,5 +99,8 @@
   },
   "spotify": {
 	  "prefix": "  "
+  },
+  "publicip": {
+	  "prefix": "  "
   }
 }
