@@ -104,6 +104,8 @@ Modules and commandline utilities are only required for modules, the core itself
 * xrandr (for the module 'xrandr')
 * sensors (for the module 'sensors')
 * mpc (for the module 'mpd')
+* bluez / blueman (for module 'bluetooth')
+* dbus-send (for module 'bluetooth')
 
 # Examples
 Here are some screenshots for all themes that currently exist:
