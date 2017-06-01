@@ -3,8 +3,9 @@
 """Displays available RAM, total amount of RAM and percentage available.
 
 Parameters:
-    * cpu.warning : Warning threshold in % of memory used (defaults to 80%)
-    * cpu.critical: Critical threshold in % of memory used (defaults to 90%)
+    * ram.warning : Warning threshold in % of memory used (defaults to 80%)
+    * ram.critical: Critical threshold in % of memory used (defaults to 90%)
+    * ram.usedonly: Only show the amount of RAM in use.
 """
 
 try:
@@ -28,6 +29,8 @@ class Module(bumblebee.engine.Module):
 
     def memory_usage(self, widget):
         used = self._mem.total - self._mem.available
+        if bool(self.parameter("usedonly", 0)) == 1:
+            return bumblebee.util.bytefmt(used)
         return "{}/{} ({:05.02f}%)".format(
             bumblebee.util.bytefmt(used),
             bumblebee.util.bytefmt(self._mem.total),
