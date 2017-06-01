@@ -54,6 +54,11 @@
 		"tunnel-up": { "prefix": "" },
 		"tunnel-down": { "prefix": "" }
 	},
+    "bluetooth": {
+        "ON": { "prefix": "" },
+        "OFF": { "prefix": "" },
+        "?": { "prefix": "" }
+    },
 	"battery": {
 		"charged": { "prefix": "", "suffix": "" },
 		"AC": { "suffix": "" },
