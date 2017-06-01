@@ -6,6 +6,7 @@ Parameters:
     * disk.warning: Warning threshold in % of disk space (defaults to 80%)
     * disk.critical: Critical threshold in % of disk space (defaults ot 90%)
     * disk.path: Path to calculate disk usage from (defaults to /)
+    * disk.open: Which application / file manager to launch (default xdg-open)
     * disk.showUsed: Show used space (defaults to yes)
     * disk.showSize: Show total size (defaults to yes)
     * disk.showPercent: Show usage percentage (defaults to yes)
@@ -26,12 +27,14 @@ class Module(bumblebee.engine.Module):
         self._sused = self.parameter("showUsed", "yes")
         self._ssize = self.parameter("showSize", "yes")
         self._spercent = self.parameter("showPercent", "yes")
+        self._app = self.parameter("open", "xdg-open")
         self._perc = 0
         self._used = 0
         self._size = 0
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-                                       cmd="nautilus {}".format(self._path))
+                                       cmd="{} {}".format(self._app,
+                                                          self._path))
 
     def diskspace(self, widget):
         if self._sused == "yes":
