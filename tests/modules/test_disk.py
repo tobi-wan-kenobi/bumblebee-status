@@ -20,6 +20,7 @@ class TestDiskModule(unittest.TestCase):
         self._os = mock.patch("bumblebee.modules.disk.os")
         self.os = self._os.start()
         self.config.set("disk.path", "somepath")
+        self.config.set("disk.open", "nautilus")
 
     def tearDown(self):
         self._os.stop()
