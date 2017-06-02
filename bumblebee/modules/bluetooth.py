@@ -14,6 +14,8 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 import bumblebee.util
+import bumblebee.popup
+import logging
 
 
 class Module(bumblebee.engine.Module):
@@ -34,7 +36,7 @@ class Module(bumblebee.engine.Module):
                                        cmd=self.manager)
         engine.input.register_callback(self,
                                        button=bumblebee.input.RIGHT_MOUSE,
-                                       cmd=self.toggle)
+                                       cmd=self.popup)
 
     def status(self, widget):
         """Get status."""
@@ -69,14 +71,31 @@ class Module(bumblebee.engine.Module):
         """Launch manager."""
         bumblebee.util.execute(self.manager)
 
-    def toggle(self, widget):
+    def popup(self, widget):
+        """Show a popup menu."""
+        menu = bumblebee.popup.PopupMenu()
+        if self._status == "On":
+            menu.add_menuitem('Disable Bluetooth')
+        elif self._status == "Off":
+            menu.add_menuitem('Enable Bluetooth')
+        else:
+            return
+
+        # show menu and get return code
+        ret = menu.show(widget)
+        if ret == 0:
+            logging.debug('bt: toggling bluetooth')
+            # first (and only) item selected.
+            self._toggle()
+
+    def _toggle(self):
         """Toggle bluetooth state."""
         if self._status == "On":
             state = "false"
         else:
             state = "true"
 
-        cmd = "dbus-send --system --dest=org.blueman.Mechanism"\
+        cmd = "dbus-send --system --print-reply --dest=org.blueman.Mechanism"\
               " / org.blueman.Mechanism.SetRfkillState"\
               " boolean:{}".format(state)
 
