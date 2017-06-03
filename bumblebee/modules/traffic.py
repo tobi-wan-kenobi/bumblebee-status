@@ -4,6 +4,7 @@
 
 Parameters:
     * traffic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
+    * traffic.onlyup: Whether to oly show traffic for Up interfaces (defaults to False)
 """
 
 import re
@@ -47,7 +48,12 @@ class Module(bumblebee.engine.Module):
         return widget
 
     def _update_widgets(self, widgets):
-        interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
+        allinterfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
+
+        if self.parameter("onlyup", False):
+            interfaces = [ i for i in allinterfaces if netifaces.AF_INET in netifaces.ifaddresses(i) ]
+        else:
+            interfaces = allinterfaces
 
         counters = psutil.net_io_counters(pernic=True)
         for interface in interfaces:
