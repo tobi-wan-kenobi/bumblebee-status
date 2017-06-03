@@ -44,9 +44,6 @@ class Module(bumblebee.engine.Module):
         self._update_widgets(widgets)
 
     def create_widget(self, widgets, name, txt=None, attributes={}):
-        widget = self.widget(name)
-        if widget: return widget
-
         widget = bumblebee.output.Widget(name=name)
         widget.full_text(txt)
         widgets.append(widget)
@@ -68,6 +65,8 @@ class Module(bumblebee.engine.Module):
 
     def _update_widgets(self, widgets):
         interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
+
+        del widgets[:]
 
         counters = psutil.net_io_counters(pernic=True)
         for interface in interfaces:
