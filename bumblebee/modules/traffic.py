@@ -4,6 +4,7 @@
 
 Parameters:
     * traffic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
+    * traffic.states: Comma-separated list of states to show (prefix with "^" to invert - i.e. ^down -> show all devices that are not in state down)
 """
 
 import re
@@ -20,8 +21,17 @@ class Module(bumblebee.engine.Module):
         widgets = []
         super(Module, self).__init__(engine, config, widgets)
         self._exclude = tuple(filter(len, self.parameter("exclude", "lo,virbr,docker,vboxnet,veth").split(",")))
-        self._update_widgets(widgets)
         self._status = ""
+
+        self._states = {}
+        self._states["include"] = []
+        self._states["exclude"] = []
+        for state in tuple(filter(len, self.parameter("states", "").split(","))):
+            if state[0] == "^":
+                self._states["exclude"].append(state[1:])
+            else:
+                self._states["include"].append(state)
+        self._update_widgets(widgets)
 
     def state(self, widget):
         if "traffic.rx" in widget.name:
@@ -46,12 +56,29 @@ class Module(bumblebee.engine.Module):
 
         return widget
 
+    def get_addresses(self, intf):
+        retval = []
+        try:
+            for ip in netifaces.ifaddresses(intf).get(netifaces.AF_INET, []):
+                if ip.get("addr", "") != "":
+                    retval.append(ip.get("addr"))
+        except Exception:
+            return []
+        return retval
+
     def _update_widgets(self, widgets):
         interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
 
         counters = psutil.net_io_counters(pernic=True)
         for interface in interfaces:
             if not interface: interface = "lo"
+            state = "down"
+            if len(self.get_addresses(interface)) > 0:
+                state = "up"
+
+            if len(self._states["exclude"]) > 0 and state in self._states["exclude"]: continue
+            if len(self._states["include"]) > 0 and state not in self._states["include"]: continue
+
             data = {
                 "rx": counters[interface].bytes_recv,
                 "tx": counters[interface].bytes_sent,
