@@ -2,6 +2,10 @@
 
 """Displays volume and mute status of PulseAudio devices.
 
+
+Parameters:
+    * pasink.controlApp : What program to run on right click (defaults to pavucontrol)
+
 Aliases: pasink, pasource
 
 Requires the following executable:
@@ -35,7 +39,7 @@ class Module(bumblebee.engine.Module):
             { "expr": "Volume:", "callback": self.getvolume },
         ]
 
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd="pavucontrol")
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.parameter("controlApp", "pavucontrol"))
 
         events = [
             { "type": "mute", "action": "toggle", "button": bumblebee.input.LEFT_MOUSE },
