@@ -1,14 +1,15 @@
+# pylint: disable=C0111,R0903
+
 """Displays sensor temperature
 
 Requires the following executable:
     * sensors
 
 Parameters:
-    * sensors.match: What line in the output of `sensors -u` should be matched against (default: temp1_input)
+    * sensors.match: Line to match against output of 'sensors -u' (default: temp1_input)
     * sensors.match_number: which of the matches you want (default -1: last match).
 """
 
-import os
 import re
 
 import bumblebee.input
@@ -18,8 +19,7 @@ import bumblebee.engine
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.temperature)
-        )
+                                     bumblebee.output.Widget(full_text=self.temperature))
         self._temperature = "unknown"
         pattern = self.parameter("match", "temp1_input")
         pattern_string = r"^\s*{}:\s*([\d.]+)$".format(pattern)
@@ -36,7 +36,7 @@ class Module(bumblebee.engine.Module):
 
         return temperature
 
-    def temperature(self, widget):
+    def temperature(self, _):
         return self._temperature
 
     def update(self, widgets):
