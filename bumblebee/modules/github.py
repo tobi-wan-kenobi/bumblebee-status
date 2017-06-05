@@ -10,29 +10,27 @@ Parameters:
     * github.interval: Interval in minutes
 """
 
+import time
+import json
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
-import re
-import time
-import json
 
 try:
     import requests
-    from requests.exceptions import RequestException
 except ImportError:
     pass
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.github)
-        )
+                                     bumblebee.output.Widget(full_text=self.github)
+                                    )
         self._count = 0
         self._interval = int(self.parameter("interval", "5"))
         self._nextcheck = 0
 
-    def github(self, widget):
+    def github(self, _):
         return str(self._count)
 
     def update(self, widgets):
@@ -41,13 +39,14 @@ class Module(bumblebee.engine.Module):
             token = self.parameter("token", "")
 
             if not token:
-                 self._count = 0
-                 return
+                self._count = 0
+                return
 
-            notifications = requests.get("https://api.github.com/notifications?access_token={}".format(token)).text
+            notifications = requests.get("https://api.github.com/notifications?access_token={}"
+                                         .format(token)).text
             unread = 0
             for notification in json.loads(notifications):
-                if "unread" in notification and notification["unread"] == True:
+                if "unread" in notification and notification["unread"]:
                     unread += 1
             self._count = unread
 
