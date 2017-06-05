@@ -19,19 +19,18 @@ import bumblebee.engine
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.utilization)
-        )
+                                     bumblebee.output.Widget(full_text=self.utilization))
         self._utilization = psutil.cpu_percent(percpu=False)
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-            cmd="gnome-system-monitor")
+                                       cmd="gnome-system-monitor")
 
-    def utilization(self, widget):
+    def utilization(self, _):
         return "{:6.01f}%".format(self._utilization)
 
     def update(self, widgets):
         self._utilization = psutil.cpu_percent(percpu=False)
 
-    def state(self, widget):
+    def state(self, _):
         return self.threshold_state(self._utilization, 70, 80)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
