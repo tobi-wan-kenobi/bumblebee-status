@@ -23,6 +23,7 @@ class Module(bumblebee.engine.Module):
         self._exclude = tuple(filter(len, self.parameter("exclude", "lo,virbr,docker,vboxnet,veth").split(",")))
         self._status = ""
 
+        self._prev = {}
         self._states = {}
         self._states["include"] = []
         self._states["exclude"] = []
@@ -90,9 +91,9 @@ class Module(bumblebee.engine.Module):
             for direction in ["rx", "tx"]:
                 name = "traffic.{}-{}".format(direction, interface)
                 widget = self.create_widget(widgets, name, attributes={"theme.minwidth": "1000.00MB"})
-                prev = widget.get(direction, 0)
+                prev = self._prev.get(name, 0)
                 speed = bumblebee.util.bytefmt(int(data[direction]) - int(prev))
                 widget.full_text(speed)
-                widget.set(direction, data[direction])
+                self._prev[name] = data[direction]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
