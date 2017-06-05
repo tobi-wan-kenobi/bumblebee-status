@@ -5,6 +5,7 @@ Requires the following python packages:
 
 Parameters:
     * publicip.region: us-central (default), us-east, us-west, uk, de, pl, nl 
+    * publicip.service: web address that returns plaintext ip address (ex. "http://l2.io/ip")
 """
 
 try:
@@ -28,6 +29,7 @@ class Module(bumblebee.engine.Module):
                                "nl":"http://tnx.nl/ip",
                                "uk":"http://ident.me"}
         self._region = self.parameter("region", "us-central")
+        self._service = self.parameter("service", "")
         self._ip = ""
 
 
@@ -36,7 +38,11 @@ class Module(bumblebee.engine.Module):
 
     def update(self, widgets):
         try:
-            self._ip = get(self._avail_regions[self._region]).text.rstrip()
+            if self._service:
+                self.address = self._service
+            else:
+                self.address = self._avail_regions[self._region]
+            self._ip = get(self.address).text.rstrip()
         except Exception:
-            self._ip = "Not Connected"
+            self._ip = "No Connection"
 
