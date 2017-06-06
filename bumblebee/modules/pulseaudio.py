@@ -22,6 +22,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.volume)
         )
+        bumblebee.util.execute("pulseaudio --start")
 
         self._left = 0
         self._right = 0
