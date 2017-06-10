@@ -81,6 +81,7 @@ class Engine(object):
         self.input = inp
         self._aliases = self._read_aliases()
         self.load_modules(config.modules())
+        self._current_module = None
 
         self.input.register_callback(None, bumblebee.input.WHEEL_UP,
             "i3-msg workspace prev_on_output")
@@ -145,12 +146,16 @@ class Engine(object):
         """Stop the event loop"""
         self._running = False
 
+    def current_module(self):
+        return self._current_module.__module__
+
     def run(self):
         """Start the event loop"""
         self._output.start()
         while self.running():
             self._output.begin()
             for module in self._modules:
+                self._current_module = module
                 module.update(module.widgets())
                 for widget in module.widgets():
                     widget.link_module(module)
