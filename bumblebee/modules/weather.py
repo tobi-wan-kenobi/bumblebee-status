@@ -70,5 +70,7 @@ class Module(bumblebee.engine.Module):
                 self._valid = True
             except RequestException:
                 self._valid = False
+            except Exception:
+                self._valid = False
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

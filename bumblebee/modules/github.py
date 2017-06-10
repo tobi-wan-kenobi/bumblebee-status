@@ -44,9 +44,13 @@ class Module(bumblebee.engine.Module):
               
             notifications = requests.get("https://api.github.com/notifications", headers={"Authorization":"token {}".format(token)}).text
             unread = 0
-            for notification in json.loads(notifications):
-                if "unread" in notification and notification["unread"]:
-                    unread += 1
-            self._count = unread
+            try:
+                for notification in json.loads(notifications):
+                    if "unread" in notification and notification["unread"]:
+                        unread += 1
+                self._count = unread
+            except Exception:
+                self._count = "n/a"
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
