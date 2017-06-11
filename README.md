@@ -106,6 +106,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * mpc (for the module 'mpd')
 * bluez / blueman (for module 'bluetooth')
 * dbus-send (for module 'bluetooth')
+* nvidia-smi (for module 'nvidiagpu')
 
 # Examples
 Here are some screenshots for all themes that currently exist:
