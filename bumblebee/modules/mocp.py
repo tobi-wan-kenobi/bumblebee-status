@@ -30,6 +30,7 @@ class Module(bumblebee.engine.Module):
 
         engine.input.register_callback(widgets[0], button=bumblebee.input.LEFT_MOUSE,
             cmd="mocp -G")
+        self._running = 0
 
     #@scrollable
     def description(self, widget):
