@@ -108,5 +108,12 @@
   },
   "publicip": {
 	  "prefix": "  "
+  },
+  "weather": {
+    "clouds": { "prefix": "" },
+    "rain": { "prefix": "" },
+    "snow": { "prefix": "" },
+    "clear": { "prefix": "" },
+    "thunder": { "prefix": "" }
   }
 }
