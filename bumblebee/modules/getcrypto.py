@@ -6,7 +6,7 @@ Requires the following python packages:
     * requests
 
 Parameters:
-    * getcrypto.interval: Interval in seconds for updating the price, default is 60, less than that will get your IP banned.
+    * getcrypto.interval: Interval in seconds for updating the price, default is 120, less than that will probably get your IP banned.
     * getcrypto.getbtc: 0 for not getting price of BTC, 1 for getting it (default).
     * getcrypto.geteth: 0 for not getting price of ETH, 1 for getting it (default).
     * getcrypto.getltc: 0 for not getting price of LTC, 1 for getting it (default).
