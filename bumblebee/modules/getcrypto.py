@@ -39,7 +39,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.curprice)
         )
-        self._curprice = 0
+        self._curprice = ""
         self._nextcheck = 0
         self._interval = int(self.parameter("interval", "120"))
         self._getbtc = int(self.parameter("getbtc", "1"))
