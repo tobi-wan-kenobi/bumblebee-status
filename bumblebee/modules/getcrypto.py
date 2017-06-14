@@ -45,8 +45,8 @@ class Module(bumblebee.engine.Module):
         self._getbtc = int(self.parameter("getbtc", "1"))
         self._geteth = int(self.parameter("geteth", "1"))
         self._getltc = int(self.parameter("getltc", "1"))
-        #engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-        #    cmd="gnome-system-monitor")
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+            cmd="xdg-open https://cryptowat.ch/")
 
     def curprice(self, widget):
         return self._curprice
