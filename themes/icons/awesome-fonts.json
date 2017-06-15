@@ -5,8 +5,9 @@
 	},
 	"date": { "prefix": ""	},
 	"time": { "prefix": "" },
+	"datetime": { "prefix": "" },
 	"memory": { "prefix": "" },
-	"cpu": { "prefix": "" },
+	"cpu": { "prefix": "" },
 	"disk": { "prefix": "" },
 	"dnf": { "prefix": "" },
 	"pacman": { "prefix": "" },
@@ -79,7 +80,7 @@
 		"on": { "prefix": " "}, "off": { "prefix": " " }
 	},
 	"redshift": {
-		"day": { "prefix": "" }, "night": { "prefix": "" }, "transition": { "prefix": "" }
+		"day": { "prefix": "" }, "night": { "prefix": "" }, "transition": { "prefix": "" }
 	},
   "sensors": {
     "prefix": ""
@@ -107,5 +108,12 @@
   },
   "publicip": {
 	  "prefix": "  "
+  },
+  "weather": {
+    "clouds": { "prefix": "" },
+    "rain": { "prefix": "" },
+    "snow": { "prefix": "" },
+    "clear": { "prefix": "" },
+    "thunder": { "prefix": "" }
   }
 }

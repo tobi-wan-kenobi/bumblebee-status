@@ -11,6 +11,9 @@ Parameters:
 """
 
 import re
+import decimal
+
+from subprocess import call
 
 import bumblebee.input
 import bumblebee.output
@@ -36,10 +39,21 @@ class Module(bumblebee.engine.Module):
 
         return temperature
 
+    def get_mhz( self ):
+        output = open( '/proc/cpuinfo' ).read()
+        m      = re.search( r"cpu MHz\s+:\s+(\d+)", output )
+        mhz    = int( m.group( 1 ) )
+
+        if mhz < 1000:
+            return "{} MHz".format( mhz )
+        else:
+            return "%.1f GHz" % ( decimal.Decimal( mhz ) / 1000 )
+
     def temperature(self, _):
-        return self._temperature
+        return u"{}°c @ {}".format( self._temperature, self._mhz )
 
     def update(self, widgets):
         self._temperature = self.get_temp()
+        self._mhz = self.get_mhz()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
