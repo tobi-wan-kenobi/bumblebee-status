@@ -18,8 +18,9 @@ import bumblebee.engine
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-                                     bumblebee.output.Widget(full_text=self.utilization))
+        widget = bumblebee.output.Widget(full_text=self.utilization)
+        widget.set("theme.minwidth", "99.9%")
+        super(Module, self).__init__(engine, config, widget)
         self._utilization = psutil.cpu_percent(percpu=False)
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                        cmd="gnome-system-monitor")
