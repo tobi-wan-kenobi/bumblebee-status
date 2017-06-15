@@ -26,7 +26,7 @@ class Module(bumblebee.engine.Module):
                                        cmd="gnome-system-monitor")
 
     def utilization(self, _):
-        return "{:6.01f}%".format(self._utilization)
+        return "{:.01f}%".format(self._utilization)
 
     def update(self, widgets):
         self._utilization = psutil.cpu_percent(percpu=False)

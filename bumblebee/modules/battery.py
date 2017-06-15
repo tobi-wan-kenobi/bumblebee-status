@@ -16,9 +16,9 @@ import bumblebee.engine
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.capacity)
-        )
+        widget = bumblebee.output.Widget(full_text=self.capacity)
+        widget.set("theme.minwidth", "100%")
+        super(Module, self).__init__(engine, config, widget)
         battery = self.parameter("device", "BAT0")
         self._path = "/sys/class/power_supply/{}".format(battery)
         self._capacity = 100
@@ -29,7 +29,7 @@ class Module(bumblebee.engine.Module):
             return "ac"
         if self._capacity == -1:
             return "n/a"
-        return "{:03d}%".format(self._capacity)
+        return "{}%".format(self._capacity)
 
     def update(self, widgets):
         self._ac = False
