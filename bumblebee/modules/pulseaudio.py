@@ -5,7 +5,7 @@
 Aliases: pasink, pasource
 
 Parameters:
-    * pulseaudio.autostart: If set to "true" (default), automatically starts the pulseaudio daemon if it is not running
+    * pulseaudio.autostart: If set to "true" (default is "false"), automatically starts the pulseaudio daemon if it is not running
 
 Requires the following executable:
     * pactl
@@ -111,7 +111,7 @@ class Module(bumblebee.engine.Module):
                         return
         except Exception:
             self._failed = True
-            if self.parameter("autostart", "true") == "true":
+            if self.parameter("autostart", "false") == "true":
                 try:
                     bumblebee.util.execute("pulseaudio --start")
                     self.update(widgets)
