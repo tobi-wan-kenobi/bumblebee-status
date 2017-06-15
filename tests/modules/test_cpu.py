@@ -22,7 +22,7 @@ class TestCPUModule(unittest.TestCase):
         self.psutil.cpu_percent.return_value = 21.0
         self.module.update_all()
         for widget in self.module.widgets():
-            self.assertEquals(len(widget.full_text()), len("100.00%"))
+            self.assertEquals(len(widget.full_text()), len("99.0%"))
 
     def test_leftclick(self):
         mocks.mouseEvent(stdin=self.stdin, button=LEFT_MOUSE, inp=self.input, module=self.module)
