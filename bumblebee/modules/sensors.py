@@ -1,3 +1,4 @@
+# -*- coding: UTF-8 -*-
 # pylint: disable=C0111,R0903
 
 """Displays sensor temperature
@@ -21,6 +22,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
                                      bumblebee.output.Widget(full_text=self.temperature))
         self._temperature = "unknown"
+        self._mhz = "n/a"
         pattern = self.parameter("match", "temp1_input")
         pattern_string = r"^\s*{}:\s*([\d.]+)$".format(pattern)
         self._match_number = int(self.parameter("match_number", "-1"))
@@ -36,10 +38,21 @@ class Module(bumblebee.engine.Module):
 
         return temperature
 
+    def get_mhz( self ):
+        output = open("/proc/cpuinfo").read()
+        m      = re.search(r"cpu MHz\s+:\s+(\d+)", output)
+        mhz    = int(m.group(1))
+
+        if mhz < 1000:
+            return "{} MHz".format(mhz)
+        else:
+            return "{:0.01f} GHz".format(float(mhz)/1000.0)
+
     def temperature(self, _):
-        return self._temperature
+        return u"{}°c @ {}".format(self._temperature, self._mhz)
 
     def update(self, widgets):
         self._temperature = self.get_temp()
+        self._mhz = self.get_mhz()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

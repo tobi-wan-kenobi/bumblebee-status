@@ -51,6 +51,27 @@ class Module(bumblebee.engine.Module):
             return u"?"
         return u"{}°{}".format(self._temperature, self._unit_suffix())
 
+    def state( self, widget ):
+        if self._valid:
+            if "thunderstorm" in self._weather:
+                return [ 'thunder' ]
+            elif "drizzle" in self._weather:
+                return [ 'rain' ]
+            elif "rain" in self._weather:
+                return [ 'rain' ]
+            elif "snow" in self._weather:
+                return [ 'snow' ]
+            elif "sleet" in self._weather:
+                return [ 'sleet' ]
+            elif "clear" in self._weather:
+                return [ 'clear' ]
+            elif "cloud" in self._weather:
+                return [ 'clouds' ]
+            else:
+                return []
+
+        return []
+
     def update(self, widgets):
         timestamp = int(time.time())
         if self._nextcheck < int(time.time()):
@@ -67,6 +88,7 @@ class Module(bumblebee.engine.Module):
                     weather_url = "{url}&q={city}".format(url=weather_url, city=self._location)
                 weather = json.loads(requests.get(weather_url).text)
                 self._temperature = int(weather['main']['temp'])
+                self._weather = weather['weather'][0]['main'].lower()
                 self._valid = True
             except RequestException:
                 self._valid = False

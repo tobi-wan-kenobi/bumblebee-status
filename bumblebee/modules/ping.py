@@ -30,6 +30,11 @@ def get_rtt(module, widget):
         ))
 
         for line in res.split("\n"):
+            if line.startswith( "{} packets transmitted".format( widget.get( "rtt-probes" ) ) ):
+                m = re.search( r'(\d+)% packet loss', line )
+
+                widget.set( 'packet-loss', m.group(1) )
+
             if not line.startswith("rtt"): continue
             m = re.search(r'([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)', line)
 
@@ -51,16 +56,18 @@ class Module(bumblebee.engine.Module):
         widget.set("rtt-timeout", self.parameter("timeout", 5.0))
         widget.set("rtt-avg", 0.0)
         widget.set("rtt-unit", "")
+        widget.set('packet-loss', 0)
 
         self._next_check = 0
 
     def rtt(self, widget):
         if widget.get("rtt-unreachable"):
             return "{}: unreachable".format(widget.get("address"))
-        return "{}: {:.1f}{}".format(
+        return "{}: {:.1f}{} ({}%)".format(
             widget.get("address"),
             widget.get("rtt-avg"),
-            widget.get("rtt-unit")
+            widget.get("rtt-unit"),
+            widget.get( 'packet-loss' )
         )
 
     def state(self, widget):
