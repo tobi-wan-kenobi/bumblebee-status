@@ -42,6 +42,7 @@ def main():
         inp.stop()
         sys.exit(0)
     except BaseException as e:
+        if not engine: raise
         module = engine.current_module()
         logging.exception(e)
         if output.started():
