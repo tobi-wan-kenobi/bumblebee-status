@@ -4,7 +4,10 @@ try:
     import Tkinter as tk
 except ImportError:
     # python 3
-    import tkinter as tk
+    try:
+        import tkinter as tk
+    except ImportError:
+        pass
 
 import logging
 
