@@ -1,6 +1,10 @@
 # pylint: disable=C0111,R0903
 
-"""Displays the number of todo items in ~/Documents/todo.txt"""
+"""Displays the number of todo items from a text file
+
+Parameters:
+    * todo.file: File to read TODOs from (defaults to ~/Documents/todo.txt)
+"""
 
 import platform
 
@@ -32,8 +36,9 @@ class Module(bumblebee.engine.Module):
 
     def count_items(filename):
         try:
-            i=-1
-            with open('~/Documents/todo.txt') as f:
+            i = -1
+            doc = self.parameter("file", "~/Documents/todo.txt")
+            with open(doc) as f:
                 for i, l in enumerate(f):
                     pass
             return i+1 
