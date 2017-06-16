@@ -33,7 +33,7 @@ class Module(bumblebee.engine.Module):
     def count_items(filename):
         try:
             i=-1
-            with open('/home/codingo/Documents/todo.txt') as f:
+            with open('~/Documents/todo.txt') as f:
                 for i, l in enumerate(f):
                     pass
             return i+1 
