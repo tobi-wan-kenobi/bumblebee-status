@@ -14,8 +14,8 @@
 	"brightness": { "prefix": "" },
 	"load": { "prefix": "" },
 	"layout": { "prefix": "" },
-+       "todo": { "empty": {"prefix": "" },
-	+         "items": {"prefix": "" }
+	"todo": { "empty": {"prefix": "" },
+	"items": {"prefix": "" }
 	},
 
 	"cmus": {
