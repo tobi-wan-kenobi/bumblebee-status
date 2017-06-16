@@ -21,7 +21,7 @@ class Module(bumblebee.engine.Module):
 
     def output(self, widget):
        self._todos = self.count_items()
-       return self._todos 
+       return str(self._todos)
 
     
     def state(self, widgets):
