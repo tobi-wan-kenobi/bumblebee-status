@@ -26,6 +26,7 @@ class TestBatteryModule(unittest.TestCase):
         self.file = mock.Mock()
         self.file.__enter__ = lambda x: self.file
         self.file.__exit__ = lambda x, a, b, c: ""
+        self.file.read.return_value = "120"
         self.open.return_value = self.file
 
         self.exists.return_value = True
@@ -40,9 +41,7 @@ class TestBatteryModule(unittest.TestCase):
         self.normalValue = "26"
         self.chargedValue = "96"
 
-        for widget in self.module.widgets():
-            widget.link_module(self.module)
-            self.anyWidget = widget
+        self.module.widgets()[0]
 
     def tearDown(self):
         self._stdout.stop()
@@ -56,46 +55,47 @@ class TestBatteryModule(unittest.TestCase):
     def test_critical(self):
         self.file.read.return_value = self.criticalValue
         self.module.update_all()
-        self.assertTrue("critical" in self.module.state(self.anyWidget))
+        self.assertTrue("critical" in self.module.state(self.module.widgets()[0]))
 
     def test_warning(self):
         self.file.read.return_value = self.warningValue
         self.module.update_all()
-        self.assertTrue("warning" in self.module.state(self.anyWidget))
+        self.assertTrue("warning" in self.module.state(self.module.widgets()[0]))
 
     def test_normal(self):
         self.file.read.return_value = self.normalValue
         self.module.update_all()
-        self.assertTrue(not "warning" in self.module.state(self.anyWidget))
-        self.assertTrue(not "critical" in self.module.state(self.anyWidget))
+        self.assertTrue(not "warning" in self.module.state(self.module.widgets()[0]))
+        self.assertTrue(not "critical" in self.module.state(self.module.widgets()[0]))
 
     def test_overload(self):
         self.file.read.return_value = "120"
         self.module.update_all()
-        self.assertTrue(not "warning" in self.module.state(self.anyWidget))
-        self.assertTrue(not "critical" in self.module.state(self.anyWidget))
-        self.assertEquals(self.module.capacity(self.anyWidget), "100%")
+        self.assertTrue(not "warning" in self.module.state(self.module.widgets()[0]))
+        self.assertTrue(not "critical" in self.module.state(self.module.widgets()[0]))
+        self.assertEquals(self.module.capacity(self.module.widgets()[0]), "100%")
 
     def test_ac(self):
         self.exists.return_value = False
+        self.file.read.return_value = "120"
         self.module.update_all()
-        self.assertEquals(self.module.capacity(self.anyWidget), "ac")
-        self.assertTrue("AC" in self.module.state(self.anyWidget))
+        self.assertEquals(self.module.capacity(self.module.widgets()[0]), "ac")
+        self.assertTrue("AC" in self.module.state(self.module.widgets()[0]))
 
     def test_error(self):
         self.file.read.side_effect = IOError("failed to read")
         self.module.update_all()
-        self.assertEquals(self.module.capacity(self.anyWidget), "n/a")
-        self.assertTrue("critical" in self.module.state(self.anyWidget))
-        self.assertTrue("unknown" in self.module.state(self.anyWidget))
+        self.assertEquals(self.module.capacity(self.module.widgets()[0]), "n/a")
+        self.assertTrue("critical" in self.module.state(self.module.widgets()[0]))
+        self.assertTrue("unknown" in self.module.state(self.module.widgets()[0]))
 
     def test_charging(self):
         self.file.read.return_value = self.chargedValue
         self.module.update_all()
-        self.assertTrue("charged" in self.module.state(self.anyWidget))
+        self.assertTrue("charged" in self.module.state(self.module.widgets()[0]))
         self.file.read.return_value = self.normalValue
         self.module.update_all()
-        self.assertTrue("charging" in self.module.state(self.anyWidget))
+        self.assertTrue("charging" in self.module.state(self.module.widgets()[0]))
         
     def test_discharging(self):
         for limit in [ 10, 25, 50, 80, 100 ]:
@@ -103,6 +103,6 @@ class TestBatteryModule(unittest.TestCase):
             self.file.read.return_value = str(value)
             self.module.update_all()
             self.file.read.return_value = "Discharging"
-            self.assertTrue("discharging-{}".format(limit) in self.module.state(self.anyWidget))
+            self.assertTrue("discharging-{}".format(limit) in self.module.state(self.module.widgets()[0]))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
