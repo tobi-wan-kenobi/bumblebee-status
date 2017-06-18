@@ -26,7 +26,7 @@ class Module(bumblebee.engine.Module):
         else:
             self._batteries = [ "/sys/class/power_supply/{}".format(b) for b in self._batteries ]
         if len(self._batteries) == 0:
-            self._batteries = [ "/sys/class/power_supply/BAT0" ]
+            self._batteries = [ "/sys/class/power_supply/BAT*" ]
         self.update(widgets)
 
     def update(self, widgets):
