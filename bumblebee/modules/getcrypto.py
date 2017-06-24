@@ -17,6 +17,7 @@ import time
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+from requests.exceptions import RequestException
 
 def getfromkrak(coin):
     if coin=='Btc':
@@ -28,7 +29,12 @@ def getfromkrak(coin):
     if coin=='Ltc':
         epair = "ltcusd"
         tickname = "XLTCZUSD"
-    krakenget = requests.get('https://api.kraken.com/0/public/Ticker?pair='+epair).json()
+    try:
+        krakenget = requests.get('https://api.kraken.com/0/public/Ticker?pair='+epair).json()
+    except RequestException:
+        return "No connection"
+    except Exception:
+        return "No connection"
     kethusdask = float(krakenget['result'][tickname]['a'][0])
     kethusdbid = float(krakenget['result'][tickname]['b'][0])
     return coin+": "+str((kethusdask+kethusdbid)/2)[0:6]
