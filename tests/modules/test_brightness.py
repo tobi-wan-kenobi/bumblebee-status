@@ -54,7 +54,7 @@ class TestBrightnessModule(unittest.TestCase):
         self.assertEquals(self.module.brightness(self.anyWidget), "020%")
         self.assertEquals(len(self.module.brightness(self.anyWidget)), len("100%"))
 
-    @mock.patch('bumblebee.modules.brightness.open')
+    @mock.patch('bumblebee.modules.brightness.open', create=True)
     def test_error(self,mock_open):
         mock_open.side_effect = FileNotFoundError
         self.module.update_all()
