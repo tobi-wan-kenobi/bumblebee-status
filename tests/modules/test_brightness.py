@@ -8,6 +8,11 @@ try:
 except ImportError:
     from io import StringIO
 
+try:
+    FileNotFoundError
+except NameError:
+    FileNotFoundError = IOError
+
 import tests.mocks as mocks
 
 from bumblebee.config import Config
