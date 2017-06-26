@@ -91,7 +91,6 @@ Modules and commandline utilities are only required for modules, the core itself
 
 # Required commandline utilities
 
-* xbacklight (for the module 'brightness')
 * xset (for the module 'caffeine')
 * notify-send (for the module 'caffeine')
 * cmus-remote (for the module 'cmus')

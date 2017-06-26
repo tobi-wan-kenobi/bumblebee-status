@@ -2,11 +2,9 @@
 
 """Displays the brightness of a display
 
-Requires the following executable:
-    * xbacklight
-
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
+    * brightness.device_path: The device path (defaults to /sys/class/backlight/intel_backlight)
 
 """
 
@@ -21,6 +19,7 @@ class Module(bumblebee.engine.Module):
         )
         self._brightness = 0
 
+        self._device_path = self.parameter("device_path", "/sys/class/backlight/intel_backlight")
         step = self.parameter("step", 2)
 
         engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
@@ -29,9 +28,19 @@ class Module(bumblebee.engine.Module):
             cmd="xbacklight -{}%".format(step))
 
     def brightness(self, widget):
-        return "{:03.0f}%".format(self._brightness)
+        if isinstance(self._brightness, float):
+            return "{:03.0f}%".format(self._brightness)
+        else:
+            return "n/a"
 
     def update(self, widgets):
-        self._brightness = float(bumblebee.util.execute("xbacklight -get"))
+        try:
+            with open("{}/brightness".format(self._device_path)) as f:
+                backlight = int(f.readline())
+            with open("{}/max_brightness".format(self._device_path)) as f:
+                max_brightness = int(f.readline())
+                self._brightness=float(backlight*100/max_brightness)
+        except:
+            return "Error"
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
