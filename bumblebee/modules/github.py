@@ -39,12 +39,12 @@ class Module(bumblebee.engine.Module):
             token = self.parameter("token", "")
 
             if not token:
-                self._count = 0
+                self._count = "n/a"
                 return
               
-            notifications = requests.get("https://api.github.com/notifications", headers={"Authorization":"token {}".format(token)}).text
-            unread = 0
             try:
+                notifications = requests.get("https://api.github.com/notifications", headers={"Authorization":"token {}".format(token)}).text
+                unread = 0
                 for notification in json.loads(notifications):
                     if "unread" in notification and notification["unread"]:
                         unread += 1
