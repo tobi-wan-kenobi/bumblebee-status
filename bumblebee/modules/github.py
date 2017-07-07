@@ -2,8 +2,8 @@
 
 """Displays the unread GitHub notifications for a GitHub user
 
-Requires the following executable:
-    * curl
+Requires the following library:
+    * requests
 
 Parameters:
     * github.token: GitHub user access token
