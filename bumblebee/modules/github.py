@@ -11,7 +11,6 @@ Parameters:
 """
 
 import time
-import json
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -43,12 +42,8 @@ class Module(bumblebee.engine.Module):
                 return
               
             try:
-                notifications = requests.get("https://api.github.com/notifications", headers={"Authorization":"token {}".format(token)}).text
-                unread = 0
-                for notification in json.loads(notifications):
-                    if "unread" in notification and notification["unread"]:
-                        unread += 1
-                self._count = unread
+                notifications = requests.get("https://api.github.com/notifications", headers={"Authorization":"token {}".format(token)}).json()
+                self._count = len(filter(lambda notification: notification.get("unread", False), notifications))
             except Exception:
                 self._count = "n/a"
 
