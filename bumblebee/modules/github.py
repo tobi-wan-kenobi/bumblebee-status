@@ -29,6 +29,8 @@ class Module(bumblebee.engine.Module):
         self._count = 0
         self._interval = int(self.parameter("interval", "5"))
         self._nextcheck = 0
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+            cmd="x-www-browser https://github.com/notifications")
 
     def github(self, _):
         return str(self._count)
