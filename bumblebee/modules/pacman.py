@@ -15,7 +15,7 @@ import bumblebee.output
 import bumblebee.engine
 
 #list of repositories.
-#the last one sould always be other
+#the last one should always be other
 repos = ["core", "extra", "community", "multilib", "testing", "other"]
 
 def get_pacman_info(widget, path):
