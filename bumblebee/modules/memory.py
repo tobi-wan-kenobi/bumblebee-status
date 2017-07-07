@@ -3,9 +3,9 @@
 """Displays available RAM, total amount of RAM and percentage available.
 
 Parameters:
-    * ram.warning : Warning threshold in % of memory used (defaults to 80%)
-    * ram.critical: Critical threshold in % of memory used (defaults to 90%)
-    * ram.usedonly: Only show the amount of RAM in use.
+    * memory.warning : Warning threshold in % of memory used (defaults to 80%)
+    * memory.critical: Critical threshold in % of memory used (defaults to 90%)
+    * memory.usedonly: Only show the amount of RAM in use.
 """
 
 try:
