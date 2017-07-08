@@ -6,7 +6,7 @@ Parameters:
     * battery.device     : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)
     * battery.warning    : Warning threshold in % of remaining charge (defaults to 20)
     * battery.critical   : Critical threshold in % of remaining charge (defaults to 10)
-    * battery.showdevice : If set to "true", add the device name to the widget
+    * battery.showdevice : If set to "true", add the device name to the widget (defaults to False)
 """
 
 import os
@@ -15,6 +15,7 @@ import glob
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+import bumblebee.util
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -57,7 +58,7 @@ class Module(bumblebee.engine.Module):
             return "n/a"
         capacity = capacity if capacity < 100 else 100
         widget.set("capacity", capacity)
-        if self.parameter("showdevice") == "true":
+        if bumblebee.util.asbool(self.parameter("showdevice", False)):
             widget.set("theme.minwidth", "100% ({})".format(os.path.basename(widget.name)))
             return "{}% ({})".format(capacity, os.path.basename(widget.name))
         widget.set("theme.minwidth", "100%")

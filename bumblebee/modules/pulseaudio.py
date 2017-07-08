@@ -111,7 +111,7 @@ class Module(bumblebee.engine.Module):
                         return
         except Exception:
             self._failed = True
-            if self.parameter("autostart", "false") == "true":
+            if bumblebee.util.asbool(self.parameter("autostart", False)):
                 try:
                     bumblebee.util.execute("pulseaudio --start")
                     self.update(widgets)

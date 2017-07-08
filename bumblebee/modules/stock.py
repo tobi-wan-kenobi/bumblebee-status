@@ -15,6 +15,8 @@ Parameters:
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+import bumblebee.util
+
 import requests
 from requests.exceptions import RequestException
 
@@ -24,7 +26,7 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.value)
         )
         self._symbols = self.parameter("symbols", "")
-        self._change = self.parameter("change", True)
+        self._change = bumblebee.util.asbool(self.parameter("change", True))
         self._currencies = self.parameter('currencies', None)
         self._baseurl = 'http://download.finance.yahoo.com/d/quotes.csv'
         self._value = self.fetch()

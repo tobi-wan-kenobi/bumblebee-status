@@ -5,7 +5,7 @@
 Parameters:
     * memory.warning : Warning threshold in % of memory used (defaults to 80%)
     * memory.critical: Critical threshold in % of memory used (defaults to 90%)
-    * memory.usedonly: Only show the amount of RAM in use.
+    * memory.usedonly: Only show the amount of RAM in use (defaults to False).
 """
 
 try:
@@ -29,7 +29,7 @@ class Module(bumblebee.engine.Module):
 
     def memory_usage(self, widget):
         used = self._mem.total - self._mem.available
-        if bool(self.parameter("usedonly", 0)) == 1:
+        if bumblebee.util.asbool(self.parameter("usedonly", False)):
             return bumblebee.util.bytefmt(used)
         return "{}/{} ({:05.02f}%)".format(
             bumblebee.util.bytefmt(used),
