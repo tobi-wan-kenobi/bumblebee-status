@@ -17,6 +17,7 @@ import os
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+import bumblebee.util
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -24,9 +25,9 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.diskspace)
         )
         self._path = self.parameter("path", "/")
-        self._sused = self.parameter("showUsed", "yes")
-        self._ssize = self.parameter("showSize", "yes")
-        self._spercent = self.parameter("showPercent", "yes")
+        self._sused = bumblebee.util.asbool(self.parameter("showUsed", True))
+        self._ssize = bumblebee.util.asbool(self.parameter("showSize", True))
+        self._spercent = bumblebee.util.asbool(self.parameter("showPercent", True))
         self._app = self.parameter("open", "xdg-open")
         self._perc = 0
         self._used = 0
@@ -37,19 +38,19 @@ class Module(bumblebee.engine.Module):
                                                           self._path))
 
     def diskspace(self, widget):
-        if self._sused == "yes":
+        if self._sused:
             used_str = bumblebee.util.bytefmt(self._used)
         else:
             used_str = ""
-        if self._ssize == "yes":
+        if self._ssize:
             size_str = bumblebee.util.bytefmt(self._size)
         else:
             size_str = ""
-        if self._spercent == "yes":
+        if self._spercent:
             percent_str = self._perc
         else:
             percent_str = ""
-        if self._sused != "yes" or self._ssize != "yes":
+        if not self._sused or not self._ssize:
             separator = ""
         else:
             separator = "/"

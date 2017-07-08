@@ -10,6 +10,15 @@ except ImportError:
     # Python3 doesn't require this anymore
     pass
 
+
+def asbool(val):
+    if val is None:
+        return False
+    if isinstance(val, bool):
+        return val
+    val = str(val).strip().lower()
+    return val in ("t", "true", "y", "yes", "on", "1")
+
 def execute(cmd, wait=True):
     logging.info("executing command '{}'".format(cmd))
     args = shlex.split(cmd)
