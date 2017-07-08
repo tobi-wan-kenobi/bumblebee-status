@@ -21,6 +21,8 @@ class Module(bumblebee.engine.Module):
         widget = bumblebee.output.Widget(full_text=self.utilization)
         widget.set("theme.minwidth", "99.9%")
         super(Module, self).__init__(engine, config, widget)
+        self._warn_threshold = float(self.parameter("warning", 70))
+        self._crit_threshold = float(self.parameter("critical", 80))
         self._utilization = psutil.cpu_percent(percpu=False)
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                        cmd="gnome-system-monitor")
@@ -32,6 +34,6 @@ class Module(bumblebee.engine.Module):
         self._utilization = psutil.cpu_percent(percpu=False)
 
     def state(self, _):
-        return self.threshold_state(self._utilization, 70, 80)
+        return self.threshold_state(self._utilization, self._warn_threshold, self._crit_threshold)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

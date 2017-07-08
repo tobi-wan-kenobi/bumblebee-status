@@ -51,7 +51,7 @@ class TestLoadModule(unittest.TestCase):
 
     def test_assume_single_core(self):
         self.mp.cpu_count.side_effect = NotImplementedError
-        module = Module(engine=self.engine, config={"config": mock.Mock() })
+        module = Module(engine=self.engine, config={"config": {} })
         self.assertEquals(1, module._cpus)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -24,6 +24,8 @@ class Module(bumblebee.engine.Module):
             self._cpus = multiprocessing.cpu_count()
         except NotImplementedError as e:
             self._cpus = 1
+        self._warn_threshold = float(self.parameter("warning", 70)) / 100
+        self._crit_threshold = float(self.parameter("critical", 80)) / 100
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="gnome-system-monitor")
 
@@ -36,6 +38,8 @@ class Module(bumblebee.engine.Module):
         self._load = os.getloadavg()
 
     def state(self, widget):
-        return self.threshold_state(self._load[0], self._cpus*0.7, self._cpus*0.8)
+        warn = self._cpus * self._warn_threshold
+        crit = self._cpus * self._crit_threshold
+        return self.threshold_state(self._load[0], warn, crit)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
