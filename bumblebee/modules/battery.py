@@ -28,6 +28,8 @@ class Module(bumblebee.engine.Module):
         if len(self._batteries) == 0:
             self._batteries = [ "/sys/class/power_supply/BAT0" ]
         self.update(widgets)
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+            cmd="gnome-power-statistics")
 
     def update(self, widgets):
         new_widgets = []
