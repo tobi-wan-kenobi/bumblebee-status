@@ -11,6 +11,7 @@ Parameters:
 """
 
 import time
+import functools
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -30,12 +31,15 @@ class Module(bumblebee.engine.Module):
         self._nextcheck = 0
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="x-www-browser https://github.com/notifications")
+        immediate_update = functools.partial(self.update, immediate=True)
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
+            cmd=immediate_update)
 
     def github(self, _):
         return str(self._count)
 
-    def update(self, widgets):
-        if self._nextcheck < int(time.time()):
+    def update(self, _, immediate=False):
+        if immediate or self._nextcheck < int(time.time()):
             self._nextcheck = int(time.time()) + self._interval * 60
             token = self.parameter("token", "")
 
