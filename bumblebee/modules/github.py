@@ -6,7 +6,7 @@ Requires the following library:
     * requests
 
 Parameters:
-    * github.token: GitHub user access token
+    * github.token: GitHub user access token, the token needs to have the 'notifications' scope.
     * github.interval: Interval in minutes
 """
 
