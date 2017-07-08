@@ -79,7 +79,7 @@ If errors occur, you should see them in the i3bar itself. If that does not work,
 $ ./bumblebee-status -d -m <list of modules>
 ```
 
-This will create a file called `debug.log` in the same directory as the executable `bumblebee-status`.
+This will create a file called `~/bumblebee-status-debug.log` by default. The file name can be changed by using the `-f` or `--logfile` option.
 
 # Required Modules
 

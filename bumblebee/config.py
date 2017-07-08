@@ -16,7 +16,7 @@ MODULE_HELP = "Specify a space-separated list of modules to load. The order of t
 THEME_HELP = "Specify the theme to use for drawing modules"
 PARAMETER_HELP = "Provide configuration parameters in the form of <module>.<key>=<value>"
 LIST_HELP = "Display a list of either available themes or available modules along with their parameters."
-DEBUG_HELP = "Enable debug log ('debug.log' located in the same directory as the bumblebee-status executable)"
+DEBUG_HELP = "Enable debug log, This will create '~/bumblebee-status-debug.log' by default, can be changed with the '-f' option"
 
 class print_usage(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
