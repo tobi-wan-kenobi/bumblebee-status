@@ -7,6 +7,11 @@ import importlib
 import bumblebee.error
 import bumblebee.modules
 
+try:
+    from ConfigParser import SafeConfigParser
+except ImportError:
+    from configparser import SafeConfigParser
+
 def all_modules():
     """Return a list of available modules"""
     result = []
@@ -29,6 +34,14 @@ class Module(object):
         self.name = config.get("name", self.__module__.split(".")[-1])
         self._config = config
         self.id = self.name
+
+        self._configFile = None
+        for cfg in [ os.path.expanduser("~/.bumblebee-status.conf"), os.path.expanduser("~/.config/bumblebee-status.conf") ]:
+            if os.path.exists(cfg):
+                self._configFile = SafeConfigParser()
+                self._configFile.read(cfg)
+                break
+
         self._widgets = []
         if widgets:
             self._widgets = widgets if isinstance(widgets, list) else [widgets]
@@ -58,7 +71,13 @@ class Module(object):
     def parameter(self, name, default=None):
         """Return the config parameter 'name' for this module"""
         name = "{}.{}".format(self.name, name)
-        return self._config["config"].get(name, default)
+        value = self._config["config"].get(name, default)
+        if value == default:
+            try:
+                value = self._configFile.get("module-parameters", name)
+            except:
+                pass
+        return value
 
     def threshold_state(self, value, warn, crit):
         if value > float(self.parameter("critical", crit)):
