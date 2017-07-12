@@ -7,9 +7,11 @@ Requires the following library:
 
 Parameters:
     * github.token: GitHub user access token, the token needs to have the 'notifications' scope.
+                    The value of the token can also be set using a 'GITHUB_TOKEN' environment variable.
     * github.interval: Interval in minutes
 """
 
+import os
 import time
 import functools
 import bumblebee.input
@@ -41,7 +43,7 @@ class Module(bumblebee.engine.Module):
     def update(self, _, immediate=False):
         if immediate or self._nextcheck < int(time.time()):
             self._nextcheck = int(time.time()) + self._interval * 60
-            token = self.parameter("token", "")
+            token = self.parameter("token", os.environ.get("GITHUB_TOKEN"))
 
             if not token:
                 self._count = "n/a"
