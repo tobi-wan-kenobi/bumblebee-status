@@ -53,6 +53,22 @@ $ ./bumblebee-status -l themes
 $ ./bumblebee-status -l modules
 ```
 
+Any parameter you can specify with `-p <name>=<value>`, you can alternatively specify in `~/.bumblebee-status.conf` or `~/.config/bumblebee-status.conf`.
+
+Configuration files have a format like this:
+```
+$ cat ~/.bumblebee-status.conf
+[module-parameters]
+<key> = <value>
+```
+
+For example:
+```
+$ cat ~/.bumblebee-status.conf
+[module-parameters]
+github.token=abcdefabcdef12345
+```
+
 To change the update interval, use:
 ```
 $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
