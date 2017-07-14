@@ -3,9 +3,12 @@
 import os
 import time
 import pkgutil
+import logging
 import importlib
 import bumblebee.error
 import bumblebee.modules
+
+log = logging.getLogger(__name__)
 
 try:
     from ConfigParser import SafeConfigParser
@@ -42,6 +45,8 @@ class Module(object):
                 self._configFile.read(cfg)
                 break
 
+        if self._configFile is not None and self._configFile.has_section("module-parameters"):
+            log.debug(self._configFile.items("module-parameters"))
         self._widgets = []
         if widgets:
             self._widgets = widgets if isinstance(widgets, list) else [widgets]
