@@ -11,9 +11,9 @@ import bumblebee.modules
 log = logging.getLogger(__name__)
 
 try:
-    from ConfigParser import SafeConfigParser
+    from ConfigParser import RawConfigParser
 except ImportError:
-    from configparser import SafeConfigParser
+    from configparser import RawConfigParser
 
 def all_modules():
     """Return a list of available modules"""
@@ -41,7 +41,7 @@ class Module(object):
         self._configFile = None
         for cfg in [ os.path.expanduser("~/.bumblebee-status.conf"), os.path.expanduser("~/.config/bumblebee-status.conf") ]:
             if os.path.exists(cfg):
-                self._configFile = SafeConfigParser()
+                self._configFile = RawConfigParser()
                 self._configFile.read(cfg)
                 break
 
