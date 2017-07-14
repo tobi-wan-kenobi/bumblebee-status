@@ -53,7 +53,7 @@ $ ./bumblebee-status -l themes
 $ ./bumblebee-status -l modules
 ```
 
-Any parameter you can specify with `-p <name>=<value>`, you can alternatively specify in `~/.bumblebee-status.conf` or `~/.config/bumblebee-status.conf`.
+Any parameter you can specify with `-p <name>=<value>`, you can alternatively specify in `~/.bumblebee-status.conf` or `~/.config/bumblebee-status.conf`. This parameters act as a **fallback**, so value specified with `-p` have priority.
 
 Configuration files have a format like this:
 ```

@@ -43,6 +43,7 @@ class Module(object):
             if os.path.exists(cfg):
                 self._configFile = RawConfigParser()
                 self._configFile.read(cfg)
+                log.debug("reading configuration file {}".format(cfg))
                 break
 
         if self._configFile is not None and self._configFile.has_section("module-parameters"):
@@ -77,9 +78,12 @@ class Module(object):
         """Return the config parameter 'name' for this module"""
         name = "{}.{}".format(self.name, name)
         value = self._config["config"].get(name, default)
+        log.debug("command line parameter {}={}".format(name, str(value)))
         if value == default:
             try:
+                log.debug("trying to read {} from configuration file".format(name))
                 value = self._configFile.get("module-parameters", name)
+                log.debug("configuration file {}={}".format(name, str(value)))
             except:
                 pass
         return value
