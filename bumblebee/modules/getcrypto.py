@@ -15,6 +15,7 @@ Parameters:
 
 import requests
 import time
+import bumblebee.util
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -48,9 +49,9 @@ class Module(bumblebee.engine.Module):
         self._curprice = ""
         self._nextcheck = 0
         self._interval = int(self.parameter("interval", "120"))
-        self._getbtc = int(self.parameter("getbtc", "1"))
-        self._geteth = int(self.parameter("geteth", "1"))
-        self._getltc = int(self.parameter("getltc", "1"))
+        self._getbtc = bumblebee.util.asbool(self.parameter("getbtc", True))
+        self._geteth = bumblebee.util.asbool(self.parameter("geteth", True))
+        self._getltc = bumblebee.util.asbool(self.parameter("getltc", True))
         self._getcur = self.parameter("getcur", "usd")
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="xdg-open https://cryptowat.ch/")
@@ -63,11 +64,11 @@ class Module(bumblebee.engine.Module):
             self._nextcheck = int(time.time()) + self._interval
             currency = self._getcur
             btcprice, ethprice, ltcprice = "", "", ""
-            if self._getbtc==1:
+            if self._getbtc:
                 btcprice= getfromkrak('Btc',currency)
-            if self._geteth==1:
+            if self._geteth:
                 ethprice=getfromkrak('Eth',currency)
-            if self._getltc==1:
+            if self._getltc:
                 ltcprice=getfromkrak('Ltc',currency)
             self._curprice = btcprice+" "*(self._getbtc*self._geteth)+ethprice+" "*(self._getltc*max(self._getbtc, self._geteth))+ltcprice
 
