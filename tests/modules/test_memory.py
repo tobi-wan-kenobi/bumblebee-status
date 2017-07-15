@@ -40,6 +40,15 @@ class TestMemoryModule(unittest.TestCase):
         self.module.update_all()
         self.assertTrue("critical" in self.module.state(self.anyWidget))
 
+    def test_format(self):
+        self.config.set("memory.format", "memory used: {used}")
+        rv = VirtualMemory(50)
+        rv.total = 1000
+        rv.available = 500
+        self.psutil.virtual_memory.return_value = rv
+        self.module.update_all()
+        self.assertEquals("memory used: 500.00B", self.module.memory_usage(self.anyWidget))
+
     def test_usage(self):
         rv = VirtualMemory(50)
         rv.total = 1000
