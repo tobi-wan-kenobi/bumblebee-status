@@ -5,7 +5,8 @@
 Parameters:
     * memory.warning : Warning threshold in % of memory used (defaults to 80%)
     * memory.critical: Critical threshold in % of memory used (defaults to 90%)
-    * memory.usedonly: Only show the amount of RAM in use (defaults to False).
+    * memory.format: Format string (defaults to "{used}/{total} ({percent:05.02f}%)")
+    * memory.usedonly: Only show the amount of RAM in use (defaults to False). Same as memory.format="{used}"
 """
 
 try:
@@ -27,15 +28,18 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="gnome-system-monitor")
 
-    def memory_usage(self, widget):
-        used = self._mem.total - self._mem.available
+    @property
+    def _format(self):
         if bumblebee.util.asbool(self.parameter("usedonly", False)):
-            return bumblebee.util.bytefmt(used)
-        return "{}/{} ({:05.02f}%)".format(
-            bumblebee.util.bytefmt(used),
-            bumblebee.util.bytefmt(self._mem.total),
-            self._mem.percent
-        )
+            return "{used}"
+        else:
+            return self.parameter("format", "{used}/{total} ({percent:05.02f}%)")
+
+    def memory_usage(self, widget):
+        used = bumblebee.util.bytefmt(self._mem.total - self._mem.available)
+        total = bumblebee.util.bytefmt(self._mem.total)
+
+        return self._format.format(used=used, total=total, percent=self._mem.percent)
 
     def update(self, widgets):
         self._mem = psutil.virtual_memory()
