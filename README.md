@@ -119,7 +119,6 @@ Modules and commandline utilities are only required for modules, the core itself
 * ping (for the module 'ping')
 * redshift (for the module 'redshift')
 * xrandr (for the module 'xrandr')
-* sensors (for the module 'sensors')
 * mpc (for the module 'mpd')
 * bluez / blueman (for module 'bluetooth')
 * dbus-send (for module 'bluetooth')
