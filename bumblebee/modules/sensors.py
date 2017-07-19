@@ -3,12 +3,8 @@
 
 """Displays sensor temperature
 
-Requires the following executable:
-    * sensors
-
 Parameters:
-    * sensors.match: Line to match against output of 'sensors -u' (default: temp1_input)
-    * sensors.match_number: which of the matches you want (default -1: last match).
+    * sensors.path: path to temperature file (default /sys/class/thermal/thermal_zone0/temp).
 """
 
 import re
@@ -23,19 +19,13 @@ class Module(bumblebee.engine.Module):
                                      bumblebee.output.Widget(full_text=self.temperature))
         self._temperature = "unknown"
         self._mhz = "n/a"
-        pattern = self.parameter("match", "temp1_input")
-        pattern_string = r"^\s*{}:\s*([\d.]+)$".format(pattern)
-        self._match_number = int(self.parameter("match_number", "-1"))
-        self._pattern = re.compile(pattern_string, re.MULTILINE)
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd="xsensors")
 
     def get_temp(self):
-        temperatures = bumblebee.util.execute("sensors -u")
-        matching_temp = self._pattern.findall(temperatures)
-        temperature = "unknown"
-        if matching_temp:
-            temperature = int(float(matching_temp[self._match_number]))
-
+        try:
+            temperature = open(self.parameter("path", "/sys/class/thermal/thermal_zone0/temp")).read()[:2]
+        except IOError:
+            temperature = "unknown"
         return temperature
 
     def get_mhz( self ):
