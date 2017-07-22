@@ -123,6 +123,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * bluez / blueman (for module 'bluetooth')
 * dbus-send (for module 'bluetooth')
 * nvidia-smi (for module 'nvidiagpu')
+* sensors (for module 'sensors', as fallback)
 
 # Examples
 Here are some screenshots for all themes that currently exist:
