@@ -75,7 +75,9 @@
 		"discharging-25": { "prefix": "", "suffix": "" },
 		"discharging-50": { "prefix": "", "suffix": "" },
 		"discharging-80": { "prefix": "", "suffix": "" },
-		"discharging-100": { "prefix": "", "suffix": "" }
+		"discharging-100": { "prefix": "", "suffix": "" },
+		"unlimited": { "prefix": "", "suffix": "" },
+		"estimate": {	"prefix": ""  }
 	},
 	"caffeine": {
 		"activated": {"prefix": " " }, "deactivated": { "prefix": " " }
