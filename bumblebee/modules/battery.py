@@ -33,7 +33,6 @@ class Module(bumblebee.engine.Module):
             self._batteries = [ "/sys/class/power_supply/{}".format(b) for b in self._batteries ]
         if len(self._batteries) == 0:
             self._batteries = [ "/sys/class/power_supply/BAT0" ]
-        self._estimate = "n/a"
         self.update(widgets)
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="gnome-power-statistics")
@@ -50,24 +49,22 @@ class Module(bumblebee.engine.Module):
         for widget in new_widgets:
             widgets.append(widget)
         self._widgets = widgets
-        if bumblebee.util.asbool(self.parameter("showremaining", False)):
-            self._widgets.append(bumblebee.output.Widget(full_text=self.remaining))
-            self._widgets[-1].set("type", "remaining")
-            try:
-                type = power.PowerManagement().get_providing_power_source_type()
-                estimate = power.PowerManagement().get_time_remaining_estimate()
 
-                if type == power.POWER_TYPE_AC and estimate == -2.0:
-                    self._estimate = "Unlimited"
-                elif estimate == -1.0:
-                    self._estimate = "Unknown"
-                else:
-                    self._estimate = str(round(estimate / 60, 1)) + ' h'
-            except Exception as e:
-                self._estimate = "n/a"
+    def remaining(self):
+        estimate = 0.0
+        try:
+            power_type = power.PowerManagement().get_providing_power_source_type()
 
-    def remaining(self, widget):
-        return str(self._estimate)
+            # do not show remaining if on AC
+            if power.PowerManagement().get_providing_power_source_type() == power.POWER_TYPE_AC:
+                return None
+
+            estimate = power.PowerManagement().get_time_remaining_estimate()
+            if estimate == -1.0:
+                return "n/a"
+        except Exception:
+            return "n/a"
+        return bumblebee.util.durationfmt(estimate*60, shorten=True, suffix=True) # estimate is in minutes
 
     def capacity(self, widget):
         widget.set("capacity", -1)
@@ -88,16 +85,15 @@ class Module(bumblebee.engine.Module):
             widget.set("theme.minwidth", "100% ({})".format(os.path.basename(widget.name)))
             return "{}% ({})".format(capacity, os.path.basename(widget.name))
         widget.set("theme.minwidth", "100%")
-        return "{}%".format(capacity)
+
+        remaining = None
+        if bumblebee.util.asbool(self.parameter("showremaining", True)):
+            remaining = self.remaining()
+
+        return "{}%{}".format(capacity, "" if not remaining else " ({})".format(remaining))
 
     def state(self, widget):
         state = []
-
-        if widget.get("type", "battery") == "remaining":
-            if self._estimate == "Unlimited":
-                return "unlimited"
-            return "estimate"
-
         capacity = widget.get("capacity")
 
         if capacity < 0:

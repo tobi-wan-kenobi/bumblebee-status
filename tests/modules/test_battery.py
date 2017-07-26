@@ -32,6 +32,7 @@ class TestBatteryModule(unittest.TestCase):
         self.exists.return_value = True
         self.engine = mock.Mock()
         self.config = Config()
+        self.config.set("battery.showremaining", "false")
         self.module = Module(engine=self.engine, config={"config":self.config})
 
         self.config.set("battery.critical", "20")
