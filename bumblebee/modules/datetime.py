@@ -10,7 +10,10 @@ Parameters:
 
 from __future__ import absolute_import
 import datetime
+import locale
 import bumblebee.engine
+
+locale.setlocale(locale.LC_TIME, locale.getdefaultlocale())
 
 ALIASES = [ "date", "time" ]
 
