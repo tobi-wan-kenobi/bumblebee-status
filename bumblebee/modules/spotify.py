@@ -25,6 +25,15 @@ class Module(bumblebee.engine.Module):
                                      )
         self._song = ""
 
+        cmd="dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
+                /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+            cmd=cmd + "Previous")
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
+            cmd=cmd + "Next")
+        engine.input.register_callback(self, button=bumblebee.input.MIDDLE_MOUSE,
+            cmd=cmd + "PlayPause")
+
     def spotify(self, widget):
         return str(self._song)
 

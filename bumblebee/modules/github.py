@@ -29,6 +29,8 @@ class Module(bumblebee.engine.Module):
         self._count = 0
         self._interval = int(self.parameter("interval", "5"))
         self._nextcheck = 0
+        self._requests = requests.Session()
+        self._requests.headers.update({"Authorization":"token {}".format(self.parameter("token", ""))})
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="x-www-browser https://github.com/notifications")
         immediate_update = functools.partial(self.update, immediate=True)
@@ -41,15 +43,19 @@ class Module(bumblebee.engine.Module):
     def update(self, _, immediate=False):
         if immediate or self._nextcheck < int(time.time()):
             self._nextcheck = int(time.time()) + self._interval * 60
-            token = self.parameter("token", "")
 
-            if not token:
-                self._count = "n/a"
-                return
-              
             try:
-                notifications = requests.get("https://api.github.com/notifications", headers={"Authorization":"token {}".format(token)}).json()
-                self._count = len(filter(lambda notification: notification.get("unread", False), notifications))
+                self._count = 0
+                url = "https://api.github.com/notifications"
+                while True:
+                    notifications = self._requests.get(url)
+                    self._count += len(filter(lambda notification: notification.get("unread", False), notifications.json()))
+                    next_link = notifications.links.get('next')
+                    if next_link is not None:
+                        url = next_link.get('url')
+                    else:
+                        break
+
             except Exception:
                 self._count = "n/a"
 
