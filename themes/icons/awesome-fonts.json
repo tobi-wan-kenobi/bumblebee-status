@@ -121,5 +121,9 @@
     "snow": { "prefix": "" },
     "clear": { "prefix": "" },
     "thunder": { "prefix": "" }
+  },
+  "batterytimeleft": {
+	  "unlimited": { "prefix": "", "suffix": "" },
+	  "estimate": {	"prefix": ""  }
   }
 }
