@@ -17,6 +17,11 @@ import bumblebee.output
 import bumblebee.engine
 import bumblebee.util
 
+try:
+    import power
+except ImportError:
+    pass
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widgets = []
@@ -45,6 +50,22 @@ class Module(bumblebee.engine.Module):
             widgets.append(widget)
         self._widgets = widgets
 
+    def remaining(self):
+        estimate = 0.0
+        try:
+            power_type = power.PowerManagement().get_providing_power_source_type()
+
+            # do not show remaining if on AC
+            if power.PowerManagement().get_providing_power_source_type() == power.POWER_TYPE_AC:
+                return None
+
+            estimate = power.PowerManagement().get_time_remaining_estimate()
+            if estimate == -1.0:
+                return "n/a"
+        except Exception:
+            return "n/a"
+        return bumblebee.util.durationfmt(estimate*60, shorten=True, suffix=True) # estimate is in minutes
+
     def capacity(self, widget):
         widget.set("capacity", -1)
         widget.set("ac", False)
@@ -64,7 +85,12 @@ class Module(bumblebee.engine.Module):
             widget.set("theme.minwidth", "100% ({})".format(os.path.basename(widget.name)))
             return "{}% ({})".format(capacity, os.path.basename(widget.name))
         widget.set("theme.minwidth", "100%")
-        return "{}%".format(capacity)
+
+        remaining = None
+        if bumblebee.util.asbool(self.parameter("showremaining", True)):
+            remaining = self.remaining()
+
+        return "{}%{}".format(capacity, "" if not remaining else " ({})".format(remaining))
 
     def state(self, widget):
         state = []
