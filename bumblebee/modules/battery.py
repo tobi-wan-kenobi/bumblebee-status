@@ -53,14 +53,11 @@ class Module(bumblebee.engine.Module):
     def remaining(self):
         estimate = 0.0
         try:
-            power_type = power.PowerManagement().get_providing_power_source_type()
-
-            # do not show remaining if on AC
-            if power.PowerManagement().get_providing_power_source_type() == power.POWER_TYPE_AC:
-                return None
-
             estimate = power.PowerManagement().get_time_remaining_estimate()
-            if estimate == -1.0:
+            # do not show remaining if on AC
+            if estimate == power.common.TIME_REMAINING_UNLIMITED:
+                return None
+            if estimate == power.common.TIME_REMAINING_UNKNOWN:
                 return "n/a"
         except Exception:
             return "n/a"
