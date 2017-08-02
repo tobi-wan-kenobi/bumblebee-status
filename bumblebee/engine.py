@@ -74,6 +74,10 @@ class Module(object):
     def update_all(self):
         self.update(self._widgets)
 
+    def has_parameter(self, name):
+        v = self.parameter(name)
+        return v is not None
+
     def parameter(self, name, default=None):
         """Return the config parameter 'name' for this module"""
         name = "{}.{}".format(self.name, name)
