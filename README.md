@@ -14,6 +14,8 @@ Focus is on:
 * Theme support
 * Extensibility (of course...)
 
+One thing I like in particular: You can use the mouse wheel up/down to switch workspaces forward and back everywhere throughout the bar (unless you have mapped the mouse wheel buttons to another action for a widget, in which case this doesn't work while hovering that particular widget).
+
 I hope you like it and appreciate any kind of feedback: Bug reports, Feature requests, etc. :)
 
 Thanks a lot!
