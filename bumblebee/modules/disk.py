@@ -7,9 +7,7 @@ Parameters:
     * disk.critical: Critical threshold in % of disk space (defaults ot 90%)
     * disk.path: Path to calculate disk usage from (defaults to /)
     * disk.open: Which application / file manager to launch (default xdg-open)
-    * disk.showUsed: Show used space (defaults to yes)
-    * disk.showSize: Show total size (defaults to yes)
-    * disk.showPercent: Show usage percentage (defaults to yes)
+    * disk.format: Format string, tags {path}, {used}, {left}, {size} and {percent} (defaults to "{path} {used}/{size} ({percent:05.02f}%)")
 """
 
 import os
@@ -25,49 +23,40 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.diskspace)
         )
         self._path = self.parameter("path", "/")
-        self._sused = bumblebee.util.asbool(self.parameter("showUsed", True))
-        self._ssize = bumblebee.util.asbool(self.parameter("showSize", True))
-        self._spercent = bumblebee.util.asbool(self.parameter("showPercent", True))
+        self._format = self.parameter("format", "{used}/{size} ({percent:05.02f}%)")
         self._app = self.parameter("open", "xdg-open")
-        self._perc = 0
+
         self._used = 0
+        self._left = 0
         self._size = 0
+        self._percent = 0
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                        cmd="{} {}".format(self._app,
                                                           self._path))
 
-    def diskspace(self, widget):
-        if self._sused:
-            used_str = bumblebee.util.bytefmt(self._used)
-        else:
-            used_str = ""
-        if self._ssize:
-            size_str = bumblebee.util.bytefmt(self._size)
-        else:
-            size_str = ""
-        if self._spercent:
-            percent_str = self._perc
-        else:
-            percent_str = ""
-        if not self._sused or not self._ssize:
-            separator = ""
-        else:
-            separator = "/"
 
-        return "{} {}{}{} ({:05.02f}%)".format(self._path,
-                                               used_str,
-                                               separator,
-                                               size_str,
-                                               percent_str)
+    def diskspace(self, widget):
+        used_str = bumblebee.util.bytefmt(self._used)
+        size_str = bumblebee.util.bytefmt(self._size)
+        left_str = bumblebee.util.bytefmt(self._left)
+        percent_str = self._percent
+
+        return self._format.format(path = self._path,
+                                   used = used_str,
+                                   left = left_str,
+                                   size = size_str,
+                                   percent = percent_str)
+
 
     def update(self, widgets):
         st = os.statvfs(self._path)
         self._size = st.f_blocks * st.f_frsize
         self._used = (st.f_blocks - st.f_bfree) * st.f_frsize
-        self._perc = 100.0*self._used/self._size
+        self._left = self._size - self._used;
+        self._percent = 100.0 * self._used/self._size
 
     def state(self, widget):
-        return self.threshold_state(self._perc, 80, 90)
+        return self.threshold_state(self._percent, 80, 90)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
