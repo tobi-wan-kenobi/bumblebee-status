@@ -8,6 +8,9 @@ Parameters:
     * disk.path: Path to calculate disk usage from (defaults to /)
     * disk.open: Which application / file manager to launch (default xdg-open)
     * disk.format: Format string, tags {path}, {used}, {left}, {size} and {percent} (defaults to "{path} {used}/{size} ({percent:05.02f}%)")
+    * (deprecated) disk.showUsed: Show used space (defaults to yes)
+    * (deprecated) disk.showSize: Show total size (defaults to yes)
+    * (deprecated) disk.showPercent: Show usage percentage (defaults to yes)
 """
 
 import os
@@ -42,11 +45,34 @@ class Module(bumblebee.engine.Module):
         left_str = bumblebee.util.bytefmt(self._left)
         percent_str = self._percent
 
-        return self._format.format(path = self._path,
-                                   used = used_str,
-                                   left = left_str,
-                                   size = size_str,
-                                   percent = percent_str)
+        sused = self.has_parameter("showUsed")
+        ssize = self.has_parameter("showSize")
+        spercent = self.has_parameter("showPercent")
+
+        if all(not param for param in (sused, ssize, spercent)):
+            return self._format.format(path = self._path,
+                                       used = used_str,
+                                       left = left_str,
+                                       size = size_str,
+                                       percent = percent_str)
+        else:
+            rv = ""
+            sused = bumblebee.util.asbool(self.parameter("showUsed", True))
+            ssize = bumblebee.util.asbool(self.parameter("showSize", True))
+            spercent = bumblebee.util.asbool(self.parameter("showPercent", True))
+
+            if sused:
+                rv = "{}{}".format(rv, used_str)
+            if sused and ssize:
+                rv = "{}/".format(rv)
+            if ssize:
+                rv = "{}{}".format(rv, size_str)
+            if spercent:
+                if not sused and not ssize:
+                    rv = "{:05.02f}%".format(percent_str)
+                else:
+                    rv = "{} ({:05.02f}%)".format(rv, percent_str)
+            return rv
 
 
     def update(self, widgets):
