@@ -31,15 +31,8 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.get_time))
         self._fmt = self.parameter("format", default_format(self.name))
-        lcl = self.parameter("locale")
-
-        # can't use the default in "parameter" because we split the
-        # string, while 'getdefaultlocale' already returns a tuple
-        if lcl is None:
-            self._lcl = locale.getdefaultlocale()
-        else:
-            self._lcl = lcl.split(".")
-        locale.setlocale(locale.LC_TIME, self._lcl)
+        lcl = self.parameter("locale", ".".join(locale.getdefaultlocale()))
+        locale.setlocale(locale.LC_TIME, lcl.split("."))
 
     def get_time(self, widget):
         return datetime.datetime.now().strftime(self._fmt)
