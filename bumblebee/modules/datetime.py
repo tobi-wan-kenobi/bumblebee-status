@@ -35,6 +35,7 @@ class Module(bumblebee.engine.Module):
         locale.setlocale(locale.LC_TIME, lcl.split("."))
 
     def get_time(self, widget):
-        return datetime.datetime.now().strftime(self._fmt)
+        enc = locale.getpreferredencoding()
+        return datetime.datetime.now().strftime(self._fmt).decode(enc)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
