@@ -36,6 +36,9 @@ class Module(bumblebee.engine.Module):
 
     def get_time(self, widget):
         enc = locale.getpreferredencoding()
-        return datetime.datetime.now().strftime(self._fmt).decode(enc)
+        retval = datetime.datetime.now().strftime(self._fmt)
+        if hasattr(retval, "decode"):
+            return retval.decode(enc)
+        return retval
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
