@@ -56,6 +56,9 @@ class Module(object):
         """Return the widgets to draw for this module"""
         return self._widgets
 
+    def hidden(self):
+        return False
+
     def widget(self, name):
         for widget in self._widgets:
             if widget.name == name:

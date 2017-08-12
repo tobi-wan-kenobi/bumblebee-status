@@ -40,6 +40,9 @@ class Module(bumblebee.engine.Module):
     def spotify(self, widget):
         return str(self._song)
 
+    def hidden(self):
+        return str(self._song) == ""
+
     def update(self, widgets):
         try:
             bus = dbus.SessionBus()

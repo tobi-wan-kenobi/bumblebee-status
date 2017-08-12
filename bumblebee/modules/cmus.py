@@ -49,6 +49,9 @@ class Module(bumblebee.engine.Module):
         self._repeat = False
         self._tags = defaultdict(lambda: '')
 
+    def hidden(self):
+        return self._status == None
+
     @scrollable
     def description(self, widget):
         return string.Formatter().vformat(self._fmt, (), self._tags)
@@ -72,6 +75,7 @@ class Module(bumblebee.engine.Module):
         try:
             info = bumblebee.util.execute("cmus-remote -Q")
         except RuntimeError:
+            self._status = None
             pass
         self._tags = defaultdict(lambda: '')
         for line in info.split("\n"):

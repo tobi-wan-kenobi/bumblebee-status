@@ -11,6 +11,7 @@ import bumblebee.store
 def scrollable(func):
     def wrapper(module, widget):
         text = func(module, widget)
+        if not text: return text
         width = widget.get("theme.width", module.parameter("width", 30))
         widget.set("theme.minwidth", "A"*width)
         if len(text) <= width:
@@ -38,6 +39,9 @@ class Widget(bumblebee.store.Store):
         self._module = None
         self.name = name
         self.id = str(uuid.uuid4())
+
+    def get_module(self):
+        return self._module
 
     def link_module(self, module):
         """Set the module that spawned this widget
@@ -93,8 +97,7 @@ class I3BarOutput(object):
     def draw(self, widget, module=None, engine=None):
         """Draw a single widget"""
         full_text = widget.full_text()
-        """Don't draw it when we only have an empty text"""
-        if full_text == "":
+        if widget.get_module() and widget.get_module().hidden():
             return
         padding = self._theme.padding(widget)
         prefix = self._theme.prefix(widget, padding)
