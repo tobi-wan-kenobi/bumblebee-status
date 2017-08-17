@@ -8,6 +8,7 @@ Requires the following executable:
 
 Parameters:
     * mpd.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
+    * mpd.host: MPD host to connect to. (mpc behaviour by default)
 """
 
 from collections import defaultdict
@@ -32,16 +33,21 @@ class Module(bumblebee.engine.Module):
         ]
         super(Module, self).__init__(engine, config, widgets)
 
+        if not self.parameter("host"):
+            self._hostcmd = ""
+        else:
+            self._hostcmd = " -h " + self.parameter("host")
+
         engine.input.register_callback(widgets[0], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc prev")
+            cmd="mpc prev" + self._hostcmd)
         engine.input.register_callback(widgets[1], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc toggle")
+            cmd="mpc toggle" + self._hostcmd)
         engine.input.register_callback(widgets[2], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc next")
+            cmd="mpc next" + self._hostcmd)
         engine.input.register_callback(widgets[3], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc random")
+            cmd="mpc random" + self._hostcmd)
         engine.input.register_callback(widgets[4], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc repeat")
+            cmd="mpc repeat" + self._hostcmd)
 
         self._fmt = self.parameter("format", "{artist} - {title} {position}/{duration}")
         self._status = None
@@ -69,7 +75,7 @@ class Module(bumblebee.engine.Module):
     def _load_song(self):
         info = ""
         try:
-            info = bumblebee.util.execute('mpc -f "tag artist %artist%\ntag title %title%"')
+            info = bumblebee.util.execute('mpc -f "tag artist %artist%\ntag title %title%"' + self._hostcmd)
         except RuntimeError:
             pass
         self._tags = defaultdict(lambda: '')
