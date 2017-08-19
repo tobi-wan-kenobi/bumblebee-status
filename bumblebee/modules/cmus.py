@@ -69,15 +69,17 @@ class Module(bumblebee.engine.Module):
         return returns.get(widget.name, self._status)
 
     def _eval_line(self, line):
+        line = line.encode("utf-8", "replace")
         items = line.split(" ", 2)
         name, key, value  = (line.split(" ", 2) + [None, None])[:3]
 
         if name == "status":
             self._status = key
         if name == "tag":
+            print("tag {}={}".format(key, value))
             self._tags.update({key: value})
         if name in ["duration", "position"]:
-            self._tags.update({key:bumblebee.util.durationfmt(int(key))})
+            self._tags.update({name:bumblebee.util.durationfmt(int(key))})
         if name == "set" and key == "repeat":
             self._repeat = value == "true"
         if name == "set" and key == "shuffle":
