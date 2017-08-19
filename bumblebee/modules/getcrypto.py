@@ -21,20 +21,18 @@ import bumblebee.output
 import bumblebee.engine
 from requests.exceptions import RequestException
 def getfromkrak(coin,currency):
-    if coin=='Btc':
-        epair = "xbt"+currency
-        tickname = "XXBTZ"+currency.upper()
-    if coin=='Eth':
-        epair = "eth"+currency
-        tickname = "XETHZ"+currency.upper()
-    if coin=='Ltc':
-        epair = "ltc"+currency
-        tickname = "XLTCZ"+currency.upper()
+    abbrev = {
+        "Btc": ["xbt", "XXBTZ"],
+        "Eth": ["eth", "XETHZ"],
+        "Ltc": ["ltc", "XLTCZ"],
+    }
+    data = abbrev.get(coin, None)
+    if not data: return
+    epair = "{}{}".format(data[0], currency)
+    tickname = "{}{}".format(data[1], currency.upper())
     try:
         krakenget = requests.get('https://api.kraken.com/0/public/Ticker?pair='+epair).json()
-    except RequestException:
-        return "No connection"
-    except Exception:
+    except (RequestException, Exception):
         return "No connection"
     kethusdask = float(krakenget['result'][tickname]['a'][0])
     kethusdbid = float(krakenget['result'][tickname]['b'][0])
