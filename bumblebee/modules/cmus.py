@@ -60,15 +60,28 @@ class Module(bumblebee.engine.Module):
         self._load_song()
 
     def state(self, widget):
-        if widget.name == "cmus.shuffle":
-            return "shuffle-on" if self._shuffle else "shuffle-off"
-        if widget.name == "cmus.repeat":
-            return "repeat-on" if self._repeat else "repeat-off"
-        if widget.name == "cmus.prev":
-            return "prev"
-        if widget.name == "cmus.next":
-            return "next"
-        return self._status
+        returns = {
+            "cmus.shuffle": "shuffle-on" if self._shuffle else "shuffle-off",
+            "cmus.repeat": "repeat-on" if self._repeat else "repeat-off",
+            "cmus.prev": "prev",
+            "cmus.next": "next",
+        }
+        return returns.get(widget.name, self._status)
+
+    def _eval_line(self, line):
+        items = line.split(" ", 2)
+        name, key, value  = (line.split(" ", 2) + [None, None])[:3]
+
+        if name == "status":
+            self._status = key
+        if name == "tag":
+            self._tags.update({key: value})
+        if name in ["duration", "position"]:
+            self._tags.update({key:bumblebee.util.durationfmt(int(key))})
+        if name == "set" and key == "repeat":
+            self._repeat = value == "true"
+        if name == "set" and key == "shuffle":
+            self._shuffle = value == "true"
 
     def _load_song(self):
         info = ""
@@ -76,21 +89,9 @@ class Module(bumblebee.engine.Module):
             info = bumblebee.util.execute("cmus-remote -Q")
         except RuntimeError:
             self._status = None
-            pass
+
         self._tags = defaultdict(lambda: '')
         for line in info.split("\n"):
-            if line.startswith("status"):
-                self._status = line.split(" ", 2)[1]
-            if line.startswith("tag"):
-                key, value = line.split(" ", 2)[1:]
-                self._tags.update({ key: value })
-            for key in  ["duration", "position"]:
-                if line.startswith(key):
-                    dur = int(line.split(" ")[1])
-                    self._tags.update({key:bumblebee.util.durationfmt(dur)})
-            if line.startswith("set repeat "):
-                self._repeat = False if "false" in line else True
-            if line.startswith("set shuffle "):
-                self._shuffle = False if "false" in line else True
+            self._eval_line(line)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
