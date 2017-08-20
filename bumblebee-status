@@ -17,7 +17,7 @@ def main():
         logging.basicConfig(
             level=logging.DEBUG,
             format="[%(asctime)s] %(levelname)-8s %(message)s",
-            filename=os.path.expanduser(config.logfile())
+            filename=config.logfile()
         )
     else:
         logging.basicConfig(

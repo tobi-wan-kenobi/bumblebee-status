@@ -40,7 +40,7 @@ $ git clone git://github.com/tobi-wan-kenobi/bumblebee-status
 
 # Usage
 ## Normal usage
-Next, open your i3wm configuration and modify the *status_command* for your i3bar like this:
+In your i3wm configuration, modify the *status_command* for your i3bar like this:
 
 ```
 bar {
@@ -55,7 +55,7 @@ $ ./bumblebee-status -l themes
 $ ./bumblebee-status -l modules
 ```
 
-Any parameter you can specify with `-p <name>=<value>`, you can alternatively specify in `~/.bumblebee-status.conf` or `~/.config/bumblebee-status.conf`. This parameters act as a **fallback**, so value specified with `-p` have priority.
+Any parameter you can specify with `-p <name>=<value>`, you can alternatively specify in `~/.bumblebee-status.conf` or `~/.config/bumblebee-status.conf`. This parameters act as a **fallback**, so values specified with `-p` have priority.
 
 Configuration files have a format like this:
 ```

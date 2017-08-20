@@ -94,6 +94,6 @@ class Config(bumblebee.store.Store):
         return self._args.debug
 
     def logfile(self):
-        return self._args.logfile
+        return os.path.expanduser(self._args.logfile)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
