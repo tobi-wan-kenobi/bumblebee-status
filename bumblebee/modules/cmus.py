@@ -78,7 +78,6 @@ class Module(bumblebee.engine.Module):
         if name == "status":
             self._status = key
         if name == "tag":
-            print("tag {}={}".format(key, value))
             self._tags.update({key: value})
         if name in ["duration", "position"]:
             self._tags.update({name:bumblebee.util.durationfmt(int(key))})
