@@ -28,7 +28,13 @@ class Module(bumblebee.engine.Module):
             return "0%"
 
     def update(self, widgets):
-        self._level = bumblebee.util.execute(self._cmdString)
+        level = ""
+        try:
+            level = bumblebee.util.execute(self._cmdString)
+        except Exception as e:
+            level = ""
+
+        self._level = level
 
     def state(self, widget):
         if self._muted:
