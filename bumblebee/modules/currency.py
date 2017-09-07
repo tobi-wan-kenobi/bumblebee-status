@@ -8,6 +8,7 @@ Requires the following python packages:
 
 Parameters:
     * currency.interval: Interval in minutes between updates, default is 1.
+"""
 
 import bumblebee.input
 import bumblebee.output
