@@ -1,6 +1,14 @@
 # -*- coding: UTF-8 -*-
 # pylint: disable=C0111,R0903
 
+"""Displays currency exchange rates. Currently, displays currency between GBP and USD/EUR only.
+
+Requires the following python packages:
+    * requests
+
+Parameters:
+    * currency.interval: Interval in minutes between updates, default is 1.
+
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
