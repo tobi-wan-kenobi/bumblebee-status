@@ -126,9 +126,14 @@ class I3BarInput(object):
 
         if cmd is None:
             return
-        if callable(cmd):
-            cmd(event)
-        else:
-            bumblebee.util.execute(cmd, False)
+        try:
+            if callable(cmd):
+                cmd(event)
+            else:
+                bumblebee.util.execute(cmd, False)
+        except Exception:
+            # fall back to global default
+            if not "__fallback" in event:
+                return self.callback({ "name": None, "instance": None, "__fallback": True, "button": event["button"] })
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
