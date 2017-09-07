@@ -41,10 +41,10 @@ class Module(bumblebee.engine.Module):
                     gbpeur = "-"
                     gbpusd = "-"
 
-                self._price = "£/€ " + gbpeur + " | £/$ " + gbpusd
+                self._price = u"£/€ " + gbpeur + u" | £/$ " + gbpusd
                 self._valid = True
             except RequestException:
-                self._price = "£/€ - | £/$ -"
+                self._price = u"£/€ - | £/$ -"
                 self._valid = True
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
