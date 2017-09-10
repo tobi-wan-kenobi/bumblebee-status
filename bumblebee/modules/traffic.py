@@ -5,7 +5,7 @@
 Parameters:
     * traffic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
     * traffic.states: Comma-separated list of states to show (prefix with "^" to invert - i.e. ^down -> show all devices that are not in state down)
-    * traffic.showname: set as False to hide network interface name 
+    * traffic.showname: If set to False, hide network interface name (defaults to True)
 """
 
 import re
@@ -24,7 +24,7 @@ class Module(bumblebee.engine.Module):
         self._exclude = tuple(filter(len, self.parameter("exclude", "lo,virbr,docker,vboxnet,veth").split(",")))
         self._status = ""
 
-        self._showname = self.parameter("showname", "True") 
+        self._showname = bumblebee.util.asbool(self.parameter("showname", True))
         self._prev = {}
         self._states = {}
         self._states["include"] = []
@@ -88,7 +88,7 @@ class Module(bumblebee.engine.Module):
 
             name = "traffic-{}".format(interface)
             
-            if self._showname != "False":
+            if self._showname:
                self.create_widget(widgets, name, interface)
 
             for direction in ["rx", "tx"]:
