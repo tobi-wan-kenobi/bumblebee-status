@@ -10,6 +10,9 @@ Parameters:
     * currency.interval: Interval in minutes between updates, default is 1.
     * currency.source: Source currency (defaults to "GBP")
     * currency.destination: Comma-separated list of destination currencies (defaults to "USD,EUR")
+    * currency.sourceformat: String format for source formatting; Defaults to "{}: {}" and has two variables,
+                             the base symbol and the rate list
+    * currency.destinationdelimiter: Delimiter used for separating individual rates (defaults to "|")
 
 Note: source and destination names right now must correspond to the names used by the API of http://fixer.io
 """
@@ -48,7 +51,10 @@ class Module(bumblebee.engine.Module):
         for sym in self._data["rates"]:
             rates.append(u"{}{}".format(self._data["rates"][sym], SYMBOL[sym] if sym in SYMBOL else sym))
 
-        return u"{}: {}".format(SYMBOL[self._base] if self._base in SYMBOL else self._base, u"/".join(rates))
+        basefmt = u"{}".format(self.parameter("sourceformat", "{}: {}"))
+        ratefmt = u"{}".format(self.parameter("destinationdelimiter", "|"))
+
+        return basefmt.format(SYMBOL[self._base] if self._base in SYMBOL else self._base, ratefmt.join(rates))
 
     def update(self, widgets):
         timestamp = int(time.time())
