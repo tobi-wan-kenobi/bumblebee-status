@@ -108,6 +108,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * requests (for the modules 'weather', 'github', 'getcrypto', 'stock')
 * power (for the module 'battery')
 * dbus (for the module 'spotify')
+* i3rpc (for the module 'title')
 
 # Required commandline utilities
 

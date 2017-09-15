@@ -15,23 +15,25 @@ try:
 except ImportError:
     pass
 
+import textwrap
 import bumblebee.util
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
-import textwrap
 
 class Module(bumblebee.engine.Module):
     """Window title module."""
 
     def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
+        super(Module, self).__init__(
+            engine,
+            config,
             bumblebee.output.Widget(full_text=self.focused_title)
         )
         self._i3 = i3ipc.Connection()
         self._full_title = self._i3.get_tree().find_focused().name
 
-    def focused_title(self, widget):
+    def focused_title(self):
         """Truncates and returns proper-length title."""
         return textwrap.shorten(
             self._full_title,
