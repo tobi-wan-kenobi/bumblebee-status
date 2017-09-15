@@ -15,7 +15,6 @@ try:
 except ImportError:
     pass
 
-import textwrap
 import bumblebee.util
 import bumblebee.input
 import bumblebee.output
@@ -33,13 +32,13 @@ class Module(bumblebee.engine.Module):
         self._i3 = i3ipc.Connection()
         self._full_title = self._i3.get_tree().find_focused().name
 
-    def focused_title(self):
-        """Truncates and returns proper-length title."""
-        return textwrap.shorten(
-            self._full_title,
-            width=float(self.parameter("max", 64)),
-            placeholder=self.parameter("placeholder", "...")
-        )
+    def focused_title(self, widget):
+        title = self._full_title[0:self.parameter("max", 64)]
+        if title != self._full_title:
+            title = self._full_title[0:self.parameter("max", 64) - 3]
+            title = "{}...".format(title)
+
+        return title
 
     def update(self, widgets):
         """Update current title."""
