@@ -8,6 +8,7 @@ Requirements:
 Parameters:
     * title.max : Maximum character length for title before truncating. Defaults to 64.
     * title.placeholder : Placeholder text to be placed if title was truncated. Defaults to "...".
+    * title.scroll : Boolean flag for scrolling title. Defaults to False
 """
 
 try:
@@ -20,6 +21,8 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+from bumblebee.output import scrollable
+
 class Module(bumblebee.engine.Module):
     """Window title module."""
 
@@ -27,7 +30,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(
             engine,
             config,
-            bumblebee.output.Widget(full_text=self.focused_title)
+            bumblebee.output.Widget(full_text=self.get_title)
         )
         try:
             self._i3 = i3ipc.Connection()
@@ -35,13 +38,24 @@ class Module(bumblebee.engine.Module):
         except Exception:
             self._full_title = "n/a"
 
+    def get_title(self, widget):
+        if self.parameter("scroll", "False").lower() == "true":
+            return self.scrolling_focused_title(widget)
+        else:
+            return self.focused_title(widget)
+
     def focused_title(self, widget):
         title = self._full_title[0:self.parameter("max", 64)]
+        placeholder = self.parameter("placeholder", "...")
         if title != self._full_title:
-            title = self._full_title[0:self.parameter("max", 64) - 3]
-            title = "{}...".format(title)
+            title = self._full_title[0:self.parameter("max", 64) - len(placeholder)]
+            title = "{}{}".format(title, placeholder)
 
         return title
+
+    @scrollable
+    def scrolling_focused_title(self, widget):
+        return self._full_title
 
     def update(self, widgets):
         """Update current title."""
