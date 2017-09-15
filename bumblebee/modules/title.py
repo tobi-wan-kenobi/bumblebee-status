@@ -29,8 +29,11 @@ class Module(bumblebee.engine.Module):
             config,
             bumblebee.output.Widget(full_text=self.focused_title)
         )
-        self._i3 = i3ipc.Connection()
-        self._full_title = self._i3.get_tree().find_focused().name
+        try:
+            self._i3 = i3ipc.Connection()
+            self._full_title = self._i3.get_tree().find_focused().name
+        except Exception:
+            self._full_title = "n/a"
 
     def focused_title(self, widget):
         title = self._full_title[0:self.parameter("max", 64)]
@@ -42,6 +45,9 @@ class Module(bumblebee.engine.Module):
 
     def update(self, widgets):
         """Update current title."""
-        self._full_title = self._i3.get_tree().find_focused().name
+        try:
+            self._full_title = self._i3.get_tree().find_focused().name
+        except Exception:
+            self._full_title = "n/a"
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
