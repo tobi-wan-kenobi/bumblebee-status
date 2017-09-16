@@ -10,6 +10,28 @@ import bumblebee.output
 import bumblebee.input
 import bumblebee.modules.error
 
+# taken from
+# https://stackoverflow.com/a/42146082
+# seems an excellent solution to me
+class SmartStdout:
+    def __init__(self, encoding=None, org_stdout=None):
+        if org_stdout is None:
+            org_stdout = getattr(sys.stdout, 'org_stdout', sys.stdout)
+        self.org_stdout = org_stdout
+        self.encoding = encoding or getattr(org_stdout, 'encoding', None) or 'utf-8'
+
+    def write(self, s):
+        self.org_stdout.write(s.encode(self.encoding, 'backslashreplace'))
+
+    def __getattr__(self, name):
+        return getattr(self.org_stdout, name)
+
+def set_defaultencoding_globally(encoding='utf-8'):
+    assert sys.getdefaultencoding() in ('ascii', 'mbcs', encoding)
+    import imp
+    _sys_org = imp.load_dynamic('_sys_org', 'sys')
+    _sys_org.setdefaultencoding(encoding)
+
 def main():
     config = bumblebee.config.Config(sys.argv[1:])
 
@@ -63,6 +85,9 @@ def main():
             time.sleep(1)
 
 if __name__ == "__main__":
+    if sys.stdout.isatty():
+        sys.stdout = sys.stderr = SmartStdout()
+    set_defaultencoding_globally('utf-8')
     main()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
