@@ -20,6 +20,8 @@ I hope you like it and appreciate any kind of feedback: Bug reports, Feature req
 
 Thanks a lot!
 
+Required i3wm version: 4.12+ (in earlier versions, blocks won't have background colors)
+
 Supported Python versions: 2.7, 3.3, 3.4, 3.5, 3.6
 
 Explicitly unsupported Python versions: 3.2 (missing unicode literals)
