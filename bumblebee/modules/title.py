@@ -39,7 +39,7 @@ class Module(bumblebee.engine.Module):
             self._full_title = "n/a"
 
     def get_title(self, widget):
-        if self.parameter("scroll", "False").lower() == "true":
+        if bumblebee.util.asbool(self.parameter("scroll", False)):
             return self.scrolling_focused_title(widget)
         else:
             return self.focused_title(widget)
