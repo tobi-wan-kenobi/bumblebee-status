@@ -49,7 +49,7 @@ class Module(bumblebee.engine.Module):
                 url = "https://api.github.com/notifications"
                 while True:
                     notifications = self._requests.get(url)
-                    self._count += len(filter(lambda notification: notification.get("unread", False), notifications.json()))
+                    self._count += len(list(filter(lambda notification: notification['unread'], notifications.json())))
                     next_link = notifications.links.get('next')
                     if next_link is not None:
                         url = next_link.get('url')
