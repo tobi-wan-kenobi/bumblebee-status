@@ -4,9 +4,6 @@
 
 Requires the following executable:
     * setxkbmap
-
-Parameters:
-    * layout.lang: pipe-separated list of languages to cycle through (e.g. us|rs|de). Default: en
 """
 
 import bumblebee.util
@@ -17,58 +14,59 @@ import bumblebee.engine
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.layout)
+            bumblebee.output.Widget(full_text=self.current_layout)
         )
-        self._languages = self.parameter("lang", "us").split("|")
-        self._idx = 0
-
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd=self._next_keymap)
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
             cmd=self._prev_keymap)
 
     def _next_keymap(self, event):
-        self._idx = (self._idx + 1) % len(self._languages)
-        self._set_keymap()
+        self._set_keymap(1)
 
     def _prev_keymap(self, event):
-        self._idx = self._idx - 1 if self._idx > 0 else len(self._languages) - 1
-        self._set_keymap()
+        self._set_keymap(-1)
 
-    def _set_keymap(self):
-        tmp = self._languages[self._idx].split(":")
-        layout = tmp[0]
-        variant = ""
-        if len(tmp) > 1:
-            variant = "-variant {}".format(tmp[1])
+    def _set_keymap(self, rotation):
+        layouts = self.get_layouts()
+        if len(layouts) == 1: return # nothing to do
+        layouts = layouts[rotation:] + layouts[:rotation]
+
+        layout_list = []
+        variant_list = []
+        for l in layouts:
+            tmp = l.split(":")
+            layout_list.append(tmp[0])
+            variant_list.append(tmp[1] if len(tmp) > 1 else "")
+
         try:
-            bumblebee.util.execute("setxkbmap -layout {} {}".format(layout, variant))
+            bumblebee.util.execute("setxkbmap -layout {} -variant {}".format(",".join(layout_list), ",".join(variant_list)))
         except RuntimeError:
             pass
 
-    def layout(self, widget):
+    def get_layouts(self):
         try:
             res = bumblebee.util.execute("setxkbmap -query")
         except RuntimeError:
-            return "n/a"
-        layout = ""
-        variant = None
+            return ["n/a"]
+        layouts = []
+        variants = []
         for line in res.split("\n"):
-            if not line:
-                continue
+            if not line: continue
             if "layout" in line:
-                layout = line.split(":")[1].strip()
+                layouts = line.split(":")[1].strip().split(",")
             if "variant" in line:
-                variant = line.split(":")[1].strip()
-        if variant:
-            layout += ":" + variant
+                variants = line.split(":")[1].strip().split(",")
 
-        if layout in self._languages:
-            self._idx = self._languages.index(layout)
-        else:
-            self._languages.append(layout)
-            self._idx = len(self._languages) - 1
+        result = []
+        for idx, layout in enumerate(layouts):
+            if len(variants) > idx and variants[idx]:
+                layout = "{}:{}".format(layout, variants[idx])
+            result.append(layout)
+        return result if len(result) > 0 else ["n/a"]
 
-        return layout
+    def current_layout(self, widget):
+        layouts = self.get_layouts()
+        return layouts[0]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
