@@ -33,9 +33,9 @@ class Theme(object):
 
     def _init(self, data):
         """Initialize theme from data structure"""
+        self._theme = data
         for iconset in data.get("icons", []):
             self._merge(data, self._load_icons(iconset))
-        self._theme = data
         self._defaults = data.get("defaults", {})
         self._cycles = self._theme.get("cycle", [])
         self.reset()
@@ -174,7 +174,8 @@ class Theme(object):
             if key in target and isinstance(target[key], dict):
                 self._merge(target[key], value)
             else:
-                target[key] = copy.deepcopy(value)
+                if not key in target:
+                    target[key] = copy.deepcopy(value)
         return target
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
