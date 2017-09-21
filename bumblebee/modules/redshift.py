@@ -38,7 +38,9 @@ class Module(bumblebee.engine.Module):
                 else:
                     self._state = "transition"
                     transition = " ".join(line.split(" ")[2:])
-        self._text = "{} {}".format(temp, transition)
+        self._text = temp
+        if transition:
+            self._text = "{} {}".format(temp, transition)
 
     def state(self, widget):
         return self._state

@@ -10,6 +10,13 @@ import bumblebee.output
 import bumblebee.input
 import bumblebee.modules.error
 
+try:
+    reload(sys)
+    sys.setdefaultencoding('UTF8')
+except Exception:
+    pass
+
+
 def main():
     config = bumblebee.config.Config(sys.argv[1:])
 

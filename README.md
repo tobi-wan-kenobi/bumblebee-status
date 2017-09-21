@@ -5,7 +5,7 @@
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 
-**Many, many thanks to all contributors! As of now, 21 of the modules are from various contributors (!), and only 16 from myself.**
+**Many, many thanks to all contributors! As of now, 22 of the modules are from various contributors (!), and only 16 from myself.**
 
 bumblebee-status is a modular, theme-able status line generator for the [i3 window manager](https://i3wm.org/).
 
@@ -19,6 +19,8 @@ One thing I like in particular: You can use the mouse wheel up/down to switch wo
 I hope you like it and appreciate any kind of feedback: Bug reports, Feature requests, etc. :)
 
 Thanks a lot!
+
+Required i3wm version: 4.12+ (in earlier versions, blocks won't have background colors)
 
 Supported Python versions: 2.7, 3.3, 3.4, 3.5, 3.6
 
@@ -108,6 +110,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * requests (for the modules 'weather', 'github', 'getcrypto', 'stock')
 * power (for the module 'battery')
 * dbus (for the module 'spotify')
+* i3rpc (for the module 'title')
 
 # Required commandline utilities
 

@@ -1,5 +1,4 @@
 # pylint: disable=C0111,R0903
-# -*- coding: utf-8 -*-
 
 """Displays information about the current song in cmus.
 
@@ -69,10 +68,6 @@ class Module(bumblebee.engine.Module):
         return returns.get(widget.name, self._status)
 
     def _eval_line(self, line):
-        # not a typo, use decode detection to see whether we are
-        # dealing with Python2 or Python3
-        if hasattr(line, "decode"):
-            line = line.encode("utf-8", "replace")
         name, key, value  = (line.split(" ", 2) + [None, None])[:3]
 
         if name == "status":

@@ -1,0 +1,38 @@
+{
+	"icons": [ "awesome-fonts" ],
+	"defaults": {
+		"separator-block-width": 0,
+		"separator": "",
+		"warning": {
+			"fg": "#002b36",
+			"bg": "#b58900"
+		},
+		"critical": {
+			"fg": "#002b36",
+			"bg": "#dc322f"
+		},
+		"fg": "#93a1a1", "bg": "#002b36"
+	},
+	"dnf": {
+		"good": {
+			"fg": "#002b36",
+			"bg": "#859900"
+		}
+	},
+	"pacman": {
+		"good": {
+			"fg": "#002b36",
+			"bg": "#859900"
+		}
+	},
+	"battery": {
+		"charged": {
+			"fg": "#002b36",
+			"bg": "#859900"
+		},
+		"AC": {
+			"fg": "#002b36",
+			"bg": "#859900"
+		}
+	}
+}

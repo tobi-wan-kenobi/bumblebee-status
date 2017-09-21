@@ -9,22 +9,24 @@ Parameters:
     * memory.usedonly: Only show the amount of RAM in use (defaults to False). Same as memory.format="{used}"
 """
 
-try:
-    import psutil
-except ImportError:
-    pass
+import re
 
 import bumblebee.util
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+class Container(object):
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.memory_usage)
         )
-        self._mem = psutil.virtual_memory()
+        self.update(None)
+
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="gnome-system-monitor")
 
@@ -36,18 +38,30 @@ class Module(bumblebee.engine.Module):
             return self.parameter("format", "{used}/{total} ({percent:05.02f}%)")
 
     def memory_usage(self, widget):
-        used = bumblebee.util.bytefmt(self._mem.total - self._mem.available)
-        total = bumblebee.util.bytefmt(self._mem.total)
-
-        return self._format.format(used=used, total=total, percent=self._mem.percent)
+        return self._format.format(**self._mem)
 
     def update(self, widgets):
-        self._mem = psutil.virtual_memory()
+        data = {}
+        with open("/proc/meminfo", "r") as f:
+            for line in f:
+                tmp = re.split(r"[:\s]+", line)
+                value = int(tmp[1])
+                if tmp[2] == "kB": value = value*1024
+                if tmp[2] == "mB": value = value*1024*1024
+                if tmp[2] == "gB": value = value*1024*1024*1024
+                data[tmp[0]] = value
+        self._mem = {
+            "total": bumblebee.util.bytefmt(data["MemTotal"]),
+            "available": bumblebee.util.bytefmt(data["MemAvailable"]),
+            "free": bumblebee.util.bytefmt(data["MemFree"]),
+            "used": bumblebee.util.bytefmt(data["MemTotal"] - data["MemFree"] - data["Buffers"] - data["Cached"] - data["Slab"]),
+            "percent": (float(data["MemTotal"] - data["MemAvailable"])/data["MemTotal"])*100
+        }
 
     def state(self, widget):
-        if self._mem.percent > float(self.parameter("critical", 90)):
+        if self._mem["percent"] > float(self.parameter("critical", 90)):
             return "critical"
-        if self._mem.percent > float(self.parameter("warning", 80)):
+        if self._mem["percent"] > float(self.parameter("warning", 80)):
             return "warning"
         return None
 
