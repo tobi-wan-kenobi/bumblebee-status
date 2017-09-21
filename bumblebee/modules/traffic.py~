@@ -87,8 +87,7 @@ class Module(bumblebee.engine.Module):
 
             name = "traffic-{}".format(interface)
 
-            if self._showname != "False":
-                self.create_widget(widgets, name, interface)
+            #self.create_widget(widgets, name, interface)
 
             for direction in ["rx", "tx"]:
                 name = "traffic.{}-{}".format(direction, interface)
