@@ -16,6 +16,7 @@ Parameters:
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+import re
 import json
 import time
 try:
@@ -27,11 +28,12 @@ except ImportError:
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.temperature)
+            bumblebee.output.Widget(full_text=self.output)
         )
         self._temperature = 0
         self._apikey = self.parameter("apikey", "af7bfe22287c652d032a3064ffa44088")
         self._location = self.parameter("location", "auto")
+        self._city = self.parameter("location", "")
         self._interval = int(self.parameter("interval", "15"))
         self._unit = self.parameter("unit", "metric")
         self._nextcheck = 0
@@ -46,10 +48,17 @@ class Module(bumblebee.engine.Module):
             return "F"
         return ""
 
-    def temperature(self, widget):
+    def temperature(self):
+        return u"{}°{}".format(self._temperature, self._unit_suffix())
+
+    def city(self):
+        self._city = re.sub('[_-]', ' ', self._city)
+        return u"{} ".format(self._city)
+
+    def output(self, widget):
         if not self._valid:
             return u"?"
-        return u"{}°{}".format(self._temperature, self._unit_suffix())
+        return self.city() + self.temperature()
 
     def state( self, widget ):
         if self._valid:
@@ -83,6 +92,7 @@ class Module(bumblebee.engine.Module):
                     location_url = "http://ipinfo.io/json"
                     location = json.loads(requests.get(location_url).text)
                     coord = location["loc"].split(",")
+                    self._city = location["city"]
                     weather_url = "{url}&lat={lat}&lon={lon}".format(url=weather_url, lat=coord[0], lon=coord[1])
                 else:
                     weather_url = "{url}&q={city}".format(url=weather_url, city=self._location)
