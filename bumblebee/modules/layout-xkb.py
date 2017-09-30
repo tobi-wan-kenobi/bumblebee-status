@@ -35,8 +35,11 @@ class Module(bumblebee.engine.Module):
         pass
 
     def current_layout(self, widget):
-        xkb = XKeyboard()
-        log.debug("group num: {}".format(xkb.group_num))
-        return "{} ({})".format(xkb.group_symbol, xkb.group_variant) if xkb.group_variant else xkb.group_symbol
+        try:
+            xkb = XKeyboard()
+            log.debug("group num: {}".format(xkb.group_num))
+            return "{} ({})".format(xkb.group_symbol, xkb.group_variant) if xkb.group_variant else xkb.group_symbol
+        except Exception:
+            return "n/a"
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
