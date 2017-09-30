@@ -1,5 +1,11 @@
 # pylint: disable=C0111,R0903
 
+"""Displays the current keyboard layout using libX11
+
+Requires the following library:
+    * libX11.so.6
+"""
+
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
