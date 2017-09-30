@@ -32,7 +32,16 @@ class Module(bumblebee.engine.Module):
         self._set_keymap(-1)
 
     def _set_keymap(self, rotation):
-        pass
+        xkb = XKeyboard()
+        if xkb.groups_count < 2: return # nothing to doA
+
+        layouts = xkb.groups_symbols[rotation:] + xkb.groups_symbols[:rotation]
+        variants = xkb.groups_variants[rotation:] + xkb.groups_variants[:rotation]
+
+        try:
+            bumblebee.util.execute("setxkbmap -layout {} -variant {}".format(",".join(layouts), ",".join(variants)))
+        except RuntimeError:
+            pass
 
     def current_layout(self, widget):
         try:
