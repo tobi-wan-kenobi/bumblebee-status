@@ -4,6 +4,9 @@
 
 Requires the following library:
     * libX11.so.6
+
+Parameters:
+    * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
 """
 
 import bumblebee.input
@@ -47,7 +50,8 @@ class Module(bumblebee.engine.Module):
         try:
             xkb = XKeyboard()
             log.debug("group num: {}".format(xkb.group_num))
-            return "{} ({})".format(xkb.group_symbol, xkb.group_variant) if xkb.group_variant else xkb.group_symbol
+            name = xkb.group_name if bumblebee.util.asbool(self.parameter("showname")) else xkb.group_symbol
+            return "{} ({})".format(name, xkb.group_variant) if xkb.group_variant else name
         except Exception:
             return "n/a"
 
