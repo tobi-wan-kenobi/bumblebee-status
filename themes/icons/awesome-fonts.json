@@ -14,6 +14,7 @@
 	"brightness": { "prefix": "" },
 	"load": { "prefix": "" },
 	"layout": { "prefix": "" },
+	"layout-xkb": { "prefix": "" },
 	"todo": { "empty": {"prefix": "" },
 	"items": {"prefix": "" }
 	},

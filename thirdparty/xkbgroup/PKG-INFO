@@ -1,0 +1,25 @@
+Metadata-Version: 1.1
+Name: xkbgroup
+Version: 0.1.4.3
+Summary: Query and change XKB layout state
+Home-page: https://github.com/hcpl/xkbgroup
+Author: Nguyen Duc My
+Author-email: hcpl.prog@gmail.com
+License: MIT
+Description: UNKNOWN
+Platform: UNKNOWN
+Classifier: Development Status :: 3 - Alpha
+Classifier: Environment :: X11 Applications
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: POSIX
+Classifier: Operating System :: POSIX :: Linux
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.2
+Classifier: Programming Language :: Python :: 3.3
+Classifier: Programming Language :: Python :: 3.4
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Topic :: Desktop Environment :: Window Managers
+Classifier: Topic :: Software Development :: Libraries
