@@ -13,7 +13,7 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
-from thirdparty.xkbgroup import *
+from xkbgroup import *
 
 import logging
 log = logging.getLogger(__name__)
