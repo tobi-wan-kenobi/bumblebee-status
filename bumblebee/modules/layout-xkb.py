@@ -13,7 +13,11 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
-from xkbgroup import *
+has_xkb = True
+try:
+    from xkbgroup import *
+except ImportError:
+    has_xkb = False
 
 import logging
 log = logging.getLogger(__name__)
@@ -35,6 +39,8 @@ class Module(bumblebee.engine.Module):
         self._set_keymap(-1)
 
     def _set_keymap(self, rotation):
+        if not has_xkb: return
+
         xkb = XKeyboard()
         if xkb.groups_count < 2: return # nothing to doA
 
