@@ -25,17 +25,20 @@ def themes():
 class Theme(object):
     """Represents a collection of icons and colors"""
     def __init__(self, name):
-        self._init(self.load(name))
         self._widget = None
         self._cycle_idx = 0
         self._cycle = {}
         self._prevbg = None
+        self._colorset = {}
+        self._init(self.load(name))
 
     def _init(self, data):
         """Initialize theme from data structure"""
         self._theme = data
         for iconset in data.get("icons", []):
             self._merge(data, self._load_icons(iconset))
+        for colorset in data.get("colors", []):
+            self._merge(self._colorset, self._load_colors(colorset))
         self._defaults = data.get("defaults", {})
         self._cycles = self._theme.get("cycle", [])
         self.reset()
@@ -99,6 +102,21 @@ class Theme(object):
         """Return the SBW"""
         return self._get(widget, "separator-block-width", None)
 
+    def _load_wal_colors(self):
+        walfile = os.path.expanduser("~/.cache/wal/colors.json")
+        result = {}
+        with io.open(walfile) as data:
+            colors = json.load(data)
+            for field in ["special", "colors"]:
+                for key in colors[field]:
+                    result[key] = colors[field][key]
+        return result
+
+    def _load_colors(self, name):
+        """Load colors for a theme"""
+        if name == "wal":
+            return self._load_wal_colors()
+
     def _load_icons(self, name):
         """Load icons for a theme"""
         path = "{}/icons/".format(theme_path())
@@ -110,7 +128,7 @@ class Theme(object):
 
         if os.path.isfile(themefile):
             try:
-                with io.open(themefile,encoding="utf-8") as data:
+                with io.open(themefile, encoding="utf-8") as data:
                     return json.load(data)
             except ValueError as exception:
                 raise bumblebee.error.ThemeLoadError("JSON error: {}".format(exception))
@@ -155,7 +173,9 @@ class Theme(object):
             widget.set(key, (idx + 1) % len(value))
             value = value[idx]
 
-        return value
+        if isinstance(value, list) or isinstance(value, dict):
+            return value
+        return self._colorset.get(value, value)
 
     # algorithm copied from
     # http://blog.impressiver.com/post/31434674390/deep-merge-multiple-python-dicts
