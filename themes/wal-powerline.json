@@ -1,0 +1,42 @@
+{
+	"icons": [ "awesome-fonts" ],
+	"colors": [ "wal" ],
+	"defaults": {
+		"separator-block-width": 0,
+		"critical": {
+			"fg": "cursor",
+			"bg": "color5"
+		},
+		"warning": {
+			"fg": "cursor",
+			"bg": "color6"
+		},
+		"default_separators": false
+	},
+	"cycle": [
+		{
+			"fg": "foreground",
+			"bg": "background"
+		},
+		{
+			"fg": "background",
+			"bg": "foreground"
+		}
+	],
+	"dnf": {
+		"good": {
+			"fg": "background",
+			"bg": "color3"
+		}
+	},
+	"battery": {
+		"charged": {
+			"fg": "background",
+			"bg": "color3"
+		},
+		"AC": {
+			"fg": "background",
+			"bg": "color3"
+		}
+	}
+}
