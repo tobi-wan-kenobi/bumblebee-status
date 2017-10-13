@@ -63,7 +63,7 @@ class Module(bumblebee.engine.Module):
             last_neighbor = next((widget for widget in reversed(self.widgets()) if widget.get("state") == "on"), None)
 
             neighbor = first_neighbor if event["button"] == bumblebee.input.LEFT_MOUSE else last_neighbor
-    
+
             if neighbor == None:
                 bumblebee.util.execute("{} --output {} --auto".format(toggle_cmd, widget.name))
             else:

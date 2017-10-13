@@ -4,7 +4,7 @@ Requires the following python packages:
     * requests
 
 Parameters:
-    * publicip.region: us-central (default), us-east, us-west, uk, de, pl, nl 
+    * publicip.region: us-central (default), us-east, us-west, uk, de, pl, nl
     * publicip.service: web address that returns plaintext ip address (ex. "http://l2.io/ip")
 """
 
@@ -21,7 +21,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.public_ip)
         )
-        self._avail_regions = {"us-east":"http://l2.io/ip", 
+        self._avail_regions = {"us-east":"http://l2.io/ip",
                                "us-central":"http://whatismyip.akamai.com",
                                "us-west":"http://ipv4bot.whatismyipaddress.com",
                                "pl":"http://ip.42.pl/raw",
@@ -45,4 +45,3 @@ class Module(bumblebee.engine.Module):
             self._ip = get(self.address).text.rstrip()
         except Exception:
             self._ip = "No Connection"
-

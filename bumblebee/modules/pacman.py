@@ -54,7 +54,7 @@ class Module(bumblebee.engine.Module):
         if self._count == 0:
             thread = threading.Thread(target=get_pacman_info, args=(widgets[0], path))
             thread.start()
- 
+
         # TODO: improve this waiting mechanism a bit
         self._count += 1
         self._count = 0 if self._count > 300 else self._count

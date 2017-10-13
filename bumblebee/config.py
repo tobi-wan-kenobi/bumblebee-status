@@ -87,7 +87,7 @@ class Config(bumblebee.store.Store):
     def theme(self):
         """Return the name of the selected theme"""
         return self._args.theme
-    
+
     def debug(self):
         return self._args.debug
 

@@ -87,7 +87,7 @@ class Module(bumblebee.engine.Module):
             }
 
             name = "traffic-{}".format(interface)
-            
+
             if self._showname:
                self.create_widget(widgets, name, interface)
 
