@@ -10,10 +10,6 @@ Parameters:
     * mocp.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
 """
 
-from collections import defaultdict
-
-import string
-
 import bumblebee.util
 import bumblebee.input
 import bumblebee.output

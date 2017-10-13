@@ -6,10 +6,6 @@ Requires the following executable:
     * xrandr
 """
 
-import os
-import re
-import sys
-
 import bumblebee.util
 import bumblebee.input
 import bumblebee.output

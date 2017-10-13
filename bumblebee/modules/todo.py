@@ -6,8 +6,6 @@ Parameters:
     * todo.file: File to read TODOs from (defaults to ~/Documents/todo.txt)
 """
 
-import platform
-
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine

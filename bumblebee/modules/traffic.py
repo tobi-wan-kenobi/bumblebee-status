@@ -8,7 +8,6 @@ Parameters:
     * traffic.showname: If set to False, hide network interface name (defaults to True)
 """
 
-import re
 import psutil
 import netifaces
 

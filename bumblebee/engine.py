@@ -1,7 +1,6 @@
 """Core application engine"""
 
 import os
-import time
 import pkgutil
 import logging
 import importlib

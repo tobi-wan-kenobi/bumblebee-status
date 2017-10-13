@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import shlex
-import datetime
 import logging
 import subprocess
 

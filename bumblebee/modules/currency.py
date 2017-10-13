@@ -24,7 +24,6 @@ import json
 import time
 try:
     import requests
-    from requests.exceptions import RequestException
 except ImportError:
     pass
 
