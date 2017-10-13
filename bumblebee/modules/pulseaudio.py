@@ -18,7 +18,7 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
-ALIASES = [ "pasink", "pasource" ]
+ALIASES = ["pasink", "pasource"]
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -38,17 +38,17 @@ class Module(bumblebee.engine.Module):
         channel = "sink" if self.name == "pasink" else "source"
 
         self._patterns = [
-            { "expr": "name:", "callback": (lambda line: False) },
-            { "expr": "muted:", "callback": (lambda line: self.mute(False if " no" in line.lower() else True)) },
-            { "expr": "volume:", "callback": self.getvolume },
+            {"expr": "name:", "callback": (lambda line: False)},
+            {"expr": "muted:", "callback": (lambda line: self.mute(False if " no" in line.lower() else True))},
+            {"expr": "volume:", "callback": self.getvolume},
         ]
 
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd="pavucontrol")
 
         events = [
-            { "type": "mute", "action": "toggle", "button": bumblebee.input.LEFT_MOUSE },
-            { "type": "volume", "action": "+2%", "button": bumblebee.input.WHEEL_UP },
-            { "type": "volume", "action": "-2%", "button": bumblebee.input.WHEEL_DOWN },
+            {"type": "mute", "action": "toggle", "button": bumblebee.input.LEFT_MOUSE},
+            {"type": "volume", "action": "+2%", "button": bumblebee.input.WHEEL_UP},
+            {"type": "volume", "action": "-2%", "button": bumblebee.input.WHEEL_DOWN},
         ]
 
         for event in events:
@@ -120,7 +120,7 @@ class Module(bumblebee.engine.Module):
 
     def state(self, widget):
         if self._mute:
-            return [ "warning", "muted" ]
-        return [ "unmuted" ]
+            return ["warning", "muted"]
+        return ["unmuted"]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

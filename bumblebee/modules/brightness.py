@@ -39,7 +39,7 @@ class Module(bumblebee.engine.Module):
                 backlight = int(f.readline())
             with open("{}/max_brightness".format(self._device_path)) as f:
                 max_brightness = int(f.readline())
-                self._brightness=float(backlight*100/max_brightness)
+                self._brightness = float(backlight*100/max_brightness)
         except:
             return "Error"
 

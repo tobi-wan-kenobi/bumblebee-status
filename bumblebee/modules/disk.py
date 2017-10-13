@@ -50,11 +50,11 @@ class Module(bumblebee.engine.Module):
         spercent = self.has_parameter("showPercent")
 
         if all(not param for param in (sused, ssize, spercent)):
-            return self._format.format(path = self._path,
-                                       used = used_str,
-                                       left = left_str,
-                                       size = size_str,
-                                       percent = percent_str)
+            return self._format.format(path=self._path,
+                                       used=used_str,
+                                       left=left_str,
+                                       size=size_str,
+                                       percent=percent_str)
         else:
             rv = ""
             sused = bumblebee.util.asbool(self.parameter("showUsed", True))

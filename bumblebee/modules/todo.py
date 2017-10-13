@@ -29,7 +29,7 @@ class Module(bumblebee.engine.Module):
 
     
     def state(self, widgets):
-        if self._todos == 0 :
+        if self._todos == 0:
             return "empty"
         return "items"
         

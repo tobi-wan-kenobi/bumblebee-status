@@ -30,10 +30,10 @@ def get_rtt(module, widget):
         ))
 
         for line in res.split("\n"):
-            if line.startswith( "{} packets transmitted".format( widget.get( "rtt-probes" ) ) ):
-                m = re.search( r'(\d+)% packet loss', line )
+            if line.startswith("{} packets transmitted".format(widget.get("rtt-probes"))):
+                m = re.search(r'(\d+)% packet loss', line)
 
-                widget.set( 'packet-loss', m.group(1) )
+                widget.set('packet-loss', m.group(1))
 
             if not line.startswith("rtt"): continue
             m = re.search(r'([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)', line)
@@ -67,7 +67,7 @@ class Module(bumblebee.engine.Module):
             widget.get("address"),
             widget.get("rtt-avg"),
             widget.get("rtt-unit"),
-            widget.get( 'packet-loss' )
+            widget.get('packet-loss')
         )
 
     def state(self, widget):
@@ -77,7 +77,7 @@ class Module(bumblebee.engine.Module):
     def update(self, widgets):
         if int(time.time()) < self._next_check:
             return
-        thread = threading.Thread(target=get_rtt, args=(self,widgets[0],))
+        thread = threading.Thread(target=get_rtt, args=(self, widgets[0],))
         thread.start()
         self._next_check = int(time.time()) + int(widgets[0].get("interval"))
 

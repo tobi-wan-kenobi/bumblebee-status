@@ -38,5 +38,5 @@ class Module(bumblebee.engine.Module):
 
     def state(self, widget):
         if self._muted:
-            return [ "warning", "muted" ]
-        return [ "unmuted" ]
+            return ["warning", "muted"]
+        return ["unmuted"]

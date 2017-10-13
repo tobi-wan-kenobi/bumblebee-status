@@ -106,6 +106,6 @@ class Module(bumblebee.engine.Module):
                         self._shuffle = False
             if line.startswith("tag"):
                 key, value = line.split(" ", 2)[1:]
-                self._tags.update({ key: value })
+                self._tags.update({key: value})
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

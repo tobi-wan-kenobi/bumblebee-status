@@ -5,7 +5,7 @@
 
 import bumblebee.engine
 
-ALIASES = [ "test-alias" ]
+ALIASES = ["test-alias"]
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):

@@ -47,12 +47,12 @@ class Module(bumblebee.engine.Module):
         self._count = 0
 
     def updates(self, widget):
-        return '/'.join(map(lambda x: str(widget.get(x,0)), repos))
+        return '/'.join(map(lambda x: str(widget.get(x, 0)), repos))
 
     def update(self, widgets):
         path = os.path.dirname(os.path.abspath(__file__))
         if self._count == 0:
-            thread = threading.Thread(target=get_pacman_info, args=(widgets[0],path))
+            thread = threading.Thread(target=get_pacman_info, args=(widgets[0], path))
             thread.start()
  
         # TODO: improve this waiting mechanism a bit
@@ -60,7 +60,7 @@ class Module(bumblebee.engine.Module):
         self._count = 0 if self._count > 300 else self._count
 
     def state(self, widget):
-        weightedCount = sum(map(lambda x: (len(repos)-x[0]) * widget.get(x[1],0), enumerate(repos)))
+        weightedCount = sum(map(lambda x: (len(repos)-x[0]) * widget.get(x[1], 0), enumerate(repos)))
 
         if weightedCount < 10:
             return "good"

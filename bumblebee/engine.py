@@ -39,7 +39,7 @@ class Module(object):
         self.id = self.name
 
         self._configFile = None
-        for cfg in [ os.path.expanduser("~/.bumblebee-status.conf"), os.path.expanduser("~/.config/bumblebee-status.conf") ]:
+        for cfg in [os.path.expanduser("~/.bumblebee-status.conf"), os.path.expanduser("~/.config/bumblebee-status.conf")]:
             if os.path.exists(cfg):
                 self._configFile = RawConfigParser()
                 self._configFile.read(cfg)
@@ -138,11 +138,11 @@ class Engine(object):
 
     def _register_module_callbacks(self, module):
         buttons = [
-            { "name": "left-click", "id": bumblebee.input.LEFT_MOUSE },
-            { "name": "middle-click", "id": bumblebee.input.MIDDLE_MOUSE },
-            { "name": "right-click", "id": bumblebee.input.RIGHT_MOUSE },
-            { "name": "wheel-up", "id": bumblebee.input.WHEEL_UP },
-            { "name": "wheel-down", "id": bumblebee.input.WHEEL_DOWN },
+            {"name": "left-click", "id": bumblebee.input.LEFT_MOUSE},
+            {"name": "middle-click", "id": bumblebee.input.MIDDLE_MOUSE},
+            {"name": "right-click", "id": bumblebee.input.RIGHT_MOUSE},
+            {"name": "wheel-up", "id": bumblebee.input.WHEEL_UP},
+            {"name": "wheel-down", "id": bumblebee.input.WHEEL_DOWN},
         ]
         for button in buttons:
             if module.parameter(button["name"], None):

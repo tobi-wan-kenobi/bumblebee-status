@@ -72,7 +72,7 @@ class Module(bumblebee.engine.Module):
         return retval
 
     def _update_widgets(self, widgets):
-        interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
+        interfaces = [i for i in netifaces.interfaces() if not i.startswith(self._exclude)]
 
         for widget in widgets:
             widget.set("visited", False)

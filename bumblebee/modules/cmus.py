@@ -68,7 +68,7 @@ class Module(bumblebee.engine.Module):
         return returns.get(widget.name, self._status)
 
     def _eval_line(self, line):
-        name, key, value  = (line.split(" ", 2) + [None, None])[:3]
+        name, key, value = (line.split(" ", 2) + [None, None])[:3]
 
         if name == "status":
             self._status = key

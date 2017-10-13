@@ -137,6 +137,6 @@ class I3BarInput(object):
         except Exception:
             # fall back to global default
             if not "__fallback" in event:
-                return self.callback({ "name": None, "instance": None, "__fallback": True, "button": event["button"] })
+                return self.callback({"name": None, "instance": None, "__fallback": True, "button": event["button"]})
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
