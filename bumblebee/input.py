@@ -28,7 +28,10 @@ def read_input(inp):
         if is_terminated():
             return
 
-        events = epoll.poll(1)
+        try:
+            events = epoll.poll(1)
+        except Exception:
+            continue
         for fileno, event in events:
             line = "["
             while "[" in line:
