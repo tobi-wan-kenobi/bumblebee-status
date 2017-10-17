@@ -39,18 +39,18 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.price)
         )
-        self._data = {}
+        self._data = []
         self._interval = int(self.parameter("interval", 1))
         self._base = self.parameter("source", "GBP")
         self._symbols = self.parameter("destination", "USD,EUR").split(",")
         self._nextcheck = 0
 
     def price(self, widget):
-        if self._data == {}:
+        if len(self._data) == 0:
             return "?"
 
         rates = []
-        for sym, rate in self._data.items():
+        for sym, rate in self._data:
             rates.append(u"{}{}".format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
 
         basefmt = u"{}".format(self.parameter("sourceformat", "{}: {}"))
@@ -61,13 +61,13 @@ class Module(bumblebee.engine.Module):
     def update(self, widgets):
         timestamp = int(time.time())
         if self._nextcheck < int(time.time()):
-            self._data = {}
+            self._data = []
             self._nextcheck = int(time.time()) + self._interval*60
             for symbol in self._symbols:
                 url = API_URL.format(self._base, symbol)
                 try:
                     response = requests.get(url).json()
-                    self._data[symbol] = response['data']['exchangeRate']
+                    self._data.append((symbol, response['data']['exchangeRate']))
                 except Exception:
                     pass
 
