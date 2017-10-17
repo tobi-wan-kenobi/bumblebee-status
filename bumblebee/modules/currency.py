@@ -29,7 +29,7 @@ except ImportError:
     pass
 
 SYMBOL = {
-    "GBP": u"£", "EUR": u"€", "USD": u"$"
+    "GBP": u"£", "EUR": u"€", "USD": u"$", "JPY": u"¥"
 }
 
 API_URL = "https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}"
