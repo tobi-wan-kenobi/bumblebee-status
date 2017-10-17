@@ -31,9 +31,7 @@ class print_usage(argparse.Action):
         sys.exit(0)
 
     def print_themes(self):
-        print(textwrap.fill(", ".join(bumblebee.theme.themes()),
-            80, initial_indent = self._indent, subsequent_indent = self._indent
-        ))
+        print(", ".join(bumblebee.theme.themes()))
 
     def print_modules(self):
         for m in bumblebee.engine.all_modules():
