@@ -14,7 +14,7 @@ Parameters:
                              the base symbol and the rate list
     * currency.destinationdelimiter: Delimiter used for separating individual rates (defaults to "|")
 
-Note: source and destination names right now must correspond to the names used by the API of http://fixer.io
+Note: source and destination names right now must correspond to the names used by the API of https://markets.ft.com
 """
 
 import bumblebee.input
@@ -32,6 +32,8 @@ SYMBOL = {
     "GBP": u"£", "EUR": u"€", "USD": u"$"
 }
 
+API_URL = "https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}"
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
@@ -40,7 +42,7 @@ class Module(bumblebee.engine.Module):
         self._data = {}
         self._interval = int(self.parameter("interval", 1))
         self._base = self.parameter("source", "GBP")
-        self._symbols = self.parameter("destination", "USD,EUR")
+        self._symbols = self.parameter("destination", "USD,EUR").split(",")
         self._nextcheck = 0
 
     def price(self, widget):
@@ -48,8 +50,8 @@ class Module(bumblebee.engine.Module):
             return "?"
 
         rates = []
-        for sym in self._data["rates"]:
-            rates.append(u"{}{}".format(self._data["rates"][sym], SYMBOL[sym] if sym in SYMBOL else sym))
+        for sym, rate in self._data.items():
+            rates.append(u"{}{}".format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
 
         basefmt = u"{}".format(self.parameter("sourceformat", "{}: {}"))
         ratefmt = u"{}".format(self.parameter("destinationdelimiter", "|"))
@@ -61,10 +63,12 @@ class Module(bumblebee.engine.Module):
         if self._nextcheck < int(time.time()):
             self._data = {}
             self._nextcheck = int(time.time()) + self._interval*60
-            url = "http://api.fixer.io/latest?symbols={}&base={}".format(self._symbols, self._base)
-            try:
-                self._data = json.loads(requests.get(url).text)
-            except Exception:
-                pass
+            for symbol in self._symbols:
+                url = API_URL.format(self._base, symbol)
+                try:
+                    response = requests.get(url).json()
+                    self._data[symbol] = response['data']['exchangeRate']
+                except Exception:
+                    pass
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
