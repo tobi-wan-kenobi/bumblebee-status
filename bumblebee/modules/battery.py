@@ -30,9 +30,9 @@ class Module(bumblebee.engine.Module):
         if self._batteries[0] == "auto":
             self._batteries = glob.glob("/sys/class/power_supply/BAT*")
         else:
-            self._batteries = [ "/sys/class/power_supply/{}".format(b) for b in self._batteries ]
+            self._batteries = ["/sys/class/power_supply/{}".format(b) for b in self._batteries]
         if len(self._batteries) == 0:
-            self._batteries = [ "/sys/class/power_supply/BAT0" ]
+            self._batteries = ["/sys/class/power_supply/BAT0"]
         self.update(widgets)
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="gnome-power-statistics")
@@ -108,7 +108,7 @@ class Module(bumblebee.engine.Module):
             with open("{}/status".format(widget.name)) as f:
                 charge = f.read().strip()
             if charge == "Discharging":
-                state.append("discharging-{}".format(min([10, 25, 50, 80, 100] , key=lambda i:abs(i-capacity))))
+                state.append("discharging-{}".format(min([10, 25, 50, 80, 100], key=lambda i: abs(i-capacity))))
             else:
                 if capacity > 95:
                     state.append("charged")

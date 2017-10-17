@@ -6,8 +6,6 @@ Requires the following executable:
     * gpmdp-remote
 """
 
-import string
-
 import bumblebee.util
 import bumblebee.input
 import bumblebee.output

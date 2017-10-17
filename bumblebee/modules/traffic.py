@@ -8,7 +8,6 @@ Parameters:
     * traffic.showname: If set to False, hide network interface name (defaults to True)
 """
 
-import re
 import psutil
 import netifaces
 
@@ -67,7 +66,7 @@ class Module(bumblebee.engine.Module):
         return retval
 
     def _update_widgets(self, widgets):
-        interfaces = [ i for i in netifaces.interfaces() if not i.startswith(self._exclude) ]
+        interfaces = [i for i in netifaces.interfaces() if not i.startswith(self._exclude)]
 
         del widgets[:]
 
@@ -87,7 +86,7 @@ class Module(bumblebee.engine.Module):
             }
 
             name = "traffic-{}".format(interface)
-            
+
             if self._showname:
                self.create_widget(widgets, name, interface)
 

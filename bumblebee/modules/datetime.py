@@ -16,7 +16,7 @@ import datetime
 import locale
 import bumblebee.engine
 
-ALIASES = [ "date", "time" ]
+ALIASES = ["date", "time"]
 
 def default_format(module):
     default = "%x %X"

@@ -20,7 +20,7 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 from requests.exceptions import RequestException
-def getfromkrak(coin,currency):
+def getfromkrak(coin, currency):
     abbrev = {
         "Btc": ["xbt", "XXBTZ"],
         "Eth": ["eth", "XETHZ"],
@@ -63,11 +63,11 @@ class Module(bumblebee.engine.Module):
             currency = self._getcur
             btcprice, ethprice, ltcprice = "", "", ""
             if self._getbtc:
-                btcprice= getfromkrak('Btc',currency)
+                btcprice = getfromkrak('Btc', currency)
             if self._geteth:
-                ethprice=getfromkrak('Eth',currency)
+                ethprice = getfromkrak('Eth', currency)
             if self._getltc:
-                ltcprice=getfromkrak('Ltc',currency)
+                ltcprice = getfromkrak('Ltc', currency)
             self._curprice = btcprice+" "*(self._getbtc*self._geteth)+ethprice+" "*(self._getltc*max(self._getbtc, self._geteth))+ltcprice
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

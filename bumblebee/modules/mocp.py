@@ -10,10 +10,6 @@ Parameters:
     * mocp.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
 """
 
-from collections import defaultdict
-
-import string
-
 import bumblebee.util
 import bumblebee.input
 import bumblebee.output
@@ -35,7 +31,7 @@ class Module(bumblebee.engine.Module):
     #@scrollable
     def description(self, widget):
         if self._running == 1:
-            display =  self._status + ": " + self._artist + " - " +  self._title + " | " + self._position + "/" + self._duration
+            display = self._status + ": " + self._artist + " - " +  self._title + " | " + self._position + "/" + self._duration
         else:
             display = "Music On Console Player"
         return display
@@ -53,7 +49,7 @@ class Module(bumblebee.engine.Module):
                     self._artist = line.split(": ", 2)[1]
                 if line.startswith("Title:"):
                     self._title = line.split(": ", 2)[1]
-                    self._title = self._title.split("(by ",2)[0]
+                    self._title = self._title.split("(by ", 2)[0]
                 if line.startswith("CurrentTime:"):
                     self._position = line.split(": ", 2)[1]
                 if line.startswith("TotalTime:"):

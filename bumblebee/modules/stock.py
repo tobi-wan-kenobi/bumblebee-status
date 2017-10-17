@@ -18,7 +18,6 @@ import bumblebee.engine
 import bumblebee.util
 
 import requests
-from requests.exceptions import RequestException
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):

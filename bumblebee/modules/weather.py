@@ -60,22 +60,22 @@ class Module(bumblebee.engine.Module):
             return u"?"
         return self.city() + self.temperature()
 
-    def state( self, widget ):
+    def state(self, widget):
         if self._valid:
             if "thunderstorm" in self._weather:
-                return [ 'thunder' ]
+                return ['thunder']
             elif "drizzle" in self._weather:
-                return [ 'rain' ]
+                return ['rain']
             elif "rain" in self._weather:
-                return [ 'rain' ]
+                return ['rain']
             elif "snow" in self._weather:
-                return [ 'snow' ]
+                return ['snow']
             elif "sleet" in self._weather:
-                return [ 'sleet' ]
+                return ['sleet']
             elif "clear" in self._weather:
-                return [ 'clear' ]
+                return ['clear']
             elif "cloud" in self._weather:
-                return [ 'clouds' ]
+                return ['clouds']
             else:
                 return []
 

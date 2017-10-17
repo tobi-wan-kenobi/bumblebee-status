@@ -46,14 +46,14 @@ class Module(bumblebee.engine.Module):
             log.debug("retrieved temperature from 'sensors -u'")
         return temperature
 
-    def get_mhz( self ):
+    def get_mhz(self):
         try:
             output = open("/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq").read()
             mhz = int(float(output)/1000.0)
         except:
             output = open("/proc/cpuinfo").read()
-            m      = re.search(r"cpu MHz\s+:\s+(\d+)", output)
-            mhz    = int(m.group(1))
+            m = re.search(r"cpu MHz\s+:\s+(\d+)", output)
+            mhz = int(m.group(1))
 
         if mhz < 1000:
             return "{} MHz".format(mhz)

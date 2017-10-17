@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import shlex
-import datetime
 import logging
 import subprocess
 
@@ -40,7 +39,7 @@ def execute(cmd, wait=True):
     return rv
 
 def bytefmt(num):
-    for unit in [ "", "Ki", "Mi", "Gi" ]:
+    for unit in ["", "Ki", "Mi", "Gi"]:
         if num < 1024.0:
             return "{:.2f}{}B".format(num, unit)
         num /= 1024.0

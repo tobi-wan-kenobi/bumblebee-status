@@ -28,7 +28,7 @@ class Module(bumblebee.engine.Module):
         self._song = ""
         self._format = self.parameter("format", "{artist} - {title}")
 
-        cmd="dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
+        cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
                 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd=cmd + "Previous")
