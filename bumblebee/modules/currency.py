@@ -20,7 +20,6 @@ Note: source and destination names right now must correspond to the names used b
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
-import json
 import time
 try:
     import requests
