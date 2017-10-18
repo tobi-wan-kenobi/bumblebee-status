@@ -59,9 +59,9 @@ class Module(bumblebee.engine.Module):
 
     def update(self, widgets):
         timestamp = int(time.time())
-        if self._nextcheck < int(time.time()):
+        if self._nextcheck < timestamp:
             self._data = []
-            self._nextcheck = int(time.time()) + self._interval*60
+            self._nextcheck = timestamp + self._interval*60
             for symbol in self._symbols:
                 url = API_URL.format(self._base, symbol)
                 try:

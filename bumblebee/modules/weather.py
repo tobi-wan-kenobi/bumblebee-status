@@ -83,9 +83,9 @@ class Module(bumblebee.engine.Module):
 
     def update(self, widgets):
         timestamp = int(time.time())
-        if self._nextcheck < int(time.time()):
+        if self._nextcheck < timestamp:
             try:
-                self._nextcheck = int(time.time()) + self._interval*60
+                self._nextcheck = timestamp + self._interval*60
                 weather_url = "http://api.openweathermap.org/data/2.5/weather?appid={}".format(self._apikey)
                 weather_url = "{}&units={}".format(weather_url, self._unit)
                 if self._location == "auto":
