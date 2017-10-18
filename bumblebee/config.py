@@ -71,7 +71,7 @@ class Config(bumblebee.store.Store):
         self._args = parser.parse_args(args if args else [])
 
         if not self._args.debug:
-            logger = logging.getLogger().disabled = True
+            logging.getLogger().disabled = True
 
         for param in self._args.parameters:
             key, value = param.split("=")

@@ -102,7 +102,6 @@ class I3BarOutput(object):
         padding = self._theme.padding(widget)
         prefix = self._theme.prefix(widget, padding)
         suffix = self._theme.suffix(widget, padding)
-        minwidth = self._theme.minwidth(widget)
         if prefix:
             full_text = u"{}{}".format(prefix, full_text)
         if suffix:
