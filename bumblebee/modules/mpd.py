@@ -86,7 +86,10 @@ class Module(bumblebee.engine.Module):
                 self._status = "paused"
 
             if line.startswith("["):
-                timer = line.split("   ")[1]
+                if len(line.split("   ")) > 1:
+                    timer = line.split("   ")[1]
+                else:
+                    timer = line.split("  ")[1]
                 position = timer.split("/")[0]
                 dur = timer.split("/")[1]
                 duration = dur.split(" ")[0]
