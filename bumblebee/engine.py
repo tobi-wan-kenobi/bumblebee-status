@@ -1,6 +1,7 @@
 """Core application engine"""
 
 import os
+import json
 import pkgutil
 import logging
 import importlib
@@ -118,12 +119,50 @@ class Engine(object):
         self._current_module = None
 
         if bumblebee.util.asbool(config.get("engine.workspacewheel", "true")):
-            self.input.register_callback(None, bumblebee.input.WHEEL_UP,
-                "i3-msg workspace prev_on_output")
-            self.input.register_callback(None, bumblebee.input.WHEEL_DOWN,
-                "i3-msg workspace next_on_output")
+            if bumblebee.util.asbool(config.get("engine.workspacewrap", "true")):
+                self.input.register_callback(None, bumblebee.input.WHEEL_UP,
+                    "i3-msg workspace prev_on_output")
+                self.input.register_callback(None, bumblebee.input.WHEEL_DOWN,
+                    "i3-msg workspace next_on_output")
+            else:
+                self.input.register_callback(None, bumblebee.input.WHEEL_UP,
+                    cmd=self._prev_workspace)
+                self.input.register_callback(None, bumblebee.input.WHEEL_DOWN,
+                    cmd=self._next_workspace)
 
         self.input.start()
+
+    def _prev_workspace(self, event):
+        self._change_workspace(-1)
+
+    def _next_workspace(self, event):
+        self._change_workspace(1)
+
+    def _change_workspace(self, amount):
+        try:
+            active_output = None
+            active_index = -1
+            output_workspaces = {}
+            data = json.loads(bumblebee.util.execute("i3-msg -t get_workspaces"))
+            for workspace in data:
+                output_workspaces.setdefault(workspace["output"], []).append(workspace)
+                if workspace["focused"]:
+                    active_output = workspace["output"]
+                    active_index = len(output_workspaces[workspace["output"]]) - 1
+            if (active_index + amount) < 0:
+                return
+            if (active_index + amount) >= len(output_workspaces[active_output]):
+                return
+
+            while amount != 0:
+                if amount > 0:
+                    bumblebee.util.execute("i3-msg workspace next_on_output")
+                    amount = amount - 1
+                if amount < 0:
+                    bumblebee.util.execute("i3-msg workspace prev_on_output")
+                    amount = amount + 1
+        except Exception as e:
+            log.error("failed to change workspace: {}".format(e))
 
     def modules(self):
         return self._modules
