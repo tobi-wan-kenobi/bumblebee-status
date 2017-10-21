@@ -55,6 +55,7 @@ class Module(bumblebee.engine.Module):
         self._repeat = False
         self._tags = defaultdict(lambda: '')
 
+    @scrollable
     def description(self, widget):
         return string.Formatter().vformat(self._fmt, (), self._tags)
 
