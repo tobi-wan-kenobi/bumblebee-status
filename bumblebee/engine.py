@@ -117,10 +117,11 @@ class Engine(object):
         self.load_modules(config.modules())
         self._current_module = None
 
-        self.input.register_callback(None, bumblebee.input.WHEEL_UP,
-            "i3-msg workspace prev_on_output")
-        self.input.register_callback(None, bumblebee.input.WHEEL_DOWN,
-            "i3-msg workspace next_on_output")
+        if bumblebee.util.asbool(config.get("engine.workspacewheel", "true")):
+            self.input.register_callback(None, bumblebee.input.WHEEL_UP,
+                "i3-msg workspace prev_on_output")
+            self.input.register_callback(None, bumblebee.input.WHEEL_DOWN,
+                "i3-msg workspace next_on_output")
 
         self.input.start()
 
