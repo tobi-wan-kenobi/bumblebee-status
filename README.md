@@ -92,6 +92,37 @@ bar {
 
 Restart i3wm and - that's it!
 
+## Events
+By default, the following events are handled:
+
+- Mouse-Wheel on any module moves to the next/previous i3 workspace
+- Left-click on the "disk" module opens the specified path in nautilus
+- Left-click on either "memory" or "cpu" opens gnome-system-monitor
+- Left-click on a "pulseaudio" (or pasource/pasink) module toggles the mute state
+- Right-click on a "pulseaudio" module opens pavucontrol
+- Mouse-Wheel up/down on a "pulseaudio" module raises/lowers the volume
+- By default, the Mouse-Wheel wraps for the current output. You can disable this behavior by providing the parameter engine.workspacewrap=false (starting with version 1.4.5). Also, you can completely disable output switching by using engine.workspacewheel=false.
+
+You can provide your own handlers to any module by using the following "special" configuration parameters:
+
+- left-click
+- right-click
+- middle-click
+- wheel-up
+- wheel-down
+For example, to execute "pavucontrol" whenever you left-click on the nic module, you could write:
+
+`$ bumblebee-status -p nic.left-click="pavucontrol"`
+
+In the string, you can use the following format identifiers:
+- name
+- instance
+- button
+
+For example:
+
+`$ bumblebee-status -p disk.left-click="nautilus {instance}"`
+
 ## Errors
 If errors occur, you should see them in the i3bar itself. If that does not work, or you need more information for troubleshooting, you can activate a debug log using the `-d` or `--debug` switch:
 
