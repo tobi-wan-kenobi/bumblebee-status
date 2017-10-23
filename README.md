@@ -101,7 +101,8 @@ By default, the following events are handled:
 - Left-click on a "pulseaudio" (or pasource/pasink) module toggles the mute state
 - Right-click on a "pulseaudio" module opens pavucontrol
 - Mouse-Wheel up/down on a "pulseaudio" module raises/lowers the volume
-- By default, the Mouse-Wheel wraps for the current output. You can disable this behavior by providing the parameter engine.workspacewrap=false (starting with version 1.4.5). Also, you can completely disable output switching by using engine.workspacewheel=false.
+
+By default, the Mouse-Wheel wraps for the current output. You can disable this behavior by providing the parameter `engine.workspacewrap=false` (starting with version 1.4.5). Also, you can completely disable output switching by using `engine.workspacewheel=false`.
 
 You can provide your own handlers to any module by using the following "special" configuration parameters:
 
