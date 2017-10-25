@@ -5,6 +5,7 @@
 Parameters:
     * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
     * cpu.critical: Critical threshold in % of CPU usage (defaults to 80%)
+    * cpu.format  : Format string (defaults to "{:.01f}%)")
 """
 
 try:
@@ -25,8 +26,12 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                        cmd="gnome-system-monitor")
 
+    @property
+    def _format(self):
+        return self.parameter("format", "{:.01f}%")
+
     def utilization(self, _):
-        return "{:.01f}%".format(self._utilization)
+        return self._format.format(self._utilization)
 
     def update(self, widgets):
         self._utilization = psutil.cpu_percent(percpu=False)
