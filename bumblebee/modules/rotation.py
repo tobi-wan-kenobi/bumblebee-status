@@ -21,7 +21,6 @@ class Module(bumblebee.engine.Module):
         self.update_widgets(widgets)
 
     def update_widgets(self, widgets):
-        new_widgets = []
         for line in bumblebee.util.execute("xrandr -q").split("\n"):
             if not " connected" in line:
                 continue
@@ -37,16 +36,12 @@ class Module(bumblebee.engine.Module):
             if not widget:
                 widget = bumblebee.output.Widget(full_text=display, name=display)
                 self._engine.input.register_callback(widget, button=bumblebee.input.LEFT_MOUSE, cmd=self._toggle)
-            new_widgets.append(widget)
             widget.set("orientation", orientation)
-
-        while len(widgets) > 0:
-            del widgets[0]
-        for widget in new_widgets:
             widgets.append(widget)
 
     def update(self, widgets):
-        self.update_widgets(widgets)
+        if len(widgets) <= 0:
+            self.update_widgets(widgets)
 
     def state(self, widget):
         return widget.get("orientation", "normal")
