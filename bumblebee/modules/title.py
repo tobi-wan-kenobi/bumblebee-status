@@ -23,6 +23,8 @@ import bumblebee.engine
 
 from bumblebee.output import scrollable
 
+no_title = "n/a"
+
 class Module(bumblebee.engine.Module):
     """Window title module."""
 
@@ -36,7 +38,7 @@ class Module(bumblebee.engine.Module):
             self._i3 = i3ipc.Connection()
             self._full_title = self._i3.get_tree().find_focused().name
         except Exception:
-            self._full_title = "n/a"
+            self._full_title = no_title
 
     def get_title(self, widget):
         if bumblebee.util.asbool(self.parameter("scroll", False)):
@@ -62,6 +64,9 @@ class Module(bumblebee.engine.Module):
         try:
             self._full_title = self._i3.get_tree().find_focused().name
         except Exception:
-            self._full_title = "n/a"
+            self._full_title = no_title
+
+        if(self._full_title is None):
+            self._full_title = no_title
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
