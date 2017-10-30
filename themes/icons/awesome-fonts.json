@@ -110,6 +110,9 @@
   "github": {
 	  "prefix": "  "
   },
+  "hipchat": {
+	  "prefix": "  "
+  },
   "spotify": {
 	  "prefix": "  "
   },

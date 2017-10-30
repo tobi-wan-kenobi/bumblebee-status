@@ -81,6 +81,9 @@
 	"github": {
 		"prefix": "github"
 	},
+	"hipchat": {
+		"prefix": "hipchat"
+	},
 	"spotify": {
 		"prefix": ""
 	}
