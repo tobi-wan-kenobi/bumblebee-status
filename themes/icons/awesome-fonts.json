@@ -16,7 +16,8 @@
 	"layout": { "prefix": "" },
 	"layout-xkb": { "prefix": "" },
 	"todo": { "empty": {"prefix": "" },
-	"items": {"prefix": "" }
+	"items": {"prefix": "" },
+	"uptime": {"prefix": "" }
 	},
 
 	"cmus": {
