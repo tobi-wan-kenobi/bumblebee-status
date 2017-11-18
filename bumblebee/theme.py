@@ -18,12 +18,14 @@ def theme_path():
     ]
 
 def themes():
-    result = []
+    themes = {}
 
     for path in theme_path():
         for filename in glob.iglob("{}/*.json".format(path)):
             if "test" not in filename:
-                result.append(os.path.basename(filename).replace(".json", ""))
+                themes[os.path.basename(filename).replace(".json", "")] = 1
+    result = themes.keys()
+    result.sort()
     return result
 
 class Theme(object):
