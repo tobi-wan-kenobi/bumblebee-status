@@ -2,6 +2,10 @@
 
 """Displays the system uptime."""
 
+# Use absolute_import because there's already a datatime module
+# in the same directory
+from __future__ import absolute_import
+
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
