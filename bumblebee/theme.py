@@ -148,6 +148,8 @@ class Theme(object):
                 except ValueError as exception:
                     raise bumblebee.error.ThemeLoadError("JSON error: {}".format(exception))
 
+        if not result:
+            raise bumblebee.error.ThemeLoadError("no such theme")
         return result
 
     def _get(self, widget, name, default=None):
