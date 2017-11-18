@@ -132,6 +132,7 @@ class Theme(object):
 
     def load(self, name, path=theme_path()):
         """Load and parse a theme file"""
+        result = None
         if not isinstance(path, list):
             path = [path]
         for p in path:
@@ -140,11 +141,14 @@ class Theme(object):
             if os.path.isfile(themefile):
                 try:
                     with io.open(themefile, encoding="utf-8") as data:
-                        return json.load(data)
+                        if result is None:
+                            result = json.load(data)
+                        else:
+                            self._merge(result, json.load(data))
                 except ValueError as exception:
                     raise bumblebee.error.ThemeLoadError("JSON error: {}".format(exception))
 
-        return {}
+        return result
 
     def _get(self, widget, name, default=None):
         """Return the config value 'name' for 'widget'"""
