@@ -89,5 +89,12 @@
 	},
 	"uptime": {
         "prefix": "uptime"
+	},
+	"zpool": {
+		"poolread": {"prefix": "pool read "},
+		"poolwrite": {"prefix": "pool write "},
+		"ONLINE": {"prefix": "pool"},
+		"FAULTED": {"prefix": "pool (!)"},
+		"DEGRADED": {"prefix": "pool (!)"}
 	}
 }
