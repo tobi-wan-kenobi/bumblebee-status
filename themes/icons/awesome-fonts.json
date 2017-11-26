@@ -19,7 +19,13 @@
 	"items": {"prefix": "" },
 	"uptime": {"prefix": "" }
 	},
-
+	"zpool": {
+		"poolread": {"prefix": "→ "},
+		"poolwrite": {"prefix": "← "},
+		"ONLINE": {"prefix": ""},
+		"FAULTED": {"prefix": "!"},
+		"DEGRADED": {"prefix": "!"}
+	},
 	"cmus": {
 		"playing": { "prefix": "" },
 		"paused": { "prefix": "" },
