@@ -12,14 +12,20 @@ import bumblebee.error
 
 def theme_path():
     """Return the path of the theme directory"""
-    return os.path.dirname("{}/../themes/".format(os.path.dirname(os.path.realpath(__file__))))
+    return [
+        os.path.dirname("{}/../themes/".format(os.path.dirname(os.path.realpath(__file__)))),
+        os.path.dirname(os.path.expanduser("~/.config/bumblebee-status/themes/")),
+    ]
 
 def themes():
-    result = []
+    themes = {}
 
-    for filename in glob.iglob("{}/*.json".format(theme_path())):
-        if "test" not in filename:
-            result.append(os.path.basename(filename).replace(".json", ""))
+    for path in theme_path():
+        for filename in glob.iglob("{}/*.json".format(path)):
+            if "test" not in filename:
+                themes[os.path.basename(filename).replace(".json", "")] = 1
+    result = themes.keys()
+    result.sort()
     return result
 
 class Theme(object):
@@ -30,7 +36,10 @@ class Theme(object):
         self._cycle = {}
         self._prevbg = None
         self._colorset = {}
-        self._init(self.load(name))
+        data = self.load(name)
+        if not data:
+            raise bumblebee.error.ThemeLoadError("no such theme")
+        self._init(data)
 
     def _init(self, data):
         """Initialize theme from data structure"""
@@ -119,21 +128,30 @@ class Theme(object):
 
     def _load_icons(self, name):
         """Load icons for a theme"""
-        path = "{}/icons/".format(theme_path())
-        return self.load(name, path=path)
+        result = {}
+        for path in theme_path():
+            self._merge(result, self.load(name, path="{}/icons/".format(path)))
+        return result
 
     def load(self, name, path=theme_path()):
         """Load and parse a theme file"""
-        themefile = "{}/{}.json".format(path, name)
+        result = None
+        if not isinstance(path, list):
+            path = [path]
+        for p in path:
+            themefile = "{}/{}.json".format(p, name)
 
-        if os.path.isfile(themefile):
-            try:
-                with io.open(themefile, encoding="utf-8") as data:
-                    return json.load(data)
-            except ValueError as exception:
-                raise bumblebee.error.ThemeLoadError("JSON error: {}".format(exception))
-        else:
-            raise bumblebee.error.ThemeLoadError("no such theme: {}".format(name))
+            if os.path.isfile(themefile):
+                try:
+                    with io.open(themefile, encoding="utf-8") as data:
+                        if result is None:
+                            result = json.load(data)
+                        else:
+                            self._merge(result, json.load(data))
+                except ValueError as exception:
+                    raise bumblebee.error.ThemeLoadError("JSON error: {}".format(exception))
+
+        return result
 
     def _get(self, widget, name, default=None):
         """Return the config value 'name' for 'widget'"""
