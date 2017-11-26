@@ -24,7 +24,7 @@ def themes():
         for filename in glob.iglob("{}/*.json".format(path)):
             if "test" not in filename:
                 themes[os.path.basename(filename).replace(".json", "")] = 1
-    result = themes.keys()
+    result = list(themes.keys())
     result.sort()
     return result
 
