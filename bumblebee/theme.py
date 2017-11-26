@@ -36,7 +36,10 @@ class Theme(object):
         self._cycle = {}
         self._prevbg = None
         self._colorset = {}
-        self._init(self.load(name))
+        data = self.load(name)
+        if not data:
+            raise bumblebee.error.ThemeLoadError("no such theme")
+        self._init(data)
 
     def _init(self, data):
         """Initialize theme from data structure"""
@@ -148,8 +151,6 @@ class Theme(object):
                 except ValueError as exception:
                     raise bumblebee.error.ThemeLoadError("JSON error: {}".format(exception))
 
-        if not result:
-            raise bumblebee.error.ThemeLoadError("no such theme")
         return result
 
     def _get(self, widget, name, default=None):
