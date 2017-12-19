@@ -21,17 +21,18 @@ def main():
     config = bumblebee.config.Config(sys.argv[1:])
 
     if config.debug():
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format="[%(asctime)s] %(levelname)-8s %(message)s",
-            filename=config.logfile()
-        )
-    else:
-        logging.basicConfig(
-            level=logging.DEBUG,
-            format="[%(asctime)s] %(levelname)-8s %(message)s",
-            stream=sys.stderr
-        )
+        if config.logfile() in ["stdout", "stderr"]:
+            logging.basicConfig(
+                level=logging.DEBUG,
+                format="[%(asctime)s] %(levelname)-8s %(message)s",
+                stream=sys.stdout if config.logfile() == "stdout" else sys.stderr
+            )
+        else:
+            logging.basicConfig(
+                level=logging.DEBUG,
+                format="[%(asctime)s] %(levelname)-8s %(message)s",
+                filename=config.logfile()
+            )
 
     theme = bumblebee.theme.Theme(config.theme())
     output = bumblebee.output.I3BarOutput(theme=theme)
