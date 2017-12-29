@@ -3,8 +3,8 @@
 		"separator": "", "padding": " ",
 		"unknown": { "prefix": "" }
 	},
-	"date": { "prefix": ""	},
-	"time": { "prefix": "" },
+	"date": { "prefix": "${calendar}" },
+	"time": { "prefix": "${clock-o}" },
 	"datetime": { "prefix": "" },
 	"memory": { "prefix": "" },
 	"cpu": { "prefix": "" },

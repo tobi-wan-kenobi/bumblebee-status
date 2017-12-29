@@ -6,7 +6,16 @@ import os
 import glob
 import copy
 import json
+import yaml
 import io
+import re
+import logging
+
+try:
+    import requests
+    from requests.exceptions import RequestException
+except ImportError:
+    pass
 
 import bumblebee.error
 
@@ -36,10 +45,38 @@ class Theme(object):
         self._cycle = {}
         self._prevbg = None
         self._colorset = {}
+
+        self.load_symbols()
+
         data = self.load(name)
         if not data:
             raise bumblebee.error.ThemeLoadError("no such theme")
         self._init(data)
+
+    def load_symbols(self):
+        self._symbols = {}
+        path = os.path.expanduser("~/.config/bumblebee-status/")
+        try:
+            os.makedirs(path)
+        except Exception:
+            pass
+        try:
+            if not os.path.exists("{}/symbols.json".format(path)):
+                data = yaml.load(requests.get("https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/src/icons.yml").text)
+                with io.open("{}/symbols.json".format(path), "w") as f:
+                    json.dump(data, f)
+            data = json.load(io.open("{}/symbols.json".format(path)))
+            self._symbols = {}
+            for icon in data["icons"]:
+                code = int(icon["unicode"], 16)
+                try:
+                    code = unichr(code)
+                except Exception:
+                    code = chr(code)
+                self._symbols["${{{}}}".format(icon["id"])] = code
+                self._symbols["${{{}}}".format(icon["name"])] = code
+        except Exception as e:
+            logging.error("failed to load symbols: {}".format(str(e)))
 
     def _init(self, data):
         """Initialize theme from data structure"""
@@ -131,7 +168,15 @@ class Theme(object):
         result = {}
         for path in theme_path():
             self._merge(result, self.load(name, path="{}/icons/".format(path)))
-        return result
+
+        return self._replace_symbols(result)
+
+    def _replace_symbols(self, data):
+        rep = json.dumps(data)
+        tokens = re.findall(r"\${[^}]+}", rep)
+        for token in tokens:
+            rep = rep.replace(token, self._symbols[token])
+        return json.loads(rep)
 
     def load(self, name, path=theme_path()):
         """Load and parse a theme file"""
