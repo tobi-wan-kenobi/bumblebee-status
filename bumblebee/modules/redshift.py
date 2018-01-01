@@ -29,6 +29,7 @@ def get_redshift_value(widget):
             except RuntimeError:
                 continue
             break
+        widget.get("condition").release()
 
         try:
             res = bumblebee.util.execute("redshift -p")
@@ -48,7 +49,6 @@ def get_redshift_value(widget):
                 else:
                     widget.set("state", "transition")
                     widget.set("transition", " ".join(line.split(" ")[2:]))
-        widget.get("condition").release()
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
