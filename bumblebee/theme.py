@@ -61,20 +61,17 @@ class Theme(object):
         except Exception:
             pass
         try:
-            if not os.path.exists("{}/symbols.json".format(path)):
-                data = yaml.load(requests.get("https://raw.githubusercontent.com/FortAwesome/Font-Awesome/master/src/icons.yml").text)
-                with io.open("{}/symbols.json".format(path), "w") as f:
-                    json.dump(data, f)
-            data = json.load(io.open("{}/symbols.json".format(path)))
-            self._symbols = {}
-            for icon in data["icons"]:
-                code = int(icon["unicode"], 16)
-                try:
-                    code = unichr(code)
-                except Exception:
-                    code = chr(code)
-                self._symbols["${{{}}}".format(icon["id"])] = code
-                self._symbols["${{{}}}".format(icon["name"])] = code
+            if os.path.exists("{}/symbols.json".format(path)):
+                data = json.load(io.open("{}/symbols.json".format(path)))
+                self._symbols = {}
+                for icon in data["icons"]:
+                    code = int(icon["unicode"], 16)
+                    try:
+                        code = unichr(code)
+                    except Exception:
+                        code = chr(code)
+                    self._symbols["${{{}}}".format(icon["id"])] = code
+                    self._symbols["${{{}}}".format(icon["name"])] = code
         except Exception as e:
             logging.error("failed to load symbols: {}".format(str(e)))
 
