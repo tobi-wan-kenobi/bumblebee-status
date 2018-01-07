@@ -19,13 +19,15 @@ import bumblebee.util
 
 import requests
 
+import logging
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.value)
         )
-        self._symbols = self.parameter("symbols", "")
-        self._change = bumblebee.util.asbool(self.parameter("change", True))
+        self._symbols = self.parameter('symbols', '')
+        self._change = bumblebee.util.asbool(self.parameter('change', True))
         self._currencies = self.parameter('currencies', None)
         self._baseurl = 'http://download.finance.yahoo.com/d/quotes.csv'
         self._value = self.fetch()
@@ -34,11 +36,13 @@ class Module(bumblebee.engine.Module):
             self._currencies = '$' * len(self._symbols)
 
         # The currencies could be unicode, like the € symbol. Convert to a unicode object.
-        if hasattr(self._currencies, "decode"):
-            self._currencies = self._currencies.decode("utf-8", "ignore")
+        if hasattr(self._currencies, 'decode'):
+            self._currencies = self._currencies.decode('utf-8', 'ignore')
 
     def value(self, widget):
         results = []
+        if not self._value:
+            return 'n/a'
         for i, val in enumerate(self._value.split('\n')):
             try:
                 currency_symbol = self._currencies[i]
@@ -55,7 +59,8 @@ class Module(bumblebee.engine.Module):
                 url += 'c1'
             return requests.get(url).text.strip()
         else:
-            return ''
+            logging.error('unable to retrieve stock exchange rate')
+            return None
 
     def update(self, widgets):
         self._value = self.fetch()
