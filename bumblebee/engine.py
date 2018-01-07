@@ -2,6 +2,7 @@
 
 import os
 import json
+import time
 import pkgutil
 import logging
 import importlib
@@ -37,6 +38,8 @@ class Module(object):
         self.name = config.get("name", self.__module__.split(".")[-1])
         self._config = config
         self.id = self.name
+        self._next = int(time.time())
+        self._default_interval = 0
 
         self._configFile = None
         for cfg in [os.path.expanduser("~/.bumblebee-status.conf"), os.path.expanduser("~/.config/bumblebee-status.conf")]:
@@ -74,8 +77,18 @@ class Module(object):
         """By default, update() is a NOP"""
         pass
 
-    def update_all(self):
+    def update_wrapper(self, widgets):
+        if self._next > int(time.time()):
+            return
         self.update(self._widgets)
+        self._next += int(self.parameter("interval", self._default_interval))*60
+
+    def interval(self, intvl):
+        self._default_interval = intvl
+        self._next = int(time.time())
+
+    def update_all(self):
+        self.update_wrapper(self._widgets)
 
     def has_parameter(self, name):
         v = self.parameter(name)
@@ -230,7 +243,7 @@ class Engine(object):
             self._output.begin()
             for module in self._modules:
                 self._current_module = module
-                module.update(module.widgets())
+                module.update_wrapper(module.widgets())
                 for widget in module.widgets():
                     widget.link_module(module)
                     self._output.draw(widget=widget, module=module, engine=self)
