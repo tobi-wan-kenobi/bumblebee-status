@@ -10,7 +10,6 @@ Parameters:
     * github.interval: Interval in minutes
 """
 
-import time
 import functools
 import bumblebee.input
 import bumblebee.output
@@ -27,8 +26,7 @@ class Module(bumblebee.engine.Module):
                                      bumblebee.output.Widget(full_text=self.github)
                                     )
         self._count = 0
-        self._interval = int(self.parameter("interval", "5"))
-        self._nextcheck = 0
+        self.interval(5)
         self._requests = requests.Session()
         self._requests.headers.update({"Authorization":"token {}".format(self.parameter("token", ""))})
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
@@ -41,23 +39,20 @@ class Module(bumblebee.engine.Module):
         return str(self._count)
 
     def update(self, _, immediate=False):
-        if immediate or self._nextcheck < int(time.time()):
-            self._nextcheck = int(time.time()) + self._interval * 60
+        try:
+            self._count = 0
+            url = "https://api.github.com/notifications"
+            while True:
+                notifications = self._requests.get(url)
+                self._count += len(list(filter(lambda notification: notification['unread'], notifications.json())))
+                next_link = notifications.links.get('next')
+                if next_link is not None:
+                    url = next_link.get('url')
+                else:
+                    break
 
-            try:
-                self._count = 0
-                url = "https://api.github.com/notifications"
-                while True:
-                    notifications = self._requests.get(url)
-                    self._count += len(list(filter(lambda notification: notification['unread'], notifications.json())))
-                    next_link = notifications.links.get('next')
-                    if next_link is not None:
-                        url = next_link.get('url')
-                    else:
-                        break
-
-            except Exception:
-                self._count = "n/a"
+        except Exception:
+            self._count = "n/a"
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

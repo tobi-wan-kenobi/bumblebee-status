@@ -20,7 +20,6 @@ Note: source and destination names right now must correspond to the names used b
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
-import time
 try:
     import requests
 except ImportError:
@@ -38,7 +37,7 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.price)
         )
         self._data = []
-        self._interval = int(self.parameter("interval", 1))
+        self.interval(1)
         self._base = self.parameter("source", "GBP")
         self._symbols = self.parameter("destination", "USD,EUR").split(",")
         self._nextcheck = 0
@@ -57,16 +56,13 @@ class Module(bumblebee.engine.Module):
         return basefmt.format(SYMBOL[self._base] if self._base in SYMBOL else self._base, ratefmt.join(rates))
 
     def update(self, widgets):
-        timestamp = int(time.time())
-        if self._nextcheck < timestamp:
-            self._data = []
-            self._nextcheck = timestamp + self._interval*60
-            for symbol in self._symbols:
-                url = API_URL.format(self._base, symbol)
-                try:
-                    response = requests.get(url).json()
-                    self._data.append((symbol, response['data']['exchangeRate']))
-                except Exception:
-                    pass
+        self._data = []
+        for symbol in self._symbols:
+            url = API_URL.format(self._base, symbol)
+            try:
+                response = requests.get(url).json()
+                self._data.append((symbol, response['data']['exchangeRate']))
+            except Exception:
+                pass
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

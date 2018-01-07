@@ -6,11 +6,10 @@ Requires the following executable:
     * dnf
 
 Parameters:
-    * dnf.interval: Time in seconds between two consecutive update checks (defaulst to 1800)
+    * dnf.interval: Time in seconds between two consecutive update checks (defaulst to 30 minutes)
 
 """
 
-import time
 import threading
 
 import bumblebee.util
@@ -53,7 +52,7 @@ class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widget = bumblebee.output.Widget(full_text=self.updates)
         super(Module, self).__init__(engine, config, widget)
-        self._next_check = 0
+        self.interval(30)
 
     def updates(self, widget):
         result = []
@@ -62,11 +61,8 @@ class Module(bumblebee.engine.Module):
         return "/".join(result)
 
     def update(self, widgets):
-        if int(time.time()) < self._next_check:
-            return
         thread = threading.Thread(target=get_dnf_info, args=(widgets[0],))
         thread.start()
-        self._next_check = int(time.time()) + self.parameter("interval", 30*60)
 
     def state(self, widget):
         cnt = 0

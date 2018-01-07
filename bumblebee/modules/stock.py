@@ -31,6 +31,7 @@ class Module(bumblebee.engine.Module):
         self._currencies = self.parameter('currencies', None)
         self._baseurl = 'http://download.finance.yahoo.com/d/quotes.csv'
         self._value = self.fetch()
+        self.interval(60)
 
         if not self._currencies:
             self._currencies = '$' * len(self._symbols)

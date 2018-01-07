@@ -6,7 +6,7 @@ Requires the following executable:
     * ping
 
 Parameters:
-    * ping.interval: Time in seconds between two RTT checks (defaults to 60)
+    * ping.ping_interval: Time in seconds between two RTT checks (defaults to 60)
     * ping.address : IP address to check
     * ping.timeout : Timeout for waiting for a reply (defaults to 5.0)
     * ping.probes  : Number of probes to send (defaults to 5)
@@ -51,7 +51,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config, widget)
 
         widget.set("address", self.parameter("address", "8.8.8.8"))
-        widget.set("interval", self.parameter("interval", 60))
+        widget.set("interval", self.parameter("ping_interval", 60))
         widget.set("rtt-probes", self.parameter("probes", 5))
         widget.set("rtt-timeout", self.parameter("timeout", 5.0))
         widget.set("rtt-avg", 0.0)

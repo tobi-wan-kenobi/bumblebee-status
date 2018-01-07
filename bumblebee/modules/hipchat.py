@@ -8,7 +8,6 @@ Parameters:
     * hipchat.interval: Refresh interval in minutes (defaults to 5)
 """
 
-import time
 import functools
 import bumblebee.input
 import bumblebee.output
@@ -27,8 +26,7 @@ class Module(bumblebee.engine.Module):
                                      bumblebee.output.Widget(full_text=self.output)
                                     )
         self._count = 0
-        self._interval = int(self.parameter("interval", "5"))
-        self._nextcheck = 0
+        self.interval(5)
 
         self._requests = requests.Session()
         self._requests.headers.update({"Authorization":"Bearer {}".format(self.parameter("token", ""))})
@@ -40,16 +38,12 @@ class Module(bumblebee.engine.Module):
         return str(self._count)
 
     def update(self, _, immediate=False):
-        if immediate or self._nextcheck < int(time.time()):
-            self._nextcheck = int(time.time()) + self._interval * 60
+        try:
+            self._count = 0
+            items = self._requests.get(HIPCHAT_API_URL).json().get('items')
+            self._count = sum([item.get('unreadCount').get('count') for item in items])
 
-            try:
-                self._count = 0
-                items = self._requests.get(HIPCHAT_API_URL).json().get('items')
-                self._count = sum([item.get('unreadCount').get('count') for item in items])
-
-            except Exception:
-                self._count = "n/a"
-
+        except Exception:
+            self._count = "n/a"
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
