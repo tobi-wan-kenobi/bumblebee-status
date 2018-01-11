@@ -34,6 +34,8 @@ def getfromkrak(coin, currency):
         krakenget = requests.get('https://api.kraken.com/0/public/Ticker?pair='+epair).json()
     except (RequestException, Exception):
         return "No connection"
+    if not 'result' in krakenget:
+        return "No data"
     kethusdask = float(krakenget['result'][tickname]['a'][0])
     kethusdbid = float(krakenget['result'][tickname]['b'][0])
     return coin+": "+str((kethusdask+kethusdbid)/2)[0:6]
