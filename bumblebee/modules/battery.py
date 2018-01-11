@@ -105,9 +105,8 @@ class Module(bumblebee.engine.Module):
             state.append("AC")
         else:
             charge = ""
-            try:
-                with open("{}/status".format(widget.name)) as f:
-                    charge = f.read().strip()
+            with open("{}/status".format(widget.name)) as f:
+                charge = f.read().strip()
             except IOError:
                 pass
             if charge == "Discharging":
