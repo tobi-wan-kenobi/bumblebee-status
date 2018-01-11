@@ -17,6 +17,9 @@ class Module(bumblebee.engine.Module):
         )
         self._text = self.parameter("text", "")
 
+    def update(self, widgets):
+        raise Exception("test")
+
     def text(self, widget):
         return self._text
 

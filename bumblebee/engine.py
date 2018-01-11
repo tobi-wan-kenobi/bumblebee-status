@@ -40,6 +40,7 @@ class Module(object):
         self.id = self.name
         self._next = int(time.time())
         self._default_interval = 0
+        self.success = True
 
         self._configFile = None
         for cfg in [os.path.expanduser("~/.bumblebee-status.conf"), os.path.expanduser("~/.config/bumblebee-status.conf")]:
@@ -80,7 +81,12 @@ class Module(object):
     def update_wrapper(self, widgets):
         if self._next > int(time.time()):
             return
-        self.update(self._widgets)
+        try:
+            self.update(self._widgets)
+            self.success = True
+        except Exception as e:
+            log.error("failed to update module {}: {}".format(self.name, str(e)))
+            self.success = False
         self._next += int(self.parameter("interval", self._default_interval))*60
 
     def interval(self, intvl):
