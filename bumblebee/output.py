@@ -117,7 +117,7 @@ class I3BarOutput(object):
             })
         width = self._theme.minwidth(widget)
         self._widgets.append({
-            u"full_text": full_text
+            u"full_text": full_text,
             "color": self._theme.fg(widget),
             "background": self._theme.bg(widget),
             "separator_block_width": self._theme.separator_block_width(widget),
