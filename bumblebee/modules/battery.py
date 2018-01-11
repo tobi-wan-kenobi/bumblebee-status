@@ -107,6 +107,8 @@ class Module(bumblebee.engine.Module):
             charge = ""
             with open("{}/status".format(widget.name)) as f:
                 charge = f.read().strip()
+            except IOError:
+                pass
             if charge == "Discharging":
                 state.append("discharging-{}".format(min([10, 25, 50, 80, 100], key=lambda i: abs(i-capacity))))
             else:
