@@ -38,6 +38,7 @@ class Module(object):
         self.name = config.get("name", self.__module__.split(".")[-1])
         self._config = config
         self.id = self.name
+        self.error = None
         self._next = int(time.time())
         self._default_interval = 0
 
@@ -67,6 +68,12 @@ class Module(object):
             if widget.name == name:
                 return widget
 
+    def errorWidget(self):
+        msg = self.error
+        if len(msg) > 10:
+            msg = "{}...".format(msg[0:7])
+        return bumblebee.output.Widget(full_text="error: {}".format(msg))
+
     def widget_by_id(self, uid):
         for widget in self._widgets:
             if widget.id == uid:
@@ -80,7 +87,12 @@ class Module(object):
     def update_wrapper(self, widgets):
         if self._next > int(time.time()):
             return
-        self.update(self._widgets)
+        try:
+            self.error = None
+            self.update(self._widgets)
+        except Exception as e:
+            log.error("error updating '{}': {}".format(self.name, str(e)))
+            self.error = str(e)
         self._next += int(self.parameter("interval", self._default_interval))*60
 
     def interval(self, intvl):
@@ -244,9 +256,12 @@ class Engine(object):
             for module in self._modules:
                 self._current_module = module
                 module.update_wrapper(module.widgets())
-                for widget in module.widgets():
-                    widget.link_module(module)
-                    self._output.draw(widget=widget, module=module, engine=self)
+                if module.error == None:
+                    for widget in module.widgets():
+                        widget.link_module(module)
+                        self._output.draw(widget=widget, module=module, engine=self)
+                else:
+                    self._output.draw(widget=module.errorWidget(), module=module, engine=self)
             self._output.flush()
             self._output.end()
             if self.running():
