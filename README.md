@@ -29,6 +29,8 @@ Explicitly unsupported Python versions: 3.2 (missing unicode literals)
 # Documentation
 See [the wiki](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki) for documentation.
 
+See [FAQ](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/FAQ) for, well, FAQs.
+
 Other resources:
 
 * A list of [available modules](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/Available-Modules)
