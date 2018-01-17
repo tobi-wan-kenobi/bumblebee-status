@@ -233,6 +233,8 @@ class Theme(object):
             widget.set(key, (idx + 1) % len(value))
             value = value[idx]
 
+        value = widget.get_module().parameter("theme.{}".format(name), value)
+
         if isinstance(value, list) or isinstance(value, dict):
             return value
         return self._colorset.get(value, value)
