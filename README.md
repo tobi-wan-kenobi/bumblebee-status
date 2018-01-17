@@ -61,6 +61,14 @@ $ ./bumblebee-status -l modules
 
 Any parameter you can specify with `-p <name>=<value>`, you can alternatively specify in `~/.bumblebee-status.conf` or `~/.config/bumblebee-status.conf`. This parameters act as a **fallback**, so values specified with `-p` have priority.
 
+Parameters can also be used to override theme settings, such as:
+
+```
+$ ./bumblebee-status -p <module>.theme.<theme field>=<value>
+# for example, to get a spacer with a red background:
+$ ./bumblebee-status -m spacer -p spacer.theme.bg=#ff0000
+```
+
 Configuration files have a format like this:
 ```
 $ cat ~/.bumblebee-status.conf
