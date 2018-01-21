@@ -31,7 +31,10 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.get_time))
         self._fmt = self.parameter("format", default_format(self.name))
-        lcl = self.parameter("locale", ".".join(locale.getdefaultlocale()))
+        l = locale.getdefaultlocale()
+        if not l:
+            l = ('en_US', 'UTF-8')
+        lcl = self.parameter("locale", ".".join(l))
         locale.setlocale(locale.LC_TIME, lcl.split("."))
 
     def get_time(self, widget):
