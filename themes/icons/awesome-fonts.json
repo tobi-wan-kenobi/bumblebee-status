@@ -132,5 +132,8 @@
     "snow": { "prefix": "" },
     "clear": { "prefix": "" },
     "thunder": { "prefix": "" }
+  },
+  "taskwarrior": {
+      "prefix": "  "
   }
 }
