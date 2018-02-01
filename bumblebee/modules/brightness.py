@@ -29,7 +29,7 @@ class Module(bumblebee.engine.Module):
 
     def brightness(self, widget):
         if isinstance(self._brightness, float):
-            return "{:03.0f}%".format(self._brightness)
+            return "{:3.0f}%".format(self._brightness).strip()
         else:
             return "n/a"
 
