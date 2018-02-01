@@ -216,9 +216,12 @@ class Engine(object):
     def _read_aliases(self):
         result = {}
         for module in all_modules():
-            mod = importlib.import_module("bumblebee.modules.{}".format(module["name"]))
-            for alias in getattr(mod, "ALIASES", []):
-                result[alias] = module["name"]
+            try:
+                mod = importlib.import_module("bumblebee.modules.{}".format(module["name"]))
+                for alias in getattr(mod, "ALIASES", []):
+                    result[alias] = module["name"]
+            except Exception as error:
+                log.warning("failed to import {}: {}".format(module["name"], str(error)))
         return result
 
     def _load_module(self, module_name, config_name=None):
