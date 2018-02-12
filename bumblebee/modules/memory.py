@@ -50,12 +50,13 @@ class Module(bumblebee.engine.Module):
                 if tmp[2] == "mB": value = value*1024*1024
                 if tmp[2] == "gB": value = value*1024*1024*1024
                 data[tmp[0]] = value
+        used = data["MemTotal"] - data["MemFree"] - data["Buffers"] - data["Cached"] - data["Slab"]
         self._mem = {
             "total": bumblebee.util.bytefmt(data["MemTotal"]),
             "available": bumblebee.util.bytefmt(data["MemAvailable"]),
             "free": bumblebee.util.bytefmt(data["MemFree"]),
-            "used": bumblebee.util.bytefmt(data["MemTotal"] - data["MemFree"] - data["Buffers"] - data["Cached"] - data["Slab"]),
-            "percent": (float(data["MemTotal"] - data["MemAvailable"])/data["MemTotal"])*100
+            "used": bumblebee.util.bytefmt(used),
+            "percent": float(used)/float(data["MemTotal"])*100.0
         }
 
     def state(self, widget):
