@@ -1,14 +1,17 @@
 # pylint: disable=C0111,R0903
 
-"""Displays volume and mute status of PulseAudio devices.
+"""Displays volume and mute status and controls for PulseAudio devices. Use wheel up and down to change volume, left click mutes, right click opens pavucontrol.
 
-Aliases: pasink, pasource
+Aliases: pasink (use this to control output instead of input), pasource
 
 Parameters:
     * pulseaudio.autostart: If set to "true" (default is "false"), automatically starts the pulseaudio daemon if it is not running
 
 Requires the following executable:
+    * pulseaudio
     * pactl
+    * pavucontrol
+    * pacmd
 """
 
 import re
