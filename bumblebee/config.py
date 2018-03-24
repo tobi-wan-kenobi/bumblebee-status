@@ -35,12 +35,15 @@ class print_usage(argparse.Action):
 
     def print_modules(self):
         for m in bumblebee.engine.all_modules():
-            mod = importlib.import_module("bumblebee.modules.{}".format(m["name"]))
-            print(textwrap.fill("{}:".format(m["name"]), 80,
-                    initial_indent=self._indent*2, subsequent_indent=self._indent*2))
-            for line in mod.__doc__.split("\n"):
-                print(textwrap.fill(line, 80,
-                    initial_indent=self._indent*3, subsequent_indent=self._indent*6))
+            try:
+                mod = importlib.import_module("bumblebee.modules.{}".format(m["name"]))
+                print(textwrap.fill("{}:".format(m["name"]), 80,
+                        initial_indent=self._indent*2, subsequent_indent=self._indent*2))
+                for line in mod.__doc__.split("\n"):
+                    print(textwrap.fill(line, 80,
+                        initial_indent=self._indent*3, subsequent_indent=self._indent*6))
+            except:
+                pass
 
 def create_parser():
     """Create the argument parser"""
