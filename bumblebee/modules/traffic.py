@@ -76,6 +76,8 @@ class Module(bumblebee.engine.Module):
             state = "down"
             if len(self.get_addresses(interface)) > 0:
                 state = "up"
+            elif bumblebee.util.asbool(self.parameter("hide_down", True)):
+                continue
 
             if len(self._states["exclude"]) > 0 and state in self._states["exclude"]: continue
             if len(self._states["include"]) > 0 and state not in self._states["include"]: continue
