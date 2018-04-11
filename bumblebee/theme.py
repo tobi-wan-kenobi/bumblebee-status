@@ -6,7 +6,6 @@ import os
 import glob
 import copy
 import json
-import yaml
 import io
 import re
 import logging
