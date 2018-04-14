@@ -93,7 +93,8 @@ class Module(bumblebee.engine.Module):
             if not widget:
                 widget = bumblebee.output.Widget(name=intf)
                 widgets.append(widget)
-            widget.full_text(self._format.format(ip=", ".join(addr),intf=intf,state=state,ssid=self.get_ssid(intf)))
+            # join/split is used to get rid of multiple whitespaces (in case SSID is not available, for instance
+            widget.full_text(" ".join(self._format.format(ip=", ".join(addr),intf=intf,state=state,ssid=self.get_ssid(intf)).split()))
             widget.set("intf", intf)
             widget.set("state", state)
             widget.set("visited", True)
@@ -106,7 +107,7 @@ class Module(bumblebee.engine.Module):
         if self._iswlan(intf):
             try:
                 return subprocess.check_output(["iwgetid","-r",intf]).strip().decode('utf-8')
-            except subprocess.CalledProcessError:
+            except:
                 return ""
         return ""
 
