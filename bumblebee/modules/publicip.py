@@ -21,7 +21,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.public_ip)
         )
-        self._avail_regions = {"us-east":"http://l2.io/ip",
+        self._avail_regions = {"us-east":"http://checkip.amazonaws.com",
                                "us-central":"http://whatismyip.akamai.com",
                                "us-west":"http://ipv4bot.whatismyipaddress.com",
                                "pl":"http://ip.42.pl/raw",
