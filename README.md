@@ -46,6 +46,10 @@ Other resources:
 $ git clone git://github.com/tobi-wan-kenobi/bumblebee-status
 ```
 
+# Dependencies
+[Available modules](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/Available-Modules) lists the dependencies (Python modules and external executables)
+for each module. If you are not using a module, you don't need the dependencies.
+
 # Usage
 ## Normal usage
 In your i3wm configuration, modify the *status_command* for your i3bar like this:
