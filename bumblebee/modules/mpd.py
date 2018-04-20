@@ -55,6 +55,9 @@ class Module(bumblebee.engine.Module):
         self._repeat = False
         self._tags = defaultdict(lambda: '')
 
+    def hidden(self):
+        return self._status == None
+
     @scrollable
     def description(self, widget):
         return string.Formatter().vformat(self._fmt, (), self._tags)
@@ -80,6 +83,7 @@ class Module(bumblebee.engine.Module):
         except RuntimeError:
             pass
         self._tags = defaultdict(lambda: '')
+        self._status = None
         for line in info.split("\n"):
             if line.startswith("[playing]"):
                 self._status = "playing"
