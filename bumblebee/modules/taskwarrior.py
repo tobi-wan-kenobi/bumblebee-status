@@ -11,7 +11,10 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
-from taskw import TaskWarrior
+try:
+    from taskw import TaskWarrior
+except:
+    pass
 
 
 class Module(bumblebee.engine.Module):
