@@ -34,7 +34,7 @@ def main():
                 filename=config.logfile()
             )
 
-    theme = bumblebee.theme.Theme(config.theme())
+    theme = bumblebee.theme.Theme(config.theme(), config.iconset())
     output = bumblebee.output.I3BarOutput(theme=theme)
     inp = bumblebee.input.I3BarInput()
     engine = None

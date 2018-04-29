@@ -59,6 +59,8 @@ def create_parser():
         help=DEBUG_HELP)
     parser.add_argument("-f", "--logfile", default="~/bumblebee-status-debug.log",
         help="Location of the debug log file")
+    parser.add_argument("-i", "--iconset", default="auto",
+        help="Specify the name of an iconset to use (overrides theme default)")
 
     return parser
 
@@ -90,6 +92,10 @@ class Config(bumblebee.store.Store):
     def theme(self):
         """Return the name of the selected theme"""
         return self._args.theme
+
+    def iconset(self):
+        """Return the name of a user-specified icon-set"""
+        return self._args.iconset
 
     def debug(self):
         return self._args.debug
