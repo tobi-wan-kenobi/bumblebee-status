@@ -88,10 +88,10 @@
 		"estimate": {	"prefix": "\uf402"  }
 	},
 	"caffeine": {
-		"activated": {"prefix": "\uf272\uf354" }, "deactivated": { "prefix": "\uf272\uf355" }
+		"activated": {"prefix": "\uf272\u3000\uf354" }, "deactivated": { "prefix": "\uf272\u3000\uf355" }
 	},
 	"xrandr": {
-		"on": { "prefix": "\uf465\uf354"}, "off": { "prefix": "\uf465\uf355" }
+		"on": { "prefix": "\uf465\u3000\uf354"}, "off": { "prefix": "\uf465\u3000\uf355" }
 	},
 	"redshift": {
 		"day": { "prefix": "\uf4b6" }, "night": { "prefix": "\uf467" }, "transition": { "prefix": "\uf475" }
