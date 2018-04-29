@@ -1,6 +1,6 @@
 {
 	"defaults": {
-		"separator": "\ue0b2", "padding": "\u3000",
+		"separator": "\ue0b2", "padding": "\u2800",
 		"unknown": { "prefix": "\uf100" }
 	},
 	"date": { "prefix": "\uf2d1" },
@@ -62,8 +62,8 @@
 	"nic": {
 		"wireless-up": { "prefix": "\uf25c" },
 		"wireless-down": { "prefix": "\uf3d0" },
-		"wired-up": { "prefix": "\u26fc" },
-		"wired-down": { "prefix": "\uf270" },
+		"wired-up": { "prefix": "\uf270" },
+		"wired-down": { "prefix": "\uf271" },
 		"tunnel-up": { "prefix": "\uf133" },
 		"tunnel-down": { "prefix": "\uf306" }
 	},
@@ -76,7 +76,7 @@
 		"charged": { "prefix": "\uf113", "suffix": "\u26b1" },
 		"AC": { "suffix": "\u26b1" },
 		"charging": {
-			"prefix": [ "\uf112", "\uf115", "\uf114", "", "\uf113" ],
+			"prefix": [ "\uf112", "\uf115", "\uf114", "", "\uf111" ],
 			"suffix": "\u26b1"
 		},
 		"discharging-10": { "prefix": "\uf112", "suffix": "\uf3bc" },

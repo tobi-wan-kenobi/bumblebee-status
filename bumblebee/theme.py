@@ -38,7 +38,7 @@ def themes():
 
 class Theme(object):
     """Represents a collection of icons and colors"""
-    def __init__(self, name, iconset):
+    def __init__(self, name, iconset="auto"):
         self._widget = None
         self._cycle_idx = 0
         self._cycle = {}
