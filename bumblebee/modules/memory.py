@@ -50,7 +50,10 @@ class Module(bumblebee.engine.Module):
                 if tmp[2] == "mB": value = value*1024*1024
                 if tmp[2] == "gB": value = value*1024*1024*1024
                 data[tmp[0]] = value
-        used = data["MemTotal"] - data["MemFree"] - data["Buffers"] - data["Cached"] - data["Slab"]
+        if "MemAvailable" in data:
+            used = data["MemTotal"] - data["MemAvailable"]
+        else:
+            used = data["MemTotal"] - data["MemFree"] - data["Buffers"] - data["Cached"] - data["Slab"]
         self._mem = {
             "total": bumblebee.util.bytefmt(data["MemTotal"]),
             "available": bumblebee.util.bytefmt(data["MemAvailable"]),
