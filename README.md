@@ -208,7 +208,7 @@ Powerline (`-t powerline`):
 
 ![Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline.png)
 
-Greyish Powerline (`-t powerline-greyish`)
+Greyish Powerline (`-t greyish-powerline`)
 
 ![Greyish Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-greyish.png)
 
