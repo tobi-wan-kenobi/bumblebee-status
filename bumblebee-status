@@ -3,6 +3,7 @@
 import os
 import sys
 import logging
+import signal
 import bumblebee.theme
 import bumblebee.engine
 import bumblebee.config
@@ -18,6 +19,9 @@ except Exception:
 
 
 def main():
+    def sig_USR1_handler(signum,stack):
+        engine.write_output()
+        
     config = bumblebee.config.Config(sys.argv[1:])
 
     if config.debug():
@@ -45,6 +49,7 @@ def main():
             output=output,
             inp=inp,
         )
+        signal.signal(10,sig_USR1_handler)
         engine.run()
     except KeyboardInterrupt as error:
         inp.stop()
