@@ -255,22 +255,25 @@ class Engine(object):
         """Start the event loop"""
         self._output.start()
         while self.running():
-            self._output.begin()
-            for module in self._modules:
-                self._current_module = module
-                module.update_wrapper(module.widgets())
-                if module.error == None:
-                    for widget in module.widgets():
-                        widget.link_module(module)
-                        self._output.draw(widget=widget, module=module, engine=self)
-                else:
-                    self._output.draw(widget=module.errorWidget(), module=module, engine=self)
-            self._output.flush()
-            self._output.end()
+            self.write_output()
             if self.running():
                 self.input.wait(float(self._config.get("interval", 1)))
 
         self._output.stop()
         self.input.stop()
+
+    def write_output(self):
+        self._output.begin()
+        for module in self._modules:
+            self._current_module = module
+            module.update_wrapper(module.widgets())
+            if module.error == None:
+                for widget in module.widgets():
+                    widget.link_module(module)
+                    self._output.draw(widget=widget, module=module, engine=self)
+            else:
+                self._output.draw(widget=module.errorWidget(), module=module, engine=self)
+        self._output.flush()
+        self._output.end()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
