@@ -192,7 +192,7 @@ Gruvbox Powerline (`-t gruvbox-powerline`) (contributed by [@TheEdgeOfRage](http
 
 ![Gruvbox Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-gruvbox.png)
 
-Gruvbox Powerline Light (`-t gruvbox-powerline-light`) (contributed by [feed00m](https://github.com/freed00m)):
+Gruvbox Powerline Light (`-t gruvbox-powerline-light`) (contributed by [freed00m](https://github.com/freed00m)):
 
 ![Gruvbox Powerline Light](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/gruvbox-powerline-light.png)
 
@@ -204,7 +204,7 @@ Gruvbox (`-t gruvbox`):
 
 ![Gruvbox](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/gruvbox.png)
 
-Gruvbox Light (`-t gruvbox-light`) (contributed by [feed00m](https://github.com/freed00m)):
+Gruvbox Light (`-t gruvbox-light`) (contributed by [freed00m](https://github.com/freed00m)):
 
 ![Gruvbox Light](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/gruvbox-light.png)
 
