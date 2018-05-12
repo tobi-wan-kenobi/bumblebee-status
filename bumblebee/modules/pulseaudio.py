@@ -102,7 +102,7 @@ class Module(bumblebee.engine.Module):
             found = False
 
             for line in result.split("\n"):
-                if device in line:
+                if "<"+device+">" in line:
                     found = True
                     continue
                 if found == False:
