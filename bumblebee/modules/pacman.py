@@ -13,6 +13,7 @@ Requires the following executables:
 import os
 import threading
 
+import bumblebee.util
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -48,11 +49,9 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.updates)
         )
         self._count = 0
-        self._sum = True if self.parameter("sum") == "True" else False 
-
 
     def updates(self, widget):
-        if (self._sum):
+        if bumblebee.util.asbool(self.parameter("sum")):
             return str(sum(map(lambda x: widget.get(x, 0), repos)))
         return '/'.join(map(lambda x: str(widget.get(x, 0)), repos))
 
