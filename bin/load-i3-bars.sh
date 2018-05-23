@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
-if [ ! -f ~/.i3/config.template ]; then
-	cp ~/.i3/config ~/.i3/config.template
+if [ ! -f ~/.config/i3/config.template ]; then
+	cp ~/.config/i3/config ~/.config/i3/config.template
 else
-	cp ~/.i3/config.template ~/.i3/config
+	cp ~/.config/i3/config.template ~/.config/i3/config
+fi
+
+if [ -f ~/.config/i3/config.template.private ]; then
+	cat ~/.config/i3/config.template.private >> ~/.config/i3/config
 fi
 
 screens=$(xrandr -q|grep ' connected'| grep -P '\d+x\d+' |cut -d' ' -f1)
@@ -14,11 +18,11 @@ while read -r line; do
 	screen=$(echo $line | cut -d' ' -f1)
 	others=$(echo $screens|tr ' ' '\n'|grep -v $screen|tr '\n' '-'|sed 's/.$//')
 
-	if [ -f ~/.i3/config.$screen-$others ]; then
-		cat ~/.i3/config.$screen-$others >> ~/.i3/config
+	if [ -f ~/.config/i3/config.$screen-$others ]; then
+		cat ~/.config/i3/config.$screen-$others >> ~/.config/i3/config
 	else
-		if [ -f ~/.i3/config.$screen ]; then
-			cat ~/.i3/config.$screen >> ~/.i3/config
+		if [ -f ~/.config/i3/config.$screen ]; then
+			cat ~/.config/i3/config.$screen >> ~/.config/i3/config
 		fi
 	fi
 done <<< "$screens"
