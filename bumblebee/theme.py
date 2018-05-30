@@ -160,8 +160,11 @@ class Theme(object):
 
     def _load_colors(self, name):
         """Load colors for a theme"""
-        if name == "wal":
-            return self._load_wal_colors()
+        try:
+            if name == "wal":
+                return self._load_wal_colors()
+        except Exception as e:
+            logging.error("failed to load colors: {}".format(str(e)))
 
     def _load_icons(self, name):
         """Load icons for a theme"""
