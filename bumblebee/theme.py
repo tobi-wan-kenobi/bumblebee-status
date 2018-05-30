@@ -100,6 +100,11 @@ class Theme(object):
         self._widget = None
         self._prevbg = None
 
+    def icon(self, widget):
+        icon = self._get(widget, "icon", None)
+        if icon == None:
+            return self._get(widget, "prefix", None)
+
     def padding(self, widget):
         """Return padding for widget"""
         return self._get(widget, "padding", "")

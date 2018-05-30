@@ -41,6 +41,9 @@ class Module(object):
         self.error = None
         self._next = int(time.time())
         self._default_interval = 0
+        self._minimized = False
+
+        self._minimizedWidget = bumblebee.output.Widget(full_text=u"\u2026")
 
         self._configFile = None
         for cfg in [os.path.expanduser("~/.bumblebee-status.conf"), os.path.expanduser("~/.config/bumblebee-status.conf")]:
@@ -56,6 +59,12 @@ class Module(object):
         if widgets:
             self._widgets = widgets if isinstance(widgets, list) else [widgets]
 
+    def toggle_minimize(self):
+        self._minimized = not self._minimized
+
+    def minimized(self):
+        return self._minimized
+
     def widgets(self):
         """Return the widgets to draw for this module"""
         return self._widgets
@@ -68,6 +77,9 @@ class Module(object):
             if widget.name == name:
                 return widget
 
+    def minimizedWidget(self):
+        return self._minimizedWidget
+
     def errorWidget(self):
         msg = self.error
         if len(msg) > 10:
@@ -78,6 +90,8 @@ class Module(object):
         for widget in self._widgets:
             if widget.id == uid:
                 return widget
+        if self._minimizedWidget.id == uid:
+            return self._minimizedWidget
         return None
 
     def update(self, widgets):
@@ -110,12 +124,9 @@ class Module(object):
         """Return the config parameter 'name' for this module"""
         name = "{}.{}".format(self.name, name)
         value = self._config["config"].get(name, default)
-        log.debug("command line parameter {}={}".format(name, str(value)))
         if value == default:
             try:
-                log.debug("trying to read {} from configuration file".format(name))
                 value = self._configFile.get("module-parameters", name)
-                log.debug("configuration file {}={}".format(name, str(value)))
             except:
                 pass
         return value
@@ -133,7 +144,7 @@ class Engine(object):
     This class connects input/output, instantiates all
     required modules and drives the "event loop"
     """
-    def __init__(self, config, output=None, inp=None):
+    def __init__(self, config, output=None, inp=None, theme=None):
         self._output = output
         self._config = config
         self._running = True
@@ -142,6 +153,7 @@ class Engine(object):
         self._aliases = self._read_aliases()
         self.load_modules(config.modules())
         self._current_module = None
+        self._theme = theme
 
         if bumblebee.util.asbool(config.get("engine.workspacewheel", "true")):
             if bumblebee.util.asbool(config.get("engine.workspacewrap", "true")):
@@ -154,8 +166,17 @@ class Engine(object):
                     cmd=self._prev_workspace)
                 self.input.register_callback(None, bumblebee.input.WHEEL_DOWN,
                     cmd=self._next_workspace)
+        if bumblebee.util.asbool(config.get("engine.collapsible", "true")):
+            self.input.register_callback(None, bumblebee.input.MIDDLE_MOUSE,
+                cmd=self._toggle_minimize)
 
         self.input.start()
+
+    def _toggle_minimize(self, event):
+        for module in self._modules:
+            if module.widget_by_id(event["instance"]):
+                log.debug("module {} found - toggle minimize".format(module.id))
+                module.toggle_minimize()
 
     def _prev_workspace(self, event):
         self._change_workspace(-1)
@@ -268,9 +289,16 @@ class Engine(object):
             self._current_module = module
             module.update_wrapper(module.widgets())
             if module.error == None:
-                for widget in module.widgets():
+                if module.minimized():
+                    widget = module.minimizedWidget()
                     widget.link_module(module)
+                    if self._theme:
+                        icon = self._theme.icon(widget)
                     self._output.draw(widget=widget, module=module, engine=self)
+                else:
+                    for widget in module.widgets():
+                        widget.link_module(module)
+                        self._output.draw(widget=widget, module=module, engine=self)
             else:
                 self._output.draw(widget=module.errorWidget(), module=module, engine=self)
         self._output.flush()

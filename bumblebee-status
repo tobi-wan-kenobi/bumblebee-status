@@ -48,6 +48,7 @@ def main():
             config=config,
             output=output,
             inp=inp,
+            theme=theme,
         )
         signal.signal(10,sig_USR1_handler)
         engine.run()
