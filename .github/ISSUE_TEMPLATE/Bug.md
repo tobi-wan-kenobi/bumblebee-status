@@ -1,39 +1,20 @@
 ---
 name:  Bug Report
-about: Something is broken?
+about: Something is broken / doesn't work as expected
 ---
-
-<!--
-Note: All issues will instant closed if the issue template is not complete. Please understand that it is easier for us if you fill out the template to help you faster.
-
-!All text inside \<\!-- \--\> will be hidden from us so please remove the arrows in the statements below.
--->
 
 ### Bug Report
 
 #### Summary
-<!-- Provide a summary desciribing the problem you are experiencing. -->
-
 Affected module: <module name>
 
 Description:
 <description>
 
-##### What is the current behaviour?
-<!-- it crashed -->
+#### What is the current behaviour and what is the expected behaviour?
 
 #### How to reproduce
-
-##### If the current behaviour is a bug, please provide the steps to reproduce it.
-<!-- A great way to do this is to provide screenshots and commands.* -->
-
-##### What do you think the expected behaviour should be?
-<!--What do you think should happen?-->
-
-##### If this is a feature request, what is the motivation or use case for the added feature?
-
-##### Specs
-*Paste the output of `./script/diagnostics.sh [interface]`*
+<!-- Please provide steps on how to reproduce the issue (screenshots would be great) -->
 
 #### Expected behavior
 <!-- What was the expected (correct) behavior? -->
@@ -46,5 +27,6 @@ https://github.com/tobi-wan-kenobi/bumblebee-status/issues/197
 https://github.com/tobi-wan-kenobi/bumblebee-status/issues/233
 
 Please note FontAwesome 5 is currently not supported:
-https://github.com/tobi-wan-kenobi/bumblebee-status/issues/239-->
+https://github.com/tobi-wan-kenobi/bumblebee-status/issues/239
+-->
 
