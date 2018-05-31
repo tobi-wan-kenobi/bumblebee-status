@@ -32,7 +32,7 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.get_time))
         self._fmt = self.parameter("format", default_format(self.name))
         l = locale.getdefaultlocale()
-        if not l:
+        if not l or l == (None, None):
             l = ('en_US', 'UTF-8')
         lcl = self.parameter("locale", ".".join(l))
         locale.setlocale(locale.LC_TIME, lcl.split("."))
