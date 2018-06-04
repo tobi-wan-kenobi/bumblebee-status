@@ -150,7 +150,7 @@ class Module(bumblebee.engine.Module):
                                                          band=bytefmt(nread)))
 
         for widget in widgets:
-            if widget.get("visited") == False:
+            if widget.get("visited") is False:
                 widgets.remove(widget)
 
     @staticmethod

@@ -105,12 +105,12 @@ class Module(bumblebee.engine.Module):
                 if "<"+device+">" in line:
                     found = True
                     continue
-                if found == False:
+                if found is False:
                     continue
                 for pattern in self._patterns:
                     if not pattern["expr"] in line:
                         continue
-                    if pattern["callback"](line) == False and found == True:
+                    if pattern["callback"](line) is False and found == True:
                         return
         except Exception:
             self._failed = True
