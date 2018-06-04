@@ -49,7 +49,7 @@ class Module(bumblebee.engine.Module):
         num_shortcuts = min(len(cmds), len(labels))
 
         # report possible problem as a warning
-        if (len(cmds) is not len(labels)):
+        if len(cmds) is not len(labels):
             logging.warning("shortcut: the number of commands does not match "\
                             "the number of provided labels.")
             logging.warning("cmds : %s, labels : %s", cmds, labels)
