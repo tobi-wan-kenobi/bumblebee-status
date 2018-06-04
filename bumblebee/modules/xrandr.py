@@ -64,7 +64,7 @@ class Module(bumblebee.engine.Module):
 
             neighbor = first_neighbor if event["button"] == bumblebee.input.LEFT_MOUSE else last_neighbor
 
-            if neighbor == None:
+            if neighbor is None:
                 bumblebee.util.execute("{} --output {} --auto".format(toggle_cmd, widget.name))
             else:
                 bumblebee.util.execute("{} --output {} --auto --{}-of {}".format(toggle_cmd, widget.name,

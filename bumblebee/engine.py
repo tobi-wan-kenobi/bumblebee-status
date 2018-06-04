@@ -288,7 +288,7 @@ class Engine(object):
         for module in self._modules:
             self._current_module = module
             module.update_wrapper(module.widgets())
-            if module.error == None:
+            if module.error is None:
                 if module.minimized():
                     widget = module.minimizedWidget()
                     widget.link_module(module)

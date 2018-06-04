@@ -49,7 +49,7 @@ class Module(bumblebee.engine.Module):
         self._tags = defaultdict(lambda: '')
 
     def hidden(self):
-        return self._status == None
+        return self._status is None
 
     @scrollable
     def description(self, widget):
