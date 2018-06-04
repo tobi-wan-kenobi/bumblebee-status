@@ -66,7 +66,7 @@ class Module(bumblebee.engine.Module):
         except Exception:
             self._full_title = no_title
 
-        if(self._full_title is None):
+        if self._full_title is None:
             self._full_title = no_title
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

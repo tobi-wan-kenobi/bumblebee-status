@@ -100,7 +100,7 @@ class Module(bumblebee.engine.Module):
             widget.set("visited", True)
 
         for widget in widgets:
-            if widget.get("visited") == False:
+            if widget.get("visited") is False:
                 widgets.remove(widget)
     
     def get_ssid(self, intf):

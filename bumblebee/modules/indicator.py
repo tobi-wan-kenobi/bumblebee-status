@@ -18,7 +18,7 @@ class Module(bumblebee.engine.Module):
         self.status = False
         super(Module,self).__init__(engine, config, widgets)
         self._include = tuple(filter(len, self.parameter("include", "NumLock,CapsLock").split(",")))
-        self._signalType = self.parameter("signaltype") if not self.parameter("signaltype") == None else "warning"
+        self._signalType = self.parameter("signaltype") if not self.parameter("signaltype") is None else "warning"
 
     def update(self, widgets):
         self._update_widgets(widgets)
