@@ -21,7 +21,7 @@ class Module(bumblebee.engine.Module):
         m = re.search(r'([\d]+)\%', self._level)
         self._muted = True
         if m:
-            if m.group(1) != "0":
+            if m.group(1) != "0" and "[on]" in self._level:
                 self._muted = False
             return "{}%".format(m.group(1))
         else:
