@@ -9,6 +9,7 @@ Parameters:
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+import os.path
 
 
 class Module(bumblebee.engine.Module):
@@ -18,6 +19,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.output)
         )
+        self._doc = os.path.expanduser(self.parameter("file", "~/Documents/todo.txt"))
         self._todos = self.count_items()
 
 
@@ -32,15 +34,12 @@ class Module(bumblebee.engine.Module):
         return "items"
 
 
-    def count_items(filename):
+    def count_items(self):
         try:
             i = -1
-            doc = self.parameter("file", "~/Documents/todo.txt")
-            with open(doc) as f:
+            with open(self._doc) as f:
                 for i, l in enumerate(f):
                     pass
             return i+1
         except Exception:
             return 0
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
