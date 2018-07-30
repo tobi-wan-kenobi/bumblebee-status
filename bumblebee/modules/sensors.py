@@ -29,6 +29,16 @@ class Module(bumblebee.engine.Module):
         self._match_number = int(self.parameter("match_number", "-1"))
         self._pattern = re.compile(r"^\s*{}:\s*([\d.]+)$".format(self.parameter("match", "temp1_input")), re.MULTILINE)
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd="xsensors")
+        self.determine_method()
+
+    def determine_method(self):
+        try:
+            output = bumblebee.util.execute("sensors -u")
+            self.use_sensors = True
+            log.debug("Sensors command available")
+        except FileNotFoundError as e:
+            log.info("Sensors command not available, using /sys/class/thermal/thermal_zone*/")
+            self.use_sensors = False
 
     def _get_temp_from_sensors(self):
         output = bumblebee.util.execute("sensors -u")
@@ -38,12 +48,20 @@ class Module(bumblebee.engine.Module):
         return "unknown"
 
     def get_temp(self):
-        try:
-            temperature = open(self.parameter("path", "/sys/class/thermal/thermal_zone0/temp")).read()[:2]
-            log.debug("retrieved temperature from /sys/class/")
-        except IOError:
+        if self.use_sensors:
             temperature = self._get_temp_from_sensors()
-            log.debug("retrieved temperature from 'sensors -u'")
+            log.debug("Retrieve temperature from sensors -u")
+        else:
+            try:
+                temperature = open(self.parameter("path", "/sys/class/thermal/thermal_zone0/temp")).read()[:2]
+                log.debug("retrieved temperature from /sys/class/")
+                # TODO: Iterate through all thermal zones to determine the correct one and use its value
+                # https://unix.stackexchange.com/questions/304845/discrepancy-between-number-of-cores-and-thermal-zones-in-sys-class-thermal
+
+            except IOError:
+                temperature = "unknown"
+                log.info("Can not determine temperature, please install lm-sensors")
+
         return temperature
 
     def get_mhz(self):
