@@ -29,7 +29,8 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.volume)
         )
         try:
-            bumblebee.util.execute("pulseaudio --start")
+            if bumblebee.util.asbool(self.parameter("autostart", False)):
+                bumblebee.util.execute("pulseaudio --start")
         except Exception:
             pass
 
