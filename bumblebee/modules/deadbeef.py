@@ -10,10 +10,16 @@ Requires the following library:
     * subprocess
 
 Parameters:
-    * deadbeef.format: Format string (defaults to "{artist} - {title}")
-                       Available values are: {artist}, {title}, {album}, {length},
-                                             {trackno}, {year}, {comment},
-                                             {copyright}, {time}
+    * deadbeef.format:   Format string (defaults to "{artist} - {title}")
+                         Available values are: {artist}, {title}, {album}, {length},
+                                               {trackno}, {year}, {comment},
+                                               {copyright}, {time}
+    * deadbeef.previous: Change binding for previous song (default is left click)
+    * deadbeef.next:     Change binding for next song (default is right click)
+    * deadbeef.pause:    Change binding for toggling pause (default is middle click)
+
+    Available options for deadbeef.previous, deadbeef.next and deadbeef.pause are:
+        LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 """
 
 import bumblebee.input
@@ -30,17 +36,27 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
                                      bumblebee.output.Widget(full_text=self.deadbeef)
                                      )
+        buttons = {"LEFT_CLICK":bumblebee.input.LEFT_MOUSE,
+                   "RIGHT_CLICK":bumblebee.input.RIGHT_MOUSE,
+                   "MIDDLE_CLICK":bumblebee.input.MIDDLE_MOUSE,
+                   "SCROLL_UP":bumblebee.input.WHEEL_UP,
+                   "SCROLL_DOWN":bumblebee.input.WHEEL_DOWN,
+                   }
+        
         self._song = ""
         self._format = self.parameter("format", "{artist} - {title}")
+        prev_button = self.parameter("previous", "LEFT_CLICK")
+        next_button = self.parameter("next", "RIGHT_CLICK")
+        pause_button = self.parameter("pause", "MIDDLE_CLICK")
 
         self.now_playing = ["deadbeef","--nowplaying","%a;%t;%b;%l;%n;%y;%c;%r;%e"]
         cmd = "deadbeef "
         
-        engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
+        engine.input.register_callback(self, button=buttons[prev_button],
             cmd=cmd + "--prev")
-        engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
+        engine.input.register_callback(self, button=buttons[next_button],
             cmd=cmd + "--next")
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+        engine.input.register_callback(self, button=buttons[pause_button],
             cmd=cmd + "--play-pause")
 
     def deadbeef(self, widget):
