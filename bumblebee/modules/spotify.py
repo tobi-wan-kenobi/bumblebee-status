@@ -6,8 +6,14 @@ Requires the following library:
     * python-dbus
 
 Parameters:
-    * spotify.format: Format string (defaults to "{artist} - {title}")
-                      Available values are: {album}, {title}, {artist}, {trackNumber}
+    * spotify.format:   Format string (defaults to "{artist} - {title}")
+                        Available values are: {album}, {title}, {artist}, {trackNumber}
+    * spotify.previous: Change binding for previous song (default is left click)
+    * spotify.next:     Change binding for next song (default is right click)
+    * spotify.pause:    Change binding for toggling pause (default is middle click)
+
+    Available options for spotify.previous, spotify.next and spotify.pause are:
+        LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 """
 
 import bumblebee.input
@@ -25,16 +31,26 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
                                      bumblebee.output.Widget(full_text=self.spotify)
                                      )
+        buttons = {"LEFT_CLICK":bumblebee.input.LEFT_MOUSE,
+                   "RIGHT_CLICK":bumblebee.input.RIGHT_MOUSE,
+                   "MIDDLE_CLICK":bumblebee.input.MIDDLE_MOUSE,
+                   "SCROLL_UP":bumblebee.input.WHEEL_UP,
+                   "SCROLL_DOWN":bumblebee.input.WHEEL_DOWN,
+                   }
+        
         self._song = ""
         self._format = self.parameter("format", "{artist} - {title}")
+        prev_button = self.parameter("previous", "LEFT_CLICK")
+        next_button = self.parameter("next", "RIGHT_CLICK")
+        pause_button = self.parameter("pause", "MIDDLE_CLICK")
 
         cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
                 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+        engine.input.register_callback(self, button=buttons[prev_button],
             cmd=cmd + "Previous")
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
+        engine.input.register_callback(self, button=buttons[next_button],
             cmd=cmd + "Next")
-        engine.input.register_callback(self, button=bumblebee.input.MIDDLE_MOUSE,
+        engine.input.register_callback(self, button=buttons[pause_button],
             cmd=cmd + "PlayPause")
 
     def spotify(self, widget):
