@@ -37,6 +37,8 @@ class Module(bumblebee.engine.Module):
         lcl = self.parameter("locale", ".".join(l))
         locale.setlocale(locale.LC_TIME, lcl.split("."))
 
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd="gsimplecal")
+
     def get_time(self, widget):
         enc = locale.getpreferredencoding()
         retval = datetime.datetime.now().strftime(self._fmt)
