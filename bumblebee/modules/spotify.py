@@ -7,7 +7,7 @@ Requires the following library:
 
 Parameters:
     * spotify.format:   Format string (defaults to "{artist} - {title}")
-                        Available values are: {album}, {title}, {artist}, {trackNumber}
+                        Available values are: {album}, {title}, {artist}, {trackNumber}, {playbackStatus}
     * spotify.previous: Change binding for previous song (default is left click)
     * spotify.next:     Change binding for next song (default is right click)
     * spotify.pause:    Change binding for toggling pause (default is middle click)
@@ -65,10 +65,12 @@ class Module(bumblebee.engine.Module):
             spotify = bus.get_object("org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2")
             spotify_iface = dbus.Interface(spotify, 'org.freedesktop.DBus.Properties')
             props = spotify_iface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
+            playback_status = str(spotify_iface.Get('org.mpris.MediaPlayer2.Player', 'PlaybackStatus'))
             self._song = self._format.format(album=str(props.get('xesam:album')),
                                              title=str(props.get('xesam:title')),
                                              artist=','.join(props.get('xesam:artist')),
-                                             trackNumber=str(props.get('xesam:trackNumber')))
+                                             trackNumber=str(props.get('xesam:trackNumber')),
+                                             playbackStatus=u"\u25B6" if playback_status=="Playing" else u"\u258D\u258D" if playback_status=="Paused" else "",)
         except Exception:
             self._song = ""
 
