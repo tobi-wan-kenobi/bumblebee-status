@@ -1,7 +1,7 @@
 # pylint: disable=C0111,R0903
 
 """Displays the result of a notmuch count query
-   default : unread emails wich path do not contained "Trash" (notmuch count "tag:unread AND NOT path:/.*Trash.*/")
+   default : unread emails which path do not contained "Trash" (notmuch count "tag:unread AND NOT path:/.*Trash.*/")
 
 Parameters:
     * notmuch_count.query: notmuch count query to show result 
