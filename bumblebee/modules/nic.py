@@ -35,6 +35,8 @@ class Module(bumblebee.engine.Module):
                 self._states["include"].append(state)
         self._format = self.parameter("format","{intf} {state} {ip} {ssid}");
         self._update_widgets(widgets)
+        self.iwgetid = bumblebee.util.which("iwgetid")
+
 
     def update(self, widgets):
         self._update_widgets(widgets)
@@ -106,7 +108,7 @@ class Module(bumblebee.engine.Module):
     def get_ssid(self, intf):
         if self._iswlan(intf):
             try:
-                return subprocess.check_output(["iwgetid","-r",intf]).strip().decode('utf-8')
+                return subprocess.check_output([self.iwgetid,"-r",intf]).strip().decode('utf-8')
             except:
                 return ""
         return ""
