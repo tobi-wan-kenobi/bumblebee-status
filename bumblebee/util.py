@@ -70,7 +70,9 @@ def which(program):
         if is_exe(program):
             return program
     else:
-        for path in os.environ["PATH"].split(os.pathsep) + ["/sbin", "/usr/sbin/", "/usr/local/sbin"]:
+        localPATH = os.environ["PATH"].split(os.pathsep)
+        localPATH += ["/sbin", "/usr/sbin/", "/usr/local/sbin"]
+        for path in localPATH:
             exe_file = os.path.join(path, program)
             if is_exe(exe_file):
                 return exe_file
