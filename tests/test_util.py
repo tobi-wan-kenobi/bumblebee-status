@@ -2,6 +2,7 @@
 
 import mock
 import unittest
+import re
 
 import tests.mocks as mocks
 
@@ -52,5 +53,13 @@ class TestUtil(unittest.TestCase):
 
         with self.assertRaises(RuntimeError):
             execute(self.some_command_with_args)
+
+    def test_which(self):
+        program = "iwgetid"
+        self.assertTrue(
+            which(program) is None or 
+            re.search('/(' + program + ')$', which(program))
+        )
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
