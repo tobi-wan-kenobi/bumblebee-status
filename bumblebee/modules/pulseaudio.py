@@ -6,6 +6,7 @@ Aliases: pasink (use this to control output instead of input), pasource
 
 Parameters:
     * pulseaudio.autostart: If set to "true" (default is "false"), automatically starts the pulseaudio daemon if it is not running
+    * pulseaudio.percent_change: How much to change volume by when scrolling on the module (default is 2%)
 
 Requires the following executable:
     * pulseaudio
@@ -33,6 +34,13 @@ class Module(bumblebee.engine.Module):
                 bumblebee.util.execute("pulseaudio --start")
         except Exception:
             pass
+        try:
+            percent_change = int(self.parameter("percent_change","2%").strip("%"))
+        except:
+            percent_change = 2
+        if percent_change < 0 or percent_change > 100:
+            percent_change = 2
+        
 
         self._left = 0
         self._right = 0
@@ -51,8 +59,8 @@ class Module(bumblebee.engine.Module):
 
         events = [
             {"type": "mute", "action": "toggle", "button": bumblebee.input.LEFT_MOUSE},
-            {"type": "volume", "action": "+2%", "button": bumblebee.input.WHEEL_UP},
-            {"type": "volume", "action": "-2%", "button": bumblebee.input.WHEEL_DOWN},
+            {"type": "volume", "action": "+{percent}%".format(percent=percent_change), "button": bumblebee.input.WHEEL_UP},
+            {"type": "volume", "action": "-{percent}%".format(percent=percent_change), "button": bumblebee.input.WHEEL_DOWN},
         ]
 
         for event in events:
