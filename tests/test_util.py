@@ -55,11 +55,19 @@ class TestUtil(unittest.TestCase):
             execute(self.some_command_with_args)
 
     def test_which(self):
+        # test for a binary that has to be somewhere
+        print(which("ls"))
+        self.assertTrue(re.search('/(ls)$', which("ls")))
+
+        # test for a binary that is not necessarily there
         program = "iwgetid"
         self.assertTrue(
             which(program) is None or 
             re.search('/(' + program + ')$', which(program))
         )
+
+        # test if which also works with garbage input
+        self.assertTrue(which("qwertygarbage") is None)
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
