@@ -5,7 +5,9 @@ Parameters:
    * progress.placeholder: Text to display while no process is running (defaults to "n/a")
    * progress.barwidth: Width of the progressbar if it is used (defaults to 8)
    * progress.format: Format string (defaults to "{bar} {cmd} {arg}")
-                      Available values are: {bar} {pid} {cmd} {arg} {per} {qty} {spd}
+                      Available values are: {bar} {pid} {cmd} {arg} {percentage} {quantity} {speed} {time}
+   * progress.barfilledchar: Character used to draw the filled part of the bar (defaults to "#"), notice that it can be a string
+   * progress.baremptychar: Character used to draw the empty part of the bar (defaults to "-"), notice that it can be a string
 
 Requires the following executable:
    * progress
@@ -29,9 +31,12 @@ class Module(bumblebee.engine.Module):
         if self.update_progress_info(widget):
             width = self.parameter("barwidth", 8)
             count = round((width * widget.get("per")) / 100)
+            filledchar = self.parameter("barfilledchar", "#")
+            emptychar = self.parameter("baremptychar", "-")
+
             bar = "[{}{}]".format(
-                "#" * count,
-                "--" * (width - count)
+                filledchar * count,
+                emptychar * (width - count)
             )
 
             str_format = self.parameter("format", '{bar} {cmd} {arg}')
@@ -40,10 +45,10 @@ class Module(bumblebee.engine.Module):
                 pid = widget.get("pid"),
                 cmd = widget.get("cmd"),
                 arg = widget.get("arg"),
-                per = widget.get("per"),
-                qty = widget.get("qty"),
-                spd = widget.get("spd"),
-                tim = widget.get("tim")
+                percentage = widget.get("per"),
+                quantity = widget.get("qty"),
+                speed = widget.get("spd"),
+                time = widget.get("tim")
             )
         else:
             return self.parameter("placeholder", 'n/a')
@@ -69,7 +74,7 @@ class Module(bumblebee.engine.Module):
                 raw = bumblebee.util.execute("progress -q")
                 result = extract_nospeed.match(raw)
 
-                widget.set("spd", "??? b/s")
+                widget.set("spd", "???.? B/s")
                 widget.set("tim", "??:??:??")
             else:
                 widget.set("spd", result.group(6))
