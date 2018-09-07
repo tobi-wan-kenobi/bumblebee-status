@@ -5,7 +5,7 @@ Parameters:
    * progress.placeholder: Text to display while no process is running (defaults to "n/a")
    * progress.barwidth: Width of the progressbar if it is used (defaults to 8)
    * progress.format: Format string (defaults to "{bar} {cmd} {arg}")
-                      Available values are: {bar} {pid} {cmd} {arg} {per} {qty}
+                      Available values are: {bar} {pid} {cmd} {arg} {per} {qty} {spd}
 
 Requires the following executable:
    * progress
@@ -41,23 +41,39 @@ class Module(bumblebee.engine.Module):
                 cmd = widget.get("cmd"),
                 arg = widget.get("arg"),
                 per = widget.get("per"),
-                qty = widget.get("qty")
+                qty = widget.get("qty"),
+                spd = widget.get("spd"),
+                tim = widget.get("tim")
             )
         else:
             return self.parameter("placeholder", 'n/a')
 
     def update_progress_info(self, widget):
-        # This regex extracts following groups:
+        # These regex extracts following groups:
         #  1. pid
         #  2. command
         #  3. arguments
         #  4. progress (xx.x formated)
         #  5. quantity (.. unit / .. unit formated)
+        #  6. speed
+        #  7. time remaining
         extract_nospeed = re.compile("\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\)\n.*")
+        extract_wtspeed = re.compile('\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\) (\d*\.\d .*) remaining (\d*:\d*:\d*)\n.*')
 
         try:
-            raw = bumblebee.util.execute("progress -q")
-            result = extract_nospeed.match(raw)
+            raw = bumblebee.util.execute("progress -qW 0.1")
+            result = extract_wtspeed.match(raw)
+
+            if not result:
+                # Abord speed measures
+                raw = bumblebee.util.execute("progress -q")
+                result = extract_nospeed.match(raw)
+
+                widget.set("spd", "??? b/s")
+                widget.set("tim", "??:??:??")
+            else:
+                widget.set("spd", result.group(6))
+                widget.set("tim", result.group(7))
 
             widget.set("pid", int(result.group(1)))
             widget.set("cmd", result.group(2))
