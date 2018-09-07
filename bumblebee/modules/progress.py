@@ -40,7 +40,7 @@ class Module(bumblebee.engine.Module):
             )
 
             str_format = self.parameter("format", '{bar} {cmd} {arg}')
-            return "  " + str_format.format(
+            return str_format.format(
                 bar = bar,
                 pid = widget.get("pid"),
                 cmd = widget.get("cmd"),
@@ -54,6 +54,8 @@ class Module(bumblebee.engine.Module):
             return self.parameter("placeholder", 'n/a')
 
     def update_progress_info(self, widget):
+        """Update widget's informations about the copy"""
+
         # These regex extracts following groups:
         #  1. pid
         #  2. command
@@ -88,4 +90,14 @@ class Module(bumblebee.engine.Module):
             return True
         except Exception:
             return False
+
+    def state(self, widget):
+        if self._active():
+            return "copying"
+        return "pending"
+
+    def _active(self):
+        """Checks wether a copy is running or not"""
+        raw = bumblebee.util.execute("progress -q")
+        return bool(raw)
 
