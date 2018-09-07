@@ -182,6 +182,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * nvidia-smi (for module 'nvidiagpu')
 * sensors (for module 'sensors', as fallback)
 * zpool (for module 'zpool')
+* progress (for module 'progress')
 
 # Examples
 Here are some screenshots for all themes that currently exist:
