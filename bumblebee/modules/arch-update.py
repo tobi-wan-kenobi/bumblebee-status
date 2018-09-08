@@ -30,7 +30,7 @@ class Module(bumblebee.engine.Module):
         return '0'
 
     def utilization(self, widget):
-        return f'Update Arch: {self.packages}'
+        return 'Update Arch: {}'.format(self.packages)
 
     def hidden(self):
             return self.check_updates() == 0
