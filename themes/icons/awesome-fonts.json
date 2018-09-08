@@ -117,7 +117,7 @@
 		"repeat-on": { "prefix": "" },
 		"repeat-off": { "prefix": "" }
 	},
-	"arch": {
+	"arch-update": {
 		"prefix": ""
 	},
 	"github": {
