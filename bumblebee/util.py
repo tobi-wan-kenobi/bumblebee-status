@@ -60,4 +60,23 @@ def durationfmt(duration, shorten=False, suffix=False):
 
     return "{}{}".format(res, suf if suffix else "")
 
+def which(program):
+    import os
+    def is_exe(fpath):
+        return os.path.isfile(fpath) and os.access(fpath, os.X_OK)
+
+    fpath, fname = os.path.split(program)
+    if fpath:
+        if is_exe(program):
+            return program
+    else:
+        localPATH = os.environ["PATH"].split(os.pathsep)
+        localPATH += ["/sbin", "/usr/sbin/", "/usr/local/sbin"]
+        for path in localPATH:
+            exe_file = os.path.join(path, program)
+            if is_exe(exe_file):
+                return exe_file
+
+    return None
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
