@@ -114,10 +114,13 @@
 		"repeat-on": { "prefix": "" },
 		"repeat-off": { "prefix": "" }
 	},
-  "github": {
-	  "prefix": "  "
-  },
-  "hipchat": {
+	"arch": {
+		"prefix": ""
+	},
+	"github": {
+		"prefix": "  "
+	},
+	  "hipchat": {
 	  "prefix": "  "
   },
   "spotify": {
