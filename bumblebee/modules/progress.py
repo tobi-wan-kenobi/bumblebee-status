@@ -1,0 +1,103 @@
+"""
+Show progress for cp, mv, dd, ...
+
+Parameters:
+   * progress.placeholder: Text to display while no process is running (defaults to "n/a")
+   * progress.barwidth: Width of the progressbar if it is used (defaults to 8)
+   * progress.format: Format string (defaults to "{bar} {cmd} {arg}")
+                      Available values are: {bar} {pid} {cmd} {arg} {percentage} {quantity} {speed} {time}
+   * progress.barfilledchar: Character used to draw the filled part of the bar (defaults to "#"), notice that it can be a string
+   * progress.baremptychar: Character used to draw the empty part of the bar (defaults to "-"), notice that it can be a string
+
+Requires the following executable:
+   * progress
+"""
+
+import bumblebee.input
+import bumblebee.output
+import bumblebee.engine
+
+import re
+
+
+class Module(bumblebee.engine.Module):
+
+    def __init__(self, engine, config):
+        super(Module, self).__init__(engine, config,
+            bumblebee.output.Widget(full_text=self.get_progress_text)
+        )
+
+    def get_progress_text(self, widget):
+        if self.update_progress_info(widget):
+            width = self.parameter("barwidth", 8)
+            count = round((width * widget.get("per")) / 100)
+            filledchar = self.parameter("barfilledchar", "#")
+            emptychar = self.parameter("baremptychar", "-")
+
+            bar = "[{}{}]".format(
+                filledchar * count,
+                emptychar * (width - count)
+            )
+
+            str_format = self.parameter("format", '{bar} {cmd} {arg}')
+            return str_format.format(
+                bar = bar,
+                pid = widget.get("pid"),
+                cmd = widget.get("cmd"),
+                arg = widget.get("arg"),
+                percentage = widget.get("per"),
+                quantity = widget.get("qty"),
+                speed = widget.get("spd"),
+                time = widget.get("tim")
+            )
+        else:
+            return self.parameter("placeholder", 'n/a')
+
+    def update_progress_info(self, widget):
+        """Update widget's informations about the copy"""
+
+        # These regex extracts following groups:
+        #  1. pid
+        #  2. command
+        #  3. arguments
+        #  4. progress (xx.x formated)
+        #  5. quantity (.. unit / .. unit formated)
+        #  6. speed
+        #  7. time remaining
+        extract_nospeed = re.compile("\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\)\n.*")
+        extract_wtspeed = re.compile('\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\) (\d*\.\d .*) remaining (\d*:\d*:\d*)\n.*')
+
+        try:
+            raw = bumblebee.util.execute("progress -qW 0.1")
+            result = extract_wtspeed.match(raw)
+
+            if not result:
+                # Abord speed measures
+                raw = bumblebee.util.execute("progress -q")
+                result = extract_nospeed.match(raw)
+
+                widget.set("spd", "???.? B/s")
+                widget.set("tim", "??:??:??")
+            else:
+                widget.set("spd", result.group(6))
+                widget.set("tim", result.group(7))
+
+            widget.set("pid", int(result.group(1)))
+            widget.set("cmd", result.group(2))
+            widget.set("arg", result.group(3))
+            widget.set("per", float(result.group(4)))
+            widget.set("qty", result.group(5))
+            return True
+        except Exception:
+            return False
+
+    def state(self, widget):
+        if self._active():
+            return "copying"
+        return "pending"
+
+    def _active(self):
+        """Checks wether a copy is running or not"""
+        raw = bumblebee.util.execute("progress -q")
+        return bool(raw)
+
