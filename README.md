@@ -161,6 +161,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * power (for the module 'battery')
 * dbus (for the module 'spotify')
 * i3ipc (for the module 'title')
+* pacman-contrib (for module 'arch-update')
 
 # Required commandline utilities
 
