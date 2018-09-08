@@ -6,6 +6,7 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widget = bumblebee.output.Widget(full_text=self.utilization)
@@ -17,7 +18,7 @@ class Module(bumblebee.engine.Module):
                 "checkupdates", stdout=subprocess.PIPE, shell=True)
 
         p_status = p.wait()
-        
+
         if p_status == 0:
             (output, err) = p.communicate()
 
@@ -35,7 +36,7 @@ class Module(bumblebee.engine.Module):
             return self.check_updates() == 0
 
     def update(self, widgets):
-        self.packages = self.check_updates() 
+        self.packages = self.check_updates()
 
     def state(self, widget):
         return self.threshold_state(self.packages, 1, 100)
