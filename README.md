@@ -5,7 +5,7 @@
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 
-**Many, many thanks to all contributors! As of now, 28 of the modules are from various contributors (!), and only 16 from myself.**
+**Many, many thanks to all contributors! As of now, 29 of the modules are from various contributors (!), and only 16 from myself.**
 
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
 
