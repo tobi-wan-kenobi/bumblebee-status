@@ -222,6 +222,10 @@ Greyish Powerline (`-t greyish-powerline`)
 
 ![Greyish Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-greyish.png)
 
+Iceberg Powerline (`-t iceberg-powerline`)
+
+![Iceberg Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/iceberg-powerline.png)
+
 Default (nothing or `-t default`):
 
 ![Default](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/default.png)
