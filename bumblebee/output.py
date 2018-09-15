@@ -37,11 +37,15 @@ class Widget(bumblebee.store.Store):
         self._full_text = full_text
         self.module = None
         self._module = None
+        self._minimized = False
         self.name = name
         self.id = str(uuid.uuid4())
 
     def get_module(self):
         return self._module
+
+    def toggle_minimize(self):
+        self._minimized = not self._minimized
 
     def link_module(self, module):
         """Set the module that spawned this widget
@@ -70,6 +74,8 @@ class Widget(bumblebee.store.Store):
         if value:
             self._full_text = value
         else:
+            if self._minimized:
+                return u"\u2026"
             if callable(self._full_text):
                 return self._full_text(self)
             else:
