@@ -57,6 +57,8 @@ def create_parser():
         help=LIST_HELP)
     parser.add_argument("-d", "--debug", action="store_true",
         help=DEBUG_HELP)
+    parser.add_argument("-r", "--right-to-left", action="store_true",
+        help="Draw widgets from right to left, rather than left to right (which is the default)")
     parser.add_argument("-f", "--logfile", default="~/bumblebee-status-debug.log",
         help="Location of the debug log file")
     parser.add_argument("-i", "--iconset", default="auto",
@@ -99,6 +101,9 @@ class Config(bumblebee.store.Store):
 
     def debug(self):
         return self._args.debug
+
+    def reverse(self):
+        return self._args.right_to_left
 
     def logfile(self):
         return os.path.expanduser(self._args.logfile)

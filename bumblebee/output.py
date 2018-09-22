@@ -83,10 +83,11 @@ class Widget(bumblebee.store.Store):
 
 class I3BarOutput(object):
     """Manage output according to the i3bar protocol"""
-    def __init__(self, theme):
+    def __init__(self, theme, config=None):
         self._theme = theme
         self._widgets = []
         self._started = False
+        self._config = config
 
     def started(self):
         return self._started
@@ -143,7 +144,10 @@ class I3BarOutput(object):
 
     def flush(self):
         """Flushes output"""
-        sys.stdout.write(json.dumps(self._widgets))
+        widgets = self._widgets
+        if self._config and self._config.reverse():
+            widgets = list(reversed(widgets))
+        sys.stdout.write(json.dumps(widgets))
 
     def end(self):
         """Finalizes output"""

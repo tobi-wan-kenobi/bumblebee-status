@@ -39,7 +39,7 @@ def main():
             )
 
     theme = bumblebee.theme.Theme(config.theme(), config.iconset())
-    output = bumblebee.output.I3BarOutput(theme=theme)
+    output = bumblebee.output.I3BarOutput(theme=theme, config=config)
     inp = bumblebee.input.I3BarInput()
     engine = None
 
