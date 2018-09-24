@@ -32,13 +32,17 @@ class Module(bumblebee.engine.Module):
         self.determine_method()
 
     def determine_method(self):
-        try:
-            output = bumblebee.util.execute("sensors -u")
-            self.use_sensors = True
-            log.debug("Sensors command available")
-        except FileNotFoundError as e:
-            log.info("Sensors command not available, using /sys/class/thermal/thermal_zone*/")
-            self.use_sensors = False
+        if self.parameter("path") != None:
+            self.use_sensors = False # use thermal zone
+        else:
+            # try to use output of sensors -u
+            try:
+                output = bumblebee.util.execute("sensors -u")
+                self.use_sensors = True
+                log.debug("Sensors command available")
+            except FileNotFoundError as e:
+                log.info("Sensors command not available, using /sys/class/thermal/thermal_zone*/")
+                self.use_sensors = False
 
     def _get_temp_from_sensors(self):
         output = bumblebee.util.execute("sensors -u")
