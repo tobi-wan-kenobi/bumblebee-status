@@ -35,7 +35,10 @@ class Module(bumblebee.engine.Module):
         if not l or l == (None, None):
             l = ('en_US', 'UTF-8')
         lcl = self.parameter("locale", ".".join(l))
-        locale.setlocale(locale.LC_TIME, lcl.split("."))
+        try:
+            locale.setlocale(locale.LC_TIME, lcl.split("."))
+        except Exception as e:
+            locale.setlocale(locale.LC_TIME, lcl.split("en_US.UTF-8"))
 
     def get_time(self, widget):
         enc = locale.getpreferredencoding()
