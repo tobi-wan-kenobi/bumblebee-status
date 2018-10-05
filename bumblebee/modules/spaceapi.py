@@ -3,7 +3,7 @@
 """Displays the state of a spaceapi endpoint
 
 Requires the following libraries:
-    * urllib
+    * requests
     * json
     * time
 
@@ -18,7 +18,7 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
-import urllib.request
+import requests
 import json
 import time
 
@@ -61,8 +61,9 @@ class Module(bumblebee.engine.Module):
         if self._lastQuery + self._sleeptime < int(unixtime):
             self._lastQuery = int(unixtime)
             try:
-                with urllib.request.urlopen(self._url) as u:
-                    data = json.loads(u.read().decode())
+
+                with requests.get(self._url) as u:
+                    data = u.json()
                     self._state = data["state"]["open"]
                     self._name = self.parameter("name", default=data["space"])
                     self._error = False
