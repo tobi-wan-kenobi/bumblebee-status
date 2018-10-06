@@ -4,14 +4,12 @@
 
 Requires the following libraries:
     * requests
-    * json
-    * time
 
 Parameters:
     * spaceapi.url: String representation of the api endpoint
     * spaceapi.name: String overwriting the space name
     * spaceapi.prefix: Prefix for the space string
-    * spaceapi.interval: time between updates
+    * spaceapi.interval: time between updates in minutes
 """
 
 import bumblebee.input
@@ -19,8 +17,6 @@ import bumblebee.output
 import bumblebee.engine
 
 import requests
-import json
-import time
 
 
 class Module(bumblebee.engine.Module):
@@ -28,48 +24,51 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(
             engine, config, bumblebee.output.Widget(full_text=self.getState)
         )
-        self._state = False
+
+        # Represents the state of the hackerspace
+        self._open = False
+        # Set to true if there was an error calling the spaceapi
         self._error = False
+        # The URL representing the api endpoint
         self._url = self.parameter("url",
                                    default="http://club.entropia.de/spaceapi")
+        # Space Name, can be set manually in case of multiple widgets,
+        # so you're able to distinguish
         self._name = self.parameter("name", default="")
-        self._lastQuery = 0
-        self._sleeptime = self.parameter("interval", default=300)
+
+        # Only execute every 5 minutes by default
+        self.interval(self.parameter("interval", default=5))
 
     def getState(self, widget):
-        string = self.parameter("prefix", default="")
-        string += self._name + ": "
+        text = self.parameter("prefix", default="")
+        text += self._name + ": "
+
         if self._error:
-            string += "ERROR"
-        elif self._state:
-            string += "Open"
+            text += "ERROR"
+        elif self._open:
+            text += "Open"
         else:
-            string += "Closed"
-        return string
+            text += "Closed"
+        return text
 
     def state(self, widget):
         if self._error:
             return ["critical"]
-        elif self._state:
+        elif self._open:
             return ["warning"]
         else:
             return []
 
     def update(self, widgets):
-        unixtime = time.mktime(time.gmtime())
-        # Only query again after interval has passed
-        if self._lastQuery + self._sleeptime < int(unixtime):
-            self._lastQuery = int(unixtime)
-            try:
-
-                with requests.get(self._url) as u:
-                    data = u.json()
-                    self._state = data["state"]["open"]
-                    self._name = self.parameter("name", default=data["space"])
-                    self._error = False
-            except Exception:
-                # Displays ERROR status
-                self._error = True
+        try:
+            with requests.get(self._url) as u:
+                json = u.json()
+                self._open = json["state"]["open"]
+                self._name = self.parameter("name", default=json["space"])
+                self._error = False
+        except Exception:
+            # Displays ERROR status
+            self._error = True
 
 
 # Author: Tobias Manske <tobias.manske@mailbox.org>
