@@ -30,6 +30,14 @@ Supported FontAwesome version: 4 (free version of 5 doesn't include some of the 
 
 Explicitly unsupported Python versions: 3.2 (missing unicode literals)
 
+Example usage:
+
+```
+bar {
+	status_command = bumblebee-status -m cpu memory battery time pasink pasource -p time.format="%H:%M" -t solarized
+}
+```
+
 # Documentation
 See [the wiki](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki) for documentation.
 
