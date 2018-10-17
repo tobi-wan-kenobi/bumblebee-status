@@ -34,7 +34,7 @@ Example usage:
 
 ```
 bar {
-	status_command = bumblebee-status -m cpu memory battery time pasink pasource -p time.format="%H:%M" -t solarized
+	status_command <path>/bumblebee-status -m cpu memory battery time pasink pasource -p time.format="%H:%M" -t solarized
 }
 ```
 
@@ -64,7 +64,7 @@ In your i3wm configuration, modify the *status_command* for your i3bar like this
 
 ```
 bar {
-	status_command = <path to bumblebee-status/bumblebee-status> -m <list of modules> -p <list of module parameters> -t <theme>
+	status_command <path to bumblebee-status/bumblebee-status> -m <list of modules> -p <list of module parameters> -t <theme>
 }
 ```
 
