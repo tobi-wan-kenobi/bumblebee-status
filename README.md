@@ -170,6 +170,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * dbus (for the module 'spotify')
 * i3ipc (for the module 'title')
 * pacman-contrib (for module 'arch-update')
+* docker (for the module 'docker_ps')
 
 # Required commandline utilities
 
