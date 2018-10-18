@@ -59,9 +59,9 @@
 		"muted": { "prefix": "" },
 		"unmuted": { "prefix": "" }
 	},
-  "kernel": {
-    "prefix": "\uf17c"
-  },
+   "kernel": {
+       "prefix": "\uf17c"
+    },
 	"nic": {
 		"wireless-up": { "prefix": "" },
 		"wireless-down": { "prefix": "" },
@@ -91,22 +91,29 @@
 		"estimate": {	"prefix": ""  }
 	},
 	"caffeine": {
-		"activated": {"prefix": " " }, "deactivated": { "prefix": " " }
+		"activated": {"prefix": " " },
+		"deactivated": { "prefix": " " }
 	},
 	"xrandr": {
-		"on": { "prefix": " "}, "off": { "prefix": " " }
+		"on": { "prefix": " "},
+		"off": { "prefix": " " }
 	},
 	"redshift": {
-		"day": { "prefix": "" }, "night": { "prefix": "" }, "transition": { "prefix": "" }
+		"day": { "prefix": "" },
+		"night": { "prefix": "" },
+		"transition": { "prefix": "" }
 	},
-  "sensors": {
-    "prefix": ""
-  },
-  "traffic":{
-	  "rx": { "prefix": "" },
-	  "tx": { "prefix": "" }
-  },
-  "mpd": {
+	"docker_ps": {
+		"prefix": ""
+	},
+    "sensors": {
+        "prefix": ""
+    },
+    "traffic":{
+	    "rx": { "prefix": "" },
+	    "tx": { "prefix": "" }
+    },
+    "mpd": {
 		"playing": { "prefix": "" },
 		"paused": { "prefix": "" },
 		"stopped": { "prefix": "" },
@@ -123,26 +130,28 @@
 	"github": {
 		"prefix": "  "
 	},
-	  "hipchat": {
-	  "prefix": "  "
-  },
-  "spotify": {
-	  "prefix": "  "
-  },
-  "publicip": {
-	  "prefix": "  "
-  },
-  "weather": {
-    "clouds": { "prefix": "" },
-    "rain": { "prefix": "" },
-    "snow": { "prefix": "" },
-    "clear": { "prefix": "" },
-    "thunder": { "prefix": "" }
-  },
-  "taskwarrior": {
-      "prefix": "  "
-  },
-  "progress": {
-      "copying": { "prefix": "" }
-  }
+	"hipchat": {
+	    "prefix": "  "
+    },
+    "spotify": {
+	    "prefix": "  "
+    },
+    "publicip": {
+	    "prefix": "  "
+    },
+    "weather": {
+       "clouds": { "prefix": "" },
+       "rain": { "prefix": "" },
+       "snow": { "prefix": "" },
+       "clear": { "prefix": "" },
+       "thunder": { "prefix": "" }
+    },
+    "taskwarrior": {
+       "prefix": "  "
+    },
+    "progress": {
+       "copying": {
+		   "prefix": ""
+		}
+    }
 }

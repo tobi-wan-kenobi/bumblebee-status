@@ -60,6 +60,9 @@
 	"redshift": {
 		"day": { "prefix": "day" }, "night": { "prefix": "night" }, "transition": { "prefix": "trans" }
 	},
+	"docker_ps": {
+		"prefix": "containers"
+	},
 	"sensors": {
 		"prefix": "sensors"
 	},
