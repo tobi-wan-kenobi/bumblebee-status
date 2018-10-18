@@ -29,9 +29,11 @@ class Module(bumblebee.engine.Module):
         self._status = self.status
 
     def status(self, _):
-        cli = docker.DockerClient(base_url='unix://var/run/docker.sock')
         try:
+            cli = docker.DockerClient(base_url='unix://var/run/docker.sock')
             cli.ping()
         except ConnectionError:
             return "Daemon off"
+        except Exception:
+            return "n/a"
         return "OK - {}".format(len(cli.containers.list(filters={'status': "running"})))
