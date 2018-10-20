@@ -27,7 +27,7 @@ class Module(bumblebee.engine.Module):
             packages.pop()
 
             return len(packages)
-        return '0'
+        return 0
 
     def utilization(self, widget):
         return 'Update Arch: {}'.format(self.packages)
