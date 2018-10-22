@@ -8,6 +8,7 @@ Parameters:
     * traffic.showname: If set to False, hide network interface name (defaults to True)
 """
 
+import time
 import psutil
 import netifaces
 
@@ -26,6 +27,7 @@ class Module(bumblebee.engine.Module):
         self._showname = bumblebee.util.asbool(self.parameter("showname", True))
         self._prev = {}
         self._states = {}
+        self._lastcheck = 0
         self._states["include"] = []
         self._states["exclude"] = []
         for state in tuple(filter(len, self.parameter("states", "").split(","))):
@@ -71,6 +73,10 @@ class Module(bumblebee.engine.Module):
         del widgets[:]
 
         counters = psutil.net_io_counters(pernic=True)
+        now = int(time.time())
+        timediff = now - (self._lastcheck if self._lastcheck else now)
+        if timediff <= 0: timediff = 1
+        self._lastcheck = now
         for interface in interfaces:
             if not interface: interface = "lo"
             state = "down"
@@ -96,7 +102,7 @@ class Module(bumblebee.engine.Module):
                 name = "traffic.{}-{}".format(direction, interface)
                 widget = self.create_widget(widgets, name, attributes={"theme.minwidth": "1000.00MB"})
                 prev = self._prev.get(name, 0)
-                speed = bumblebee.util.bytefmt(int(data[direction]) - int(prev))
+                speed = bumblebee.util.bytefmt((int(data[direction]) - int(prev))/timediff)
                 widget.full_text(speed)
                 self._prev[name] = data[direction]
 
