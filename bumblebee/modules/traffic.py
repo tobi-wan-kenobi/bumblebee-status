@@ -73,7 +73,7 @@ class Module(bumblebee.engine.Module):
         del widgets[:]
 
         counters = psutil.net_io_counters(pernic=True)
-        now = int(time.time())
+        now = time.time()
         timediff = now - (self._lastcheck if self._lastcheck else now)
         if timediff <= 0: timediff = 1
         self._lastcheck = now
