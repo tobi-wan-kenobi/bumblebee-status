@@ -10,6 +10,8 @@ Parameters:
     * spaceapi.name: String overwriting the space name
     * spaceapi.prefix: Prefix for the space string
     * spaceapi.interval: time between updates in minutes
+    * spaceapi.timeout: Maximum time in seconds to wait for a response from API
+                        endpoint
 """
 
 import bumblebee.input
@@ -36,6 +38,10 @@ class Module(bumblebee.engine.Module):
         # so you're able to distinguish
         self._name = self.parameter("name", default="")
 
+        # The timeout prevents the statusbar from blocking when the destination
+        # can't be reached.
+        self._timeout = self.parameter("timeout", default=2)
+
         # Only execute every 5 minutes by default
         self.interval(self.parameter("interval", default=5))
 
@@ -61,7 +67,7 @@ class Module(bumblebee.engine.Module):
 
     def update(self, widgets):
         try:
-            with requests.get(self._url) as u:
+            with requests.get(self._url, timeout=self.timeout) as u:
                 json = u.json()
                 self._open = json["state"]["open"]
                 self._name = self.parameter("name", default=json["space"])
