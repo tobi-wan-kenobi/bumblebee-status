@@ -8,7 +8,6 @@ Parameters:
     * hipchat.interval: Refresh interval in minutes (defaults to 5)
 """
 
-import functools
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -31,13 +30,12 @@ class Module(bumblebee.engine.Module):
         self._requests = requests.Session()
         self._requests.headers.update({"Authorization":"Bearer {}".format(self.parameter("token", ""))})
 
-        immediate_update = functools.partial(self.update, immediate=True)
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=immediate_update)
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.update)
 
     def output(self, _):
         return str(self._count)
 
-    def update(self, _, immediate=False):
+    def update(self, _):
         try:
             self._count = 0
             items = self._requests.get(HIPCHAT_API_URL).json().get('items')

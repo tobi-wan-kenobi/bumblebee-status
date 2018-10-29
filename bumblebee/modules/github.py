@@ -10,7 +10,6 @@ Parameters:
     * github.interval: Interval in minutes
 """
 
-import functools
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -31,14 +30,12 @@ class Module(bumblebee.engine.Module):
         self._requests.headers.update({"Authorization":"token {}".format(self.parameter("token", ""))})
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="x-www-browser https://github.com/notifications")
-        immediate_update = functools.partial(self.update, immediate=True)
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
-            cmd=immediate_update)
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.update)
 
     def github(self, _):
         return str(self._count)
 
-    def update(self, _, immediate=False):
+    def update(self, _):
         try:
             self._count = 0
             url = "https://api.github.com/notifications"
