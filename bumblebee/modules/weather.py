@@ -16,7 +16,7 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 import re
-import json
+
 try:
     import requests
     from requests.exceptions import RequestException
@@ -84,13 +84,13 @@ class Module(bumblebee.engine.Module):
             weather_url = "{}&units={}".format(weather_url, self._unit)
             if self._location == "auto":
                 location_url = "http://ipinfo.io/json"
-                location = json.loads(requests.get(location_url).text)
+                location = requests.get(location_url).json()
                 coord = location["loc"].split(",")
                 self._city = location["city"]
                 weather_url = "{url}&lat={lat}&lon={lon}".format(url=weather_url, lat=coord[0], lon=coord[1])
             else:
                 weather_url = "{url}&q={city}".format(url=weather_url, city=self._location)
-            weather = json.loads(requests.get(weather_url).text)
+            weather = requests.get(weather_url).json()
             self._temperature = int(weather['main']['temp'])
             self._weather = weather['weather'][0]['main'].lower()
             self._valid = True
