@@ -30,6 +30,9 @@ class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.get_time))
+        self._app = self.parameter("open", "calendar")
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+                                    cmd=self._app)
         self._fmt = self.parameter("format", default_format(self.name))
         l = locale.getdefaultlocale()
         if not l or l == (None, None):
