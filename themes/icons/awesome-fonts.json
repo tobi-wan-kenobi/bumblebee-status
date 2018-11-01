@@ -8,6 +8,7 @@
 	"datetime": { "prefix": "" },
 	"memory": { "prefix": "" },
 	"cpu": { "prefix": "" },
+	"frequency": { "prefix": "" },
 	"disk": { "prefix": "" },
 	"dnf": { "prefix": "" },
 	"pacman": { "prefix": "" },

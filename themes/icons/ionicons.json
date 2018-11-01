@@ -8,6 +8,7 @@
 	"datetime": { "prefix": "\uf3b3" },
 	"memory": { "prefix": "\uf389" },
 	"cpu": { "prefix": "\uf4b0" },
+	"frequency": { "prefix": "\uf4b0" },
 	"disk": { "prefix": "\u26c1" },
 	"dnf": { "prefix": "\uf2be" },
 	"pacman": { "prefix": "\uf2be" },

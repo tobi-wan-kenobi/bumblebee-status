@@ -4,6 +4,7 @@
 	},
 	"memory": { "prefix": "ram" },
 	"cpu": { "prefix": "cpu" },
+	"frequency": { "prefix": "frequency" },
 	"disk": { "prefix": "hdd" },
 	"dnf": { "prefix": "dnf" },
 	"brightness": { "prefix": "o" },
