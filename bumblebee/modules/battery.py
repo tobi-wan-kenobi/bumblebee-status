@@ -78,17 +78,18 @@ class Module(bumblebee.engine.Module):
             return "n/a"
         capacity = capacity if capacity < 100 else 100
         widget.set("capacity", capacity)
-        if bumblebee.util.asbool(self.parameter("showdevice", False)):
-            widget.set("theme.minwidth", "100% ({})".format(os.path.basename(widget.name)))
-            return "{}% ({})".format(capacity, os.path.basename(widget.name))
+        output =  "{}%".format(capacity)
         widget.set("theme.minwidth", "100%")
+        
+        if bumblebee.util.asbool(self.parameter("showremaining", True))\
+                and self.getCharge(widget) == "Discharging":
+            output = "{} {}".format(output, self.remaining())
 
-        remaining = None
-        if bumblebee.util.asbool(self.parameter("showremaining", True)):
-            remaining = self.remaining()
+        if bumblebee.util.asbool(self.parameter("showdevice", False)):
+            output = "{} ({})".format(output, os.path.basename(widget.name))
 
-        return "{}%{}".format(capacity, "" if not remaining else " ({})".format(remaining))
-
+        return output
+       
     def state(self, widget):
         state = []
         capacity = widget.get("capacity")
@@ -104,12 +105,7 @@ class Module(bumblebee.engine.Module):
         if widget.get("ac"):
             state.append("AC")
         else:
-            charge = ""
-            try:
-                with open("{}/status".format(widget.name)) as f:
-                    charge = f.read().strip()
-            except IOError:
-                pass
+            charge = self.getCharge(widget)
             if charge == "Discharging":
                 state.append("discharging-{}".format(min([10, 25, 50, 80, 100], key=lambda i: abs(i-capacity))))
             elif charge == "Unknown":
@@ -122,4 +118,12 @@ class Module(bumblebee.engine.Module):
 
         return state
 
+    def getCharge(self, widget):
+        charge = ""
+        try:
+            with open("{}/status".format(widget.name)) as f:
+                charge = f.read().strip()
+        except IOError:
+                pass
+        return charge
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
