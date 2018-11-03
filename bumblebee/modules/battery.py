@@ -85,7 +85,7 @@ class Module(bumblebee.engine.Module):
                 and self.getCharge(widget) == "Discharging":
             output = "{} {}".format(output, self.remaining())
 
-        if bumblebee.util.asbool(self.parameter("showdevice", True)):
+        if bumblebee.util.asbool(self.parameter("showdevice", False)):
             output = "{} ({})".format(output, os.path.basename(widget.name))
 
         return output
