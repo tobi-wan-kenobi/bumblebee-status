@@ -32,6 +32,7 @@ class Module(bumblebee.engine.Module):
         self._apikey = self.parameter("apikey", "af7bfe22287c652d032a3064ffa44088")
         self._location = self.parameter("location", "auto")
         self._city = self.parameter("location", "")
+        self._showcity = bumblebee.util.asbool(self.parameter("showcity", True))
         self._unit = self.parameter("unit", "metric")
         self._valid = False
         self.interval(15)
@@ -55,7 +56,10 @@ class Module(bumblebee.engine.Module):
     def output(self, widget):
         if not self._valid:
             return u"?"
-        return self.city() + self.temperature()
+        if self._showcity:
+            return self.city() + self.temperature()
+        else:
+            return self.temperature()
 
     def state(self, widget):
         if self._valid:

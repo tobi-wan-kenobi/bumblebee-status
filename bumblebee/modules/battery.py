@@ -112,6 +112,8 @@ class Module(bumblebee.engine.Module):
                 pass
             if charge == "Discharging":
                 state.append("discharging-{}".format(min([10, 25, 50, 80, 100], key=lambda i: abs(i-capacity))))
+            elif charge == "Unknown":
+                state.append("unknown")
             else:
                 if capacity > 95:
                     state.append("charged")
