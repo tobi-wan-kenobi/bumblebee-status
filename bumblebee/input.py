@@ -34,7 +34,7 @@ def read_input(inp):
             continue
         for fileno, event in events:
             line = "["
-            while "[" in line:
+            while line.startswith("["):
                 line = sys.stdin.readline().strip(",").strip()
             inp.has_event = True
             try:
