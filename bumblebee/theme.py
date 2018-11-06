@@ -189,6 +189,14 @@ class Theme(object):
     def load(self, name, path=theme_path()):
         """Load and parse a theme file"""
         result = None
+
+        full_name = os.path.expanduser(name)
+        if os.path.isfile(full_name):
+            path = os.path.dirname(full_name)
+            name = os.path.basename(full_name)
+            name,_,_ = name.rpartition(".json")
+            return self.load(name, path)
+
         if not isinstance(path, list):
             path = [path]
         for p in path:
