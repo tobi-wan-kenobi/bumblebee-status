@@ -9,6 +9,7 @@ Parameters:
                     of "sensors -j" (i.e. <key1>/<key2>/.../<value>), for example, path could
                     be: "coretemp-isa-00000/Core 0/temp1_input" (defaults to "false")
     * sensors.match: (fallback) Line to match against output of 'sensors -u' (default: temp1_input)
+    * sensors.match_pattern: (fallback) Line to match against before temperature is read (no default)
     * sensors.match_number: (fallback) which of the matches you want (default -1: last match).
 ￼
 """
@@ -31,6 +32,7 @@ class Module(bumblebee.engine.Module):
         self._temperature = "unknown"
         self._mhz = "n/a"
         self._match_number = int(self.parameter("match_number", "-1"))
+        self._match_pattern = self.parameter("match_pattern", None)
         self._pattern = re.compile(r"^\s*{}:\s*([\d.]+)$".format(self.parameter("match", "temp1_input")), re.MULTILINE)
         self._json = bumblebee.util.asbool(self.parameter("json", "false"))
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd="xsensors")
@@ -61,6 +63,13 @@ class Module(bumblebee.engine.Module):
                 return "unknown"
         else:
             output = bumblebee.util.execute("sensors -u")
+            if self._match_pattern:
+                temp_pattern = self.parameter("match", "temp1_input")
+                match = re.search(r"{}.+{}".format(self._match_pattern, temp_pattern), output.replace("\n", ""))
+                if match:
+                    return int(float(match.group(1)))
+                else:
+                    return "unknown"
             match = self._pattern.findall(output)
             if match:
                 return int(float(match[self._match_number]))
