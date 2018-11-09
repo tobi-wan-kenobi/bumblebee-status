@@ -2,6 +2,11 @@
 
 """Shows a widget for each connected screen and allows the user to enable/disable screens.
 
+Parameters:
+    * xrandr.overwrite_i3config: If set to 'true', this module assembles a new i3 config
+        every time a screen is enabled or disabled by taking the file "~/.config/i3/config.template"
+        and appending a file "~/.config/i3/config.<screen name>" for every screen.
+
 Requires the following executable:
     * xrandr
 """
@@ -52,7 +57,11 @@ class Module(bumblebee.engine.Module):
 
     def _toggle(self, event):
         path = os.path.dirname(os.path.abspath(__file__))
-        toggle_cmd = "{}/../../bin/toggle-display.sh".format(path)
+
+        if bumblebee.util.asbool(self.parameter("overwrite_i3config", False)) == True:
+            toggle_cmd = "{}/../../bin/toggle-display.sh".format(path)
+        else:
+            toggle_cmd = "xrandr"
 
         widget = self.widget_by_id(event["instance"])
 
