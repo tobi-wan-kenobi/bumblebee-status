@@ -84,6 +84,11 @@
 		"discharging-50": { "prefix": "\uf115", "suffix": "\uf3e6" },
 		"discharging-80": { "prefix": "\uf114", "suffix": "\uf3e6" },
 		"discharging-100": { "prefix": "\uf113", "suffix": "\uf3e6" },
+		"unknown-10": { "prefix": "\uf112", "suffix": "\uf3bc" },
+		"unknown-25": { "prefix": "\uf115", "suffix": "\uf142" },
+		"unknown-50": { "prefix": "\uf115", "suffix": "\uf142" },
+		"unknown-80": { "prefix": "\uf114", "suffix": "\uf142" },
+		"unknown-100": { "prefix": "\uf113", "suffix": "\uf142" },
 		"unlimited": { "prefix": "\uf402", "suffix": "\uf493" },
 		"estimate": {	"prefix": "\uf402"  }
 	},
