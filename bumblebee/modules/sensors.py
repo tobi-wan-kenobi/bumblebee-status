@@ -65,7 +65,7 @@ class Module(bumblebee.engine.Module):
             output = bumblebee.util.execute("sensors -u")
             if self._match_pattern:
                 temp_pattern = self.parameter("match", "temp1_input")
-                match = re.search(r"{}.+{}".format(self._match_pattern, temp_pattern), output.replace("\n", ""))
+                match = re.search(r"{}.+{}:\s*([\d.]+)$".format(self._match_pattern, temp_pattern), output.replace("\n", ""))
                 if match:
                     return int(float(match.group(1)))
                 else:
