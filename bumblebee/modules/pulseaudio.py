@@ -134,7 +134,7 @@ class Module(bumblebee.engine.Module):
         if self._mute:
             return ["warning", "muted"]
         if int(self._left) > int(100):
-+   1       return ["critical", "unmuted"]
+            return ["critical", "unmuted"]
         return ["unmuted"]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
