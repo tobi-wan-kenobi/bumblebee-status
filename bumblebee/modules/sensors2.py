@@ -12,6 +12,8 @@ Parameters:
     * sensors2.showname: Enable or disable show of sensor name (default: false)
 """
 
+import re
+
 import bumblebee.util
 import bumblebee.output
 import bumblebee.engine
