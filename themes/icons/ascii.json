@@ -55,6 +55,23 @@
 		"unknown-80": { "suffix": "?" },
 		"unknown-100": { "suffix": "?" }
 	},
+	"battery_all": {
+		"charged": { "suffix": "full" },
+		"charging": { "suffix": "chr" },
+		"AC": { "suffix": "ac" },
+		"discharging-10": {
+			"prefix": "!",
+			"suffix": "dis"
+		},
+		"discharging-25": { "suffix": "dis" },
+		"discharging-50": { "suffix": "dis" },
+		"discharging-80": { "suffix": "dis" },
+		"discharging-100": { "suffix": "dis" },
+		"unknown-25": { "suffix": "?" },
+		"unknown-50": { "suffix": "?" },
+		"unknown-80": { "suffix": "?" },
+		"unknown-100": { "suffix": "?" }
+	},
 	"caffeine": {
 		"activated": {"prefix": "caf-on" }, "deactivated": { "prefix": "caf-off " }
 	},
