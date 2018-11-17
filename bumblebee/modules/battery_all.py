@@ -23,25 +23,15 @@ except ImportError:
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        widgets = []
-        super(Module, self).__init__(engine, config, widgets)
         self._batteries = []
+        # TODO: list all batteries
         self._batteries.append("/sys/class/power_supply/BAT0")
         self._batteries.append("/sys/class/power_supply/BAT1")
-        self.update(widgets)
+
+        super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.capacity))
+
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="gnome-power-statistics")
-
-    def update(self, widgets):
-        widget_all = []
-        widget_all_name = "All"
-        widget_all = self.widget(widget_all_name)
-        if not widget_all:
-                widget_all = bumblebee.output.Widget(full_text=self.capacity_all, name="All")
-        self.capacity_all(widget_all)
-        while len(widgets) > 0: del widgets[0]
-        widgets.append(widget_all)
-        self._widgets = widgets
 
     def remaining(self):
         estimate = 0.0
@@ -56,16 +46,13 @@ class Module(bumblebee.engine.Module):
             return ""
         return bumblebee.util.durationfmt(estimate*60, shorten=True, suffix=True) # estimate is in minutes
 
-    def capacity_all(self, widget):
+    def capacity(self, widget):
         widget.set("capacity", -1)
         widget.set("ac", False)
-        # if not os.path.exists(widget.name):
-        #     widget.set("capacity", 100)
-        #     widget.set("ac", True)
-        #     return "ac"
         capacity = 100
         energy_now = 0
         energy_full = 0
+        errors = 0
         for path in self._batteries:
             try:
                 with open("{}/energy_full".format(path)) as f:
@@ -74,6 +61,15 @@ class Module(bumblebee.engine.Module):
                     energy_now += int(o.read())
             except IOError:
                 return "n/a"
+            except Exception:
+                errors += 1
+
+        if errors == len(self._batteries):
+            # if all batteries return errors, but we are still running
+            # assume we are on A/C
+            widget.set("ac", True)
+            widget.set("capacity", 100)
+            return "ac"
 
         capacity = int( energy_now / energy_full  * 100)
         capacity = capacity if capacity < 100 else 100
