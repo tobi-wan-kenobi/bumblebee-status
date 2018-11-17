@@ -56,8 +56,10 @@ class Module(object):
         if widgets:
             self._widgets = widgets if isinstance(widgets, list) else [widgets]
 
-    def widgets(self):
+    def widgets(self, widgets=None):
         """Return the widgets to draw for this module"""
+        if widgets:
+            self._widgets = widgets
         return self._widgets
 
     def hidden(self):

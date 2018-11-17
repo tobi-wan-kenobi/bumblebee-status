@@ -114,6 +114,11 @@
     "sensors": {
         "prefix": ""
     },
+    "sensors2": {
+		"temp": { "prefix": "" },
+		"fan": { "prefix": "" },
+		"cpu": { "prefix": "" }
+    },
     "traffic":{
 	    "rx": { "prefix": "" },
 	    "tx": { "prefix": "" }
