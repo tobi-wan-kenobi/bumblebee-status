@@ -35,13 +35,25 @@ class Module(bumblebee.engine.Module):
 
     def remaining(self):
         estimate = 0.0
+        power_now = 0.0
         try:
             estimate = power.PowerManagement().get_time_remaining_estimate()
             # do not show remaining if on AC
             if estimate == power.common.TIME_REMAINING_UNLIMITED:
                 return None
-            if estimate == power.common.TIME_REMAINING_UNKNOWN:
+            elif estimate == power.common.TIME_REMAINING_UNKNOWN:
                 return ""
+            else:
+                for path in self._batteries:
+                    try:
+                        with open("{}/power_now".format(path)) as o:
+                            power_now += int(o.read())
+                    except IOError:
+                        return "n/a"
+                    except Exception:
+                        errors += 1
+                
+                estimate =  float( self.energy_now / power_now)
         except Exception:
             return ""
         return bumblebee.util.durationfmt(estimate*60, shorten=True, suffix=True) # estimate is in minutes
@@ -50,15 +62,15 @@ class Module(bumblebee.engine.Module):
         widget.set("capacity", -1)
         widget.set("ac", False)
         capacity = 100
-        energy_now = 0
-        energy_full = 0
+        self.energy_now = 0
+        self.energy_full = 0
         errors = 0
         for path in self._batteries:
             try:
                 with open("{}/energy_full".format(path)) as f:
-                    energy_full += int(f.read())
+                    self.energy_full += int(f.read())
                 with open("{}/energy_now".format(path)) as o:
-                    energy_now += int(o.read())
+                    self.energy_now += int(o.read())
             except IOError:
                 return "n/a"
             except Exception:
@@ -71,7 +83,7 @@ class Module(bumblebee.engine.Module):
             widget.set("capacity", 100)
             return "ac"
 
-        capacity = int( energy_now / energy_full  * 100)
+        capacity = int( self.energy_now / self.energy_full  * 100)
         capacity = capacity if capacity < 100 else 100
         widget.set("capacity", capacity)
         output =  "{}%".format(capacity)
