@@ -8,6 +8,7 @@ Parameters:
 
 """
 
+import bumblebee.util
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -22,10 +23,16 @@ class Module(bumblebee.engine.Module):
         self._device_path = self.parameter("device_path", "/sys/class/backlight/intel_backlight")
         step = self.parameter("step", 2)
 
-        engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
-            cmd="xbacklight +{}%".format(step))
-        engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
-            cmd="xbacklight -{}%".format(step))
+        if bumblebee.util.which("light"):
+            engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
+                cmd="light -A {}%".format(step))
+            engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
+                cmd="light -U {}%".format(step))
+        else:
+            engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
+                cmd="xbacklight +{}%".format(step))
+            engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
+                cmd="xbacklight -{}%".format(step))
 
     def brightness(self, widget):
         if isinstance(self._brightness, float):
