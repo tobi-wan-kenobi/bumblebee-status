@@ -125,13 +125,18 @@ class I3BarOutput(object):
                 "separator_block_width": self._theme.separator_block_width(widget),
             })
         width = self._theme.minwidth(widget)
+
+        if width:
+            full_text = full_text.ljust(len(width) + len(prefix) + len(suffix))
+
         self._widgets.append({
             u"full_text": full_text,
             "color": self._theme.fg(widget),
             "background": self._theme.bg(widget),
             "separator_block_width": self._theme.separator_block_width(widget),
             "separator": True if separator is None else False,
-            "min_width": width + "A"*(len(prefix) + len(suffix)) if width else None,
+            "min_width": None,
+#            "min_width": width + "A"*(len(prefix) + len(suffix)) if width else None,
             "align": self._theme.align(widget),
             "instance": widget.id,
             "name": module.id,
