@@ -27,6 +27,7 @@ class Module(bumblebee.engine.Module):
         # TODO: list all batteries
         self._batteries.append("/sys/class/power_supply/BAT0")
         self._batteries.append("/sys/class/power_supply/BAT1")
+        self._batteries.append("/sys/class/power_supply/battery")
 
         super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.capacity))
 
