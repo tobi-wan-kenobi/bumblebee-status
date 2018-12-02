@@ -68,7 +68,7 @@ bar {
 }
 ```
 
-You can retrieve a list of modules and themes by entering:
+You can retrieve a list of modules (and their parameters) and themes by entering:
 ```
 $ cd bumblebee-status
 $ ./bumblebee-status -l themes
