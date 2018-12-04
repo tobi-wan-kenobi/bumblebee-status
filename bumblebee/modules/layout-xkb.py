@@ -43,14 +43,9 @@ class Module(bumblebee.engine.Module):
 
         xkb = XKeyboard()
         if xkb.groups_count < 2: return # nothing to doA
-
-        layouts = xkb.groups_symbols[rotation:] + xkb.groups_symbols[:rotation]
-        variants = xkb.groups_variants[rotation:] + xkb.groups_variants[:rotation]
-
-        try:
-            bumblebee.util.execute("setxkbmap -layout {} -variant {}".format(",".join(layouts), ",".join(variants)))
-        except RuntimeError:
-            pass
+        layouts = xkb.groups_symbols
+        idx = layouts.index(xkb.group_symbol)
+        xkb.group_symbol = str(layouts[(idx + rotation) % len(layouts)])
 
     def current_layout(self, widget):
         try:
