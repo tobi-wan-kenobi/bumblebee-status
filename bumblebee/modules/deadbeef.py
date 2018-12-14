@@ -14,9 +14,10 @@ Parameters:
                          Available values are: {artist}, {title}, {album}, {length},
                                                {trackno}, {year}, {comment},
                                                {copyright}, {time}
-    * deadbeef.previous: Change binding for previous song (default is left click)
-    * deadbeef.next:     Change binding for next song (default is right click)
-    * deadbeef.pause:    Change binding for toggling pause (default is middle click)
+    * deadbeef.previous:  Change binding for previous song (default is left click)
+    * deadbeef.next:      Change binding for next song (default is right click)
+    * deadbeef.pause:     Change binding for toggling pause (default is middle click)
+    * deadbeef.scrolling: Change the speed that the text in the module scrolls (default is 0)
 
     Available options for deadbeef.previous, deadbeef.next and deadbeef.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
@@ -44,10 +45,13 @@ class Module(bumblebee.engine.Module):
                    }
         
         self._song = ""
+        self._last_song = None
         self._format = self.parameter("format", "{artist} - {title}")
         prev_button = self.parameter("previous", "LEFT_CLICK")
         next_button = self.parameter("next", "RIGHT_CLICK")
         pause_button = self.parameter("pause", "MIDDLE_CLICK")
+        self._scroll_speed = int(self.parameter("scrolling",0))
+        self._scroll_position = 0
 
         self.now_playing = ["deadbeef","--nowplaying","%a;%t;%b;%l;%n;%y;%c;%r;%e"]
         cmd = "deadbeef "
@@ -60,12 +64,20 @@ class Module(bumblebee.engine.Module):
             cmd=cmd + "--play-pause")
 
     def deadbeef(self, widget):
-        return str(self._song)
+        #return str(self._song)
+        divider = " -- " if self._scroll_speed != 0 else ""
+        return str(self._song)[self._scroll_position:]+divider+str(self._song)[:self._scroll_position]
 
     def hidden(self):
         return str(self._song) == ""
 
     def update(self, widgets):
+        if self._song != "" and self._song == self._last_song:
+            self._scroll_position += self._scroll_speed
+            self._scroll_position = self._scroll_position % len(self._song)
+        else:
+            self._scroll_position = 0
+            self._last_song = self._song
         try:
             deadbeef = subprocess.Popen(self.now_playing,stdin=subprocess.PIPE,stdout=subprocess.PIPE)
             data = deadbeef.communicate()[0]
