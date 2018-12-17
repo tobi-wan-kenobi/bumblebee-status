@@ -10,14 +10,14 @@ Requires the following library:
     * subprocess
 
 Parameters:
-    * deadbeef.format:   Format string (defaults to "{artist} - {title}")
-                         Available values are: {artist}, {title}, {album}, {length},
-                                               {trackno}, {year}, {comment},
-                                               {copyright}, {time}
+    * deadbeef.format:    Format string (defaults to "{artist} - {title}")
+                          Available values are: {artist}, {title}, {album}, {length},
+                                                {trackno}, {year}, {comment},
+                                                {copyright}, {time}
     * deadbeef.previous:  Change binding for previous song (default is left click)
     * deadbeef.next:      Change binding for next song (default is right click)
     * deadbeef.pause:     Change binding for toggling pause (default is middle click)
-    * deadbeef.scrolling: Change the speed that the text in the module scrolls (default is 0)
+    * deadbeef.scrolling: Change the speed at which the text in the module scrolls (default is 0)
 
     Available options for deadbeef.previous, deadbeef.next and deadbeef.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
