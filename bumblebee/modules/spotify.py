@@ -60,7 +60,7 @@ class Module(bumblebee.engine.Module):
     def spotify(self, widget):
         #return str(self._song)
         divider = " -- " if self._scroll_speed != 0 else ""
-        return str(self._song)[self._scroll_position:]+divider+str(self._song)[:self._scroll_position]
+        return (str(self._song)[self._scroll_position:]+divider+str(self._song)[:self._scroll_position])[:-len(divider)]
 
     def hidden(self):
         return str(self._song) == ""
