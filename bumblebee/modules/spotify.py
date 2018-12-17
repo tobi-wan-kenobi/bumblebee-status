@@ -6,11 +6,12 @@ Requires the following library:
     * python-dbus
 
 Parameters:
-    * spotify.format:   Format string (defaults to "{artist} - {title}")
-                        Available values are: {album}, {title}, {artist}, {trackNumber}, {playbackStatus}
-    * spotify.previous: Change binding for previous song (default is left click)
-    * spotify.next:     Change binding for next song (default is right click)
-    * spotify.pause:    Change binding for toggling pause (default is middle click)
+    * spotify.format:    Format string (defaults to "{artist} - {title}")
+                         Available values are: {album}, {title}, {artist}, {trackNumber}, {playbackStatus}
+    * spotify.previous:  Change binding for previous song (default is left click)
+    * spotify.next:      Change binding for next song (default is right click)
+    * spotify.pause:     Change binding for toggling pause (default is middle click)
+    * spotify.scrolling: Change the speed at which the text in the module scrolls (default is 0)
 
     Available options for spotify.previous, spotify.next and spotify.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
@@ -39,10 +40,13 @@ class Module(bumblebee.engine.Module):
                    }
         
         self._song = ""
+        self._last_song = None
         self._format = self.parameter("format", "{artist} - {title}")
         prev_button = self.parameter("previous", "LEFT_CLICK")
         next_button = self.parameter("next", "RIGHT_CLICK")
         pause_button = self.parameter("pause", "MIDDLE_CLICK")
+        self._scroll_speed = int(self.parameter("scrolling",0))
+        self._scroll_position = 0
 
         cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
                 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
@@ -54,12 +58,20 @@ class Module(bumblebee.engine.Module):
             cmd=cmd + "PlayPause")
 
     def spotify(self, widget):
-        return str(self._song)
+        #return str(self._song)
+        divider = " -- " if self._scroll_speed != 0 else ""
+        return str(self._song)[self._scroll_position:]+divider+str(self._song)[:self._scroll_position]
 
     def hidden(self):
         return str(self._song) == ""
 
     def update(self, widgets):
+        if self._song != "" and self._song == self._last_song:
+            self._scroll_position += self._scroll_speed
+            self._scroll_position = self._scroll_position % len(self._song)
+        else:
+            self._scroll_position = 0
+            self._last_song = self._song
         try:
             bus = dbus.SessionBus()
             spotify = bus.get_object("org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2")
