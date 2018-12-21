@@ -32,8 +32,9 @@ Explicitly unsupported Python versions: 3.2 (missing unicode literals)
 
 :information_source: The ![Font Awesome](https://fontawesome.com/) is required for all themes that contain icons (because that is the font that includes these icons). Please refer to your distribution's package management on how to install them, or get them from their website directly. Also, please note that Font Awesome removed some icons used by `bumblebee-status` from the free set in version 5, so if possible, stick with 4.
 
-Font Awesome installation instructions
 ```
+# Font Awesome installation instructions
+
 # Arch Linux
 $ sudo pacman -S awesome-terminal-fonts
 
