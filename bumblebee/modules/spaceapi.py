@@ -67,7 +67,7 @@ class Module(bumblebee.engine.Module):
 
     def update(self, widgets):
         try:
-            with requests.get(self._url, timeout=self.timeout) as u:
+            with requests.get(self._url, timeout=self._timeout) as u:
                 json = u.json()
                 self._open = json["state"]["open"]
                 self._name = self.parameter("name", default=json["space"])
