@@ -2,13 +2,10 @@
 
 """Displays the current song being played in DeaDBeeF and
 provides some media control bindings.
-
 Left click toggles pause, scroll up skips the current song,
 scroll down returns to the previous song.
-
 Requires the following library:
     * subprocess
-
 Parameters:
     * deadbeef.format:   Format string (defaults to "{artist} - {title}")
                          Available values are: {artist}, {title}, {album}, {length},
@@ -17,7 +14,6 @@ Parameters:
     * deadbeef.previous: Change binding for previous song (default is left click)
     * deadbeef.next:     Change binding for next song (default is right click)
     * deadbeef.pause:    Change binding for toggling pause (default is middle click)
-
     Available options for deadbeef.previous, deadbeef.next and deadbeef.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 """
@@ -25,6 +21,8 @@ Parameters:
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+
+from bumblebee.output import scrollable
 
 try:
     import subprocess
@@ -59,6 +57,7 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=buttons[pause_button],
             cmd=cmd + "--play-pause")
 
+    @scrollable
     def deadbeef(self, widget):
         return str(self._song)
 

@@ -17,14 +17,30 @@ def scrollable(func):
         if len(text) <= width:
             return text
         # we need to shorten
+        
+        try:
+            bounce = int(module.parameter("scrolling.bounce", 1))
+        except ValueError:
+            bounce = 1
+        try:
+            scroll_speed = int(module.parameter("scrolling.speed", 1))
+        except ValueError:
+            scroll_speed = 1
         start = widget.get("scrolling.start", -1)
         direction = widget.get("scrolling.direction", "right")
-        start += 1 if direction == "right" else -1
+        start += scroll_speed if direction == "right" else -(scroll_speed)
+        
+        if width + start > len(text) + (scroll_speed -1):
+            if bounce:
+                widget.set("scrolling.direction", "left")
+            else:
+                start = 0
+        elif start <= 0:
+            if bounce:
+                widget.set("scrolling.direction", "right")
+            else:
+                start = len(text)
         widget.set("scrolling.start", start)
-        if width + start >= len(text):
-            widget.set("scrolling.direction", "left")
-        if start <= 0:
-            widget.set("scrolling.direction", "right")
         text = text[start:width+start]
 
         return text
