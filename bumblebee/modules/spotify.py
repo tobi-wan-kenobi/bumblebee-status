@@ -52,7 +52,7 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=buttons[pause_button],
             cmd=cmd + "PlayPause")
 
-    @scrollable
+##    @scrollable
     def spotify(self, widget):
         return str(self._song)
 
