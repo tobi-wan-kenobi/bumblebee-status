@@ -1,17 +1,14 @@
 # pylint: disable=C0111,R0903
 
 """Displays the current song being played
-
 Requires the following library:
     * python-dbus
-
 Parameters:
     * spotify.format:   Format string (defaults to "{artist} - {title}")
                         Available values are: {album}, {title}, {artist}, {trackNumber}, {playbackStatus}
     * spotify.previous: Change binding for previous song (default is left click)
     * spotify.next:     Change binding for next song (default is right click)
     * spotify.pause:    Change binding for toggling pause (default is middle click)
-
     Available options for spotify.previous, spotify.next and spotify.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 """
@@ -19,6 +16,8 @@ Parameters:
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+
+from bumblebee.output import scrollable
 
 try:
     import dbus
@@ -53,6 +52,7 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=buttons[pause_button],
             cmd=cmd + "PlayPause")
 
+##    @scrollable
     def spotify(self, widget):
         return str(self._song)
 
