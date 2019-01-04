@@ -7,11 +7,7 @@ Requires the following libraries:
 
 Parameters:
     * spaceapi.url: String representation of the api endpoint
-    * spaceapi.name: String overwriting the space name
-    * spaceapi.prefix: Prefix for the space string
-    * spaceapi.interval: time between updates in minutes
-    * spaceapi.timeout: Maximum time in seconds to wait for a response from API
-                        endpoint
+    * spaceapi.format: Format string for the output
 """
 
 import bumblebee.input
@@ -19,6 +15,8 @@ import bumblebee.output
 import bumblebee.engine
 
 import requests
+import threading
+import sys
 
 
 class Module(bumblebee.engine.Module):
@@ -27,54 +25,60 @@ class Module(bumblebee.engine.Module):
             engine, config, bumblebee.output.Widget(full_text=self.getState)
         )
 
-        # Represents the state of the hackerspace
-        self._open = False
-        # Set to true if there was an error calling the spaceapi
-        self._error = False
+        self._data = {}
+        self._error = None
+
+        self._threadingCount = 0
+
         # The URL representing the api endpoint
-        self._url = self.parameter("url",
-                                   default="http://club.entropia.de/spaceapi")
-        # Space Name, can be set manually in case of multiple widgets,
-        # so you're able to distinguish
-        self._name = self.parameter("name", default="")
-
-        # The timeout prevents the statusbar from blocking when the destination
-        # can't be reached.
-        self._timeout = self.parameter("timeout", default=2)
-
-        # Only execute every 5 minutes by default
-        self.interval(self.parameter("interval", default=5))
-
-    def getState(self, widget):
-        text = self.parameter("prefix", default="")
-        text += self._name + ": "
-
-        if self._error:
-            text += "ERROR"
-        elif self._open:
-            text += "Open"
-        else:
-            text += "Closed"
-        return text
+        self._url = self.parameter("url", default="http://club.entropia.de/spaceapi")
+        self._format = self.parameter("format", default=" %%space%%: %%state%%")
 
     def state(self, widget):
-        if self._error:
+        try:
+            if self._error is not None:
+                return ["critical"]
+            elif self._data['state']['open']:
+                return ["warning"]
+            else:
+                return []
+        except KeyError:
             return ["critical"]
-        elif self._open:
-            return ["warning"]
-        else:
-            return []
 
     def update(self, widgets):
+        if self._threadingCount == 0:
+            thread = threading.Thread(target=self.get_api_async, args=())
+            thread.start()
+        self._threadingCount = (
+            0 if self._threadingCount > 300 else self._threadingCount + 1
+        )
+
+    def getState(self, widget):
+        text = self._format
+        if self._error is not None:
+            text = self._error
+        else:
+            try:
+                text = text.replace("%%space%%", self._data['space'])
+                if self._data['state']['open']:
+                    text = text.replace("%%state%%", "Open")
+                else:
+                    text = text.replace("%%state%%", "Closed")
+            except KeyError:
+                text = "KeyError"
+        return text
+
+    def get_api_async(self):
         try:
-            with requests.get(self._url, timeout=self._timeout) as u:
-                json = u.json()
-                self._open = json["state"]["open"]
-                self._name = self.parameter("name", default=json["space"])
-                self._error = False
-        except Exception:
-            # Displays ERROR status
-            self._error = True
+            with requests.get(self._url, timeout=10) as u:
+                self._data = u.json()
+                self._error = None
+        except requests.exceptions.Timeout:
+            self._error = "Timeout"
+        except requests.exceptions.HTTPError:
+            self._error = "HTTP Error"
+        #  except Exception:
+        #      self._error = "CRITICAL ERROR"
 
 
 # Author: Tobias Manske <tobias.manske@mailbox.org>
