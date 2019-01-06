@@ -26,7 +26,7 @@ def formatStringBuilder(s: str, json: dict) -> str:
     This function seems to be in dire need of some explanation so here it is:
         It basically searches the format string for strings of the pattern
         %%ITEM.IN.TREE[%IFTRUE%IFFALSE]%%. For example to query the state of
-        the space you'd write %%state.open%% as it's located in json[state][open]
+        the hackspace you'd write %%state.open%% as it's located in json[state][open]
         according to the API specificaion. As the output of true or false doesn't
         look to great you can specify the text you want to have shown so you'd
         write %%state.open%Open%Closed%% to overwrite true/false with Open/Closed.
@@ -58,6 +58,9 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(
             engine, config, bumblebee.output.Widget(full_text=self.getState)
         )
+
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+                                       cmd=self.__forceReload)
 
         self._data = {}
         self._error = None
@@ -112,6 +115,10 @@ class Module(bumblebee.engine.Module):
         except JSONDecodeError:
             self._error = "Not a JSON response"
 
+    # left_mouse_button handler
+    def __forceReload(self, event):
+        self._threadingCount += 300
+        self._error = "RELOADING"
 
 # Author: Tobias Manske <tobias@chaoswg.xyz>
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
