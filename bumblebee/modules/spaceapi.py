@@ -3,7 +3,9 @@
 
 # pylint: disable=C0111,R0903
 
-"""Displays the state of a spaceapi endpoint
+"""Displays the state of a Space API endpoint
+Space API is an API for hackspaces based on JSON. See spaceapi.io for
+an example.
 
 Requires the following libraries:
     * requests
@@ -11,7 +13,17 @@ Requires the following libraries:
 
 Parameters:
     * spaceapi.url: String representation of the api endpoint
-    * spaceapi.format: Format string for the output (refer to code)
+    * spaceapi.format: Format string for the output
+
+Format Strings:
+    * Format strings are indicated by double %%
+    * They represent a leaf in the JSON tree, layers seperated by "."
+    * Boolean values can be overwritten by appending "%true%false"
+      in the format string
+    * Example: to reference "open" in "{"state":{"open": true}}"
+               you would write "%%state.open%%", if you also want
+               to say "Open/Closed" depending on the boolean you
+               would write "%%state.open%Open%Closed%%"
 """
 
 import bumblebee.input
@@ -26,32 +38,30 @@ import json
 
 def formatStringBuilder(s, json):
     """
-    This function seems to be in dire need of some explanation so here it is:
-        It basically searches the format string for strings of the pattern
-        %%ITEM.IN.TREE[%IFTRUE%IFFALSE]%%. For example to query the state of
-        the hackspace you'd write %%state.open%% as it's located in json[state][open]
-        according to the API specificaion. As the output of true or false doesn't
-        look to great you can specify the text you want to have shown so you'd
-        write %%state.open%Open%Closed%% to overwrite true/false with Open/Closed.
+    Parses Format Strings
+    Parameter:
+        s -> format string
+        json -> the spaceapi response object
     """
     identifiers = re.findall("%%.*?%%", s)
     for i in identifiers:
         ic = i[2:-2]  # Discard %%
         j = ic.split("%")
 
+        # Only neither of, or both true AND false may be overwritten
         if len(j) != 3 and len(j) != 1:
-            return "INVALID SYNTAX"
+            return "INVALID FORMAT STRING"
 
         arr = j[0].split(".")
         repl = json
-        for a in arr:  # Walk the JSON tree to find replacement
+        for a in arr:  # Walk the JSON tree to find replacement string
             repl = repl[a]
 
-        if len(j) == 1:
+        if len(j) == 1:  # no overwrite
             s = s.replace(i, repl)
-        elif repl:
+        elif repl:  # overwrite for Trfor True
             s = s.replace(i, j[1])
-        else:
+        else:  # overwrite for False
             s = s.replace(i, j[2])
     return s
 
@@ -62,8 +72,9 @@ class Module(bumblebee.engine.Module):
             engine, config, bumblebee.output.Widget(full_text=self.getState)
         )
 
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-                                       cmd=self.__forceReload)
+        engine.input.register_callback(
+            self, button=bumblebee.input.LEFT_MOUSE, cmd=self.__forceReload
+        )
 
         self._data = {}
         self._error = None
@@ -124,6 +135,7 @@ class Module(bumblebee.engine.Module):
     def __forceReload(self, event):
         self._threadingCount += 300
         self._error = "RELOADING"
+
 
 # Author: Tobias Manske <tobias@chaoswg.xyz>
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
