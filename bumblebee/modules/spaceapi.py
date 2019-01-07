@@ -1,17 +1,29 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # pylint: disable=C0111,R0903
 
-"""Displays the state of a spaceapi endpoint
+"""Displays the state of a Space API endpoint
+Space API is an API for hackspaces based on JSON. See spaceapi.io for
+an example.
 
 Requires the following libraries:
     * requests
+    * regex
 
 Parameters:
     * spaceapi.url: String representation of the api endpoint
-    * spaceapi.name: String overwriting the space name
-    * spaceapi.prefix: Prefix for the space string
-    * spaceapi.interval: time between updates in minutes
-    * spaceapi.timeout: Maximum time in seconds to wait for a response from API
-                        endpoint
+    * spaceapi.format: Format string for the output
+
+Format Strings:
+    * Format strings are indicated by double %%
+    * They represent a leaf in the JSON tree, layers seperated by "."
+    * Boolean values can be overwritten by appending "%true%false"
+      in the format string
+    * Example: to reference "open" in "{"state":{"open": true}}"
+               you would write "%%state.open%%", if you also want
+               to say "Open/Closed" depending on the boolean you
+               would write "%%state.open%Open%Closed%%"
 """
 
 import bumblebee.input
@@ -19,6 +31,39 @@ import bumblebee.output
 import bumblebee.engine
 
 import requests
+import threading
+import re
+import json
+
+
+def formatStringBuilder(s, json):
+    """
+    Parses Format Strings
+    Parameter:
+        s -> format string
+        json -> the spaceapi response object
+    """
+    identifiers = re.findall("%%.*?%%", s)
+    for i in identifiers:
+        ic = i[2:-2]  # Discard %%
+        j = ic.split("%")
+
+        # Only neither of, or both true AND false may be overwritten
+        if len(j) != 3 and len(j) != 1:
+            return "INVALID FORMAT STRING"
+
+        arr = j[0].split(".")
+        repl = json
+        for a in arr:  # Walk the JSON tree to find replacement string
+            repl = repl[a]
+
+        if len(j) == 1:  # no overwrite
+            s = s.replace(i, repl)
+        elif repl:  # overwrite for Trfor True
+            s = s.replace(i, j[1])
+        else:  # overwrite for False
+            s = s.replace(i, j[2])
+    return s
 
 
 class Module(bumblebee.engine.Module):
@@ -27,55 +72,70 @@ class Module(bumblebee.engine.Module):
             engine, config, bumblebee.output.Widget(full_text=self.getState)
         )
 
-        # Represents the state of the hackerspace
-        self._open = False
-        # Set to true if there was an error calling the spaceapi
-        self._error = False
+        engine.input.register_callback(
+            self, button=bumblebee.input.LEFT_MOUSE, cmd=self.__forceReload
+        )
+
+        self._data = {}
+        self._error = None
+
+        self._threadingCount = 0
+
         # The URL representing the api endpoint
-        self._url = self.parameter("url",
-                                   default="http://club.entropia.de/spaceapi")
-        # Space Name, can be set manually in case of multiple widgets,
-        # so you're able to distinguish
-        self._name = self.parameter("name", default="")
-
-        # The timeout prevents the statusbar from blocking when the destination
-        # can't be reached.
-        self._timeout = self.parameter("timeout", default=2)
-
-        # Only execute every 5 minutes by default
-        self.interval(self.parameter("interval", default=5))
-
-    def getState(self, widget):
-        text = self.parameter("prefix", default="")
-        text += self._name + ": "
-
-        if self._error:
-            text += "ERROR"
-        elif self._open:
-            text += "Open"
-        else:
-            text += "Closed"
-        return text
+        self._url = self.parameter("url", default="http://club.entropia.de/spaceapi")
+        self._format = self.parameter(
+            "format", default=u" %%space%%: %%state.open%Open%Closed%%"
+        )
 
     def state(self, widget):
-        if self._error:
+        try:
+            if self._error is not None:
+                return ["critical"]
+            elif self._data["state"]["open"]:
+                return ["warning"]
+            else:
+                return []
+        except KeyError:
             return ["critical"]
-        elif self._open:
-            return ["warning"]
-        else:
-            return []
 
     def update(self, widgets):
+        if self._threadingCount == 0:
+            thread = threading.Thread(target=self.get_api_async, args=())
+            thread.start()
+        self._threadingCount = (
+            0 if self._threadingCount > 300 else self._threadingCount + 1
+        )
+
+    def getState(self, widget):
+        text = self._format
+        if self._error is not None:
+            text = self._error
+        else:
+            try:
+                text = formatStringBuilder(self._format, self._data)
+            except KeyError:
+                text = "KeyError"
+        return text
+
+    def get_api_async(self):
         try:
-            with requests.get(self._url, timeout=self.timeout) as u:
-                json = u.json()
-                self._open = json["state"]["open"]
-                self._name = self.parameter("name", default=json["space"])
-                self._error = False
-        except Exception:
-            # Displays ERROR status
-            self._error = True
+            with requests.get(self._url, timeout=10) as request:
+                # Can't implement error handling for python2.7 if I use
+                # request.json() as it uses simplejson in newer versions
+                self._data = json.loads(request.text)
+                self._error = None
+        except requests.exceptions.Timeout:
+            self._error = "Timeout"
+        except requests.exceptions.HTTPError:
+            self._error = "HTTP Error"
+        except ValueError:
+            self._error = "Not a JSON response"
+
+    # left_mouse_button handler
+    def __forceReload(self, event):
+        self._threadingCount += 300
+        self._error = "RELOADING"
 
 
-# Author: Tobias Manske <tobias.manske@mailbox.org>
+# Author: Tobias Manske <tobias@chaoswg.xyz>
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
