@@ -10,6 +10,7 @@
 	"cpu": { "prefix": "" },
 	"disk": { "prefix": "" },
 	"dnf": { "prefix": "" },
+	"apt": { "prefix": "" },
 	"pacman": { "prefix": "" },
 	"brightness": { "prefix": "" },
 	"load": { "prefix": "" },
