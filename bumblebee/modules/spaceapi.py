@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 # pylint: disable=C0111,R0903
 
 """Displays the state of a spaceapi endpoint
@@ -18,10 +21,10 @@ import bumblebee.engine
 import requests
 import threading
 import re
-from json.decoder import JSONDecodeError
+import json
 
 
-def formatStringBuilder(s: str, json: dict) -> str:
+def formatStringBuilder(s, json):
     """
     This function seems to be in dire need of some explanation so here it is:
         It basically searches the format string for strings of the pattern
@@ -70,7 +73,7 @@ class Module(bumblebee.engine.Module):
         # The URL representing the api endpoint
         self._url = self.parameter("url", default="http://club.entropia.de/spaceapi")
         self._format = self.parameter(
-            "format", default=" %%space%%: %%state.open%Open%Closed%%"
+            "format", default=u" %%space%%: %%state.open%Open%Closed%%"
         )
 
     def state(self, widget):
@@ -106,13 +109,15 @@ class Module(bumblebee.engine.Module):
     def get_api_async(self):
         try:
             with requests.get(self._url, timeout=10) as request:
-                self._data = request.json()
+                # Can't implement error handling for python2.7 if I use
+                # request.json() as it uses simplejson in newer versions
+                self._data = json.loads(request.text)
                 self._error = None
         except requests.exceptions.Timeout:
             self._error = "Timeout"
         except requests.exceptions.HTTPError:
             self._error = "HTTP Error"
-        except JSONDecodeError:
+        except ValueError:
             self._error = "Not a JSON response"
 
     # left_mouse_button handler
