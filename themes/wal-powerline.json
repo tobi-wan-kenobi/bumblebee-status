@@ -29,6 +29,12 @@
 			"bg": "color3"
 		}
 	},
+	"apt": {
+		"good": {
+			"fg": "background",
+			"bg": "color3"
+		}
+	},
 	"battery": {
 		"charged": {
 			"fg": "background",

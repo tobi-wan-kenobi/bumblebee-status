@@ -10,6 +10,7 @@
 	"cpu": { "prefix": "\uf4b0" },
 	"disk": { "prefix": "\u26c1" },
 	"dnf": { "prefix": "\uf2be" },
+	"apt": { "prefix": "\uf2be" },
 	"pacman": { "prefix": "\uf2be" },
 	"brightness": { "prefix": "\u263c" },
 	"load": { "prefix": "\uf13d" },
