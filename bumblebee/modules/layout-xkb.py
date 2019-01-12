@@ -4,6 +4,8 @@
 
 Requires the following library:
     * libX11.so.6
+and python module:
+    * xkbgroup
 
 Parameters:
     * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
