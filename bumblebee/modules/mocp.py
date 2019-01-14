@@ -1,13 +1,26 @@
 # pylint: disable=C0111,R0903
 # -*- coding: utf-8 -*-
 
-"""Displays information about the current song in mocp.
+"""Displays information about the current song in mocp. Left click toggles play/pause. Right click toggles shuffle.
 
 Requires the following executable:
     * mocp
 
 Parameters:
-    * mocp.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
+    * mocp.format: Format string for the song information. Replace string sequences with the actual information:
+         %state     State
+         %file      File
+         %title     Title, includes track, artist, song title and album
+         %artist    Artist
+         %song      SongTitle
+         %album     Album
+         %tt        TotalTime
+         %tl        TimeLeft
+         %ts        TotalSec
+         %ct        CurrentTime
+         %cs        CurrentSec
+         %b         Bitrate
+         %r         Sample rate
 """
 
 import bumblebee.util
@@ -19,44 +32,28 @@ from bumblebee.output import scrollable
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        widgets = [
-            bumblebee.output.Widget(name="mocp.main", full_text=self.description),
-        ]
-        super(Module, self).__init__(engine, config, widgets)
+        super(Module, self).__init__(engine, config,
+                                     bumblebee.output.Widget(name="mocp.main", full_text=self.description)
+                                     )
 
-        engine.input.register_callback(widgets[0], button=bumblebee.input.LEFT_MOUSE,
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="mocp -G")
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
+            cmd="mocp -t shuffle")
+        self._format = self.parameter("format", "%state %artist - %song | %ct/%tt")
         self._running = 0
 
     #@scrollable
     def description(self, widget):
-        if self._running == 1:
-            display = self._status + ": " + self._artist + " - " +  self._title + " | " + self._position + "/" + self._duration
-        else:
-            display = "Music On Console Player"
-        return display
+        return self._info if self._running == 1 else "Music On Console Player"
 
     def update(self, widgets):
         self._load_song()
 
     def _load_song(self):
         try:
-            info = bumblebee.util.execute("mocp -i")
-            for line in info.split("\n"):
-                if line.startswith("State:"):
-                    self._status = line.split(": ", 2)[1]
-                if line.startswith("Artist:"):
-                    self._artist = line.split(": ", 2)[1]
-                if line.startswith("Title:"):
-                    self._title = line.split(": ", 2)[1]
-                    self._title = self._title.split("(by ", 2)[0]
-                if line.startswith("CurrentTime:"):
-                    self._position = line.split(": ", 2)[1]
-                if line.startswith("TotalTime:"):
-                    self._duration = line.split(": ", 2)[1]
-                    self._running = 1
-                if line.startswith("State: STOP"):
-                    self._running = 0
+            self._info = bumblebee.util.execute("mocp -Q '" + self._format +  "'" )
+            self._running = 1
         except RuntimeError:
             self._running = 0
 
