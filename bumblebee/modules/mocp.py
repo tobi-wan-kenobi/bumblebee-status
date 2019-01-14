@@ -1,7 +1,7 @@
 # pylint: disable=C0111,R0903
 # -*- coding: utf-8 -*-
 
-"""Displays information about the current song in mocp. Left click toggles play/pause.
+"""Displays information about the current song in mocp. Left click toggles play/pause. Right click toggles shuffle.
 
 Requires the following executable:
     * mocp
@@ -38,6 +38,8 @@ class Module(bumblebee.engine.Module):
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd="mocp -G")
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
+            cmd="mocp -t shuffle")
         self._format = self.parameter("format", "%state %artist - %song | %ct/%tt")
         self._running = 0
 
