@@ -52,7 +52,7 @@ class Module(bumblebee.engine.Module):
 
     def _load_song(self):
         try:
-            self._info = bumblebee.util.execute("mocp -Q '" + self._format +  "'" )
+            self._info = bumblebee.util.execute("mocp -Q '" + self._format +  "'" ).strip()
             self._running = 1
         except RuntimeError:
             self._running = 0
