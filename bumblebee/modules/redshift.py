@@ -37,11 +37,13 @@ def get_redshift_value(widget):
             res = ""
             widget.set("temp", "n/a")
             widget.set("transition", None)
+            widget.set("state", "day")
         for line in res.split("\n"):
-            if "temperature" in line.lower():
+            line = line.lower()
+            if "temperature" in line:
                 widget.set("temp", line.split(" ")[2])
-            if "period" in line.lower():
-                state = line.split(" ")[1].lower()
+            if "period" in line:
+                state = line.split(" ")[1]
                 if "day" in state:
                     widget.set("state", "day")
                 elif "night" in state:
