@@ -52,14 +52,9 @@ def formatStringBuilder(s, json):
         if len(j) != 3 and len(j) != 1:
             return "INVALID FORMAT STRING"
 
-        arr = j[0].split(".")
-        repl = json
-        for a in arr:  # Walk the JSON tree to find replacement string
-            repl = repl[a]
-
         if len(j) == 1:  # no overwrite
-            s = s.replace(i, repl)
-        elif repl:  # overwrite for Trfor True
+            s = s.replace(i, json[j[0]])
+        elif json[j[0]]:  # overwrite for True
             s = s.replace(i, j[1])
         else:  # overwrite for False
             s = s.replace(i, j[2])
@@ -91,7 +86,7 @@ class Module(bumblebee.engine.Module):
         try:
             if self._error is not None:
                 return ["critical"]
-            elif self._data["state"]["open"]:
+            elif self._data["state.open"]:
                 return ["warning"]
             else:
                 return []
@@ -122,7 +117,7 @@ class Module(bumblebee.engine.Module):
             with requests.get(self._url, timeout=10) as request:
                 # Can't implement error handling for python2.7 if I use
                 # request.json() as it uses simplejson in newer versions
-                self._data = json.loads(request.text)
+                self._data = self.__flatten(json.loads(request.text))
                 self._error = None
         except requests.exceptions.Timeout:
             self._error = "Timeout"
@@ -135,6 +130,20 @@ class Module(bumblebee.engine.Module):
     def __forceReload(self, event):
         self._threadingCount += 300
         self._error = "RELOADING"
+
+    # Flattens the JSON structure recursively, e.g. ["space"]["open"]
+    # becomes ["space.open"]
+    def __flatten(self, json):
+        out = {}
+        for key in json:
+            value = json[key]
+            if type(value) is dict:
+                flattened_key = self.__flatten(value)
+                for fk in flattened_key:
+                    out[key + "." + fk] = flattened_key[fk]
+            else:
+                out[key] = value
+        return out
 
 
 # Author: Tobias Manske <tobias@chaoswg.xyz>
