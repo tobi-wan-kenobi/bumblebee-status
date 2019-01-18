@@ -2,6 +2,9 @@
 
 """Displays the name, IP address(es) and status of each available network interface.
 
+Requires the following python module:
+    * netifaces
+
 Parameters:
     * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
     * nic.states: Comma-separated list of states to show (prefix with "^" to invert - i.e. ^down -> show all devices that are not in state down)
