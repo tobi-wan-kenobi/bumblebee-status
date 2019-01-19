@@ -42,7 +42,7 @@ class Module(bumblebee.engine.Module):
             self._change = 2
 
         self._limit = 0
-        self._limit = int(self.parameter("limit", 0).strip("%s"))
+        self._limit = int(self.parameter("limit", "0%").strip("%s"))
         if self._limit < 0:
             self._limit = 0
 
