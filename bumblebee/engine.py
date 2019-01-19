@@ -265,13 +265,16 @@ class Engine(object):
         """Start the event loop"""
         self._output.start()
         event = None
+        last_full = time.time()
+        interval = float(self._config.get("interval", 1))
         while self.running():
-            if event:
+            if event and time.time() - last_full < interval:
                 self.patch_output(event)
             else:
+                last_full = time.time()
                 self.write_output()
             if self.running():
-                event = self.input.wait(float(self._config.get("interval", 1)))
+                event = self.input.wait(interval)
 
         self._output.stop()
         self.input.stop()
