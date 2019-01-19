@@ -71,7 +71,7 @@ class Module(object):
                 return widget
 
     def errorWidget(self):
-        msg = self.error
+        msg = self.error or "n/a"
         if len(msg) > 10:
             msg = "{}...".format(msg[0:7])
         return bumblebee.output.Widget(full_text="error: {}".format(msg))
@@ -264,13 +264,31 @@ class Engine(object):
     def run(self):
         """Start the event loop"""
         self._output.start()
+        event = None
         while self.running():
-            self.write_output()
+            if event:
+                self.patch_output(event)
+            else:
+                self.write_output()
             if self.running():
-                self.input.wait(float(self._config.get("interval", 1)))
+                event = self.input.wait(float(self._config.get("interval", 1)))
 
         self._output.stop()
         self.input.stop()
+
+    def patch_output(self, event):
+        for module in self._modules:
+            widget = module.widget_by_id(event["instance"])
+            if not widget: continue
+            # this widget was affected by the event -> update
+            module.update_wrapper(module.widgets())
+            widget = module.errorWidget()
+            if module.error is None:
+                widget = module.widget_by_id(event["instance"])
+            widget.link_module(module)
+            self._output.replace(event, module, widget)
+        self._output.flush()
+        self._output.end()
 
     def write_output(self):
         self._output.begin()

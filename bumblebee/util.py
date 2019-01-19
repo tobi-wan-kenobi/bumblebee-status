@@ -20,7 +20,6 @@ def asbool(val):
     return val in ("t", "true", "y", "yes", "on", "1")
 
 def execute(cmd, wait=True):
-    logging.info("executing command '{}'".format(cmd))
     args = shlex.split(cmd)
     proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     rv = None
@@ -35,7 +34,6 @@ def execute(cmd, wait=True):
         else:
             rv = out
 
-    logging.info(u"command returned '{}'".format("" if not rv else rv))
     return rv
 
 def bytefmt(num):

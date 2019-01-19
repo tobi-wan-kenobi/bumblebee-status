@@ -105,6 +105,29 @@ class I3BarOutput(object):
         self._started = False
         self._config = config
 
+    def replace(self, event, module, new_widget):
+        full_text = new_widget.full_text()
+        padding = self._theme.padding(new_widget)
+        prefix = self._theme.prefix(new_widget, padding)
+        suffix = self._theme.suffix(new_widget, padding)
+        if prefix:
+            full_text = u"{}{}".format(prefix, full_text)
+        if suffix:
+            full_text = u"{}{}".format(full_text, suffix)
+        separator = self._theme.separator(new_widget)
+        widget_data = {
+            u"full_text": full_text,
+            "color": self._theme.fg(new_widget),
+            "background": self._theme.bg(new_widget),
+            "separator_block_width": self._theme.separator_block_width(new_widget),
+            "separator": True if separator is None else False,
+            "min_width": None,
+            "align": self._theme.align(new_widget),
+            "instance": new_widget.id,
+            "name": module.id,
+        }
+        self._widgets = [w if not "instance" in w or w["instance"] != event["instance"] else widget_data for w in self._widgets]
+
     def started(self):
         return self._started
 
