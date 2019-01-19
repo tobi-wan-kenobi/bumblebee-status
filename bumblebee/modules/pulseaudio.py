@@ -7,6 +7,7 @@ Aliases: pasink (use this to control output instead of input), pasource
 Parameters:
     * pulseaudio.autostart: If set to "true" (default is "false"), automatically starts the pulseaudio daemon if it is not running
     * pulseaudio.percent_change: How much to change volume by when scrolling on the module (default is 2%)
+    * pulseaudio.limit: Upper limit for setting the volume (default is 0%, which means "no limit")
 
 Requires the following executable:
     * pulseaudio
@@ -34,20 +35,23 @@ class Module(bumblebee.engine.Module):
                 bumblebee.util.execute("pulseaudio --start")
         except Exception:
             pass
-        try:
-            percent_change = int(self.parameter("percent_change","2%").strip("%"))
-        except:
-            percent_change = 2
-        if percent_change < 0 or percent_change > 100:
-            percent_change = 2
-        
+
+        self._change = 2
+        self._change = int(self.parameter("percent_change", "2%").strip("%"))
+        if self._change < 0 or self._change > 100:
+            self._change = 2
+
+        self._limit = 0
+        self._limit = int(self.parameter("limit", 0).strip("%s"))
+        if self._limit < 0:
+            self._limit = 0
 
         self._left = 0
         self._right = 0
         self._mono = 0
         self._mute = False
         self._failed = False
-        channel = "sink" if self.name == "pasink" else "source"
+        self._channel = "sink" if self.name == "pasink" else "source"
 
         self._patterns = [
             {"expr": "name:", "callback": (lambda line: False)},
@@ -58,15 +62,30 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd="pavucontrol")
 
         events = [
-            {"type": "mute", "action": "toggle", "button": bumblebee.input.LEFT_MOUSE},
-            {"type": "volume", "action": "+{percent}%".format(percent=percent_change), "button": bumblebee.input.WHEEL_UP},
-            {"type": "volume", "action": "-{percent}%".format(percent=percent_change), "button": bumblebee.input.WHEEL_DOWN},
+            {"type": "mute", "action": self.toggle, "button": bumblebee.input.LEFT_MOUSE},
+            {"type": "volume", "action": self.increase_volume, "button": bumblebee.input.WHEEL_UP},
+            {"type": "volume", "action": self.decrease_volume, "button": bumblebee.input.WHEEL_DOWN},
         ]
 
         for event in events:
-            engine.input.register_callback(self, button=event["button"],
-                cmd="pactl set-{}-{} @DEFAULT_{}@ {}".format(channel, event["type"],
-                    channel.upper(), event["action"]))
+            engine.input.register_callback(self, button=event["button"], cmd=event["action"])
+
+    def set_volume(self, amount):
+        bumblebee.util.execute("pactl set-{}-{} @DEFAULT_{}@ {}".format(
+            self._channel, "volume", self._channel.upper(), amount))
+
+    def increase_volume(self, event):
+        if self._limit > 0: # we need to check the limit
+            if int(self._left) >= self._limit or int(self._right) >= self._limit:
+                return
+        self.set_volume("+{}%".format(self._change))
+
+    def decrease_volume(self, event):
+        self.set_volume("-{}%".format(self._change))
+
+    def toggle(self, event):
+        bumblebee.util.execute("pactl set-{}-{} @DEFAULT_{}@ {}".format(
+            self._channel, "mute", self._channel.upper(), "toggle"))
 
     def mute(self, value):
         self._mute = value
