@@ -106,27 +106,8 @@ class I3BarOutput(object):
         self._config = config
 
     def replace(self, event, module, new_widget):
-        full_text = new_widget.full_text()
-        padding = self._theme.padding(new_widget)
-        prefix = self._theme.prefix(new_widget, padding)
-        suffix = self._theme.suffix(new_widget, padding)
-        if prefix:
-            full_text = u"{}{}".format(prefix, full_text)
-        if suffix:
-            full_text = u"{}{}".format(full_text, suffix)
-        separator = self._theme.separator(new_widget)
-        widget_data = {
-            u"full_text": full_text,
-            "color": self._theme.fg(new_widget),
-            "background": self._theme.bg(new_widget),
-            "separator_block_width": self._theme.separator_block_width(new_widget),
-            "separator": True if separator is None else False,
-            "min_width": None,
-            "align": self._theme.align(new_widget),
-            "instance": new_widget.id,
-            "name": module.id,
-        }
-        self._widgets = [w if not "instance" in w or w["instance"] != event["instance"] else widget_data for w in self._widgets]
+        data = self.widget_data(module, new_widget)
+        self._widgets = [w if not "instance" in w or w["instance"] != event["instance"] else data for w in self._widgets]
 
     def started(self):
         return self._started
@@ -140,19 +121,37 @@ class I3BarOutput(object):
         """Finish i3bar protocol"""
         sys.stdout.write("]\n")
 
-    def draw(self, widget, module=None, engine=None):
-        """Draw a single widget"""
+    def widget_data(self, module, widget):
         full_text = widget.full_text()
-        if widget.get_module() and widget.get_module().hidden():
-            return
         padding = self._theme.padding(widget)
         prefix = self._theme.prefix(widget, padding)
         suffix = self._theme.suffix(widget, padding)
-
         if prefix:
             full_text = u"{}{}".format(prefix, full_text)
         if suffix:
             full_text = u"{}{}".format(full_text, suffix)
+        separator = self._theme.separator(widget)
+        width = self._theme.minwidth(widget)
+
+        if width:
+            full_text = full_text.ljust(len(width) + len(prefix) + len(suffix))
+        return {
+            u"full_text": full_text,
+            "color": self._theme.fg(widget),
+            "background": self._theme.bg(widget),
+            "separator_block_width": self._theme.separator_block_width(widget),
+            "separator": True if separator is None else False,
+            "min_width": None,
+            "align": self._theme.align(widget),
+            "instance": widget.id,
+            "name": module.id,
+        }
+
+
+    def draw(self, widget, module=None, engine=None):
+        """Draw a single widget"""
+        if widget.get_module() and widget.get_module().hidden():
+            return
 
         separator = self._theme.separator(widget)
         if separator:
@@ -163,23 +162,8 @@ class I3BarOutput(object):
                 "background": self._theme.separator_bg(widget),
                 "separator_block_width": self._theme.separator_block_width(widget),
             })
-        width = self._theme.minwidth(widget)
 
-        if width:
-            full_text = full_text.ljust(len(width) + len(prefix) + len(suffix))
-
-        self._widgets.append({
-            u"full_text": full_text,
-            "color": self._theme.fg(widget),
-            "background": self._theme.bg(widget),
-            "separator_block_width": self._theme.separator_block_width(widget),
-            "separator": True if separator is None else False,
-            "min_width": None,
-#            "min_width": width + "A"*(len(prefix) + len(suffix)) if width else None,
-            "align": self._theme.align(widget),
-            "instance": widget.id,
-            "name": module.id,
-        })
+        self._widgets.append(self.widget_data(module, widget))
 
     def begin(self):
         """Start one output iteration"""
