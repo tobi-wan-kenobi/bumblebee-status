@@ -171,6 +171,9 @@ $ ./bumblebee-status -d -m <list of modules>
 
 This will create a file called `~/bumblebee-status-debug.log` by default. The file name can be changed by using the `-f` or `--logfile` option.
 
+### Advanced Usage
+If you want to have a minimal bar that stays out of the way, you can use the `-a` or `--autohide` switch to specify a list of module names. All those modules will only be displayed when (and as long as) their state is either warning or critical (high CPU usage, low disk space, etc.). As long as the module is in a "normal" state and does not require attention, it will remain hidden.
+
 # Required Modules
 
 Modules and commandline utilities are only required for modules, the core itself has no external dependencies at all.
