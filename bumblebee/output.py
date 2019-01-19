@@ -152,6 +152,9 @@ class I3BarOutput(object):
         """Draw a single widget"""
         if widget.get_module() and widget.get_module().hidden():
             return
+        if widget.get_module() and widget.get_module().name in self._config.autohide():
+            if not any(state in widget.state() for state in ["warning", "critical"]):
+                return
 
         separator = self._theme.separator(widget)
         if separator:

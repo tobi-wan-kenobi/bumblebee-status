@@ -63,6 +63,8 @@ def create_parser():
         help="Location of the debug log file")
     parser.add_argument("-i", "--iconset", default="auto",
         help="Specify the name of an iconset to use (overrides theme default)")
+    parser.add_argument("-a", "--autohide", nargs="+", default=[],
+        help="Specify a list of modules to hide when not in warning/error state")
 
     return parser
 
@@ -107,5 +109,8 @@ class Config(bumblebee.store.Store):
 
     def logfile(self):
         return os.path.expanduser(self._args.logfile)
+
+    def autohide(self):
+        return self._args.autohide
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
