@@ -122,6 +122,9 @@ class I3BarOutput(object):
         full_text = widget.full_text()
         if widget.get_module() and widget.get_module().hidden():
             return
+        if widget.get_module() and widget.get_module().name in self._config.autohide():
+            if not any(state in widget.state() for state in ["warning", "critical"]):
+                return
         padding = self._theme.padding(widget)
         prefix = self._theme.prefix(widget, padding)
         suffix = self._theme.suffix(widget, padding)
