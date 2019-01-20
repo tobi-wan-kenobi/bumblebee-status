@@ -9,7 +9,7 @@ python:
   - "3.6"
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y task pygit2
+  - sudo apt-get install -y task python-pygit2
 install:
   - pip install i3ipc
   - pip install psutil
