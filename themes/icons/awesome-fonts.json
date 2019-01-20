@@ -184,5 +184,10 @@
        "copying": {
 		   "prefix": ""
 		}
-    }
+    },
+	"git": {
+		"added": "",
+		"modified": "",
+		"deleted": ""
+	}
 }

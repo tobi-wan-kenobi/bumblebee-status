@@ -22,20 +22,40 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.gitinfo)
         )
-        self._fmt = self.parameter("format", "{branch} - {directory}")
+        self._engine = engine
+        self._fmt = self.parameter("format", "{branch} {flags}")
+
+    def hidden(self):
+        return False # TODO
 
     def gitinfo(self, widget):
         info = ""
         directory = None
         data = {
             "branch": "n/a",
+            "directory": "n/a",
+            "flags": {},
         }
         try:
             directory = bumblebee.util.execute("xcwd").strip()
             directory = self._get_git_root(directory)
             repo = pygit2.Repository(directory)
+
+            for filepath, flags in repo.status().items():
+                if flags == pygit2.GIT_STATUS_WT_NEW or \
+                    flags == pygit2.GIT_STATUS_INDEX_NEW:
+                    data["flags"]["new"] = True
+                if flags == pygit2.GIT_STATUS_WT_DELETED or \
+                    flags == pygit2.GIT_STATUS_INDEX_DELETED:
+                    data["flags"]["deleted"] = True
+                if flags == pygit2.GIT_STATUS_WT_MODIFIED or \
+                    flags == pygit2.GIT_STATUS_INDEX_MODIFIED:
+                    data["flags"]["modified"] = True
+
             data["branch"] = repo.head.shorthand
             data["directory"] = directory
+            data["flags"] = " ".join([self._engine._theme.symbol(widget, name, name[0]) for name in data["flags"].keys()])
+            
         except Exception as e:
             return e
 

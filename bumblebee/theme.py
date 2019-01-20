@@ -115,6 +115,9 @@ class Theme(object):
         pre = self._get(widget, "prefix", None)
         return u"{}{}{}".format(padding, pre, padding) if pre else default
 
+    def symbol(self, widget, name, default=None):
+        return self._get(widget, name, default)
+
     def suffix(self, widget, default=None):
         """Return the theme suffix for a widget's full text"""
         padding = self._get(widget, "padding", "")
