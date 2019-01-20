@@ -8,6 +8,7 @@ Parameters:
     * pulseaudio.autostart: If set to "true" (default is "false"), automatically starts the pulseaudio daemon if it is not running
     * pulseaudio.percent_change: How much to change volume by when scrolling on the module (default is 2%)
     * pulseaudio.limit: Upper limit for setting the volume (default is 0%, which means "no limit")
+                        Note: If the left and right channels have different volumes, the limit might not be reached exactly.
 
 Requires the following executable:
     * pulseaudio
@@ -76,8 +77,17 @@ class Module(bumblebee.engine.Module):
 
     def increase_volume(self, event):
         if self._limit > 0: # we need to check the limit
-            if int(self._left) >= self._limit or int(self._right) >= self._limit:
-                return
+            left = int(self._left)
+            right = int(self._right)
+            if left + self._change >= self._limit or right + self._change >= self._limit:
+                if left == right:
+                    # easy case, just set to limit
+                    self.set_volume("{}%".format(self._limit))
+                    return
+                else:
+                    # don't adjust anymore, since i don't know how to update only one channel
+                    return
+
         self.set_volume("+{}%".format(self._change))
 
     def decrease_volume(self, event):
