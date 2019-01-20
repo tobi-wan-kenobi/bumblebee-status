@@ -24,9 +24,10 @@ class Module(bumblebee.engine.Module):
         )
         self._engine = engine
         self._fmt = self.parameter("format", "{branch} {flags}")
+        self._error = False
 
     def hidden(self):
-        return False # TODO
+        return self._error
 
     def gitinfo(self, widget):
         info = ""
@@ -55,8 +56,9 @@ class Module(bumblebee.engine.Module):
             data["branch"] = repo.head.shorthand
             data["directory"] = directory
             data["flags"] = " ".join([self._engine._theme.symbol(widget, name, name[0]) for name in data["flags"].keys()])
-            
+            self._error = False
         except Exception as e:
+            self._error = True
             return e
 
         return string.Formatter().vformat(self._fmt, (), data)

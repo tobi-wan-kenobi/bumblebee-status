@@ -186,6 +186,7 @@
 		}
     },
 	"git": {
+		"prefix": "",
 		"new": "",
 		"modified": "",
 		"deleted": ""
