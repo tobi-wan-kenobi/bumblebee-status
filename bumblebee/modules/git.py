@@ -22,7 +22,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.gitinfo)
         )
-        self._fmt = self.parameter("format", "{branch}")
+        self._fmt = self.parameter("format", "{branch} - {directory}")
 
     def gitinfo(self, widget):
         info = ""
@@ -35,16 +35,17 @@ class Module(bumblebee.engine.Module):
             directory = self._get_git_root(directory)
             repo = pygit2.Repository(directory)
             data["branch"] = repo.head.shorthand
+            data["directory"] = directory
         except Exception as e:
             return e
 
         return string.Formatter().vformat(self._fmt, (), data)
 
     def _get_git_root(self, directory):
-        while directory != "/":
+        while len(directory) > 1:
             if os.path.exists(os.path.join(directory, ".git")):
                 return directory
             directory = "/".join(directory.split("/")[0:-1])
-        return None
+        return "/" 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
