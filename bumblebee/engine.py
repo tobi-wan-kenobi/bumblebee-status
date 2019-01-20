@@ -269,8 +269,10 @@ class Engine(object):
         interval = float(self._config.get("interval", 1))
         while self.running():
             if event and time.time() - last_full < interval:
+                log.debug("partial output update ({} {} {})".format(event, time.time(), last_full))
                 self.patch_output(event)
             else:
+                log.debug("full update: {} {} ({})".format(time.time(), last_full, time.time() - last_full))
                 last_full = time.time()
                 self.write_output()
             if self.running():

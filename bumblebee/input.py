@@ -90,6 +90,7 @@ class I3BarInput(object):
     def wait(self, timeout):
         self._condition.wait(timeout)
         rv = self.event if self.has_event else None
+        log.debug("received input event: {}".format(rv))
         self.has_event = False
         return rv
 
