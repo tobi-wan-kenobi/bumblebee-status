@@ -10,7 +10,11 @@ Requires:
 
 import os
 import string
-import pygit2
+import logging
+try:
+    import pygit2
+except ImportError:
+    pass
 
 import bumblebee.input
 import bumblebee.output
@@ -59,7 +63,8 @@ class Module(bumblebee.engine.Module):
             self._error = False
         except Exception as e:
             self._error = True
-            return e
+            logging.error(e)
+            return "n/a"
 
         return string.Formatter().vformat(self._fmt, (), data)
 
