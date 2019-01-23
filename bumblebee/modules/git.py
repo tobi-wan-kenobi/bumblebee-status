@@ -23,50 +23,53 @@ import bumblebee.util
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.gitinfo)
-        )
+        widgets = []
+        super(Module, self).__init__(engine, config, widgets)
         self._engine = engine
-        self._fmt = self.parameter("format", "{branch} {flags}")
         self._error = False
+        self.update(self.widgets())
 
     def hidden(self):
         return self._error
 
-    def gitinfo(self, widget):
-        info = ""
-        directory = None
-        data = {
-            "branch": "n/a",
-            "directory": "n/a",
-            "flags": {},
-        }
+    def update(self, widgets):
+        state = {}
+        new_widgets = []
         try:
             directory = bumblebee.util.execute("xcwd").strip()
             directory = self._get_git_root(directory)
             repo = pygit2.Repository(directory)
 
+            new_widgets.append(bumblebee.output.Widget(name='git.main', full_text=repo.head.shorthand))
+
             for filepath, flags in repo.status().items():
                 if flags == pygit2.GIT_STATUS_WT_NEW or \
                     flags == pygit2.GIT_STATUS_INDEX_NEW:
-                    data["flags"]["new"] = True
+                    state['new'] = True
                 if flags == pygit2.GIT_STATUS_WT_DELETED or \
                     flags == pygit2.GIT_STATUS_INDEX_DELETED:
-                    data["flags"]["deleted"] = True
+                    state['deleted'] = True
                 if flags == pygit2.GIT_STATUS_WT_MODIFIED or \
                     flags == pygit2.GIT_STATUS_INDEX_MODIFIED:
-                    data["flags"]["modified"] = True
-
-            data["branch"] = repo.head.shorthand
-            data["directory"] = directory
-            data["flags"] = " ".join([self._engine._theme.symbol(widget, name, name[0]) for name in data["flags"].keys()])
+                    state['modified'] = True
             self._error = False
+            if 'new' in state:
+                new_widgets.append(bumblebee.output.Widget(name='git.new'))
+            if 'modified' in state:
+                new_widgets.append(bumblebee.output.Widget(name='git.modified'))
+            if 'deleted' in state:
+                new_widgets.append(bumblebee.output.Widget(name='git.deleted'))
+
+            while len(widgets) > 0:
+                del widgets[0]
+            for widget in new_widgets:
+                widgets.append(widget)
+            
         except Exception as e:
             self._error = True
-            logging.error(e)
-            return "n/a"
 
-        return string.Formatter().vformat(self._fmt, (), data)
+    def state(self, widget):
+        return widget.name.split('.')[1]
 
     def _get_git_root(self, directory):
         while len(directory) > 1:

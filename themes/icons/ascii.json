@@ -121,5 +121,11 @@
 		"ONLINE": {"prefix": "pool"},
 		"FAULTED": {"prefix": "pool (!)"},
 		"DEGRADED": {"prefix": "pool (!)"}
+	},
+	"git": {
+		"main": { "prefix": "" },
+		"new": { "prefix": "[n]" },
+		"modified": { "prefix": "[m]" },
+		"deleted": { "prefix": "[d]" }
 	}
 }

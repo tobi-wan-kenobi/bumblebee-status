@@ -186,9 +186,9 @@
 		}
     },
 	"git": {
-		"prefix": "",
-		"new": "",
-		"modified": "",
-		"deleted": ""
+		"main": { "prefix": "" },
+		"new": { "prefix": "" },
+		"modified": { "prefix": "" },
+		"deleted": { "prefix": "" }
 	}
 }
