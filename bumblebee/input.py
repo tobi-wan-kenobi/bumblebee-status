@@ -45,6 +45,7 @@ def read_input(inp):
             try:
                 event = json.loads(line)
                 if "instance" in event:
+                    inp.event = event
                     inp.callback(event)
                     inp.redraw()
                 else:
@@ -66,6 +67,7 @@ class I3BarInput(object):
         self.global_id = str(uuid.uuid4())
         self.need_event = False
         self.has_event = False
+        self.event = None
         self._condition = threading.Condition()
 
     def start(self):
@@ -87,6 +89,10 @@ class I3BarInput(object):
 
     def wait(self, timeout):
         self._condition.wait(timeout)
+        rv = self.event if self.has_event else None
+        log.debug("received input event: {}".format(rv))
+        self.has_event = False
+        return rv
 
     def _wait(self):
         while not self.has_event:
