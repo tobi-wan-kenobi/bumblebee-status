@@ -180,7 +180,7 @@ Modules and commandline utilities are only required for modules, the core itself
 
 * psutil (for the modules 'cpu', 'memory', 'traffic')
 * netifaces (for the modules 'nic', 'traffic')
-* requests (for the modules 'weather', 'github', 'getcrypto', 'stock', 'hipchat', 'currency')
+* requests (for the modules 'weather', 'github', 'getcrypto', 'stock', 'currency')
 * power (for the module 'battery')
 * dbus (for the module 'spotify')
 * i3ipc (for the module 'title')
