@@ -122,7 +122,8 @@
 	},
 	"xrandr": {
 		"on": { "prefix": " "},
-		"off": { "prefix": " " }
+		"off": { "prefix": " " },
+		"refresh": { "prefix": "" }
 	},
 	"redshift": {
 		"day": { "prefix": "" },

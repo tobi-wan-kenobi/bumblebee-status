@@ -77,7 +77,7 @@
 		"activated": {"prefix": "caf-on" }, "deactivated": { "prefix": "caf-off " }
 	},
 	"xrandr": {
-		"on": { "prefix": " off "}, "off": { "prefix": " on "}
+		"on": { "prefix": " off "}, "off": { "prefix": " on "}, "refresh": { "prefix": " refresh "}
 	},
 	"redshift": {
 		"day": { "prefix": "day" }, "night": { "prefix": "night" }, "transition": { "prefix": "trans" }

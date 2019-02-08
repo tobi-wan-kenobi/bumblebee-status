@@ -58,11 +58,20 @@ class Module(bumblebee.engine.Module):
         for widget in new_widgets:
             widgets.append(widget)
 
+        if self._autoupdate == False:
+            widget = bumblebee.output.Widget(full_text="")
+            widget.set("state", "refresh")
+            self._engine.input.register_callback(widget, button=1, cmd=self._refresh)
+            widgets.append(widget)
+
     def update(self, widgets):
         self.update_widgets(widgets)
 
     def state(self, widget):
         return widget.get("state", "off")
+
+    def _refresh(self, event):
+        self._needs_update = True
 
     def _toggle(self, event):
         self._needs_update = True
