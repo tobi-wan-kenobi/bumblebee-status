@@ -6,6 +6,8 @@ Parameters:
     * xrandr.overwrite_i3config: If set to 'true', this module assembles a new i3 config
         every time a screen is enabled or disabled by taking the file "~/.config/i3/config.template"
         and appending a file "~/.config/i3/config.<screen name>" for every screen.
+    * xrandr.autoupdate: If set to 'false', does *not* invoke xrandr automatically. Instead, the
+        module will only refresh when displays are enabled or disabled (defaults to false)
 
 Requires the following executable:
     * xrandr
@@ -25,10 +27,17 @@ class Module(bumblebee.engine.Module):
         widgets = []
         self._engine = engine
         super(Module, self).__init__(engine, config, widgets)
-        self.update_widgets(widgets)
+        self._autoupdate = bumblebee.util.asbool(self.parameter("autoupdate", True))
+        self._needs_update = True
 
     def update_widgets(self, widgets):
         new_widgets = []
+
+        if self._autoupdate == False and self._needs_update == False:
+            return
+
+        self._needs_update = False
+
         for line in bumblebee.util.execute("xrandr -q").split("\n"):
             if not " connected" in line:
                 continue
@@ -56,6 +65,7 @@ class Module(bumblebee.engine.Module):
         return widget.get("state", "off")
 
     def _toggle(self, event):
+        self._needs_update = True
         path = os.path.dirname(os.path.abspath(__file__))
 
         if bumblebee.util.asbool(self.parameter("overwrite_i3config", False)) == True:
