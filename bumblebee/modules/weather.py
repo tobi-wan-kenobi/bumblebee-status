@@ -8,6 +8,7 @@ Requires the following python packages:
 
 Parameters:
     * weather.location: Set location (ISO 3166 country code), defaults to 'auto' for getting location from http://ipinfo.io
+                        If set to a comma-separated list, left-click and right-click can be used to rotate the locations
     * weather.unit: metric (default), kelvin, imperial
     * weather.apikey: API key from http://api.openweathermap.org
 """
@@ -31,11 +32,26 @@ class Module(bumblebee.engine.Module):
         self._temperature = 0
         self._apikey = self.parameter("apikey", "af7bfe22287c652d032a3064ffa44088")
         self._location = self.parameter("location", "auto")
-        self._city = self.parameter("location", "")
+        if "," in self._location:
+            self._location = self._location.split(",")
+        else:
+            self._location = [self._location]
+        self._index = 0
         self._showcity = bumblebee.util.asbool(self.parameter("showcity", True))
         self._unit = self.parameter("unit", "metric")
         self._valid = False
         self.interval(15)
+
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self._next_location)
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self._prev_location)
+
+    def _next_location(self, event):
+        self._index = 0 if self._index >= len(self._location) - 1 else self._index + 1
+        self.update(self.widgets())
+
+    def _prev_location(self, event):
+        self._index = len(self._location)-1 if self._index <= 0 else self._index - 1
+        self.update(self.widgets())
 
     def _unit_suffix(self):
         if self._unit == "metric":
@@ -50,8 +66,11 @@ class Module(bumblebee.engine.Module):
         return u"{}°{}".format(self._temperature, self._unit_suffix())
 
     def city(self):
-        self._city = re.sub('[_-]', ' ', self._city)
-        return u"{} ".format(self._city)
+        city = self._location[self._index]
+        if city == "auto":
+            city = ""
+        city = re.sub('[_-]', ' ', city)
+        return u"{} ".format(city)
 
     def output(self, widget):
         if not self._valid:
@@ -86,14 +105,14 @@ class Module(bumblebee.engine.Module):
         try:
             weather_url = "http://api.openweathermap.org/data/2.5/weather?appid={}".format(self._apikey)
             weather_url = "{}&units={}".format(weather_url, self._unit)
-            if self._location == "auto":
+            if self._location[self._index] == "auto":
                 location_url = "http://ipinfo.io/json"
                 location = requests.get(location_url).json()
                 coord = location["loc"].split(",")
                 self._city = location["city"]
                 weather_url = "{url}&lat={lat}&lon={lon}".format(url=weather_url, lat=coord[0], lon=coord[1])
             else:
-                weather_url = "{url}&q={city}".format(url=weather_url, city=self._location)
+                weather_url = "{url}&q={city}".format(url=weather_url, city=self._location[self._index])
             weather = requests.get(weather_url).json()
             self._temperature = int(weather['main']['temp'])
             self._weather = weather['weather'][0]['main'].lower()
