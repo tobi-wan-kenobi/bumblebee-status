@@ -9,6 +9,9 @@ Parameters:
     * xrandr.autoupdate: If set to 'false', does *not* invoke xrandr automatically. Instead, the
         module will only refresh when displays are enabled or disabled (defaults to false)
 
+Requires the following python module:
+    * (optional) i3 - if present, the need for updating the widget list is auto-detected
+
 Requires the following executable:
     * xrandr
 """
@@ -22,12 +25,25 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+try:
+    import i3
+except:
+    pass
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widgets = []
         self._engine = engine
         super(Module, self).__init__(engine, config, widgets)
         self._autoupdate = bumblebee.util.asbool(self.parameter("autoupdate", True))
+        self._needs_update = True
+
+        try:
+            i3.Subscription(self._output_update, "output")
+        except:
+            pass
+
+    def _output_update(self, event, data, _):
         self._needs_update = True
 
     def update_widgets(self, widgets):
