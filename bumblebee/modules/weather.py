@@ -10,6 +10,7 @@ Parameters:
     * weather.location: Set location (ISO 3166 country code), defaults to 'auto' for getting location from http://ipinfo.io
                         If set to a comma-separated list, left-click and right-click can be used to rotate the locations
     * weather.unit: metric (default), kelvin, imperial
+    * weather.showcity: If set to true, show location information, otherwise hide it (defaults to true)
     * weather.apikey: API key from http://api.openweathermap.org
 """
 
@@ -66,10 +67,7 @@ class Module(bumblebee.engine.Module):
         return u"{}°{}".format(self._temperature, self._unit_suffix())
 
     def city(self):
-        city = self._location[self._index]
-        if city == "auto":
-            city = ""
-        city = re.sub('[_-]', ' ', city)
+        city = re.sub('[_-]', ' ', self._city)
         return u"{} ".format(city)
 
     def output(self, widget):
@@ -112,6 +110,7 @@ class Module(bumblebee.engine.Module):
                 self._city = location["city"]
                 weather_url = "{url}&lat={lat}&lon={lon}".format(url=weather_url, lat=coord[0], lon=coord[1])
             else:
+                self._city = self._location[self._index]
                 weather_url = "{url}&q={city}".format(url=weather_url, city=self._location[self._index])
             weather = requests.get(weather_url).json()
             self._temperature = int(weather['main']['temp'])
