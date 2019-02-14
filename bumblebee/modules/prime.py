@@ -56,7 +56,7 @@ class Module(bumblebee.engine.Module):
         try:
             res = bumblebee.util.execute("prime-select query")
         except RuntimeError:
-            return ["n/a"]
+            return "n/a"
 
         for line in res.split("\n"):
             if not line: continue
@@ -64,6 +64,6 @@ class Module(bumblebee.engine.Module):
                 return self.nvidiastring
             if "intel" in line:
                 return self.intelstring
-        return ["n/a"]
+        return "n/a"
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
