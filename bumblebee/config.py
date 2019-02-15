@@ -48,10 +48,10 @@ class print_usage(argparse.Action):
 def create_parser():
     """Create the argument parser"""
     parser = argparse.ArgumentParser(description="display system data in the i3bar")
-    parser.add_argument("-m", "--modules", nargs="+", default=[],
+    parser.add_argument("-m", "--modules", nargs="+", action='append', default=[],
         help=MODULE_HELP)
     parser.add_argument("-t", "--theme", default="default", help=THEME_HELP)
-    parser.add_argument("-p", "--parameters", nargs="+", default=[],
+    parser.add_argument("-p", "--parameters", nargs="+", action='append', default=[],
         help=PARAMETER_HELP)
     parser.add_argument("-l", "--list", choices=["modules", "themes"], action=print_usage,
         help=LIST_HELP)
@@ -82,16 +82,18 @@ class Config(bumblebee.store.Store):
         if not self._args.debug:
             logging.getLogger().disabled = True
 
-        for param in self._args.parameters:
+        parameters = [item for sub in self._args.parameters for item in sub]
+        for param in parameters:
             key, value = param.split("=")
             self.set(key, value)
 
     def modules(self):
+        modules = [item for sub in self._args.modules for item in sub]
         """Return a list of all activated modules"""
         return [{
             "module": x.split(":")[0],
             "name": x if not ":" in x else x.split(":")[1],
-        } for x in self._args.modules]
+        } for x in modules]
 
     def theme(self):
         """Return the name of the selected theme"""
