@@ -12,7 +12,7 @@ Parameters:
 """
 
 import netifaces
-import subprocess21
+import subprocess
 
 import bumblebee.util
 import bumblebee.input
