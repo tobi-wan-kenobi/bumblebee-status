@@ -241,10 +241,14 @@ class Engine(object):
             module_name = self._aliases[module_name]
         if config_name is None:
             config_name = module_name
+        err = None
         try:
             module = importlib.import_module("bumblebee.modules.{}".format(module_name))
         except ImportError as error:
-            raise bumblebee.error.ModuleLoadError(error)
+            err = error
+            log.fatal("failed to import {}: {}".format(module_name, str(error)))
+        if err:
+            raise bumblebee.error.ModuleLoadError("unable to load module {}: {}".format(module_name, str(err)))
         return getattr(module, "Module")(self, {
             "name": config_name,
             "config": self._config
