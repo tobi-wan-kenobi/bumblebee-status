@@ -11,11 +11,14 @@ Parameters:
     * nic.format: Format string (defaults to "{intf} {state} {ip} {ssid}")
 """
 
+import logging
+log = logging.getLogger(__name__)
+
 try:
     import netifaces
     import subprocess
-except ImportError:
-    pass
+except ImportError as e:
+    log.warning("failed to import nic: {}".format(e))
 
 import bumblebee.util
 import bumblebee.input
