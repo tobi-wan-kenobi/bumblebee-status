@@ -125,4 +125,9 @@
 		"modified": { "prefix": "[m]" },
 		"deleted": { "prefix": "[d]" }
 	}
+    "dunst": {
+        "muted": { "prefix": "dunst(muted)"},
+        "unmuted": { "prefix": "dunst" }
+    }
+
 }
