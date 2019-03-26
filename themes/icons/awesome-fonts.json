@@ -188,5 +188,9 @@
 		"new": { "prefix": "" },
 		"modified": { "prefix": "" },
 		"deleted": { "prefix": "" }
-	}
+	},
+    "dunst": {
+        "muted": { "prefix": ""},
+        "unmuted": { "prefix": "" }
+    }
 }

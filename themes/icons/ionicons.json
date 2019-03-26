@@ -159,4 +159,9 @@
   "taskwarrior": {
       "prefix": "\uf454"
   }
+  "dunst": {
+        "muted": { "prefix": "\uf39a"},
+        "unmuted": { "prefix": "\uf39b" }
+    }
+
 }
