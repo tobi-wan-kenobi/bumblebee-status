@@ -258,6 +258,10 @@ Iceberg Rainbow (`-t iceberg-rainbow`) (contributed by [whzup](https://github.co
 
 ![Iceberg Rainbow](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/iceberg-rainbow.png)
 
+One Dark Powerline (`-t onedark-powerline`) (contributed by [dillasyx](https://github.com/dillasyx)):
+
+![One Dark Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/onedark-powerline.png)
+
 Default (nothing or `-t default`):
 
 ![Default](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/default.png)
