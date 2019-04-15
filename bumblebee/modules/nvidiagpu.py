@@ -2,6 +2,10 @@
 
 """Displays GPU name, temperature and memory usage.
 
+Parameters:
+   * nvidiagpu.format: Format string (defaults to "{name}: {temp}°C %{usedmem}/{totalmem} MiB")
+                       Available values are: {name} {temp} {mem_used} {mem_total}
+
 Requires nvidia-smi
 """
 
@@ -34,13 +38,21 @@ class Module(bumblebee.engine.Module):
                 key, val = key.strip(), val.strip()
                 if title == "FB Memory Usage":
                     if key == "Total":
-                        totalMem = val
+                        totalMem = val.split(" ")[0]
                     elif key == "Used":
                         usedMem = val.split(" ")[0]
                 elif key == "GPU Current Temp":
                     temp = val.split(" ")[0]
                 elif key == "Product Name":
                     name = val
+
             except:
                 title = item.strip()
-        self._utilization = u"%s: %s°C %s/%s"%(name, temp, usedMem, totalMem)
+
+        str_format = self.parameter("format", '{name}: {temp}°C {mem_used}/{mem_total} MiB')
+        self._utilization = str_format.format(
+                name = name,
+                temp = temp,
+                mem_used = usedMem,
+                mem_total = totalMem,
+            )
