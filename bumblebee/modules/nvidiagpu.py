@@ -34,6 +34,7 @@ class Module(bumblebee.engine.Module):
         name = "not found"
         clockMem = ""
         clockGpu = ""
+        fanspeed = ""
         for item in out_list:
             try:
                 key, val = item.split(':')
