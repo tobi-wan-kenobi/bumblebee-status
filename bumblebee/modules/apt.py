@@ -26,11 +26,14 @@ def get_apt_check_info(widget):
 
     res_array = res.split(';')
 
-    s = res_array[0]
-    if s.isdigit(): all_pkg = int(s)
+    try:
+        s = res_array[0]
+        if s.isdigit(): all_pkg = int(s)
 
-    s = res_array[1]
-    if s.isdigit(): security = int(s)
+        s = res_array[1]
+        if s.isdigit(): security = int(s)
+    except:
+        pass
 
     widget.set("all_pkg", all_pkg)
     widget.set("security", security)

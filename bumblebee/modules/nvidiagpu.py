@@ -32,6 +32,8 @@ class Module(bumblebee.engine.Module):
         totalMem = ""
         temp = ""
         name = "not found"
+        clockMem = ""
+        clockGpu = ""
         for item in out_list:
             try:
                 key, val = item.split(':')
