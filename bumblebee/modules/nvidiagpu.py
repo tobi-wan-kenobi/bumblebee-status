@@ -4,7 +4,7 @@
 
 Parameters:
    * nvidiagpu.format: Format string (defaults to "{name}: {temp}°C %{usedmem}/{totalmem} MiB")
-                       Available values are: {name} {temp} {mem_used} {mem_total}
+                       Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem}
 
 Requires nvidia-smi
 """
@@ -36,6 +36,11 @@ class Module(bumblebee.engine.Module):
             try:
                 key, val = item.split(':')
                 key, val = key.strip(), val.strip()
+                if title == "Clocks":
+                    if key == "Graphics":
+                        clockGpu = val.split(" ")[0]
+                    elif key == "Memory":
+                        clockMem = val.split(" ")[0]
                 if title == "FB Memory Usage":
                     if key == "Total":
                         totalMem = val.split(" ")[0]
@@ -45,6 +50,8 @@ class Module(bumblebee.engine.Module):
                     temp = val.split(" ")[0]
                 elif key == "Product Name":
                     name = val
+                elif key == "Fan Speed":
+                    fanspeed = val.split(" ")[0]
 
             except:
                 title = item.strip()
@@ -55,4 +62,7 @@ class Module(bumblebee.engine.Module):
                 temp = temp,
                 mem_used = usedMem,
                 mem_total = totalMem,
+                clock_gpu = clockGpu,
+                clock_mem = clockMem,
+                fanspeed = fanspeed,
             )
