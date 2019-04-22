@@ -27,7 +27,6 @@ class Module(bumblebee.engine.Module):
         # TODO: list all batteries
         self._batteries.append("/sys/class/power_supply/BAT0")
         self._batteries.append("/sys/class/power_supply/BAT1")
-        self._batteries.append("/sys/class/power_supply/battery")
 
         super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.capacity))
 
@@ -42,19 +41,21 @@ class Module(bumblebee.engine.Module):
             # do not show remaining if on AC
             if estimate == power.common.TIME_REMAINING_UNLIMITED:
                 return None
-            elif estimate == power.common.TIME_REMAINING_UNKNOWN:
+            if estimate == power.common.TIME_REMAINING_UNKNOWN:
                 return ""
-            else:
-                for path in self._batteries:
-                    try:
-                        with open("{}/power_now".format(path)) as o:
-                            power_now += int(o.read())
-                    except IOError:
-                        return "n/a"
-                    except Exception:
-                        errors += 1
-                
-                estimate =  float( self.energy_now / power_now)
+            # commented out, this will not use the PowerManagement result, instead it calculates the remaining time
+            # with actual energy level, but shows in my case remaining 40 minutes instead of 12 hours
+            # else:
+            #     for path in self._batteries:
+            #         try:
+            #             with open("{}/power_now".format(path)) as o:
+            #                 power_now += int(o.read())
+            #         except IOError:
+            #             return "n/a"
+            #         except Exception:
+            #             errors += 1
+            #
+            #     estimate =  float( self.energy_now / power_now)
         except Exception:
             return ""
         return bumblebee.util.durationfmt(estimate*60, shorten=True, suffix=True) # estimate is in minutes
@@ -84,19 +85,19 @@ class Module(bumblebee.engine.Module):
             widget.set("capacity", 100)
             return "ac"
 
-        capacity = int( self.energy_now / self.energy_full  * 100)
+        capacity = int( float(self.energy_now) / float(self.energy_full) * 100)
         capacity = capacity if capacity < 100 else 100
         widget.set("capacity", capacity)
         output =  "{}%".format(capacity)
         widget.set("theme.minwidth", "100%")
-        
+
         if bumblebee.util.asbool(self.parameter("showremaining", True))\
                 and self.getCharge(widget) == "Discharging":
             output = "{} {}".format(output, self.remaining())
 
         return output
 
-       
+
     def state(self, widget):
         state = []
         capacity = widget.get("capacity")
