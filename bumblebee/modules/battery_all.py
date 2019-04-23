@@ -3,9 +3,10 @@
 """Displays battery status, remaining percentage and charging information.
 
 Parameters:
-    * battery.device     : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)
-    * battery.warning    : Warning threshold in % of remaining charge (defaults to 20)
-    * battery.critical   : Critical threshold in % of remaining charge (defaults to 10)
+    * battery.device       : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)
+    * battery.warning      : Warning threshold in % of remaining charge (defaults to 20)
+    * battery.critical     : Critical threshold in % of remaining charge (defaults to 10)
+    * batter.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
 """
 
 import os
@@ -84,7 +85,7 @@ class Module(bumblebee.engine.Module):
             widget.set("capacity", 100)
             return "ac"
 
-        capacity = int( self.energy_now / self.energy_full  * 100)
+        capacity = int( float(self.energy_now) / float(self.energy_full) * 100.0)
         capacity = capacity if capacity < 100 else 100
         widget.set("capacity", capacity)
         output =  "{}%".format(capacity)
