@@ -45,17 +45,6 @@ class Module(bumblebee.engine.Module):
                 return None
             elif estimate == power.common.TIME_REMAINING_UNKNOWN:
                 return ""
-            else:
-                for path in self._batteries:
-                    try:
-                        with open("{}/power_now".format(path)) as o:
-                            power_now += int(o.read())
-                    except IOError:
-                        return "n/a"
-                    except Exception:
-                        errors += 1
-                
-                estimate =  float( self.energy_now / power_now)
         except Exception:
             return ""
         return bumblebee.util.durationfmt(estimate*60, shorten=True, suffix=True) # estimate is in minutes
