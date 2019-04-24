@@ -254,6 +254,10 @@ Iceberg Powerline (`-t iceberg-powerline`) (contributed by [whzup](https://githu
 
 ![Iceberg Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/iceberg-powerline.png)
 
+Iceberg Dark Powerline (`-t iceberg-dark-powerline`) (contributed by [gkeep](https://github.com/gkeep)):
+
+![Iceberg Dark Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/iceberg-dark-powerline.png)
+
 Iceberg Rainbow (`-t iceberg-rainbow`) (contributed by [whzup](https://github.com/whzup)):
 
 ![Iceberg Rainbow](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/iceberg-rainbow.png)
