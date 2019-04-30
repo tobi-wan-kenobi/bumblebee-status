@@ -14,7 +14,10 @@ class Module(bumblebee.engine.Module):
         )
         self._paused = False
         # Make sure that dunst is currently not paused
-        bumblebee.util.execute("killall -SIGUSR2 dunst")
+        try:
+            bumblebee.util.execute("killall -SIGUSR2 dunst")
+        except:
+            pass
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                 cmd=self.toggle_status
         )
@@ -22,10 +25,13 @@ class Module(bumblebee.engine.Module):
     def toggle_status(self, event):
         self._paused = not self._paused
         
-        if self._paused:
-            bumblebee.util.execute("killall -SIGUSR1 dunst")
-        else:
-            bumblebee.util.execute("killall -SIGUSR2 dunst")
+        try:
+            if self._paused:
+                bumblebee.util.execute("killall -SIGUSR1 dunst")
+            else:
+                bumblebee.util.execute("killall -SIGUSR2 dunst")
+        except:
+            self._paused = not self._paused # toggling failed
 
     def state(self, widget):
         if self._paused:
