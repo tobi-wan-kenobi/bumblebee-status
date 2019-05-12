@@ -7,7 +7,7 @@ Requires the following library:
 
 Parameters:
     * github.token: GitHub user access token, the token needs to have the 'notifications' scope.
-    * github.interval: Interval in minutes
+    * github.interval: Interval in minutes between updates, default is 5.
 """
 
 import bumblebee.input
