@@ -192,5 +192,9 @@
     "dunst": {
         "muted": { "prefix": ""},
         "unmuted": { "prefix": "" }
+    },
+    "pihole": { 
+      "enabled": { "prefix": "" },
+      "disabled": { "prefix": "" }
     }
 }
