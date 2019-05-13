@@ -41,7 +41,7 @@ class Module(bumblebee.engine.Module):
         ))
 
 
-class BandwidthInfo:
+class BandwidthInfo(object):
     def __init__(self):
         io_counters = self.io_counters()
         self.network = io_counters[self.default_network_adapter()]
@@ -64,7 +64,7 @@ class BandwidthInfo:
         return psutil.net_io_counters(pernic=True)
 
 
-class TrafficWidget:
+class TrafficWidget(object):
     def __new__(self, text, icon):
         widget = bumblebee.output.Widget()
         widget.set('theme.minwidth', '00000000KiB/s')
