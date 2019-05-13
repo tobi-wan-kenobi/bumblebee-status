@@ -33,8 +33,8 @@ class Module(bumblebee.engine.Module):
         del widgets[:]
 
         widgets.extend((
-            TrafficWidget(download_rate, ''),
-            TrafficWidget(upload_rate, '')
+            TrafficWidget(text=download_rate, icon=''),
+            TrafficWidget(text=upload_rate, icon='')
         ))
 
 
