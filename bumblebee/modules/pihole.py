@@ -30,7 +30,7 @@ class Module(bumblebee.engine.Module):
 
     def pihole_status(self, widget):
         if self._pihole_status is None:
-            return "unknown"
+            return "pi-hole unknown"
         return "pi-hole " + ("up/" + self._ads_blocked_today if self._pihole_status else "down")
 
     def update_pihole_status(self):
@@ -61,8 +61,8 @@ class Module(bumblebee.engine.Module):
         self.update_pihole_status()
 
     def state(self, widget):
-        if self._pihole_status:
+        if self._pihole_status is None:
+            return []
+        elif self._pihole_status:
             return ["enabled"]
-        elif not self._pihole_status:
-            return ["disabled", "warning"]
-        return []
+        return ["disabled", "warning"]
