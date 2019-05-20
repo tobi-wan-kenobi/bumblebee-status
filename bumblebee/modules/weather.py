@@ -7,8 +7,9 @@ Requires the following python packages:
     * requests
 
 Parameters:
-    * weather.location: Set location (ISO 3166 country code), defaults to 'auto' for getting location from http://ipinfo.io
-                        If set to a comma-separated list, left-click and right-click can be used to rotate the locations
+    * weather.location: Set location, defaults to 'auto' for getting location from http://ipinfo.io
+                        If set to a comma-separated list, left-click and right-click can be used to rotate the locations.
+                        Locations should be city names or city ids.
     * weather.unit: metric (default), kelvin, imperial
     * weather.showcity: If set to true, show location information, otherwise hide it (defaults to true)
     * weather.apikey: API key from http://api.openweathermap.org
@@ -107,12 +108,13 @@ class Module(bumblebee.engine.Module):
                 location_url = "http://ipinfo.io/json"
                 location = requests.get(location_url).json()
                 coord = location["loc"].split(",")
-                self._city = location["city"]
                 weather_url = "{url}&lat={lat}&lon={lon}".format(url=weather_url, lat=coord[0], lon=coord[1])
+            elif self._location[self._index].isdigit():
+                weather_url = "{url}&id={id}".format(url=weather_url, id=self._location[self._index])
             else:
-                self._city = self._location[self._index]
                 weather_url = "{url}&q={city}".format(url=weather_url, city=self._location[self._index])
             weather = requests.get(weather_url).json()
+            self._city = weather['name']
             self._temperature = int(weather['main']['temp'])
             self._weather = weather['weather'][0]['main'].lower()
             self._valid = True
