@@ -43,7 +43,7 @@ class PopupMenu:
         if callback is None:
             callback = click_callback
         self.menu.add_command(label=menuitem,
-                              command=click_callback)
+                              command=callback)
 
         # track item index
         self._item_count += 1
