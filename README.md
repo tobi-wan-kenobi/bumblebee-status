@@ -186,6 +186,8 @@ Modules and commandline utilities are only required for modules, the core itself
 * i3ipc (for the module 'title')
 * pacman-contrib (for module 'arch-update')
 * docker (for the module 'docker_ps')
+* pytz (for the module 'datetimetz')
+* localtz (for the module 'datetimetz')
 
 # Required commandline utilities
 

@@ -20,7 +20,9 @@ optdepends=('xorg-xbacklight: to display a displays brightness'
             'pacman: display current status of pacman'
             'iputils: display a ping'
             'i3ipc-python: display titlebar'
-            'fakeroot: dependency of the pacman module')
+            'fakeroot: dependency of the pacman module'
+            'pytz: timezone conversion for datetimetz module'
+            'tzlocal: retrieve system timezone for datetimetz module')
 source=("$pkgname-$pkgver.tar.gz::$url/archive/v$pkgver.tar.gz")
 sha512sums=('3a66fc469dd3b081337c9e213a1b2262f25f30977ee6ef65b9fa5a8b6aa341637832d1a5dbb74e30d68e2824e0d19d7a911eb3390dc6062707a552f429b483e8')
 
