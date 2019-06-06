@@ -18,8 +18,10 @@ APT_CHECK_PATH = "/usr/lib/update-notifier/apt_check.py"
 def get_apt_check_info(widget):
     try:
         res = bumblebee.util.execute(APT_CHECK_PATH)
-    except RuntimeError:
-        pass
+        widget.set("error", None)
+    except (RuntimeError, FileNotFoundError) as e:
+        widget.set("error", "unable to query APT: {}".format(e))
+        return
 
     all_pkg = 0
     security = 0
@@ -46,6 +48,8 @@ class Module(bumblebee.engine.Module):
 
     def updates(self, widget):
         result = []
+        if widget.get("error"):
+            return widget.get("error")
         for t in ["all_pkg", "security"]:
             result.append(str(widget.get(t, 0)))
         return "/".join(result)
@@ -63,6 +67,8 @@ class Module(bumblebee.engine.Module):
             ret = "critical"
         elif cnt > 0:
             ret = "warning"
+        if widget.get("error"):
+            ret = "critical"
 
         return ret
 
