@@ -81,8 +81,10 @@ class Module(bumblebee.engine.Module):
         menu = bumblebee.popup_v2.PopupMenu()
 
         if self._connected_vpn_profile is not None:
-            menu.add_menuitem("Off", callback=self._on_vpn_disconnect)
+            menu.add_menuitem("Disconnect", callback=self._on_vpn_disconnect)
         for vpn_profile in self._vpn_profiles:
+            if self._connected_vpn_profile is not None and self._connected_vpn_profile == vpn_profile:
+                continue
             menu.add_menuitem(vpn_profile, callback=functools.partial(self._on_vpn_connect, vpn_profile))
         menu.show(widget)
 
