@@ -196,5 +196,8 @@
     "pihole": { 
       "enabled": { "prefix": "" },
       "disabled": { "prefix": "" }
+    },
+    "vpn": {
+        "prefix": ""
     }
 }
