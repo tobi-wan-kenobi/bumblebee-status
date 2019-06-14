@@ -28,6 +28,11 @@ class Module(bumblebee.engine.Module):
                 cmd="light -A {}%".format(step))
             engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
                 cmd="light -U {}%".format(step))
+        elif bumblebee.util.which("brightnessctl"):
+            engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
+                cmd="brightnessctl s {}%+".format(step))
+            engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
+                cmd="brightnessctl s {}%-".format(step))
         else:
             engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
                 cmd="xbacklight +{}%".format(step))
