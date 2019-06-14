@@ -24,20 +24,18 @@ class Module(bumblebee.engine.Module):
         step = self.parameter("step", 2)
 
         if bumblebee.util.which("light"):
-            engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
-                                           cmd="light -A {}%".format(step))
-            engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
-                                           cmd="light -U {}%".format(step))
+            self.register_cmd(engine, "light -A {}%".format(step),
+                              "light -U {}%".format(step))
         elif bumblebee.util.which("brightnessctl"):
-            engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
-                                           cmd="brightnessctl s {}%+".format(step))
-            engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
-                                           cmd="brightnessctl s {}%-".format(step))
+            self.register_cmd(engine, "brightnessctl s {}%+".format(step),
+                              "brightnessctl s {}%-".format(step))
         else:
-            engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
-                                           cmd="xbacklight +{}%".format(step))
-            engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
-                                           cmd="xbacklight -{}%".format(step))
+            self.register_cmd(engine, "xbacklight +{}%".format(step),
+                              "xbacklight -{}%".format(step))
+
+    def register_cmd(self, engine, upCmd, downCmd):
+        engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP, cmd=upCmd)
+        engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN, cmd=downCmd)
 
     def brightness(self, widget):
         if isinstance(self._brightness, float):
