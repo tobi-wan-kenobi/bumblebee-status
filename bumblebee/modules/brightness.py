@@ -13,11 +13,11 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.brightness)
-        )
+                                     bumblebee.output.Widget(full_text=self.brightness))
         self._brightness = 0
 
         self._device_path = self.parameter("device_path", "/sys/class/backlight/intel_backlight")
@@ -25,19 +25,19 @@ class Module(bumblebee.engine.Module):
 
         if bumblebee.util.which("light"):
             engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
-                cmd="light -A {}%".format(step))
+                                           cmd="light -A {}%".format(step))
             engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
-                cmd="light -U {}%".format(step))
+                                           cmd="light -U {}%".format(step))
         elif bumblebee.util.which("brightnessctl"):
             engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
-                cmd="brightnessctl s {}%+".format(step))
+                                           cmd="brightnessctl s {}%+".format(step))
             engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
-                cmd="brightnessctl s {}%-".format(step))
+                                           cmd="brightnessctl s {}%-".format(step))
         else:
             engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP,
-                cmd="xbacklight +{}%".format(step))
+                                           cmd="xbacklight +{}%".format(step))
             engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN,
-                cmd="xbacklight -{}%".format(step))
+                                           cmd="xbacklight -{}%".format(step))
 
     def brightness(self, widget):
         if isinstance(self._brightness, float):
@@ -51,7 +51,7 @@ class Module(bumblebee.engine.Module):
                 backlight = int(f.readline())
             with open("{}/max_brightness".format(self._device_path)) as f:
                 max_brightness = int(f.readline())
-                self._brightness = float(backlight*100/max_brightness)
+                self._brightness = float(backlight * 100 / max_brightness)
         except:
             return "Error"
 
