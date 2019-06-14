@@ -35,8 +35,11 @@ class Module(bumblebee.engine.Module):
         self._vpn_profiles = []
         for line in lines:
             info = line.split(':')
-            if info[1] == "vpn":
-                self._vpn_profiles.append(info[0])
+            try:
+                if info[1] == "vpn":
+                    self._vpn_profiles.append(info[0])
+            except:
+                pass
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                        cmd=self.popup)
