@@ -39,9 +39,11 @@ class Module(bumblebee.engine.Module):
 
     def _toggle(self, widget):
         if self._active():
+            bumblebee.util.execute("xset +dpms")
             bumblebee.util.execute("xset s default")
             bumblebee.util.execute("notify-send \"Out of coffee\"")
         else:
+            bumblebee.util.execute("xset -dpms")
             bumblebee.util.execute("xset s off")
             bumblebee.util.execute("notify-send \"Consuming caffeine\"")
 
