@@ -48,9 +48,6 @@ class Module(bumblebee.engine.Module):
 
 
 class BandwidthInfo(object):
-    def __init__(self):
-        self.bandwidth()
-
     def bytes_recv(self):
         return self.bandwidth().bytes_recv
 
