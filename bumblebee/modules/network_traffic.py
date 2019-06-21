@@ -16,21 +16,27 @@ class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config)
 
-        self._bandwidth = BandwidthInfo()
+        try:
+            self._bandwidth = BandwidthInfo()
 
-        self._download_tx = self._bandwidth.bytes_recv()
-        self._upload_tx = self._bandwidth.bytes_sent()
+            self._download_tx = self._bandwidth.bytes_recv()
+            self._upload_tx = self._bandwidth.bytes_sent()
+        except:
+            pass
 
     def update(self, widgets):
-        download_tx = self._bandwidth.bytes_recv()
-        upload_tx = self._bandwidth.bytes_sent()
+        try:
+            download_tx = self._bandwidth.bytes_recv()
+            upload_tx = self._bandwidth.bytes_sent()
 
-        download_rate = (download_tx - self._download_tx)
-        upload_rate = (upload_tx - self._upload_tx)
+            download_rate = (download_tx - self._download_tx)
+            upload_rate = (upload_tx - self._upload_tx)
 
-        self.update_widgets(widgets, download_rate, upload_rate)
+            self.update_widgets(widgets, download_rate, upload_rate)
 
-        self._download_tx, self._upload_tx = download_tx, upload_tx
+            self._download_tx, self._upload_tx = download_tx, upload_tx
+        except:
+            pass
 
     def update_widgets(self, widgets, download_rate, upload_rate):
         del widgets[:]
@@ -43,8 +49,7 @@ class Module(bumblebee.engine.Module):
 
 class BandwidthInfo(object):
     def __init__(self):
-        io_counters = self.io_counters()
-        self.network = io_counters[self.default_network_adapter()]
+        self.bandwidth()
 
     def bytes_recv(self):
         return self.bandwidth().bytes_recv
@@ -57,8 +62,12 @@ class BandwidthInfo(object):
         return io_counters[self.default_network_adapter()]
 
     def default_network_adapter(self):
-        gateways = netifaces.gateways()
-        return gateways['default'][netifaces.AF_INET][1]
+        gateway = netifaces.gateways()['default']
+
+        if (len(gateway) == 0):
+            raise 'No default gateway found'
+
+        return gateway[netifaces.AF_INET][1]
 
     def io_counters(self):
         return psutil.net_io_counters(pernic=True)
