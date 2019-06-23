@@ -25,8 +25,8 @@ def is_terminated():
 
 def read_input(inp):
     """Read i3bar input and execute callbacks"""
-    epoll = select.epoll()
-    epoll.register(sys.stdin.fileno(), select.EPOLLIN)
+    epoll = select.poll()
+    epoll.register(sys.stdin.fileno())
     log.debug("starting click event processing")
     while inp.running:
         if is_terminated():
