@@ -20,10 +20,10 @@ class TestI3BarInput(unittest.TestCase):
         self.popen = mocks.MockPopen()
 
         self.stdin.fileno.return_value = 1
-        epoll = mock.Mock()
-        self.select.epoll.return_value = epoll
+        poll = mock.Mock()
+        self.select.poll.return_value = poll
 
-        epoll.poll.return_value = [(self.stdin.fileno.return_value, 2)]
+        poll.poll.return_value = [(self.stdin.fileno.return_value, 2)]
 
         self.anyModule = mock.Mock()
         self.anyModule.id = mocks.rand(10)
