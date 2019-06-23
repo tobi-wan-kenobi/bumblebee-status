@@ -38,6 +38,10 @@ Explicitly unsupported Python versions: 3.2 (missing unicode literals)
 # Arch Linux
 $ sudo pacman -S awesome-terminal-fonts
 
+# FreeBSD
+$ sudo pkg install font-awesome
+$ sudo pkg install py36-tzlocal py36-pytz py36-netifaces py36-psutil py36-requests #for dependencies
+
 # Other
 # see https://github.com/gabrielelana/awesome-terminal-fonts
 ```
