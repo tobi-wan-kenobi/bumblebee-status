@@ -53,7 +53,6 @@ def read_input(inp):
                 log.debug("failed to parse event: {}".format(e))
     log.debug("exiting click event processing")
     poll.unregister(sys.stdin.fileno())
-    poll.close()
     inp.has_event = True
     inp.clean_exit = True
 
