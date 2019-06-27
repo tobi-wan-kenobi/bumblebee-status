@@ -48,6 +48,8 @@ class Module(bumblebee.engine.Module):
             self.capacity(widget)
         while len(widgets) > 0: del widgets[0]
         for widget in new_widgets:
+            if bumblebee.util.asbool(self.parameter("decorate", True)) == False:
+                widget.set("theme.exclude", "suffix")
             widgets.append(widget)
         self._widgets = widgets
 
@@ -102,9 +104,6 @@ class Module(bumblebee.engine.Module):
             state.append("critical")
         elif capacity < int(self.parameter("warning", 20)):
             state.append("warning")
-
-        if bumblebee.util.asbool(self.parameter("decorate", True)) == False:
-            return state
 
         if widget.get("ac"):
             state.append("AC")
