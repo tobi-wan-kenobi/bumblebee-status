@@ -223,6 +223,9 @@ class Theme(object):
         if not self._widget:
             self._widget = widget
 
+        if self._widget.get("theme.exclude", "") == name:
+            return None
+
         if self._widget != widget:
             self._prevbg = self.bg(self._widget)
             self._widget = widget
