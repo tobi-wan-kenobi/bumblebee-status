@@ -241,7 +241,8 @@ class Theme(object):
         states = widget.state()
         if name not in states:
             for state in states:
-                state_themes.append(self._get(widget, state, {}))
+                if state:
+                    state_themes.append(self._get(widget, state, {}))
 
         value = self._defaults.get(name, default)
         value = widget.get("theme.{}".format(name), value)
