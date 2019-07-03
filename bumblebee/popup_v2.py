@@ -20,6 +20,7 @@ class PopupMenu(object):
         self._root.withdraw()
         self._menu = tk.Menu(self._root)
         self._menu.bind("<FocusOut>", self._on_focus_out)
+        self._menu.bind("<Leave>", self._on_focus_out)
 
     def _on_focus_out(self, event=None):
         self._root.destroy()
