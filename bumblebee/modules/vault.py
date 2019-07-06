@@ -2,6 +2,8 @@
 
 """Copy passwords from a password store into the clipboard (currently supports only "pass")
 
+Many thanks to [@bbernhard](https://github.com/bbernhard) for the idea!
+
 Parameters:
     * vault.duration: Duration until password is cleared from clipboard (defaults to 30)
     * vault.location: Location of the password store (defaults to ~/.password-store)
