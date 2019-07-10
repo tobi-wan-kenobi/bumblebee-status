@@ -129,6 +129,10 @@
 	  "rx": { "prefix": "\uf365" },
 	  "tx": { "prefix": "\uf35f" }
   },
+  "network_traffic": {
+	  "rx": { "prefix": "\uf365" },
+	  "tx": { "prefix": "\uf35f" }
+  },
   "mpd": {
 		"playing": { "prefix": "\uf488" },
 		"paused": { "prefix": "\uf210" },

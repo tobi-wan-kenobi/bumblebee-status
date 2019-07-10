@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Displays network traffic
+No extra configuratio needed.
 """
 
 import psutil
@@ -12,7 +13,11 @@ import bumblebee.output
 import bumblebee.engine
 import bumblebee.util
 
+WIDGET_NAME = 'network_traffic'
+
 class Module(bumblebee.engine.Module):
+    """Bumblebee main module """
+
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config)
 
@@ -21,8 +26,20 @@ class Module(bumblebee.engine.Module):
 
             self._download_tx = self._bandwidth.bytes_recv()
             self._upload_tx = self._bandwidth.bytes_sent()
-        except:
+        except Exception:
+            """ We do not want do explode anything """
             pass
+
+    @classmethod
+    def state(cls, widget):
+        """Return the widget state"""
+
+        if widget.name == '{}.rx'.format(WIDGET_NAME):
+            return 'rx'
+        elif widget.name == '{}.tx'.format(WIDGET_NAME):
+            return 'tx'
+
+        return None
 
     def update(self, widgets):
         try:
@@ -35,50 +52,63 @@ class Module(bumblebee.engine.Module):
             self.update_widgets(widgets, download_rate, upload_rate)
 
             self._download_tx, self._upload_tx = download_tx, upload_tx
-        except:
+        except Exception:
+            """ We do not want do explode anything """
             pass
 
-    def update_widgets(self, widgets, download_rate, upload_rate):
+    @classmethod
+    def update_widgets(cls, widgets, download_rate, upload_rate):
+        """Update tx/rx widgets with new rates"""
         del widgets[:]
 
         widgets.extend((
-            TrafficWidget(text=download_rate, icon=''),
-            TrafficWidget(text=upload_rate, icon='')
+            TrafficWidget(text=download_rate, direction='tx'),
+            TrafficWidget(text=upload_rate, direction='rx')
         ))
 
 
 class BandwidthInfo(object):
+    """Get received/sent bytes from network adapter"""
+
     def bytes_recv(self):
+        """Return received bytes"""
         return self.bandwidth().bytes_recv
 
     def bytes_sent(self):
+        """Return sent bytes"""
         return self.bandwidth().bytes_sent
 
     def bandwidth(self):
+        """Return bandwidth information"""
         io_counters = self.io_counters()
         return io_counters[self.default_network_adapter()]
 
-    def default_network_adapter(self):
+    @classmethod
+    def default_network_adapter(cls):
+        """Return default active network adapter"""
         gateway = netifaces.gateways()['default']
 
-        if (len(gateway) == 0):
+        if not gateway:
             raise 'No default gateway found'
 
         return gateway[netifaces.AF_INET][1]
 
-    def io_counters(self):
+    @classmethod
+    def io_counters(cls):
+        """Return IO counters"""
         return psutil.net_io_counters(pernic=True)
 
-
 class TrafficWidget(object):
-    def __new__(self, text, icon):
-        widget = bumblebee.output.Widget()
-        widget.set('theme.minwidth', '00000000KiB/s')
-        widget.full_text(self.humanize(text, icon))
+    """Create a traffic widget with humanized bytes string with proper icon (up/down)"""
+    def __new__(cls, text, direction):
+        widget = bumblebee.output.Widget(name='{0}.{1}'.format(WIDGET_NAME, direction))
+        widget.set('theme.minwidth', '0000000KiB/s')
+        widget.full_text(cls.humanize(text))
 
         return widget
 
     @staticmethod
-    def humanize(text, icon):
+    def humanize(text):
+        """Return humanized bytes"""
         humanized_byte_format = bumblebee.util.bytefmt(text)
-        return '{0} {1}/s'.format(icon, humanized_byte_format)
+        return '{0}/s'.format(humanized_byte_format)

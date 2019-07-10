@@ -92,6 +92,10 @@
 		"rx": { "prefix": "down"},
 		"tx": { "prefix": "up"}
 	},
+	"network_traffic": {
+		"rx": { "prefix": "down" },
+		"tx": { "prefix": "up" }
+	},
     "mpd": {
 		"playing": { "prefix": ">" },
 		"paused": { "prefix": "||" },
