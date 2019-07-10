@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """Displays network traffic
-No extra configuratio needed.
+   * No extra configuration needed
 """
 
 import psutil
