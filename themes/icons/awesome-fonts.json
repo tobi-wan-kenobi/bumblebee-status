@@ -148,6 +148,10 @@
 	    "rx": { "prefix": "" },
 	    "tx": { "prefix": "" }
     },
+    "network_traffic": {
+	    "rx": { "prefix": "" },
+            "tx": { "prefix": "" }
+    },
     "mpd": {
 		"playing": { "prefix": "" },
 		"paused": { "prefix": "" },
