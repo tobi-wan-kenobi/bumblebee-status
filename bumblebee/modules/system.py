@@ -60,10 +60,10 @@ class Module(bumblebee.engine.Module):
             root.focus_set()
 				
             do_it = tkmessagebox.askyesno(header, text)
+            root.destroy()
 		
         if do_it:
-            bumblebee.util.execute(command)
-        root.destroy()
+            bumblebee.util.execute(command) 
 
 
     def popup(self, widget):
