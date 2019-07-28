@@ -47,10 +47,10 @@ class Module(bumblebee.engine.Module):
                                        cmd=self.popup)
 
     def update(self, widgets):
-       pass 
+        pass 
 
     def text(self, widget):
-		return ""
+        return ""
 
     def _on_command(self, header, text, command):
         do_it = True
