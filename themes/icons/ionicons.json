@@ -176,5 +176,8 @@
   "twmn": {
     "muted": { "prefix": "\uf1f6" },
     "unmuted": { "prefix": "\uf0f3" }
+  },
+  "system": {
+    "prefix": "  \uf2a9  "
   }
 }

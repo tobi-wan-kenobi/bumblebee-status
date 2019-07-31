@@ -213,5 +213,8 @@
   },
   "vpn": {
     "prefix": ""
+  },
+  "system": {
+    "prefix": "    "
   }
 }
