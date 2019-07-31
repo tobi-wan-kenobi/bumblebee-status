@@ -166,6 +166,9 @@
   "dunst": {
         "muted": { "prefix": "\uf39a"},
         "unmuted": { "prefix": "\uf39b" }
-    }
+    },
+  "system": {
+	"prefix": "  \uf2a9  "
+  }
 
 }

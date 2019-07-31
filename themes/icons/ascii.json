@@ -132,6 +132,9 @@
     "dunst": {
         "muted": { "prefix": "dunst(muted)"},
         "unmuted": { "prefix": "dunst" }
-    }
+    },
+	"system": {
+		"prefix": "system"	
+	}
 
 }
