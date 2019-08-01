@@ -105,6 +105,9 @@ class Theme(object):
         if icon is None:
             return self._get(widget, "prefix", None)
 
+    def get(self, widget, attribute, default_value=""):
+        return self._get(widget, attribute, default_value)
+
     def padding(self, widget):
         """Return padding for widget"""
         return self._get(widget, "padding", "")

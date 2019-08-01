@@ -41,6 +41,7 @@ class Module(object):
         self.error = None
         self._next = int(time.time())
         self._default_interval = 0
+        self._engine = engine
 
         self._configFile = None
         for cfg in [os.path.expanduser("~/.bumblebee-status.conf"), os.path.expanduser("~/.config/bumblebee-status.conf")]:
@@ -55,6 +56,9 @@ class Module(object):
         self._widgets = []
         if widgets:
             self._widgets = widgets if isinstance(widgets, list) else [widgets]
+
+    def theme(self):
+        return self._engine.theme()
 
     def widgets(self, widgets=None):
         """Return the widgets to draw for this module"""
@@ -159,6 +163,9 @@ class Engine(object):
                 cmd=self._toggle_minimize)
 
         self.input.start()
+
+    def theme(self):
+        return self._theme
 
     def _toggle_minimize(self, event):
         for module in self._modules:
