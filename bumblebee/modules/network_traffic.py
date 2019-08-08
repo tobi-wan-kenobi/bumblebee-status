@@ -24,8 +24,8 @@ class Module(bumblebee.engine.Module):
         try:
             self._bandwidth = BandwidthInfo()
 
-            self._download_tx = self._bandwidth.bytes_recv()
-            self._upload_tx = self._bandwidth.bytes_sent()
+            self._bytes_recv = self._bandwidth.bytes_recv()
+            self._bytes_sent = self._bandwidth.bytes_sent()
         except Exception:
             """ We do not want do explode anything """
             pass
@@ -43,15 +43,15 @@ class Module(bumblebee.engine.Module):
 
     def update(self, widgets):
         try:
-            download_tx = self._bandwidth.bytes_recv()
-            upload_tx = self._bandwidth.bytes_sent()
+            bytes_recv = self._bandwidth.bytes_recv()
+            bytes_sent = self._bandwidth.bytes_sent()
 
-            download_rate = (download_tx - self._download_tx)
-            upload_rate = (upload_tx - self._upload_tx)
+            download_rate = (bytes_recv - self._bytes_recv)
+            upload_rate = (bytes_sent - self._bytes_sent)
 
             self.update_widgets(widgets, download_rate, upload_rate)
 
-            self._download_tx, self._upload_tx = download_tx, upload_tx
+            self._bytes_recv, self._bytes_sent = bytes_recv, bytes_sent
         except Exception:
             """ We do not want do explode anything """
             pass
@@ -62,8 +62,8 @@ class Module(bumblebee.engine.Module):
         del widgets[:]
 
         widgets.extend((
-            TrafficWidget(text=download_rate, direction='tx'),
-            TrafficWidget(text=upload_rate, direction='rx')
+            TrafficWidget(text=download_rate, direction='rx'),
+            TrafficWidget(text=upload_rate, direction='tx')
         ))
 
 
