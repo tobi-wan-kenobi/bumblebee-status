@@ -216,5 +216,8 @@
   },
   "system": {
     "prefix": "    "
+  },
+  "sun": {
+    "prefix": ""
   }
 }
