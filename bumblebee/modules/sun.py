@@ -44,23 +44,28 @@ class Module(bumblebee.engine.Module):
             return u"\u21A5{} \u21A7{}".format(self._sunrise.strftime('%H:%M'), self._sunset.strftime('%H:%M'))
         return "?"
 
+    def _calculate_times(self):
+        try:
+            sun = Sun(self._lat, self._lon)
+        except Exception:
+            self._sunrise = None
+            self._sunset = None
+            return
+
+        try:
+            self._sunrise = sun.get_local_sunrise_time()
+        except SunTimeException:
+            self._sunrise = 'no sunrise'
+
+        try:
+            self._sunset = sun.get_local_sunset_time()
+        except SunTimeException:
+            self._sunset = 'no sunset'
+
     def update(self, widgets):
         if not self._lat or not self._lon:
             self._sunrise = None
             self._sunset = None
-        try:
-            sun = Sun(self._lat, self._lon)
-            try:
-                self._sunrise = sun.get_local_sunrise_time()
-            except SunTimeException:
-                self._sunrise = 'no sunrise'
-
-            try:
-                self._sunset = sun.get_local_sunset_time()
-            except SunTimeException:
-                self._sunset = 'no sunset'
-        except Exception:
-            self._sunrise = None
-            self._sunset = None
+        self._calculate_times()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
