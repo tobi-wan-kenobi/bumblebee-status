@@ -187,7 +187,7 @@ Modules and commandline utilities are only required for modules, the core itself
 
 * psutil (for the modules 'cpu', 'memory', 'traffic')
 * netifaces (for the modules 'nic', 'traffic')
-* requests (for the modules 'weather', 'github', 'getcrypto', 'stock', 'currency')
+* requests (for the modules 'weather', 'github', 'getcrypto', 'stock', 'currency', 'sun')
 * power (for the module 'battery')
 * dbus (for the module 'spotify')
 * i3ipc (for the module 'title')
@@ -195,6 +195,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * docker (for the module 'docker_ps')
 * pytz (for the module 'datetimetz')
 * localtz (for the module 'datetimetz')
+* suntime (for the module 'sun')
 
 # Required commandline utilities
 
