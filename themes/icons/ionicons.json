@@ -182,5 +182,8 @@
   },
   "sun": {
     "prefix": "\uf3b0"
+  },
+  "rss": {
+    "prefix": "\uf1ea"
   }
 }

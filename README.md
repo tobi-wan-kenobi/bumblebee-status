@@ -5,7 +5,7 @@
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 
-**Many, many thanks to all contributors! As of now, 46 of the modules are from various contributors (!), and only 19 from myself.**
+**Many, many thanks to all contributors! As of now, 47 of the modules are from various contributors (!), and only 19 from myself.**
 
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
 
@@ -196,6 +196,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * pytz (for the module 'datetimetz')
 * localtz (for the module 'datetimetz')
 * suntime (for the module 'sun')
+* feedparser (for the module 'rss')
 
 # Required commandline utilities
 
