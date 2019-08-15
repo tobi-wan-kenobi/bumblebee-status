@@ -19,6 +19,9 @@ except ImportError:
 
 import webbrowser
 import time
+import os
+import tempfile
+import logging
 
 import bumblebee.input
 import bumblebee.output
@@ -49,7 +52,11 @@ class Module(bumblebee.engine.Module):
         self._post_delay = 0
 
         self._state = []
+        
+        self._newspaper_filename = tempfile.mktemp('.html')
+
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self._open)
+        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self._create_newspaper)
 
     def _open(self, _):
         if self._current_item:
@@ -60,6 +67,9 @@ class Module(bumblebee.engine.Module):
                 'link': entry['link'],
                 'new': all([i['title'] != entry['title'] for i in self._items]),
                 'source': url,
+                'summary': i['summary'],
+                'feed': parser['feed']['title'],
+                'image': next(iter([l['href'] for l in i['links'] if l['rel']=='enclosure']), ''),
                 'published': time.mktime(entry.published_parsed) if hasattr(entry, 'published_parsed') else 0}
 
     def _update_items_from_feed(self, url):
@@ -150,4 +160,47 @@ class Module(bumblebee.engine.Module):
     def state(self, _):
         return self._state
 
+    def _create_news_element(self, item):
+        try:
+            logging.error("aaaaaaaa")
+            timestr = "" if item['published'] == 0 else str(time.ctime(1565783383))
+        except Exception as e:
+            logging.error(str(e))
+            raise e
+        element = "<div class='item' onclick=window.open('"+item['link']+"')>"
+        element += "<div class='titlecontainer'>"
+        element += "  <img src='"+item['image']+"'>"
+        element += "  <div class='title'>"+item['title']+"</div>"
+        element += "</div>"
+        element += "<div class='info'><span class='author'>"+item['feed']+"</span><span class='published'>"+timestr+"</span></div>"
+        element += "<div class='summary'>"+item['summary']+"</div>"
+        element += "</div>"
+        return element
+
+    def _create_newspaper(self, _):
+        content = ""
+        for item in self._items:
+            content += self._create_news_element(item)
+        open(self._newspaper_filename, "w").write(HTML_TEMPLATE.replace("[[CONTENT]]", content))
+        webbrowser.open("file://"+self._newspaper_filename)
+        
+HTML_TEMPLATE = """<!DOCTYPE html>
+<html>
+<style>
+body {background: #eee; font-family: Helvetica neue;}
+img {width: 100%;}
+.item {width: 600px; background: #fff; margin: 30px; box-shadow: 5px 5px 10px #aaa;}
+.titlecontainer {position: relative; min-height: 250px; background: #88a;}
+.title {position: absolute; bottom: 10px; color: #fff; font-weight: bold; text-align: right; max-width: 75%; right: 10px; font-size: 23px; text-shadow: 1px 0 0 #000, 0 -1px 0 #000, 0 1px 0 #000, -1px 0 0 #000;}
+.summary {color: #444; padding: 10px;}
+.info {padding: 0px 10px 0px 10px; color: #aaa;}
+.published {float: right;}
+</style>
+<body>
+  <div id='title'>Bumblebee Daily</div>
+  <div id='content'>
+    [[CONTENT]]
+  </div>
+</body>
+</html>"""
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
