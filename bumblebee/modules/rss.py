@@ -41,7 +41,6 @@ class Module(bumblebee.engine.Module):
         self._feeds_to_update = []
 
         self._max_title_length = int(self.parameter("length", 60))
-        self._scroll = self.parameter("scroll", True)
 
         self._items = []
         self._current_item = None
@@ -57,29 +56,33 @@ class Module(bumblebee.engine.Module):
         if self._current_item:
             webbrowser.open(self._current_item['link'])
 
-    def _check_for_refresh(self):
-        if not DEPENDENCIES_OK:
-            self._items = [{'title': 'Please install feedparser first', 'new':True, 'published': 0,
-                            'link': 'https://pypi.org/project/feedparser/'}]
-            self._current_item = self._items[0]
-            return
-        if self._feeds_to_update:
-            # Update one feed at a time to not overload this update cycle
-            url = self._feeds_to_update.pop()
-            parser = feedparser.parse(url)
-            old_titles = [i['title'] for i in self._items if i['source'] == url]
-            new_items = [{'title': i['title'].replace('\n', ' '),
+    def _update_items_from_feed(self, url):
+        parser = feedparser.parse(url)
+        old_titles = [i['title'] for i in self._items if i['source'] == url]
+
+        new_items = [{'title': i['title'].replace('\n', ' '),
                           'link': i['link'],
                           'new': i['title'] not in old_titles,
                           'source': url,
                           'published': time.mktime(i.published_parsed) if hasattr(i, 'published_parsed') else 0}
                          for i in parser['entries']]
-            # Remove the previous items
-            self._items = [i for i in self._items if i['source'] != url]
-            # Add the new items
-            self._items.extend(new_items)
-            # Sort the items on publish date
-            self._items.sort(key=lambda i: i['published'], reverse=True)
+
+        # Remove the previous items
+        self._items = [i for i in self._items if i['source'] != url]
+        # Add the new items
+        self._items.extend(new_items)
+        # Sort the items on publish date
+        self._items.sort(key=lambda i: i['published'], reverse=True)
+
+    def _check_for_refresh(self):
+        if not DEPENDENCIES_OK:
+            self._items = [{'title': 'Please install feedparser first', 'new':True, 'published': 0,
+                            'link': 'https://pypi.org/project/feedparser/'}]
+            self._current_item = self._items[0]
+        elif self._feeds_to_update:
+            # Update one feed at a time to not overload this update cycle
+            url = self._feeds_to_update.pop()
+            self._update_items_from_feed(url)
 
             if not self._current_item:
                 self._next_item()
@@ -99,27 +102,21 @@ class Module(bumblebee.engine.Module):
         if not self._items:
             return
 
-        # Mark the previous item as 'old'
-        if self._current_item:
-            self._current_item['new'] = False
+        # Index of the current element
+        idx = self._items.index(self._current_item) if self._current_item in self._items else - 1
 
-        # First show all new items
+        # First show new items, else show next
         new_items = [i for i in self._items if i['new']]
-        if new_items:
-            self._current_item = new_items[0]
-            return
-
-        # Take the next one in the list or wrap to the first
-        idx = self._items.index(self._current_item) if self._current_item in self._items else 0
-        self._current_item = self._items[idx % len(self._items)]
+        self._current_item = next(iter(new_items), self._items[(idx+1) % len(self._items)])
 
     def _check_scroll_done(self):
-        # Check if the complete title has been shown or if scrolling is not enabled
-        if not self._scroll or self._ticker_offset + self._max_title_length > len(self._current_item['title']):
+        # Check if the complete title has been shown
+        if self._ticker_offset + self._max_title_length > len(self._current_item['title']):
             # Do not immediately show next item after scroll
-            if self._post_delay > 0:
-                self._post_delay -= 1
-            else:
+            self._post_delay -= 1
+            if self._post_delay == 0:
+                self._current_item['new'] = False
+                # Mark the previous item as 'old'
                 self._next_item()
         else:
             # Increase scroll position
