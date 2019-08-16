@@ -4,7 +4,7 @@
 
 Fetches rss news items and shows these as a news ticker.
 Left-clicking will open the full story in a browser.
-New stories are highlighted. 
+New stories are highlighted.
 
 Parameters:
     * rss.feeds : Space-separated list of RSS URLs
@@ -19,7 +19,6 @@ except ImportError:
 
 import webbrowser
 import time
-import os
 
 import bumblebee.input
 import bumblebee.output
@@ -33,7 +32,7 @@ class Module(bumblebee.engine.Module):
 
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.ticker_update)
+            bumblebee.output.Widget(full_text=self.ticker_update if DEPENDENCIES_OK else self._show_error)
         )
         # Use BBC newsfeed as demo:
         self._feeds = self.parameter('feeds', 'http://feeds.bbci.co.uk/news/rss.xml').split(" ")
@@ -56,17 +55,16 @@ class Module(bumblebee.engine.Module):
         if self._current_item:
             webbrowser.open(self._current_item['link'])
 
+    def _create_item(self, entry, url):
+        return {'title': entry['title'].replace('\n', ' '),
+                'link': entry['link'],
+                'new': all([i['title'] != entry['title'] for i in self._items]),
+                'source': url,
+                'published': time.mktime(entry.published_parsed) if hasattr(entry, 'published_parsed') else 0}
+
     def _update_items_from_feed(self, url):
         parser = feedparser.parse(url)
-        old_titles = [i['title'] for i in self._items if i['source'] == url]
-
-        new_items = [{'title': i['title'].replace('\n', ' '),
-                          'link': i['link'],
-                          'new': i['title'] not in old_titles,
-                          'source': url,
-                          'published': time.mktime(i.published_parsed) if hasattr(i, 'published_parsed') else 0}
-                         for i in parser['entries']]
-
+        new_items = [self._create_item(entry, url) for entry in parser['entries']]
         # Remove the previous items
         self._items = [i for i in self._items if i['source'] != url]
         # Add the new items
@@ -75,11 +73,7 @@ class Module(bumblebee.engine.Module):
         self._items.sort(key=lambda i: i['published'], reverse=True)
 
     def _check_for_refresh(self):
-        if not DEPENDENCIES_OK:
-            self._items = [{'title': 'Please install feedparser first', 'new':True, 'published': 0,
-                            'link': 'https://pypi.org/project/feedparser/'}]
-            self._current_item = self._items[0]
-        elif self._feeds_to_update:
+        if self._feeds_to_update:
             # Update one feed at a time to not overload this update cycle
             url = self._feeds_to_update.pop()
             self._update_items_from_feed(url)
@@ -122,6 +116,9 @@ class Module(bumblebee.engine.Module):
             # Increase scroll position
             self._ticker_offset += self.SCROLL_SPEED
 
+    def _show_error(self, _):
+        return "Please install feedparser first"
+
     def ticker_update(self, _):
         self._check_for_refresh()
 
@@ -143,7 +140,6 @@ class Module(bumblebee.engine.Module):
             return response
 
         self._state = []
-    
         self._check_scroll_done()
 
         return response
