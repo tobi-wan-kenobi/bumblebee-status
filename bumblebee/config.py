@@ -84,7 +84,7 @@ class Config(bumblebee.store.Store):
 
         parameters = [item for sub in self._args.parameters for item in sub]
         for param in parameters:
-            key, value = param.split("=")
+            key, value = param.split("=", 1)
             self.set(key, value)
 
     def modules(self):
