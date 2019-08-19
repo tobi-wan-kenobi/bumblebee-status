@@ -41,7 +41,6 @@ class Module(bumblebee.engine.Module):
         )
         # Use BBC newsfeed as demo:
         self._feeds = self.parameter('feeds', 'https://www.espn.com/espn/rss/news').split(" ")
-        self._refresh_countdown = 0
         self._feeds_to_update = []
 
         self._max_title_length = int(self.parameter("length", 60))
@@ -56,6 +55,9 @@ class Module(bumblebee.engine.Module):
         self._state = []
         
         self._newspaper_filename = tempfile.mktemp('.html')
+
+        self._last_refresh = 0
+        self._last_update = 0
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self._open)
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self._create_newspaper)
@@ -109,13 +111,11 @@ class Module(bumblebee.engine.Module):
 
             if not self._current_item:
                 self._next_item()
-        elif self._refresh_countdown == 0:
+        elif time.time()-self._last_refresh >= self.REFRESH_DELAY:
             # Populate the list with feeds to update
             self._feeds_to_update = self._feeds[:]
-            # Restart the update countdown timer
-            self._refresh_countdown = self.REFRESH_DELAY
-        else:
-            self._refresh_countdown -= 1
+            # Update the refresh time
+            self._last_refresh = time.time()
 
     def _next_item(self):
         self._ticker_offset = 0
@@ -149,6 +149,13 @@ class Module(bumblebee.engine.Module):
         return "Please install feedparser first"
 
     def ticker_update(self, _):
+        # Only update the ticker once a second
+        now = time.time()
+        if now-self._last_update < 1:
+            return self._response
+
+        self._last_update = now
+
         self._check_for_refresh()
 
         # If no items were retrieved, return an empty string
@@ -156,9 +163,9 @@ class Module(bumblebee.engine.Module):
             return " "*self._max_title_length
 
         # Prepare a substring of the item title
-        response = self._current_item['title'][self._ticker_offset:self._ticker_offset+self._max_title_length]
+        self._response = self._current_item['title'][self._ticker_offset:self._ticker_offset+self._max_title_length]
         # Add spaces if too short
-        response = response.ljust(self._max_title_length)
+        self._response = self._response.ljust(self._max_title_length)
 
         # Do not immediately scroll
         if self._pre_delay > 0:
@@ -166,12 +173,12 @@ class Module(bumblebee.engine.Module):
             if self._current_item['new']:
                 self._state = ['warning']
             self._pre_delay -= 1
-            return response
+            return self._response
 
         self._state = []
         self._check_scroll_done()
 
-        return response
+        return self._response
 
     def update(self, widgets):
         pass
