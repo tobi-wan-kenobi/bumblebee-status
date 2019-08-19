@@ -24,6 +24,7 @@ import tempfile
 import logging
 import random
 import re
+import json
 
 import bumblebee.input
 import bumblebee.output
@@ -35,6 +36,8 @@ class Module(bumblebee.engine.Module):
     REFRESH_DELAY = 600
     SCROLL_SPEED = 3
     LAYOUT_STYLES_ITEMS = [[1,1,1],[3,3,2],[2,3,3],[3,2,3]]
+    HISTORY_FILENAME = ".config/i3/rss.hist"
+
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.ticker_update if DEPENDENCIES_OK else self._show_error)
@@ -53,7 +56,7 @@ class Module(bumblebee.engine.Module):
         self._post_delay = 0
 
         self._state = []
-        
+
         self._newspaper_filename = tempfile.mktemp('.html')
 
         self._last_refresh = 0
@@ -62,22 +65,40 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self._open)
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self._create_newspaper)
 
+        self._history = {}
+        self._load_history()
+
+    def _load_history(self):
+        if os.path.isfile(self.HISTORY_FILENAME):
+            self._history = json.loads(open(self.HISTORY_FILENAME, "r").read())
+
+    def _save_history(self):
+        sources = set([i['source'] for i in self._items])
+        self._history = dict([[s, [i['title'] for i in self._items if i['source'] == s]] for s in sources])
+        if not os.path.exists(os.path.dirname(self.HISTORY_FILENAME)):
+            os.makedirs(os.path.dirname(self.HISTORY_FILENAME))
+        open(self.HISTORY_FILENAME, "w").write(json.dumps(self._history))
+
+    def _check_history(self, items):
+        for i in items:
+            i['new'] &= not (i['source'] in self._history and i['title'] in self._history[i['source']])
+
     def _open(self, _):
         if self._current_item:
             webbrowser.open(self._current_item['link'])
 
     def _check_for_image(self, entry):
-        image = next(iter([l['href'] for l in entry['links'] if l['rel']=='enclosure']), None)
+        image = next(iter([l['href'] for l in entry['links'] if l['rel'] == 'enclosure']), None)
         if not image and 'media_content' in entry:
             try:
                 media = sorted(entry['media_content'], key=lambda i: i['height'] if 'height' in i else 0, reverse=True)
-                image = next(iter([i['url'] for i in media if i['medium']=='image']), None)
+                image = next(iter([i['url'] for i in media if i['medium'] == 'image']), None)
             except Exception:
                 pass
         if not image:
-            match = re.search('<img[^>]*src\s*=["\']*([^\s^>^"^\']*)["\']*', entry['summary'])
+            match = re.search(r'<img[^>]*src\s*=["\']*([^\s^>^"^\']*)["\']*', entry['summary'])
             if match:
-                image=match.group(1)
+                image = match.group(1)
         return image if image else ''
 
     def _remove_tags(self, txt):
@@ -86,7 +107,7 @@ class Module(bumblebee.engine.Module):
     def _create_item(self, entry, url, feed):
         return {'title': self._remove_tags(entry['title'].replace('\n', ' ')),
                 'link': entry['link'],
-                'new': all([i['title'] != entry['title'] for i in self._items]),
+                'new': True,
                 'source': url,
                 'summary': self._remove_tags(entry['summary']),
                 'feed': feed,
@@ -96,6 +117,8 @@ class Module(bumblebee.engine.Module):
     def _update_items_from_feed(self, url):
         parser = feedparser.parse(url)
         new_items = [self._create_item(entry, url, parser['feed']['title']) for entry in parser['entries']]
+        # Check history
+        self._check_history(new_items)
         # Remove the previous items
         self._items = [i for i in self._items if i['source'] != url]
         # Add the new items
@@ -108,6 +131,9 @@ class Module(bumblebee.engine.Module):
             # Update one feed at a time to not overload this update cycle
             url = self._feeds_to_update.pop()
             self._update_items_from_feed(url)
+
+            if not self._feeds_to_update:
+                self._save_history()
 
             if not self._current_item:
                 self._next_item()
@@ -189,8 +215,8 @@ class Module(bumblebee.engine.Module):
     def _create_news_element(self, item, overlay_title):
         try:
             timestr = "" if item['published'] == 0 else str(time.ctime(item['published']))
-        except Exception as e:
-            logging.error(str(e))
+        except Exception as exc:
+            logging.error(str(exc))
             raise e
         element = "<div class='item' onclick=window.open('"+item['link']+"')>"
         element += "<div class='titlecontainer'>"
@@ -207,14 +233,14 @@ class Module(bumblebee.engine.Module):
         section = "<table><tr class='style"+str(style)+"'>"
         for i in range(0, 3):
             section += "<td><div class='itemcontainer'>"
-            for j in range(0, self.LAYOUT_STYLES_ITEMS[style][i]):
+            for _ in range(0, self.LAYOUT_STYLES_ITEMS[style][i]):
                 if newspaper_items:
-                    section += self._create_news_element(newspaper_items[0], self.LAYOUT_STYLES_ITEMS[style][i]!=3)
+                    section += self._create_news_element(newspaper_items[0], self.LAYOUT_STYLES_ITEMS[style][i] != 3)
                     del newspaper_items[0]
             section += "</div></td>"
         section += "</tr></table>"
         return section
-         
+
     def _create_newspaper(self, _):
         content = ""
         newspaper_items = self._items[:]
@@ -222,9 +248,22 @@ class Module(bumblebee.engine.Module):
             content += self._create_news_section(newspaper_items)
         open(self._newspaper_filename, "w").write(HTML_TEMPLATE.replace("[[CONTENT]]", content))
         webbrowser.open("file://"+self._newspaper_filename)
-        
+
 HTML_TEMPLATE = """<!DOCTYPE html>
 <html>
+<head>
+<script>
+window.onload = function() {
+    var images = document.getElementsByTagName('img'); 
+    for(var i = 0; i < images.length; i++) {
+        if (images[i].naturalWidth<50 || images[i].naturalHeight<50) {
+            images[i].src = ''
+            images[i].className+=' noimg'
+        }
+    }
+}
+</script>
+</head>
 <style>
     body {background: #eee; font-family: Helvetica neue;}
     td {background: #fff; height: 100%;}
