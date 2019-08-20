@@ -65,23 +65,25 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self._open)
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self._create_newspaper)
 
-        self._history = {}
+        self._history = {'ticker': {}, 'newspaper': {}}
         self._load_history()
 
     def _load_history(self):
         if os.path.isfile(self.HISTORY_FILENAME):
             self._history = json.loads(open(self.HISTORY_FILENAME, "r").read())
 
-    def _save_history(self):
+    def _update_history(self, group):
         sources = set([i['source'] for i in self._items])
-        self._history = dict([[s, [i['title'] for i in self._items if i['source'] == s]] for s in sources])
+        self._history[group] = dict([[s, [i['title'] for i in self._items if i['source'] == s]] for s in sources])
+
+    def _save_history(self):
         if not os.path.exists(os.path.dirname(self.HISTORY_FILENAME)):
             os.makedirs(os.path.dirname(self.HISTORY_FILENAME))
         open(self.HISTORY_FILENAME, "w").write(json.dumps(self._history))
 
-    def _check_history(self, items):
+    def _check_history(self, items, group):
         for i in items:
-            i['new'] &= not (i['source'] in self._history and i['title'] in self._history[i['source']])
+            i['new'] = not (i['source'] in self._history[group] and i['title'] in self._history[group][i['source']])
 
     def _open(self, _):
         if self._current_item:
@@ -118,7 +120,7 @@ class Module(bumblebee.engine.Module):
         parser = feedparser.parse(url)
         new_items = [self._create_item(entry, url, parser['feed']['title']) for entry in parser['entries']]
         # Check history
-        self._check_history(new_items)
+        self._check_history(new_items, 'ticker')
         # Remove the previous items
         self._items = [i for i in self._items if i['source'] != url]
         # Add the new items
@@ -133,6 +135,7 @@ class Module(bumblebee.engine.Module):
             self._update_items_from_feed(url)
 
             if not self._feeds_to_update:
+                self._update_history('ticker')
                 self._save_history()
 
             if not self._current_item:
@@ -221,7 +224,7 @@ class Module(bumblebee.engine.Module):
         element = "<div class='item' onclick=window.open('"+item['link']+"')>"
         element += "<div class='titlecontainer'>"
         element += "  <img "+("" if item['image'] else "class='noimg' ")+"src='"+item['image']+"'>"
-        element += "  <div class='title"+(" overlay" if overlay_title else "")+"'>"+item['title']+"</div>"
+        element += "  <div class='title"+(" overlay" if overlay_title else "")+"'>"+("<span class='star'>&#x2605;</span>" if item['new'] else "")+item['title']+"</div>"
         element += "</div>"
         element += "<div class='summary'>"+item['summary']+"</div>"
         element += "<div class='info'><span class='author'>"+item['feed']+"</span><span class='published'>"+timestr+"</span></div>"
@@ -244,10 +247,17 @@ class Module(bumblebee.engine.Module):
     def _create_newspaper(self, _):
         content = ""
         newspaper_items = self._items[:]
+        self._check_history(newspaper_items, 'newspaper')
+
+        # Make sure new items are always listed first, independent of publish date
+        newspaper_items.sort(key=lambda i: i['published']+(10000000 if i['new'] else 0), reverse=True)
+
         while newspaper_items:
             content += self._create_news_section(newspaper_items)
         open(self._newspaper_filename, "w").write(HTML_TEMPLATE.replace("[[CONTENT]]", content))
         webbrowser.open("file://"+self._newspaper_filename)
+        self._update_history('newspaper')
+        self._save_history()
 
 HTML_TEMPLATE = """<!DOCTYPE html>
 <html>
@@ -255,6 +265,7 @@ HTML_TEMPLATE = """<!DOCTYPE html>
 <script>
 window.onload = function() {
     var images = document.getElementsByTagName('img'); 
+    // Remove very small images
     for(var i = 0; i < images.length; i++) {
         if (images[i].naturalWidth<50 || images[i].naturalHeight<50) {
             images[i].src = ''
@@ -278,6 +289,7 @@ window.onload = function() {
     img.noimg {min-height:250px; background: #1299c8;}
     #content {width: 1500px; margin: auto; background: #eee; padding: 1px;}
     #newspapertitle {text-align: center; font-size: 60px; font-family: Arial Black; background: #1299c8; font-style: Italic; padding: 10px; color: #fff; }
+    .star {color: #ffa515; font-size: 24px;}
     .section {display: flex;}
     .column {display: flex;}
     .itemcontainer {width: 100%; height: 100%; position: relative; display: inline-table;}
