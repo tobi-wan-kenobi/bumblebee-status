@@ -70,10 +70,12 @@ class Module(bumblebee.engine.Module):
         menu = bumblebee.popup_v2.PopupMenu()
         menu.add_menuitem("shutdown", callback=functools.partial(self._on_command, "Shutdown", "Shutdown?", "shutdown -h now"))
         menu.add_menuitem("reboot", callback=functools.partial(self._on_command, "Reboot", "Reboot?", "reboot"))
-        menu.add_menuitem("log out", callback=functools.partial(self._on_command, "Log out", "Log out?",  "bash -c 'loginctl terminate-session $(cat /proc/self/sessionid)'"))
-        # don't ask for confirmation when suspending or hibernating
-        menu.add_menuitem("suspend", callback=functools.partial(bumblebee.util.execute, "systemctl suspend"))
-        menu.add_menuitem("hibernate", callback=functools.partial(bumblebee.util.execute, "systemctl hibernate"))
+        menu.add_menuitem("log out", callback=functools.partial(self._on_command, "Log out", "Log out?",  "i3exit logout"))
+        # don't ask for these
+        menu.add_menuitem("switch user", callback=functools.partial(bumblebee.util.execute, "i3exit switch_user"))
+        menu.add_menuitem("lock", callback=functools.partial(bumblebee.util.execute, "i3exit lock"))
+        menu.add_menuitem("suspend", callback=functools.partial(bumblebee.util.execute, "i3exit suspend"))
+        menu.add_menuitem("hibernate", callback=functools.partial(bumblebee.util.execute, "i3exit hibernate"))
 
         menu.show(widget)
 
