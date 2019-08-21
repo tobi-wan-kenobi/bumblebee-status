@@ -12,11 +12,13 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+
 def is_terminated():
     for thread in threading.enumerate():
         if thread.name == "MainThread" and not thread.is_alive():
             return True
     return False
+
 
 def get_redshift_value(widget):
     while True:
@@ -52,6 +54,7 @@ def get_redshift_value(widget):
                     widget.set("state", "transition")
                     widget.set("transition", " ".join(line.split(" ")[2:]))
 
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widget = bumblebee.output.Widget(full_text=self.text)
@@ -59,7 +62,8 @@ class Module(bumblebee.engine.Module):
         self._text = ""
         self._condition = threading.Condition()
         widget.set("condition", self._condition)
-        self._thread = threading.Thread(target=get_redshift_value, args=(widget,))
+        self._thread = threading.Thread(target=get_redshift_value,
+                                        args=(widget,))
         self._thread.start()
         self._condition.acquire()
         self._condition.notify()
