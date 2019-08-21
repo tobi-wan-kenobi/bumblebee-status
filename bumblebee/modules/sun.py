@@ -20,9 +20,11 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
+        super(Module, self).__init__(
+            engine, config,
             bumblebee.output.Widget(full_text=self.suntimes)
         )
         self.interval(3600)
@@ -41,7 +43,8 @@ class Module(bumblebee.engine.Module):
 
     def suntimes(self, _):
         if self._sunset and self._sunrise:
-            return u"\u21A5{} \u21A7{}".format(self._sunrise.strftime('%H:%M'), self._sunset.strftime('%H:%M'))
+            return u"\u21A5{} \u21A7{}".format(self._sunrise.strftime('%H:%M'),
+                                               self._sunset.strftime('%H:%M'))
         return "?"
 
     def _calculate_times(self):
