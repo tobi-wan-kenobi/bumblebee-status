@@ -13,7 +13,10 @@ Parameters:
 """
 
 import threading
-import requests
+try:
+    import requests
+except ImportError:
+    pass
 
 import bumblebee.input
 import bumblebee.output
