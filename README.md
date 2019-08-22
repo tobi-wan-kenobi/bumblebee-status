@@ -219,6 +219,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * sensors (for module 'sensors', as fallback)
 * zpool (for module 'zpool')
 * progress (for module 'progress')
+* i3exit (for module 'system')
 
 # Examples
 Here are some screenshots for all themes that currently exist:
