@@ -118,8 +118,6 @@ class Module(bumblebee.engine.Module):
             self._temperature = int(weather['main']['temp'])
             self._weather = weather['weather'][0]['main'].lower()
             self._valid = True
-        except RequestException:
-            self._valid = False
         except Exception:
             self._valid = False
 

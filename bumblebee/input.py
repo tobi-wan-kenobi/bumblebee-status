@@ -25,15 +25,15 @@ def is_terminated():
 
 def read_input(inp):
     """Read i3bar input and execute callbacks"""
-    epoll = select.epoll()
-    epoll.register(sys.stdin.fileno(), select.EPOLLIN)
+    poll = select.poll()
+    poll.register(sys.stdin.fileno(), select.POLLIN)
     log.debug("starting click event processing")
     while inp.running:
         if is_terminated():
             return
 
         try:
-            events = epoll.poll(1)
+            events = poll.poll(1000)
         except Exception:
             continue
         for fileno, event in events:
@@ -52,8 +52,7 @@ def read_input(inp):
             except ValueError as e:
                 log.debug("failed to parse event: {}".format(e))
     log.debug("exiting click event processing")
-    epoll.unregister(sys.stdin.fileno())
-    epoll.close()
+    poll.unregister(sys.stdin.fileno())
     inp.has_event = True
     inp.clean_exit = True
 

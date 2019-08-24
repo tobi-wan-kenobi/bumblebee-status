@@ -17,8 +17,11 @@ Parameters:
 from __future__ import absolute_import
 import datetime
 import locale
-import pytz
-import tzlocal
+try:
+    import pytz
+    import tzlocal
+except:
+    pass
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -40,7 +43,10 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self.next_tz)
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.prev_tz)
         self._fmt = self.parameter("format", default_format(self.name))
-        self._timezones = self.parameter("timezone", tzlocal.get_localzone().zone).split(",")
+        try:
+            self._timezones = self.parameter("timezone", tzlocal.get_localzone().zone).split(",")
+        except:
+            self._timezones = ""
         self._current_tz = 0
 
         l = locale.getdefaultlocale()
@@ -54,10 +60,13 @@ class Module(bumblebee.engine.Module):
 
     def get_time(self, widget):
         try:
-            tz = pytz.timezone(self._timezones[self._current_tz].strip())
-            retval = datetime.datetime.now(tz=tzlocal.get_localzone()).astimezone(tz).strftime(self._fmt)
-        except pytz.exceptions.UnknownTimeZoneError:
-            retval = "[Unknown timezone: {}]".format(self._timezones[self._current_tz].strip())
+            try:
+                tz = pytz.timezone(self._timezones[self._current_tz].strip())
+                retval = datetime.datetime.now(tz=tzlocal.get_localzone()).astimezone(tz).strftime(self._fmt)
+            except pytz.exceptions.UnknownTimeZoneError:
+                retval = "[Unknown timezone: {}]".format(self._timezones[self._current_tz].strip())
+        except:
+            retval = "[n/a]"
 
         enc = locale.getpreferredencoding()
         if hasattr(retval, "decode"):

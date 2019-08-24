@@ -4,13 +4,24 @@
 
 Requires the following executable:
     * redshift
+
+Parameters:
+    * redshift.location : location provider, either of "geoclue2" (default), \
+"ipinfo" (requires the requests package), or "manual"
+    * redshift.lat : latitude if location is set to "manual"
+    * redshift.lon : longitude if location is set to "manual"
 """
 
 import threading
+try:
+    import requests
+except ImportError:
+    pass
 
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+
 
 def is_terminated():
     for thread in threading.enumerate():
@@ -18,7 +29,8 @@ def is_terminated():
             return True
     return False
 
-def get_redshift_value(widget):
+
+def get_redshift_value(widget, location, lat, lon):
     while True:
         if is_terminated():
             return
@@ -31,8 +43,14 @@ def get_redshift_value(widget):
             break
         widget.get("condition").release()
 
+        command = ["redshift", "-p", "-l"]
+        if location == "manual":
+            command.append(lat + ":" + lon)
+        else:
+            command.append("geoclue2")
+
         try:
-            res = bumblebee.util.execute("redshift -p")
+            res = bumblebee.util.execute(" ".join(command))
         except Exception:
             res = ""
             widget.set("temp", "n/a")
@@ -52,14 +70,40 @@ def get_redshift_value(widget):
                     widget.set("state", "transition")
                     widget.set("transition", " ".join(line.split(" ")[2:]))
 
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widget = bumblebee.output.Widget(full_text=self.text)
         super(Module, self).__init__(engine, config, widget)
+
+        self._location = self.parameter("location", "geoclue2")
+        self._lat = self.parameter("lat", None)
+        self._lon = self.parameter("lon", None)
+
+        # Even if location method is set to manual, if we have no lat or lon,
+        # fall back to the geoclue2 method.
+        if self._location == "manual" and (self._lat is None
+                                           or self._lon is None):
+            self._location == "geoclue2"
+
+        if self._location == "ipinfo":
+            try:
+                location_url = "http://ipinfo.io/json"
+                location = requests.get(location_url).json()
+                self._lat, self._lon = location["loc"].split(",")
+                self._lat = str(float(self._lat))
+                self._lon = str(float(self._lon))
+                self._location = "manual"
+            except Exception:
+                # Fall back to geoclue2.
+                self._location = "geoclue2"
+
         self._text = ""
         self._condition = threading.Condition()
         widget.set("condition", self._condition)
-        self._thread = threading.Thread(target=get_redshift_value, args=(widget,))
+        self._thread = threading.Thread(target=get_redshift_value,
+                                        args=(widget, self._location,
+                                              self._lat, self._lon))
         self._thread.start()
         self._condition.acquire()
         self._condition.notify()

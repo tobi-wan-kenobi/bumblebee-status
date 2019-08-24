@@ -7,6 +7,7 @@ Parameters:
     * battery.warning    : Warning threshold in % of remaining charge (defaults to 20)
     * battery.critical   : Critical threshold in % of remaining charge (defaults to 10)
     * battery.showdevice : If set to "true", add the device name to the widget (defaults to False)
+    * battery.decorate   : If set to "false", hides additional icons (charging, etc.) (defaults to True)
 """
 
 import os
@@ -47,6 +48,8 @@ class Module(bumblebee.engine.Module):
             self.capacity(widget)
         while len(widgets) > 0: del widgets[0]
         for widget in new_widgets:
+            if bumblebee.util.asbool(self.parameter("decorate", True)) == False:
+                widget.set("theme.exclude", "suffix")
             widgets.append(widget)
         self._widgets = widgets
 

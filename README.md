@@ -5,7 +5,7 @@
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 
-**Many, many thanks to all contributors! As of now, 41 of the modules are from various contributors (!), and only 18 from myself.**
+**Many, many thanks to all contributors! As of now, 47 of the modules are from various contributors (!), and only 19 from myself.**
 
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
 
@@ -37,6 +37,10 @@ Explicitly unsupported Python versions: 3.2 (missing unicode literals)
 
 # Arch Linux
 $ sudo pacman -S awesome-terminal-fonts
+
+# FreeBSD
+$ sudo pkg install font-awesome
+$ sudo pkg install py36-tzlocal py36-pytz py36-netifaces py36-psutil py36-requests #for dependencies
 
 # Other
 # see https://github.com/gabrielelana/awesome-terminal-fonts
@@ -76,7 +80,10 @@ In your i3wm configuration, modify the *status_command* for your i3bar like this
 
 ```
 bar {
-	status_command <path to bumblebee-status/bumblebee-status> -m <list of modules> -p <list of module parameters> -t <theme>
+	status_command <path to bumblebee-status/bumblebee-status> \
+		-m <list of modules> \
+		-p <list of module parameters> \
+		-t <theme>
 }
 ```
 
@@ -180,7 +187,7 @@ Modules and commandline utilities are only required for modules, the core itself
 
 * psutil (for the modules 'cpu', 'memory', 'traffic')
 * netifaces (for the modules 'nic', 'traffic')
-* requests (for the modules 'weather', 'github', 'getcrypto', 'stock', 'currency')
+* requests (for the modules 'weather', 'github', 'getcrypto', 'stock', 'currency', 'sun')
 * power (for the module 'battery')
 * dbus (for the module 'spotify')
 * i3ipc (for the module 'title')
@@ -188,6 +195,8 @@ Modules and commandline utilities are only required for modules, the core itself
 * docker (for the module 'docker_ps')
 * pytz (for the module 'datetimetz')
 * localtz (for the module 'datetimetz')
+* suntime (for the module 'sun')
+* feedparser (for the module 'rss')
 
 # Required commandline utilities
 
@@ -210,6 +219,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * sensors (for module 'sensors', as fallback)
 * zpool (for module 'zpool')
 * progress (for module 'progress')
+* i3exit (for module 'system')
 
 # Examples
 Here are some screenshots for all themes that currently exist:

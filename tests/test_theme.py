@@ -118,6 +118,14 @@ class TestTheme(unittest.TestCase):
         # widget theme instead (i.e. no fallback to a more general state theme)
         self.assertEquals(theme.bg(self.themedWidget), data[self.widgetTheme]["bg"])
 
+    def test_empty_state(self):
+        theme = self.theme
+        data = theme.data()
+
+        self.anyModule.state.return_value = ""
+        self.assertEquals(theme.fg(self.anyWidget), data["defaults"]["fg"])
+        self.assertEquals(theme.bg(self.anyWidget), data["defaults"]["bg"])
+
     def test_separator(self):
         self.assertEquals(self.validThemeSeparator, self.theme.separator(self.anyWidget))
 

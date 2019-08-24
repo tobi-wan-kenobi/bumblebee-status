@@ -14,7 +14,7 @@ def rand(cnt):
     return "".join(random.choice("abcdefghijklmnopqrstuvwxyz0123456789") for i in range(cnt))
 
 def setup_test(test, Module):
-    test._stdin, test._select, test.stdin, test.select = epoll_mock("bumblebee.input")
+    test._stdin, test._select, test.stdin, test.select = poll_mock("bumblebee.input")
 
     test.popen = MockPopen()
 
@@ -33,19 +33,19 @@ def teardown_test(test):
     test._select.stop()
     test.popen.cleanup()
 
-def epoll_mock(module=""):
+def poll_mock(module=""):
     if len(module) > 0: module = "{}.".format(module)
 
     stdin = mock.patch("{}sys.stdin".format(module))
     select = mock.patch("{}select".format(module))
-    epoll = mock.Mock()
+    poll = mock.Mock()
 
     stdin_mock = stdin.start()
     select_mock = select.start()
 
     stdin_mock.fileno.return_value = 1
-    select_mock.epoll.return_value = epoll
-    epoll.poll.return_value = [(stdin_mock.fileno.return_value, 100)]
+    select_mock.poll.return_value = poll
+    poll.poll.return_value = [(stdin_mock.fileno.return_value, 100)]
 
     return stdin, select, stdin_mock, select_mock
 

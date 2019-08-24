@@ -29,11 +29,15 @@ class Module(bumblebee.engine.Module):
             return len(packages)
         return 0
 
+    @property
+    def _format(self):
+        return self.parameter("format", "Update Arch: {}")
+
     def utilization(self, widget):
-        return 'Update Arch: {}'.format(self.packages)
+        return self._format.format(self.packages)
 
     def hidden(self):
-            return self.check_updates() == 0
+        return self.check_updates() == 0
 
     def update(self, widgets):
         self.packages = self.check_updates()
