@@ -63,7 +63,7 @@ class Module(object):
     def widgets(self, widgets=None):
         """Return the widgets to draw for this module"""
         if widgets:
-            self._widgets = widgets
+            self._widgets = widgets if isinstance(widgets, list) else [widgets]
         return self._widgets
 
     def hidden(self):

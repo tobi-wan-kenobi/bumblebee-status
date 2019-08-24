@@ -11,6 +11,8 @@ Parameters:
     * title.scroll : Boolean flag for scrolling title. Defaults to False
 """
 
+import threading
+
 try:
     import i3ipc
 except ImportError:
@@ -23,7 +25,7 @@ import bumblebee.engine
 
 from bumblebee.output import scrollable
 
-no_title = "n/a"
+_no_title = "n/a"
 
 class Module(bumblebee.engine.Module):
     """Window title module."""
@@ -31,43 +33,53 @@ class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(
             engine,
-            config,
-            bumblebee.output.Widget(full_text=self.get_title)
+            config
         )
+
+        # parsing of parameters
+        self._scroll = bumblebee.util.asbool(self.parameter("scroll", False))
+        self._max = int(self.parameter("max", 64))
+        self._placeholder = self.parameter("placeholder", "...")
+
+        # set output of the module
+        self.widgets(bumblebee.output.Widget(full_text=
+            self._scrolling_focused_title if self._scroll else self._focused_title))
+
+        # create a connection with i3ipc
         try:
             self._i3 = i3ipc.Connection()
-            self._full_title = self._i3.get_tree().find_focused().name
-        except Exception:
-            self._full_title = no_title
+            # event is called both on focus change and title change
+            self._i3.on("window", lambda _p_i3, _p_e: self._pollTitle())
+            # begin listening for events
+            threading.Thread(target=self._i3.main).start()
+        except:
+            pass
 
-    def get_title(self, widget):
-        if bumblebee.util.asbool(self.parameter("scroll", False)):
-            return self.scrolling_focused_title(widget)
-        else:
-            return self.focused_title(widget)
+        # initialize the first title
+        self._pollTitle()
 
-    def focused_title(self, widget):
-        max = int(self.parameter("max", 64))
-        title = self._full_title[0:max]
-        placeholder = self.parameter("placeholder", "...")
-        if title != self._full_title:
-            title = self._full_title[0:max - len(placeholder)]
-            title = "{}{}".format(title, placeholder)
-
-        return title
+    def _focused_title(self, widget):
+        return self._title
 
     @scrollable
-    def scrolling_focused_title(self, widget):
+    def _scrolling_focused_title(self, widget):
         return self._full_title
 
-    def update(self, widgets):
-        """Update current title."""
+    def _pollTitle(self):
+        """Updating current title."""
         try:
             self._full_title = self._i3.get_tree().find_focused().name
-        except Exception:
-            self._full_title = no_title
-
+        except:
+            self._full_title = _no_title
         if self._full_title is None:
-            self._full_title = no_title
+            self._full_title = _no_title
+
+        if not self._scroll:
+            # cut the text if it is too long
+            if len(self._full_title) > self._max:
+                self._title = self._full_title[0:self._max - len(self._placeholder)]
+                self._title = "{}{}".format(self._title, self._placeholder)
+            else:
+                self._title = self._full_title
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
