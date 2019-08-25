@@ -1,9 +1,9 @@
-# pylint: disable=C0111,R0903
+#pylint: disable=C0111,R0903
 
 """Enable/disable automatic screen locking.
 
 Requires the following executables:
-    * xset
+    * xdg-screensaver
     * notify-send
 """
 
@@ -14,37 +14,31 @@ import bumblebee.engine
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.caffeine)
+            bumblebee.output.Widget(full_text="")
         )
+        self._active = False
+        self.interval(1)
+        
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd=self._toggle
         )
 
-    def caffeine(self, widget):
-        return ""
-
     def state(self, widget):
-        if self._active():
+        if self._active:
             return "activated"
         return "deactivated"
 
-    def _active(self):
-        for line in bumblebee.util.execute("xset q").split("\n"):
-            if "timeout" in line:
-                timeout = int(line.split(" ")[4])
-                if timeout == 0:
-                    return True
-                return False
-        return False
-
-    def _toggle(self, widget):
-        if self._active():
-            bumblebee.util.execute("xset +dpms")
-            bumblebee.util.execute("xset s default")
-            bumblebee.util.execute("notify-send \"Out of coffee\"")
-        else:
-            bumblebee.util.execute("xset -dpms")
-            bumblebee.util.execute("xset s off")
+    def _toggle(self, event):
+        self._active = not self._active
+        if self._active:
+            bumblebee.util.execute("xdg-screensaver reset")
             bumblebee.util.execute("notify-send \"Consuming caffeine\"")
+        else:
+            bumblebee.util.execute("notify-send \"Out of coffee\"")
+
+    def update(self, widgets):
+        if self._active:
+            bumblebee.util.execute("xdg-screensaver reset")
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
