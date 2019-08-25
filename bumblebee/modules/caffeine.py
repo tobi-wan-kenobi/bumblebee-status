@@ -30,11 +30,14 @@ class Module(bumblebee.engine.Module):
 
     def _toggle(self, event):
         self._active = not self._active
-        if self._active:
-            bumblebee.util.execute("xdg-screensaver reset")
-            bumblebee.util.execute("notify-send \"Consuming caffeine\"")
-        else:
-            bumblebee.util.execute("notify-send \"Out of coffee\"")
+        try:
+            if self._active:
+                bumblebee.util.execute("xdg-screensaver reset")
+                bumblebee.util.execute("notify-send \"Consuming caffeine\"")
+            else:
+                bumblebee.util.execute("notify-send \"Out of coffee\"")
+        except:
+            self._active = not self._active
 
     def update(self, widgets):
         if self._active:
