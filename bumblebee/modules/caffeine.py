@@ -36,7 +36,13 @@ class Module(bumblebee.engine.Module):
         try:
             if self._active:
                 self._xid = bumblebee.util.execute("xdotool search --class \"i3bar\"").strip()
-                bumblebee.util.execute("xdg-screensaver suspend {}".format(self._xid))
+                pid = os.fork()
+                if pid == 0:
+                    os.setsid()
+                    bumblebee.util.execute("xdg-screensaver suspend {}".format(self._xid))
+                    os._exit(0)
+                else:
+                    os.waitpid(pid,0)
                 bumblebee.util.execute("notify-send \"Consuming caffeine\"")
             else:
                 for process in psutil.process_iter():
