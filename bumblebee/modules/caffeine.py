@@ -4,12 +4,15 @@
 
 Requires the following executables:
     * xdg-screensaver
+    * xdotool
     * notify-send
 """
 
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+import psutil
+import os
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -17,7 +20,7 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text="")
         )
         self._active = False
-        self.interval(1)
+        self._xid = 0
         
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd=self._toggle
@@ -32,16 +35,16 @@ class Module(bumblebee.engine.Module):
         self._active = not self._active
         try:
             if self._active:
-                bumblebee.util.execute("xdg-screensaver reset")
+                self._xid = bumblebee.util.execute("xdotool search --class \"i3bar\"").strip()
+                bumblebee.util.execute("xdg-screensaver suspend {}".format(self._xid))
                 bumblebee.util.execute("notify-send \"Consuming caffeine\"")
             else:
+                for process in psutil.process_iter():
+                    if process.cmdline() == ['/usr/bin/xprop','-id',str(self._xid),'-spy']:
+                        pid = process.pid
+                os.kill(pid,9)
                 bumblebee.util.execute("notify-send \"Out of coffee\"")
         except:
             self._active = not self._active
-
-    def update(self, widgets):
-        if self._active:
-            bumblebee.util.execute("xdg-screensaver reset")
-
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
