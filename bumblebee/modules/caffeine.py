@@ -9,9 +9,9 @@ Requires the following executables:
     * notify-send
 """
 
-import psutil
-import os
 import logging
+import os
+import psutil
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -40,8 +40,7 @@ class Module(bumblebee.engine.Module):
         xid = bumblebee.util.execute("xdotool search --class \"i3bar\"").partition('\n')[0].strip()
         if xid.isdigit():
             return xid
-        else:
-            logging.info("Module caffeine: xdotool couldn't get X window ID of \"i3bar\".")
+        logging.info("Module caffeine: xdotool couldn't get X window ID of \"i3bar\".")
         return None
 
     def _notify(self):
@@ -55,7 +54,7 @@ class Module(bumblebee.engine.Module):
 
     def _suspend_screensaver(self):
         self._xid = self._get_i3bar_xid()
-        if self._xid == None:
+        if self._xid is None:
             return
         
         pid = os.fork()
