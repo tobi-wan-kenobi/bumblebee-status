@@ -1,4 +1,4 @@
-#pylint: disable=C0111,R0903
+#pylint: disable=C0111,R0903,W0212
 
 """Enable/disable automatic screen locking.
 
@@ -40,7 +40,7 @@ class Module(bumblebee.engine.Module):
         xid = bumblebee.util.execute("xdotool search --class \"i3bar\"").partition('\n')[0].strip()
         if xid.isdigit():
             return xid
-        logging.info("Module caffeine: xdotool couldn't get X window ID of \"i3bar\".")
+        logging.warning("Module caffeine: xdotool couldn't get X window ID of \"i3bar\".")
         return None
 
     def _notify(self):
@@ -79,7 +79,7 @@ class Module(bumblebee.engine.Module):
     def _toggle(self, _):
         missing = self._check_requirements()
         if missing:
-            logging.warning("Could not run caffeine - missing {}!".format(", ".join(missing)))
+            logging.warning('Could not run caffeine - missing %s!', ", ".join(missing))
             return
 
         self._active = not self._active
