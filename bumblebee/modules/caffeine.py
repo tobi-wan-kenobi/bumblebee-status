@@ -23,13 +23,13 @@ class Module(bumblebee.engine.Module):
         )
         self._active = False
         self._xid = None
-        
+
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
             cmd=self._toggle
         )
 
     def _check_requirements(self):
-        requirements = ['xdotool','xprop','xdg-screensaver']
+        requirements = ['xdotool', 'xprop', 'xdg-screensaver']
         missing = []
         for tool in requirements:
             if not bumblebee.util.which(tool):
@@ -56,27 +56,27 @@ class Module(bumblebee.engine.Module):
         self._xid = self._get_i3bar_xid()
         if self._xid is None:
             return
-        
+
         pid = os.fork()
         if pid == 0:
             os.setsid()
             bumblebee.util.execute("xdg-screensaver suspend {}".format(self._xid))
             os._exit(0)
         else:
-            os.waitpid(pid,0)
-                 
+            os.waitpid(pid, 0)
+
     def _resume_screensaver(self):
         for process in psutil.process_iter():
-            if process.cmdline() == [bumblebee.util.which('xprop'),'-id',str(self._xid),'-spy']:
+            if process.cmdline() == [bumblebee.util.which('xprop'), '-id', str(self._xid), '-spy']:
                 pid = process.pid
-        os.kill(pid,9)
+        os.kill(pid, 9)
 
-    def state(self, widget):
+    def state(self, _):
         if self._active:
             return "activated"
         return "deactivated"
 
-    def _toggle(self, event):
+    def _toggle(self, _):
         missing = self._check_requirements()
         if missing:
             logging.warning("Could not run caffeine - missing {}!".format(", ".join(missing)))
