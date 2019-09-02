@@ -55,7 +55,7 @@ class Module(bumblebee.engine.Module):
     def _suspend_screensaver(self):
         self._xid = self._get_i3bar_xid()
         if self._xid is None:
-            return
+            return False
 
         pid = os.fork()
         if pid == 0:
@@ -64,12 +64,16 @@ class Module(bumblebee.engine.Module):
             os._exit(0)
         else:
             os.waitpid(pid, 0)
+        return True
 
     def _resume_screensaver(self):
         for process in psutil.process_iter():
             if process.cmdline() == [bumblebee.util.which('xprop'), '-id', str(self._xid), '-spy']:
-                pid = process.pid
-        os.kill(pid, 9)
+                try:
+                    os.kill(process.pid, 9)
+                except OSError:
+                    return False
+        return True
 
     def state(self, _):
         if self._active:
@@ -84,9 +88,13 @@ class Module(bumblebee.engine.Module):
 
         self._active = not self._active
         if self._active:
-            self._suspend_screensaver()
+            success = self._suspend_screensaver()
         else:
-            self._resume_screensaver()
-        self._notify()
+            success = self._resume_screensaver()
+
+        if success:
+            self._notify()
+        else:
+            self._active = not self._active
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
