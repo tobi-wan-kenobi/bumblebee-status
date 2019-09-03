@@ -26,8 +26,6 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
-ALIASES = ["datetz", "timetz"]
-
 def default_format(module):
     default = "%x %X %Z"
     if module == "datetz":
