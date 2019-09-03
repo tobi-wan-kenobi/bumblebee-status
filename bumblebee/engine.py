@@ -16,6 +16,16 @@ try:
 except ImportError:
     from configparser import RawConfigParser
 
+def all_modules():
+    """Return a list of available modules"""
+    result = []
+    path = os.path.dirname(bumblebee.modules.__file__)
+    for mod in [name for _, name, _ in pkgutil.iter_modules([path])]:
+        result.append({
+            "name": mod
+        })
+    return result
+  
 class Module(object):
     """Module instance base class
 
