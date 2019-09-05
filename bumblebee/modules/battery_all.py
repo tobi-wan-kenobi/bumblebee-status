@@ -25,11 +25,10 @@ except ImportError:
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         self._batteries = []
-        # TODO: list all batteries
-        self._batteries.append("/sys/class/power_supply/BAT0")
-        self._batteries.append("/sys/class/power_supply/BAT1")
-        self._batteries.append("/sys/class/power_supply/battery")
-
+        for battery in os.listdir('/sys/class/power_supply/'):
+            if not any(i in battery for i in ['AC', 'hidpp']):
+                self._batteries.append("/sys/class/power_supply/" + battery)
+                
         super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.capacity))
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,

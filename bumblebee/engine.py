@@ -25,7 +25,7 @@ def all_modules():
             "name": mod
         })
     return result
-
+  
 class Module(object):
     """Module instance base class
 
@@ -231,14 +231,25 @@ class Engine(object):
                     button=button["id"], cmd=module.parameter(button["name"]))
 
     def _read_aliases(self):
+        """Retruns a dictionary that maps every alias to its real module name"""
         result = {}
-        for module in all_modules():
+        m_path = os.path.abspath(bumblebee.modules.__file__)
+        m_path = os.path.dirname(m_path)
+        ALIASES_PATH = m_path + "/aliases/"
+        for name in os.listdir(ALIASES_PATH):
             try:
-                mod = importlib.import_module("bumblebee.modules.{}".format(module["name"]))
-                for alias in getattr(mod, "ALIASES", []):
-                    result[alias] = module["name"]
+                # listdir does not retur full paths
+                f_path = ALIASES_PATH + name
+                # skip any directory
+                if not os.path.isfile(f_path): continue
+                with open(f_path) as f:
+                    for alias in f.readlines():
+                        alias = alias.strip()
+                        # skip empty lines
+                        if len(alias) == 0: continue
+                        result[alias] = name 
             except Exception as error:
-                log.warning("failed to import {}: {}".format(module["name"], str(error)))
+                log.warning("failed to load aliases of {}: {}".format(name, str(error)))
         return result
 
     def _load_module(self, module_name, config_name=None):

@@ -5,8 +5,6 @@
 
 import bumblebee.engine
 
-ALIASES = ["test-alias"]
-
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
