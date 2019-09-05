@@ -67,15 +67,12 @@ class Module(bumblebee.engine.Module):
         return True
 
     def _resume_screensaver(self):
-        pids = []
         success = True
         xprop_path = bumblebee.util.which('xprop')
-        for process in psutil.process_iter():
-            if process.cmdline() == [xprop_path, '-id', str(self._xid), '-spy']:
-                pids.append(process.pid)
+        pids = [ p.pid for p in psutil.process_iter() if p.cmdline() == [xprop_path, '-id', str(self._xid), '-spy'] ]
         for pid in pids:
             try:
-                os.kill(process.pid, 9)
+                os.kill(pid, 9)
             except OSError:
                 success = False
         return success
