@@ -142,7 +142,7 @@ class Engine(object):
         self._running = True
         self._modules = []
         self.input = inp
-        self._aliases = self._read_aliases()
+        self._aliases = self._aliases()
         self.load_modules(config.modules())
         self._current_module = None
         self._theme = theme
@@ -230,27 +230,15 @@ class Engine(object):
                 self.input.register_callback(obj=module,
                     button=button["id"], cmd=module.parameter(button["name"]))
 
-    def _read_aliases(self):
-        """Retruns a dictionary that maps every alias to its real module name"""
-        result = {}
-        m_path = os.path.abspath(bumblebee.modules.__file__)
-        m_path = os.path.dirname(m_path)
-        ALIASES_PATH = m_path + "/aliases/"
-        for name in os.listdir(ALIASES_PATH):
-            try:
-                # listdir does not retur full paths
-                f_path = ALIASES_PATH + name
-                # skip any directory
-                if not os.path.isfile(f_path): continue
-                with open(f_path) as f:
-                    for alias in f.readlines():
-                        alias = alias.strip()
-                        # skip empty lines
-                        if len(alias) == 0: continue
-                        result[alias] = name 
-            except Exception as error:
-                log.warning("failed to load aliases of {}: {}".format(name, str(error)))
-        return result
+    def _aliases(self):
+        return {
+            'date': 'datetime',
+            'time': 'datetime',
+            'datetz': 'datetimetz',
+            'timetz': 'datetimetz',
+            'pasink': 'pulseaudio',
+            'pasource': 'pulseaudio',
+        }
 
     def _load_module(self, module_name, config_name=None):
         """Load specified module and return it as object"""
