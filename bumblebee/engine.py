@@ -238,6 +238,7 @@ class Engine(object):
             'timetz': 'datetimetz',
             'pasink': 'pulseaudio',
             'pasource': 'pulseaudio',
+            'test-alias': 'test',
         }
 
     def _load_module(self, module_name, config_name=None):
