@@ -76,6 +76,13 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=buttons[pause_button],
                                        cmd=cmd + "--play-pause")
 
+        # modify the tf_format if we don't want it to show on stop
+        # this adds conditions to the query itself, rather than
+        # polling to see if deadbeef is running
+        # doing this reduces the number of calls we have to make
+        if self._tf_format and not self._show_tf_when_stopped:
+            self._tf_format = "$if($or(%isplaying%,%ispaused%),{query})".format(query=self._tf_format)
+
     @scrollable
     def deadbeef(self, widget):
         return self.string_song
@@ -92,13 +99,12 @@ class Module(bumblebee.engine.Module):
             self._song = "error"
 
     def update_tf(self, widgets):
-        if not self._show_tf_when_stopped:
-            ## check if the player is paused or playing
-            self.now_playing_tf[-1] = "%isplaying%%ispaused%"
-            data = read_process(self.now_playing_tf)
-            if data == "":
-                self._song = ""
-                return
+        ## ensure that deadbeef is actually running
+        ## easiest way to do this is to check --nowplaying for
+        ##  the string "nothing"
+        if read_process(self.now_playing) == "nothing":
+            self._song = ""
+            return
         ## perform the actual query -- these can be much more sophisticated
         self.now_playing_tf[-1] = self._tf_format
         data = read_process(self.now_playing_tf)
