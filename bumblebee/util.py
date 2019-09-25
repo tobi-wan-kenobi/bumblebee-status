@@ -31,7 +31,7 @@ def execute(cmd, wait=True):
             raise RuntimeError("{} exited with {}".format(cmd, proc.returncode))
 
         if hasattr(out, "decode"):
-            rv = out.decode("utf-8")
+            rv = out.decode("utf-8", "ignore")
         else:
             rv = out
 
