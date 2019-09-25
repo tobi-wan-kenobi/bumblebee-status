@@ -25,6 +25,7 @@ Be aware of security implications of doing this!
 """
 
 import time
+from pkg_resources import parse_version
 import bumblebee.engine
 from bumblebee.util import execute, bytefmt, asbool
 
@@ -64,6 +65,8 @@ class Module(bumblebee.engine.Module):
 
     def _update_widgets(self, widgets):
         # zpool list -H: List all zpools, use script mode (no headers and tabs as separators).
+        with open('/sys/module/zfs/version', 'r') as zfs_mod_version:
+            zfs_version = zfs_mod_version.readline().rstrip().split('-')[0]
         raw_zpools = execute(('sudo ' if self._usesudo else '') + 'zpool list -H').split('\n')
 
         for widget in widgets:
@@ -71,8 +74,11 @@ class Module(bumblebee.engine.Module):
 
         for raw_zpool in raw_zpools:
             try:
-                # Ignored fields (assigned to _) are "expandsz" and "altroot"
-                name, size, alloc, free, _, frag, cap, dedup, health, _ = raw_zpool.split('\t')
+                # Ignored fields (assigned to _) are "expandsz" and "altroot", also "ckpoint" in ZFS 0.8.0+
+                if parse_version(zfs_version) < parse_version("0.8.0"):
+                    name, size, alloc, free, _, frag, cap, dedup, health, _ = raw_zpool.split('\t')
+                else:
+                    name, size, alloc, free, _, _, frag, cap, dedup, health, _ = raw_zpool.split('\t')
                 cap = cap.rstrip('%')
                 percentuse=int(cap)
                 percentfree=100-percentuse
