@@ -25,10 +25,12 @@ Be aware of security implications of doing this!
 """
 
 import time
+import logging
 from pkg_resources import parse_version
 import bumblebee.engine
 from bumblebee.util import execute, bytefmt, asbool
 
+log = logging.getLogger(__name__)
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -64,13 +66,15 @@ class Module(bumblebee.engine.Module):
         return state
 
     def _update_widgets(self, widgets):
+        zfs_version_path = "/sys/module/zfs/version"
         # zpool list -H: List all zpools, use script mode (no headers and tabs as separators).
         try:
-            with open('/sys/module/zfs/version', 'r') as zfs_mod_version:
+            with open(zfs_version_path, 'r') as zfs_mod_version:
                 zfs_version = zfs_mod_version.readline().rstrip().split('-')[0]
         except FileNotFoundError:
             # ZFS isn't installed or the module isn't loaded, stub the version
             zfs_version = "0.0.0"
+            logging.error("ZFS version information not found at {}, check the module is loaded.".format(zfs_version_path))
 
         raw_zpools = execute(('sudo ' if self._usesudo else '') + 'zpool list -H').split('\n')
 
