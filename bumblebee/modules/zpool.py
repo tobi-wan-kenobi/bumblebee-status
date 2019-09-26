@@ -65,8 +65,13 @@ class Module(bumblebee.engine.Module):
 
     def _update_widgets(self, widgets):
         # zpool list -H: List all zpools, use script mode (no headers and tabs as separators).
-        with open('/sys/module/zfs/version', 'r') as zfs_mod_version:
-            zfs_version = zfs_mod_version.readline().rstrip().split('-')[0]
+        try:
+            with open('/sys/module/zfs/version', 'r') as zfs_mod_version:
+                zfs_version = zfs_mod_version.readline().rstrip().split('-')[0]
+        except FileNotFoundError:
+            # ZFS isn't installed or the module isn't loaded, stub the version
+            zfs_version = "0.0.0"
+
         raw_zpools = execute(('sudo ' if self._usesudo else '') + 'zpool list -H').split('\n')
 
         for widget in widgets:
