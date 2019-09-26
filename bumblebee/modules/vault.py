@@ -60,7 +60,7 @@ class Module(bumblebee.engine.Module):
 
     def _reset(self):
         self._timer = None
-        self._text = "<click-for-password>"
+        self._text = str(self.parameter("text", "<click-for-password>"))
 
     def _callback(self, secret_name):
         secret_name = secret_name.replace(self._path, "") # remove common path
