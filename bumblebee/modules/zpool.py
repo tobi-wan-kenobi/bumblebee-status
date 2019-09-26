@@ -71,7 +71,7 @@ class Module(bumblebee.engine.Module):
         try:
             with open(zfs_version_path, 'r') as zfs_mod_version:
                 zfs_version = zfs_mod_version.readline().rstrip().split('-')[0]
-        except FileNotFoundError:
+        except IOError:
             # ZFS isn't installed or the module isn't loaded, stub the version
             zfs_version = "0.0.0"
             logging.error("ZFS version information not found at {}, check the module is loaded.".format(zfs_version_path))
