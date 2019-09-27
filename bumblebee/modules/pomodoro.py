@@ -5,6 +5,7 @@ Left click to start timer, left click again to pause.
 Right click will cancel the timer.
 """
 
+from __future__ import absolute_import
 import datetime
 
 import bumblebee.input
