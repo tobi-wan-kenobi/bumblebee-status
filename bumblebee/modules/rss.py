@@ -45,6 +45,7 @@ class Module(bumblebee.engine.Module):
         # Use BBC newsfeed as demo:
         self._feeds = self.parameter('feeds', 'https://www.espn.com/espn/rss/news').split(" ")
         self._feeds_to_update = []
+        self._response = ""
 
         self._max_title_length = int(self.parameter("length", 60))
 
