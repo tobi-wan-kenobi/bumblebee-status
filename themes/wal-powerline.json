@@ -44,5 +44,20 @@
 			"fg": "background",
 			"bg": "color3"
 		}
-	}
+	},
+    "pomodoro": {
+        "paused": {
+            "fg": "cursor",
+            "bg": "color6"
+        },
+        "work": {
+            "fg": "background",
+            "bg": "foreground"
+        },
+        "break": {
+            "fg": "background",
+            "bg": "color3"
+        }
+    }
+
 }
