@@ -16,10 +16,12 @@ import bumblebee.engine
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widgets = bumblebee.output.Widget(full_text=self.text)
-        self._work_period = 25
-        self._play_period = 5
-        self.remaining_time = datetime.timedelta(minutes=self._work_period)
+        self.work_period = 25
+        self.break_period = 5
+        self.remaining_time = datetime.timedelta(minutes=self.work_period)
         self.remaining_time_str = "{}m ".format(ceil((self.remaining_time.seconds / 60)))
+        # self.remaining_time_str = "{}min{}s ".format(int((self.remaining_time.seconds / 60)),
+        #                                              round((self.remaining_time.seconds/60) % 1*60))
         self.time = None
         self.pomodoro = { "state":"OFF", "type": ""}
         self._text = self.remaining_time_str + self.pomodoro["type"]
@@ -42,18 +44,20 @@ class Module(bumblebee.engine.Module):
             if self.remaining_time.seconds <= 0:
                 if self.pomodoro["type"] == "Work":
                     self.pomodoro["type"] = "Break"
-                    self.remaining_time = datetime.timedelta(minutes=self._work_period)
+                    self.remaining_time = datetime.timedelta(minutes=self.break_period)
                 elif self.pomodoro["type"] == "Break":
                     self.pomodoro["type"] = "Work"
-                    self.remaining_time = datetime.timedelta(minutes=self._play_period)
+                    self.remaining_time = datetime.timedelta(minutes=self.work_period)
 
         self.remaining_time_str = "{}m ".format(ceil((self.remaining_time.seconds / 60)))
+        # self.remaining_time_str = "{}min{}s ".format(int((self.remaining_time.seconds / 60)),
+        #                                             round((self.remaining_time.seconds / 60) % 1 * 60))
         self._text = self.remaining_time_str + self.pomodoro["type"]
     
     def timer_play_pause(self, widget):
         if self.pomodoro["state"] == "OFF":
             self.pomodoro = {"state": "ON", "type": "Work"}
-            self.remaining_time = datetime.timedelta(minutes=self._work_period)
+            self.remaining_time = datetime.timedelta(minutes=self.work_period)
             self.time = datetime.datetime.now()
         elif self.pomodoro["state"] == "ON":
             self.pomodoro["state"] = "PAUSED"
@@ -66,7 +70,7 @@ class Module(bumblebee.engine.Module):
     def timer_reset(self, widget):
         if self.pomodoro["state"] == "ON" or self.pomodoro["state"] == "PAUSED":
             self.pomodoro = {"state":"OFF", "type": "" }
-            self.remaining_time = datetime.timedelta(minutes=self._work_period)
+            self.remaining_time = datetime.timedelta(minutes=self.work_period)
 
     def state(self, widget):
         state = [];

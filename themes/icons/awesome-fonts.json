@@ -224,8 +224,9 @@
     "prefix": ""
   },
   "pomodoro": {
-      "off": { "prefix": "🍅" },
+      "off": { "prefix": "" },
       "paused": { "prefix": "" },
-      "on": { "prefix": "" }
+      "work": { "prefix": "" },
+      "break": { "prefix": "" }
   }
 }
