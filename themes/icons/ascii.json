@@ -302,6 +302,10 @@
   },
   "system": {
 		"prefix": "system"
-	}
-
+  },
+  "pomodoro": {
+      "off": { "prefix": "pom" },
+      "paused": { "prefix": "||" },
+      "on": { "prefix": " >" }
+  }
 }

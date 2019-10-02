@@ -222,5 +222,11 @@
   },
   "rss": {
     "prefix": ""
+  },
+  "pomodoro": {
+      "off": { "prefix": "" },
+      "paused": { "prefix": "" },
+      "work": { "prefix": "" },
+      "break": { "prefix": "" }
   }
 }
