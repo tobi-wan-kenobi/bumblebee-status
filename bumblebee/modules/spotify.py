@@ -13,6 +13,8 @@ Parameters:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 """
 
+import sys
+
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
@@ -52,12 +54,12 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=buttons[pause_button],
             cmd=cmd + "PlayPause")
 
-##    @scrollable
+    @scrollable
     def spotify(self, widget):
-        return str(self._song)
+        return self.string_song
 
     def hidden(self):
-        return str(self._song) == ""
+        return self.string_song == ""
 
     def update(self, widgets):
         try:
@@ -71,7 +73,15 @@ class Module(bumblebee.engine.Module):
                                              artist=','.join(props.get('xesam:artist')),
                                              trackNumber=str(props.get('xesam:trackNumber')),
                                              playbackStatus=u"\u25B6" if playback_status=="Playing" else u"\u258D\u258D" if playback_status=="Paused" else "",)
+            
         except Exception:
             self._song = ""
+
+    @property
+    def string_song(self):
+        if sys.version_info.major < 3:
+            return unicode(self._song)
+        return str(self._song)
+        
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
