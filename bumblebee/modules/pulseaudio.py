@@ -24,8 +24,6 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
-ALIASES = ["pasink", "pasource"]
-
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,

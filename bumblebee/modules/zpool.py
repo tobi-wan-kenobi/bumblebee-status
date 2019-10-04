@@ -25,9 +25,12 @@ Be aware of security implications of doing this!
 """
 
 import time
+import logging
+from pkg_resources import parse_version
 import bumblebee.engine
 from bumblebee.util import execute, bytefmt, asbool
 
+log = logging.getLogger(__name__)
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -63,7 +66,16 @@ class Module(bumblebee.engine.Module):
         return state
 
     def _update_widgets(self, widgets):
+        zfs_version_path = "/sys/module/zfs/version"
         # zpool list -H: List all zpools, use script mode (no headers and tabs as separators).
+        try:
+            with open(zfs_version_path, 'r') as zfs_mod_version:
+                zfs_version = zfs_mod_version.readline().rstrip().split('-')[0]
+        except IOError:
+            # ZFS isn't installed or the module isn't loaded, stub the version
+            zfs_version = "0.0.0"
+            logging.error("ZFS version information not found at {}, check the module is loaded.".format(zfs_version_path))
+
         raw_zpools = execute(('sudo ' if self._usesudo else '') + 'zpool list -H').split('\n')
 
         for widget in widgets:
@@ -71,8 +83,11 @@ class Module(bumblebee.engine.Module):
 
         for raw_zpool in raw_zpools:
             try:
-                # Ignored fields (assigned to _) are "expandsz" and "altroot"
-                name, size, alloc, free, _, frag, cap, dedup, health, _ = raw_zpool.split('\t')
+                # Ignored fields (assigned to _) are "expandsz" and "altroot", also "ckpoint" in ZFS 0.8.0+
+                if parse_version(zfs_version) < parse_version("0.8.0"):
+                    name, size, alloc, free, _, frag, cap, dedup, health, _ = raw_zpool.split('\t')
+                else:
+                    name, size, alloc, free, _, _, frag, cap, dedup, health, _ = raw_zpool.split('\t')
                 cap = cap.rstrip('%')
                 percentuse=int(cap)
                 percentfree=100-percentuse

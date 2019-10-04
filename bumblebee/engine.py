@@ -25,7 +25,7 @@ def all_modules():
             "name": mod
         })
     return result
-
+  
 class Module(object):
     """Module instance base class
 
@@ -142,7 +142,7 @@ class Engine(object):
         self._running = True
         self._modules = []
         self.input = inp
-        self._aliases = self._read_aliases()
+        self._aliases = self._aliases()
         self.load_modules(config.modules())
         self._current_module = None
         self._theme = theme
@@ -230,16 +230,16 @@ class Engine(object):
                 self.input.register_callback(obj=module,
                     button=button["id"], cmd=module.parameter(button["name"]))
 
-    def _read_aliases(self):
-        result = {}
-        for module in all_modules():
-            try:
-                mod = importlib.import_module("bumblebee.modules.{}".format(module["name"]))
-                for alias in getattr(mod, "ALIASES", []):
-                    result[alias] = module["name"]
-            except Exception as error:
-                log.warning("failed to import {}: {}".format(module["name"], str(error)))
-        return result
+    def _aliases(self):
+        return {
+            'date': 'datetime',
+            'time': 'datetime',
+            'datetz': 'datetimetz',
+            'timetz': 'datetimetz',
+            'pasink': 'pulseaudio',
+            'pasource': 'pulseaudio',
+            'test-alias': 'test',
+        }
 
     def _load_module(self, module_name, config_name=None):
         """Load specified module and return it as object"""
