@@ -247,6 +247,9 @@
   "github": {
     "prefix": "github"
   },
+  "deezer": {
+    "prefix": ""
+  },
   "spotify": {
     "prefix": ""
   },
