@@ -189,7 +189,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * netifaces (for the modules 'nic', 'traffic')
 * requests (for the modules 'weather', 'github', 'getcrypto', 'stock', 'currency', 'sun')
 * power (for the module 'battery')
-* dbus (for the module 'spotify')
+* dbus (for the module 'spotify', 'deezer')
 * i3ipc (for the module 'title')
 * pacman-contrib (for module 'arch-update')
 * docker (for the module 'docker_ps')
