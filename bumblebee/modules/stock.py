@@ -9,7 +9,6 @@ Requires the following python packages:
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
     * stock.change : Should we fetch change in stock value (defaults to True)
-    * stock.token : Your API token registered at https://worldtradingdata.com
 """
 
 import bumblebee.input
@@ -29,7 +28,6 @@ class Module(bumblebee.engine.Module):
         )
         self._symbols = self.parameter('symbols', '')
         self._change = bumblebee.util.asbool(self.parameter('change', True))
-        self._token = self.parameter('token', None)
         self._value = None
         self.interval(60)
 
@@ -39,19 +37,18 @@ class Module(bumblebee.engine.Module):
             return 'n/a'
         data = json.loads(self._value)
 
-        for symbol in data['data']:
-            val = 'day_change' if self._change else 'price'
-            results.append('{} {}{}'.format(symbol['symbol'], symbol[val], symbol['currency']))
+        for symbol in data['quoteResponse']['result']:
+            valkey = 'regularMarketChange' if self._change else 'regularMarketPrice'
+            sym = 'n/a' if not 'symbol' in symbol else symbol['symbol']
+            currency = 'USD' if not 'currency' in symbol else symbol['currency']
+            val = 'n/a' if not valkey in symbol else '{:.2f}'.format(symbol[valkey])
+            results.append('{} {} {}'.format(sym, val, currency))
         return u' '.join(results)
 
     def fetch(self):
-        if not self._token:
-            logging.error('please specify a token')
-            return None
         if self._symbols:
-            url = 'https://api.worldtradingdata.com/api/v1/stock?'
-            url += 'api_token={}'.format(self._token)
-            url += '&symbol={}'.format(self._symbols)
+            url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols='
+            url += self._symbols + '&fields=regularMarketPrice,currency,regularMarketChange'
             return requests.get(url).text.strip()
         else:
             logging.error('unable to retrieve stock exchange rate')
