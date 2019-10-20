@@ -25,9 +25,12 @@ except ImportError:
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         self._batteries = []
-        for battery in os.listdir('/sys/class/power_supply/'):
-            if not any(i in battery for i in ['AC', 'hidpp']):
-                self._batteries.append("/sys/class/power_supply/" + battery)
+        try:
+            for battery in os.listdir('/sys/class/power_supply/'):
+                if not any(i in battery for i in ['AC', 'hidpp']):
+                    self._batteries.append("/sys/class/power_supply/" + battery)
+        except:
+            pass
                 
         super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.capacity))
 
@@ -67,11 +70,7 @@ class Module(bumblebee.engine.Module):
                 errors += 1
 
         if errors == len(self._batteries):
-            # if all batteries return errors, but we are still running
-            # assume we are on A/C
-            widget.set("ac", True)
-            widget.set("capacity", 100)
-            return "ac"
+            return "n/a"
 
         capacity = int( float(self.energy_now) / float(self.energy_full) * 100.0)
         capacity = capacity if capacity < 100 else 100
