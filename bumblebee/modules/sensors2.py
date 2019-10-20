@@ -132,18 +132,25 @@ class Module(bumblebee.engine.Module):
         return output
 
     def _cpu(self, _):
+        mhz = None
         try:
             output = open("/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq").read()
             mhz = int(float(output)/1000.0)
         except:
             output = open("/proc/cpuinfo").read()
             m = re.search(r"cpu MHz\s+:\s+(\d+)", output)
-            mhz = int(m.group(1))
+            if m:
+                mhz = int(m.group(1))
+            else:
+                m = re.search(r"BogoMIPS\s+:\s+(\d+)", output)
+                if m:
+                    return "{} BogoMIPS".format(int(m.group(1)))
+        if not mhz:
+            return "n/a"
 
         if mhz < 1000:
             return "{} MHz".format(mhz)
         else:
             return "{:0.01f} GHz".format(float(mhz)/1000.0)
-
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
