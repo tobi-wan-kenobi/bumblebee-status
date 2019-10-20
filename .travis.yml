@@ -7,8 +7,7 @@ python:
   - "3.6"
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y task
-  - sudo apt-get install dbus
+  - sudo apt-get install -y task libdbus libdbus-dev
 install:
   - pip install i3ipc
   - pip install psutil
