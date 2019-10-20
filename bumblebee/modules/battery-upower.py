@@ -9,6 +9,7 @@ Parameters:
 """
 
 import dbus
+import logging
 
 import bumblebee.input
 import bumblebee.output
@@ -194,9 +195,12 @@ class UPowerManager():
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        self.power = UPowerManager()
-        self.device = self.power.get_display_device()
         super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.capacity))
+        try:
+            self.power = UPowerManager()
+            self.device = self.power.get_display_device()
+        except Exception as e:
+            logging.exception("unable to get battery display device: {}".format(str(e)))
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                        cmd="gnome-power-statistics")
 
@@ -207,15 +211,19 @@ class Module(bumblebee.engine.Module):
     def capacity(self, widget):
         widget.set("capacity", -1)
         widget.set("ac", False)
-        capacity = int(self.power.get_device_percentage(self.device))
-        capacity = capacity if capacity < 100 else 100
-        widget.set("capacity", capacity)
-        output = "{}%".format(capacity)
-        widget.set("theme.minwidth", "100%")
+        output = "n/a"
+        try:
+            capacity = int(self.power.get_device_percentage(self.device))
+            capacity = capacity if capacity < 100 else 100
+            widget.set("capacity", capacity)
+            output = "{}%".format(capacity)
+            widget.set("theme.minwidth", "100%")
 
-        if bumblebee.util.asbool(self.parameter("showremaining", True)) \
-                and self.power.get_state(self.device) == "Discharging":
-            output = "{} {}".format(output, self.remaining())
+            if bumblebee.util.asbool(self.parameter("showremaining", True)) \
+                    and self.power.get_state(self.device) == "Discharging":
+                output = "{} {}".format(output, self.remaining())
+        except Exception as e:
+            logging.exception("unable to get battery capacity: {}".format(str(e)))
 
         return output
 
@@ -233,7 +241,11 @@ class Module(bumblebee.engine.Module):
         if widget.get("ac"):
             state.append("AC")
         else:
-            charge = self.power.get_state(self.device)
+            charge = "Unknown"
+            try:
+                charge = self.power.get_state(self.device)
+            except Exception as e:
+                logging.exception("unable to get charge value: {}".format(str(e)))
             if charge == "Discharging":
                 state.append("discharging-{}".format(min([10, 25, 50, 80, 100], key=lambda i: abs(i - capacity))))
             elif charge == "Unknown":
