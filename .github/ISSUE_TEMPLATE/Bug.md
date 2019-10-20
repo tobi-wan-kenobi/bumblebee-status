@@ -1,6 +1,10 @@
 ---
-name:  Bug Report
-about: Something is broken / doesn't work as expected
+name: Bug Report
+about: Something doesn't work (as expected)
+title: ''
+labels: ''
+assignees: ''
+
 ---
 
 ### Bug Report
@@ -8,16 +12,11 @@ about: Something is broken / doesn't work as expected
 #### Summary
 Affected module: <module name>
 
-Description:
+#### Description:
 <description>
-
-#### What is the current behaviour and what is the expected behaviour?
 
 #### How to reproduce
 <!-- Please provide steps on how to reproduce the issue (screenshots would be great) -->
-
-#### Expected behavior
-<!-- What was the expected (correct) behavior? -->
 
 <!--
 If you are having problems with fonts, please read:
@@ -29,4 +28,3 @@ https://github.com/tobi-wan-kenobi/bumblebee-status/issues/233
 Please note FontAwesome 5 is currently not supported:
 https://github.com/tobi-wan-kenobi/bumblebee-status/issues/239
 -->
-

@@ -7,15 +7,14 @@ import json
 import uuid
 
 import bumblebee.store
-
-_TrueValues = ["true", "t", "yes", "y", "1"]
+import bumblebee.util
 
 def scrollable(func):
     def wrapper(module, widget):
         text = func(module, widget)
         if not text: return text
         width = widget.get("theme.width", module.parameter("width", 30))
-        if module.parameter("scrolling.makewide", "true").lower() in _TrueValues:
+        if bumblebee.util.asbool(module.parameter("scrolling.makewide", "true")):
             widget.set("theme.minwidth", "A"*width)
         if len(text) <= width:
             return text

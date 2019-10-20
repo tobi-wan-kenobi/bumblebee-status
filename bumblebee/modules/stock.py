@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # pylint: disable=C0111,R0903
 
-"""Display a stock quote from yahoo finance.
+"""Display a stock quote from worldtradingdata.com
 
 Requires the following python packages:
     * requests
@@ -9,7 +9,6 @@ Requires the following python packages:
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
     * stock.change : Should we fetch change in stock value (defaults to True)
-    * stock.currencies : List of symbols to go with the values (default $)
 """
 
 import bumblebee.input
@@ -17,6 +16,7 @@ import bumblebee.output
 import bumblebee.engine
 import bumblebee.util
 
+import json
 import requests
 
 import logging
@@ -28,36 +28,27 @@ class Module(bumblebee.engine.Module):
         )
         self._symbols = self.parameter('symbols', '')
         self._change = bumblebee.util.asbool(self.parameter('change', True))
-        self._currencies = self.parameter('currencies', None)
-        self._baseurl = 'http://download.finance.yahoo.com/d/quotes.csv'
-        self._value = self.fetch()
+        self._value = None
         self.interval(60)
-
-        if not self._currencies:
-            self._currencies = '$' * len(self._symbols)
-
-        # The currencies could be unicode, like the € symbol. Convert to a unicode object.
-        if hasattr(self._currencies, 'decode'):
-            self._currencies = self._currencies.decode('utf-8', 'ignore')
 
     def value(self, widget):
         results = []
         if not self._value:
             return 'n/a'
-        for i, val in enumerate(self._value.split('\n')):
-            try:
-                currency_symbol = self._currencies[i]
-            except:
-                currency_symbol = '$'
-            results.append('%s%s' % (currency_symbol, val))
+        data = json.loads(self._value)
+
+        for symbol in data['quoteResponse']['result']:
+            valkey = 'regularMarketChange' if self._change else 'regularMarketPrice'
+            sym = 'n/a' if not 'symbol' in symbol else symbol['symbol']
+            currency = 'USD' if not 'currency' in symbol else symbol['currency']
+            val = 'n/a' if not valkey in symbol else '{:.2f}'.format(symbol[valkey])
+            results.append('{} {} {}'.format(sym, val, currency))
         return u' '.join(results)
 
     def fetch(self):
         if self._symbols:
-            url = self._baseurl
-            url += '?s=%s&f=l1' % self._symbols
-            if self._change:
-                url += 'c1'
+            url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols='
+            url += self._symbols + '&fields=regularMarketPrice,currency,regularMarketChange'
             return requests.get(url).text.strip()
         else:
             logging.error('unable to retrieve stock exchange rate')

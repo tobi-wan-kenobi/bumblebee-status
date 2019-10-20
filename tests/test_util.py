@@ -69,5 +69,15 @@ class TestUtil(unittest.TestCase):
         # test if which also works with garbage input
         self.assertTrue(bu.which("qwertygarbage") is None)
 
+    def test_asbool(self):
+        for val in ("t", "true", "y", "yes", "on", "1", 1, True):
+            self.assertTrue(bu.asbool(val))
+            if isinstance(val, str):
+                self.assertTrue(bu.asbool(val.upper()))
+
+        for val in ("f", "false", "n", "no", "off", "0", 0, False):
+            self.assertFalse(bu.asbool(val))
+            if isinstance(val, str):
+                self.assertFalse(bu.asbool(val.upper()))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

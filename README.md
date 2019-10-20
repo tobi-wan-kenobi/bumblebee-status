@@ -5,7 +5,7 @@
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 
-**Many, many thanks to all contributors! As of now, 48 of the modules are from various contributors (!), and only 19 from myself.**
+**Many, many thanks to all contributors! As of now, 49 of the modules are from various contributors (!), and only 19 from myself.**
 
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
 
@@ -189,7 +189,7 @@ Modules and commandline utilities are only required for modules, the core itself
 * netifaces (for the modules 'nic', 'traffic')
 * requests (for the modules 'weather', 'github', 'getcrypto', 'stock', 'currency', 'sun')
 * power (for the module 'battery')
-* dbus (for the module 'spotify')
+* dbus (for the module 'spotify', 'deezer')
 * i3ipc (for the module 'title')
 * pacman-contrib (for module 'arch-update')
 * docker (for the module 'docker_ps')
