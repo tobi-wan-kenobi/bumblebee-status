@@ -11,6 +11,7 @@ Parameters:
 
 import os
 import glob
+import logging
 
 import bumblebee.input
 import bumblebee.output
@@ -29,8 +30,8 @@ class Module(bumblebee.engine.Module):
             for battery in os.listdir('/sys/class/power_supply/'):
                 if not any(i in battery for i in ['AC', 'hidpp']):
                     self._batteries.append("/sys/class/power_supply/" + battery)
-        except:
-            pass
+        except as e:
+            logging.exception("unable to detect batteries: {}".format(str(e)))
                 
         super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.capacity))
 
