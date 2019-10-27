@@ -6,7 +6,7 @@ Requires the following python module:
     * netifaces
 
 Parameters:
-    * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
+    * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth,br")
     * nic.states: Comma-separated list of states to show (prefix with "^" to invert - i.e. ^down -> show all devices that are not in state down)
     * nic.format: Format string (defaults to "{intf} {state} {ip} {ssid}")
 """
@@ -23,7 +23,7 @@ class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widgets = []
         super(Module, self).__init__(engine, config, widgets)
-        self._exclude = tuple(filter(len, self.parameter("exclude", "lo,virbr,docker,vboxnet,veth").split(",")))
+        self._exclude = tuple(filter(len, self.parameter("exclude", "lo,virbr,docker,vboxnet,veth,br").split(",")))
 
         self._states = {}
         self._states["include"] = []
