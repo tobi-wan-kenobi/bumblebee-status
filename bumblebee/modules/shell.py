@@ -15,7 +15,7 @@ Parameters:
                       For example shell.command='echo $(date +"%H:%M:%S")'
                       But NOT shell.command="echo $(date +'%H:%M:%S')"
                       Second one will be evaluated only once at startup
-    * shell.interval: Update interval in minutes
+    * shell.interval: Update interval in seconds
                       (defaults to 1s == every bumblebee-status update)
     * shell.async:    Run update in async mode. Won't run next thread if
                       previous one didn't finished yet. Useful for long
