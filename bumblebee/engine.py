@@ -41,6 +41,7 @@ class Module(object):
         self.error = None
         self._next = int(time.time())
         self._default_interval = 0
+        self._interval_factor = 1
         self._engine = engine
 
         self._configFile = None
@@ -99,7 +100,10 @@ class Module(object):
         except Exception as e:
             log.error("error updating '{}': {}".format(self.name, str(e)))
             self.error = str(e)
-        self._next += int(self.parameter("interval", self._default_interval))*60
+        self._next += int(self.parameter("interval", self._default_interval))*self._interval_factor
+
+    def interval_factor(self, factor):
+        self._interval_factor = factor
 
     def interval(self, intvl):
         self._default_interval = intvl

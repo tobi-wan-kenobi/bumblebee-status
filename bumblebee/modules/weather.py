@@ -42,6 +42,7 @@ class Module(bumblebee.engine.Module):
         self._showcity = bumblebee.util.asbool(self.parameter("showcity", True))
         self._unit = self.parameter("unit", "metric")
         self._valid = False
+        self.interval_factor(60)
         self.interval(15)
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self._next_location)

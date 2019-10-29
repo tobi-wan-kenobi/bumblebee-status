@@ -44,6 +44,7 @@ class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         widget = bumblebee.output.Widget(full_text=self.updates)
         super(Module, self).__init__(engine, config, widget)
+        self.interval_factor(60)
         self.interval(30)
 
     def updates(self, widget):

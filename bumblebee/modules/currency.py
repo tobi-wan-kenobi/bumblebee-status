@@ -37,6 +37,7 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.price)
         )
         self._data = []
+        self.interval_factor(60)
         self.interval(1)
         self._base = self.parameter("source", "GBP")
         self._symbols = self.parameter("destination", "USD,EUR").split(",")

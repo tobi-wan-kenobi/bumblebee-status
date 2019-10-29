@@ -29,6 +29,7 @@ class Module(bumblebee.engine.Module):
         self._symbols = self.parameter('symbols', '')
         self._change = bumblebee.util.asbool(self.parameter('change', True))
         self._value = None
+        self.interval_factor(60)
         self.interval(60)
 
     def value(self, widget):
