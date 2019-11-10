@@ -12,14 +12,17 @@ import bumblebee.util
 def scrollable(func):
     def wrapper(module, widget):
         text = func(module, widget)
-        if not text: return text
-        width = widget.get("theme.width", module.parameter("width", 30))
+        if not text:
+            return text
+        width = widget.get("theme.width", int(module.parameter("width", 30)))
         if bumblebee.util.asbool(module.parameter("scrolling.makewide", "true")):
             widget.set("theme.minwidth", "A"*width)
+        if width < 0:
+            return text
         if len(text) <= width:
             return text
         # we need to shorten
-        
+
         try:
             bounce = int(module.parameter("scrolling.bounce", 1))
         except ValueError:
@@ -31,7 +34,7 @@ def scrollable(func):
         start = widget.get("scrolling.start", -1)
         direction = widget.get("scrolling.direction", "right")
         start += scroll_speed if direction == "right" else -(scroll_speed)
-        
+
         if width + start > len(text) + (scroll_speed -1):
             if bounce:
                 widget.set("scrolling.direction", "left")
