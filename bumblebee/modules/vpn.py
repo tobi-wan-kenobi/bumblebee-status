@@ -65,7 +65,8 @@ class Module(bumblebee.engine.Module):
 
     def _on_vpn_disconnect(self):
         try:
-            bumblebee.util.execute("nmcli c down " + self._connected_vpn_profile)
+            bumblebee.util.execute("nmcli c down \"{vpn}\""
+                                   .format(vpn=self._connected_vpn_profile))
             self._connected_vpn_profile = None
         except Exception as e:
             logging.exception("Couldn't disconnect VPN connection")
@@ -74,7 +75,8 @@ class Module(bumblebee.engine.Module):
         self._selected_vpn_profile = name
 
         try:
-            bumblebee.util.execute("nmcli c up " + self._selected_vpn_profile)
+            bumblebee.util.execute("nmcli c up \"{vpn}\""
+                                   .format(vpn=self._connected_vpn_profile))
             self._connected_vpn_profile = name
         except Exception as e:
             logging.exception("Couldn't establish VPN connection")
