@@ -7,6 +7,7 @@ Requires the following executable:
 
 Parameters:
     * cmus.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
+    * cmus.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles cmus.prev, cmus.next, cmus.shuffle and cmus.repeat, and the main display with play/pause function cmus.main.
 """
 
 from collections import defaultdict
@@ -22,31 +23,40 @@ from bumblebee.output import scrollable
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        widgets = [
-            bumblebee.output.Widget(name="cmus.prev"),
-            bumblebee.output.Widget(name="cmus.main", full_text=self.description),
-            bumblebee.output.Widget(name="cmus.next"),
-            bumblebee.output.Widget(name="cmus.shuffle"),
-            bumblebee.output.Widget(name="cmus.repeat"),
-        ]
-        super(Module, self).__init__(engine, config, widgets)
+        super(Module, self).__init__(engine, config, [])
 
-        engine.input.register_callback(widgets[0], button=bumblebee.input.LEFT_MOUSE,
-            cmd="cmus-remote -r")
-        engine.input.register_callback(widgets[1], button=bumblebee.input.LEFT_MOUSE,
-            cmd="cmus-remote -u")
-        engine.input.register_callback(widgets[2], button=bumblebee.input.LEFT_MOUSE,
-            cmd="cmus-remote -n")
-        engine.input.register_callback(widgets[3], button=bumblebee.input.LEFT_MOUSE,
-            cmd="cmus-remote -S")
-        engine.input.register_callback(widgets[4], button=bumblebee.input.LEFT_MOUSE,
-            cmd="cmus-remote -R")
-
+        self._layout = self.parameter("layout", "cmus.prev cmus.main cmus.next cmus.shuffle cmus.repeat")
         self._fmt = self.parameter("format", "{artist} - {title} {position}/{duration}")
         self._status = None
         self._shuffle = False
         self._repeat = False
         self._tags = defaultdict(lambda: '')
+
+        # Create widgets
+        widget_list = []
+        widget_map = {}
+        for widget_name in self._layout.split():
+            widget = bumblebee.output.Widget(name=widget_name)
+            widget_list.append(widget)
+
+            if widget_name == "cmus.prev":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -r"}
+            elif widget_name == "cmus.main":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -u"}
+                widget.full_text(self.description)
+            elif widget_name == "cmus.next":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -n"}
+            elif widget_name == "cmus.shuffle":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -S"}
+            elif widget_name == "cmus.repeat":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -R"}
+            else:
+                raise KeyError("The cmus module does not support a {widget_name!r} widget".format(widget_name=widget_name))
+        self.widgets(widget_list)
+
+        # Register input callbacks
+        for widget, callback_options in widget_map.items():
+            engine.input.register_callback(widget, **callback_options)
 
     def hidden(self):
         return self._status is None
@@ -75,7 +85,7 @@ class Module(bumblebee.engine.Module):
         if name == "tag":
             self._tags.update({key: value})
         if name in ["duration", "position"]:
-            self._tags.update({name:bumblebee.util.durationfmt(int(key))})
+            self._tags.update({name: bumblebee.util.durationfmt(int(key))})
         if name == "set" and key == "repeat":
             self._repeat = value == "true"
         if name == "set" and key == "shuffle":
