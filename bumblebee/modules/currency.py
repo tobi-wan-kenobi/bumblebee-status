@@ -26,10 +26,10 @@ except ImportError:
     pass
 
 SYMBOL = {
-    "GBP": u"£", "EUR": u"€", "USD": u"$", "JPY": u"¥"
+    "GBP": u"£", "EUR": u"€", "USD": u"$", "JPY": u"¥", "KRW": u"₩"
 }
 DEFAULT_DEST = "USD,EUR,GBP"
-DEFAULT_SRC = "GBP"
+DEFAULT_SRC = "auto"
 
 API_URL = "https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}"
 
@@ -43,7 +43,7 @@ class Module(bumblebee.engine.Module):
         self.interval(1)
         self._nextcheck = 0
 
-        src = self.parameter("source", "auto")
+        src = self.parameter("source", DEFAULT_SRC)
         if src == "auto":
             self._base = self.find_local_currency()
         else:
@@ -60,8 +60,8 @@ class Module(bumblebee.engine.Module):
 
         rates = []
         for sym, rate in self._data:
-            rate = float(rate)
-            rates.append(u"{:.3g}{}".format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
+            rate = self.fmt_rate(rate)
+            rates.append(u"{}{}".format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
 
         basefmt = u"{}".format(self.parameter("sourceformat", "1{}={}"))
         ratefmt = u"{}".format(self.parameter("destinationdelimiter", "="))
@@ -99,5 +99,11 @@ class Module(bumblebee.engine.Module):
         except:
             return DEFAULT_SRC
 
+    def fmt_rate(self, rate):
+        float_rate = float(rate.replace(',', ''))
+        if not 0.01 < float_rate < 100:
+            return rate
+        else:
+            return "%.3g" % float_rate
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
