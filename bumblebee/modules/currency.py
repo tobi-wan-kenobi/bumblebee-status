@@ -24,15 +24,18 @@ try:
     import requests
 except ImportError:
     pass
+try:
+    from babel.numbers import format_currency
+except ImportError:
+    format_currency = None
 import json
 import os
 
 SYMBOL = {
     "GBP": u"£", "EUR": u"€", "USD": u"$", "JPY": u"¥", "KRW": u"₩"
 }
-DEFAULT_DEST = "USD,EUR,GBP"
-DEFAULT_SRC = "auto"
-DEFAULT_SRC_FALLBACK = "GBP"
+DEFAULT_DEST = "USD,EUR,auto"
+DEFAULT_SRC = "GBP"
 
 API_URL = "https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}"
 LOCATION_URL = "https://ipvigilante.com/"
@@ -88,13 +91,22 @@ class Module(bumblebee.engine.Module):
 
         rates = []
         for sym, rate in self._data:
-            rate = self.fmt_rate(rate)
-            rates.append(u"{}{}".format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
+            rate_float = float(rate.replace(',',''))
+            if format_currency:
+                rates.append(format_currency(rate_float, sym))
+            else:
+                rate = self.fmt_rate(rate)
+                rates.append(u"{}{}".format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
 
-        basefmt = u"{}".format(self.parameter("sourceformat", "1{}={}"))
+        basefmt = u"{}".format(self.parameter("sourceformat", "{}={}"))
         ratefmt = u"{}".format(self.parameter("destinationdelimiter", "="))
 
-        return basefmt.format(SYMBOL[self._base] if self._base in SYMBOL else self._base, ratefmt.join(rates))
+        if format_currency:
+            base_val = format_currency(1, self._base)
+        else:
+            base_val = '1{}'.format(SYMBOL[self._base] if self._base in SYMBOL else self._base)
+
+        return basefmt.format(base_val, ratefmt.join(rates))
 
     def update(self, widgets):
         self._data = []
@@ -111,15 +123,17 @@ class Module(bumblebee.engine.Module):
         try:
             country = get_local_country()
             currency_map = load_country_to_currency()
-            return currency_map.get(country, DEFAULT_SRC_FALLBACK)
+            return currency_map.get(country, DEFAULT_SRC)
         except:
-            return DEFAULT_SRC_FALLBACK
+            return DEFAULT_SRC
 
     def fmt_rate(self, rate):
         float_rate = float(rate.replace(',', ''))
         if not 0.01 < float_rate < 100:
-            return rate
+            ret = rate
         else:
-            return "%.3g" % float_rate
+            ret = "%.3g" % float_rate
+
+        return ret
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
