@@ -73,10 +73,14 @@ class Module(bumblebee.engine.Module):
         else:
             self._base = src
 
-        dest = [d for d in self.parameter("destination", DEFAULT_DEST).split(",")
-                if d != self._base]
-        self._symbols = dest
-
+        self._symbols = []
+        for d in self.parameter("destination", DEFAULT_DEST).split(","):
+            if d == 'auto':
+                new = self.find_local_currency()
+            else:
+                new = d
+            if new != self._base:
+                self._symbols.append(new)
 
     def price(self, widget):
         if len(self._data) == 0:
