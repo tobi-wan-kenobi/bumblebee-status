@@ -8,7 +8,7 @@ Requires the following python packages:
 
 Parameters:
     * currency.interval: Interval in minutes between updates, default is 1.
-    * currency.source: Source currency (defaults to "GBP")
+    * currency.source: Source currency (defaults to "GBP"). Set to "auto" infer the local one.
     * currency.destination: Comma-separated list of destination currencies (defaults to "USD,EUR")
     * currency.sourceformat: String format for source formatting; Defaults to "{}: {}" and has two variables,
                              the base symbol and the rate list
@@ -28,6 +28,8 @@ except ImportError:
 SYMBOL = {
     "GBP": u"£", "EUR": u"€", "USD": u"$", "JPY": u"¥"
 }
+DEFAULT_DEST = "USD,EUR,GBP"
+DEFAULT_SRC = "GBP"
 
 API_URL = "https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}"
 
@@ -39,9 +41,18 @@ class Module(bumblebee.engine.Module):
         self._data = []
         self.interval_factor(60)
         self.interval(1)
-        self._base = self.parameter("source", "GBP")
-        self._symbols = self.parameter("destination", "USD,EUR").split(",")
         self._nextcheck = 0
+
+        src = self.parameter("source", "auto")
+        if src == "auto":
+            self._base = self.find_local_currency()
+        else:
+            self._base = src
+
+        dest = [d for d in self.parameter("destination", DEFAULT_DEST).split(",")
+                if d != self._base]
+        self._symbols = dest
+
 
     def price(self, widget):
         if len(self._data) == 0:
@@ -49,10 +60,11 @@ class Module(bumblebee.engine.Module):
 
         rates = []
         for sym, rate in self._data:
-            rates.append(u"{}{}".format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
+            rate = float(rate)
+            rates.append(u"{:.3g}{}".format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
 
-        basefmt = u"{}".format(self.parameter("sourceformat", "{}: {}"))
-        ratefmt = u"{}".format(self.parameter("destinationdelimiter", "|"))
+        basefmt = u"{}".format(self.parameter("sourceformat", "1{}={}"))
+        ratefmt = u"{}".format(self.parameter("destinationdelimiter", "="))
 
         return basefmt.format(SYMBOL[self._base] if self._base in SYMBOL else self._base, ratefmt.join(rates))
 
@@ -65,5 +77,27 @@ class Module(bumblebee.engine.Module):
                 self._data.append((symbol, response['data']['exchangeRate']))
             except Exception:
                 pass
+
+    def find_local_currency(self):
+        '''Use geolocation lookup to find local currency'''
+        try:
+            r = requests.get('https://ipvigilante.com/')
+            if not r.ok: return DEFAULT_SRC
+            dt = r.json()
+            if dt['status'] != 'success':
+                return DEFAULT_SRC
+            country = dt['data']['country_name']
+
+            r = requests.get("https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-currency-code.json")
+            if not r.ok: return DEFAULT_SRC
+            data = r.json()
+            country2curr = {}
+            for dt in data:
+                country2curr[dt['country']] = dt['currency_code']
+
+            return country2curr.get(country, DEFAULT_SRC)
+        except:
+            return DEFAULT_SRC
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
