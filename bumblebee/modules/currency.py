@@ -24,12 +24,15 @@ try:
     import requests
 except ImportError:
     pass
+import json
+import os
 
 SYMBOL = {
     "GBP": u"£", "EUR": u"€", "USD": u"$", "JPY": u"¥", "KRW": u"₩"
 }
 DEFAULT_DEST = "USD,EUR,GBP"
 DEFAULT_SRC = "auto"
+DEFAULT_SRC_FALLBACK = "GBP"
 
 API_URL = "https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}"
 
@@ -82,22 +85,25 @@ class Module(bumblebee.engine.Module):
         '''Use geolocation lookup to find local currency'''
         try:
             r = requests.get('https://ipvigilante.com/')
-            if not r.ok: return DEFAULT_SRC
+            if not r.ok:
+                return DEFAULT_SRC_FALLBACK
             dt = r.json()
             if dt['status'] != 'success':
-                return DEFAULT_SRC
+                return DEFAULT_SRC_FALLBACK
             country = dt['data']['country_name']
 
-            r = requests.get("https://raw.githubusercontent.com/samayo/country-json/master/src/country-by-currency-code.json")
-            if not r.ok: return DEFAULT_SRC
-            data = r.json()
+            fname = os.path.join(
+                os.path.dirname(os.path.abspath(__file__)),
+                'data', 'country-by-currency-code.json')
+            with open(fname, 'r') as f:
+                data = json.load(f)
             country2curr = {}
             for dt in data:
                 country2curr[dt['country']] = dt['currency_code']
 
             return country2curr.get(country, DEFAULT_SRC)
-        except:
-            return DEFAULT_SRC
+        except Exception as e:
+            return DEFAULT_SRC_FALLBACK
 
     def fmt_rate(self, rate):
         float_rate = float(rate.replace(',', ''))
