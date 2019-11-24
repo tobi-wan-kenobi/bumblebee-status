@@ -8,7 +8,7 @@ Requires the following python packages:
 
 Parameters:
     * currency.interval: Interval in minutes between updates, default is 1.
-    * currency.source: Source currency (defaults to "GBP"). Set to "auto" infer the local one.
+    * currency.source: Source currency (ex. "GBP", "EUR"). Defaults to "auto", which infers the local one from IP address.
     * currency.destination: Comma-separated list of destination currencies (defaults to "USD,EUR")
     * currency.sourceformat: String format for source formatting; Defaults to "{}: {}" and has two variables,
                              the base symbol and the rate list
