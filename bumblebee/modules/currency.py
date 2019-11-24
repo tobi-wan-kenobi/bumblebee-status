@@ -36,6 +36,26 @@ DEFAULT_SRC_FALLBACK = "GBP"
 
 API_URL = "https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}"
 
+
+def get_local_country():
+    r = requests.get('https://ipvigilante.com/')
+    location = r.json()
+    return location['data']['country_name']
+
+
+def load_country_to_currency():
+    fname = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)),
+        'data', 'country-by-currency-code.json')
+    with open(fname, 'r') as f:
+        data = json.load(f)
+    country2curr = {}
+    for dt in data:
+        country2curr[dt['country']] = dt['currency_code']
+
+    return country2curr
+
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
@@ -84,25 +104,10 @@ class Module(bumblebee.engine.Module):
     def find_local_currency(self):
         '''Use geolocation lookup to find local currency'''
         try:
-            r = requests.get('https://ipvigilante.com/')
-            if not r.ok:
-                return DEFAULT_SRC_FALLBACK
-            dt = r.json()
-            if dt['status'] != 'success':
-                return DEFAULT_SRC_FALLBACK
-            country = dt['data']['country_name']
-
-            fname = os.path.join(
-                os.path.dirname(os.path.abspath(__file__)),
-                'data', 'country-by-currency-code.json')
-            with open(fname, 'r') as f:
-                data = json.load(f)
-            country2curr = {}
-            for dt in data:
-                country2curr[dt['country']] = dt['currency_code']
-
-            return country2curr.get(country, DEFAULT_SRC)
-        except Exception as e:
+            country = get_local_country()
+            currency_map = load_country_to_currency()
+            return currency_map.get(country, DEFAULT_SRC_FALLBACK)
+        except:
             return DEFAULT_SRC_FALLBACK
 
     def fmt_rate(self, rate):
