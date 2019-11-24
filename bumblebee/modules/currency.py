@@ -35,10 +35,11 @@ DEFAULT_SRC = "auto"
 DEFAULT_SRC_FALLBACK = "GBP"
 
 API_URL = "https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}"
+LOCATION_URL = "https://ipvigilante.com/"
 
 
 def get_local_country():
-    r = requests.get('https://ipvigilante.com/')
+    r = requests.get(LOCATION_URL)
     location = r.json()
     return location['data']['country_name']
 
