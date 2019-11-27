@@ -278,6 +278,10 @@ One Dark Powerline (`-t onedark-powerline`) (contributed by [dillasyx](https://g
 
 ![One Dark Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/onedark-powerline.png)
 
+Dracula Powerline (-t dracula-powerline) (contributed by [xsteadfastx](https://github.com/xsteadfastx)):
+
+![Dracula Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/dracula-powerline.png)
+
 Default (nothing or `-t default`):
 
 ![Default](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/default.png)
