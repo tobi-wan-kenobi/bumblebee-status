@@ -7,6 +7,7 @@ Requires the following python module:
 
 Parameters:
     * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth,br")
+    * nic.include: Comma-separated list of interfaces to include
     * nic.states: Comma-separated list of states to show (prefix with "^" to invert - i.e. ^down -> show all devices that are not in state down)
     * nic.format: Format string (defaults to "{intf} {state} {ip} {ssid}")
 """
@@ -24,6 +25,7 @@ class Module(bumblebee.engine.Module):
         widgets = []
         super(Module, self).__init__(engine, config, widgets)
         self._exclude = tuple(filter(len, self.parameter("exclude", "lo,virbr,docker,vboxnet,veth,br").split(",")))
+        self._include = self.parameter("include", "").split(",")
 
         self._states = {}
         self._states["include"] = []
@@ -77,6 +79,7 @@ class Module(bumblebee.engine.Module):
 
     def _update_widgets(self, widgets):
         interfaces = [i for i in netifaces.interfaces() if not i.startswith(self._exclude)]
+        interfaces.extend([i for i in netifaces.interfaces() if i in self._include])
 
         for widget in widgets:
             widget.set("visited", False)
