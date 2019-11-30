@@ -11,7 +11,7 @@ Parameters:
     * sensors.match: (fallback) Line to match against output of 'sensors -u' (default: temp1_input)
     * sensors.match_pattern: (fallback) Line to match against before temperature is read (no default)
     * sensors.match_number: (fallback) which of the matches you want (default -1: last match).
-￼
+    * sensors.show_freq: whether to show CPU frequency. (default: true)
 """
 
 import re
@@ -35,6 +35,7 @@ class Module(bumblebee.engine.Module):
         self._match_pattern = self.parameter("match_pattern", None)
         self._pattern = re.compile(r"^\s*{}:\s*([\d.]+)$".format(self.parameter("match", "temp1_input")), re.MULTILINE)
         self._json = bumblebee.util.asbool(self.parameter("json", "false"))
+        self._freq = bumblebee.util.asbool(self.parameter("show_freq", "true"))
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd="xsensors")
         self.determine_method()
 
@@ -115,10 +116,13 @@ class Module(bumblebee.engine.Module):
             return "{:0.01f} GHz".format(float(mhz)/1000.0)
 
     def temperature(self, _):
-        return u"{}°c @ {}".format(self._temperature, self._mhz)
-
+        if self._freq:
+            return u"{}°c @ {}".format(self._temperature, self._mhz)
+        else:
+            return u"{}°c".format(self._temperature)
     def update(self, widgets):
         self._temperature = self.get_temp()
-        self._mhz = self.get_mhz()
+        if self._freq:
+            self._mhz = self.get_mhz()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
