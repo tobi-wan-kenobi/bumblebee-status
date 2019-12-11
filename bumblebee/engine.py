@@ -118,8 +118,10 @@ class Module(object):
 
     def parameter(self, name, default=None):
         """Return the config parameter 'name' for this module"""
+        module_name = "{}.{}".format(self.__module__.split(".")[-1], name)
         name = "{}.{}".format(self.name, name)
-        value = self._config["config"].get(name, default)
+        value = self._config["config"].get(module_name, default)
+        value = self._config["config"].get(name, value)
         if value == default:
             try:
                 value = self._configFile.get("module-parameters", name)
