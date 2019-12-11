@@ -226,7 +226,7 @@ class Theme(object):
         if not self._widget:
             self._widget = widget
 
-        if self._widget.get("theme.exclude", "") == name:
+        if name in bumblebee.util.aslist(self._widget.get("theme.exclude", "")):
             return None
 
         if self._widget != widget:
