@@ -9,6 +9,7 @@ and python module:
 
 Parameters:
     * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
+    * layout-xkb.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
 """
 
 import bumblebee.input
@@ -33,6 +34,7 @@ class Module(bumblebee.engine.Module):
             cmd=self._next_keymap)
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
             cmd=self._prev_keymap)
+        self._show_variant = bumblebee.util.asbool(self.parameter("show_variant", "true"))
 
     def _next_keymap(self, event):
         self._set_keymap(1)
@@ -54,7 +56,9 @@ class Module(bumblebee.engine.Module):
             xkb = XKeyboard()
             log.debug("group num: {}".format(xkb.group_num))
             name = xkb.group_name if bumblebee.util.asbool(self.parameter("showname")) else xkb.group_symbol
-            return "{} ({})".format(name, xkb.group_variant) if xkb.group_variant else name
+            if self._show_variant:
+                return "{} ({})".format(name, xkb.group_variant) if xkb.group_variant else name
+            return name
         except Exception:
             return "n/a"
 
