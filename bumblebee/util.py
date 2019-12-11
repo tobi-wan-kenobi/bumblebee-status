@@ -24,7 +24,7 @@ def aslist(val):
         return []
     if isinstance(val, list):
         return val
-    return str(val).replace(' ', '').strip(',')
+    return str(val).replace(' ', '').split(',')
 
 def execute(cmd, wait=True):
     logging.info("executing command '{}'".format(cmd))
