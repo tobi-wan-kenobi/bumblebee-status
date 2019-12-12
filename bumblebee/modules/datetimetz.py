@@ -17,6 +17,7 @@ Parameters:
 from __future__ import absolute_import
 import datetime
 import locale
+import logging
 try:
     import pytz
     import tzlocal
@@ -41,10 +42,15 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self.next_tz)
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.prev_tz)
         self._fmt = self.parameter("format", default_format(self.name))
+        default_timezone = ""
         try:
-            self._timezones = self.parameter("timezone", tzlocal.get_localzone().zone).split(",")
+            default_timezone = tzlocal.get_localzone().zone
+        except Exception as e:
+            logging.error('unable to get default timezone: {}'.format(str(e)))
+        try:
+            self._timezones = self.parameter("timezone", default_timezone).split(",")
         except:
-            self._timezones = ""
+            self._timezones = [default_timezone]
         self._current_tz = 0
 
         l = locale.getdefaultlocale()
@@ -63,7 +69,8 @@ class Module(bumblebee.engine.Module):
                 retval = datetime.datetime.now(tz=tzlocal.get_localzone()).astimezone(tz).strftime(self._fmt)
             except pytz.exceptions.UnknownTimeZoneError:
                 retval = "[Unknown timezone: {}]".format(self._timezones[self._current_tz].strip())
-        except:
+        except Exception as e:
+            logging.error('unable to get time: {}'.format(str(e)))
             retval = "[n/a]"
 
         enc = locale.getpreferredencoding()
