@@ -4,6 +4,7 @@ right click toggles bluetooth. Needs dbus-send to toggle bluetooth state.
 Parameters:
     * bluetooth.device : the device to read state from (default is hci0)
     * bluetooth.manager : application to launch on click (blueman-manager)
+    * bluetooth.dbus_destination : dbus destination (defaults to org.blueman.Mechanism)
 
 """
 
@@ -95,9 +96,11 @@ class Module(bumblebee.engine.Module):
         else:
             state = "true"
 
-        cmd = "dbus-send --system --print-reply --dest=org.blueman.Mechanism"\
+        dst = self.parameter("dbus_destination", "org.blueman.Mechanism")
+
+        cmd = "dbus-send --system --print-reply --dest={}"\
               " / org.blueman.Mechanism.SetRfkillState"\
-              " boolean:{}".format(state)
+              " boolean:{}".format(dst, state)
 
         bumblebee.util.execute(cmd)
 
