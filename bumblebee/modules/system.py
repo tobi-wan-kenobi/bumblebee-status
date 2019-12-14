@@ -10,8 +10,15 @@ the system.
 	
 Per default a confirmation dialog is shown before the actual action is performed.
 	
-Paramters:
+Parameters:
 	* system.confirm: show confirmation dialog before performing any action (default: true) 
+        * system.reboot: specify a reboot command (defaults to 'reboot')
+        * system.shutdown: specify a shutdown command (defaults to 'shutdown -h now')
+        * system.logout: specify a logout command (defaults to 'i3exit logout')
+        * system.switch_user: specify a command for switching the user (defaults to 'i3exit switch_user')
+        * system.lock: specify a command for locking the screen (defaults to 'i3exit lock')
+        * system.suspend: specify a command for suspending (defaults to 'i3exit suspend')
+        * system.hibernate: specify a command for hibernating (defaults to 'i3exit hibernate')
 """
 
 import logging
@@ -68,14 +75,22 @@ class Module(bumblebee.engine.Module):
 
     def popup(self, widget):
         menu = bumblebee.popup_v2.PopupMenu()
-        menu.add_menuitem("shutdown", callback=functools.partial(self._on_command, "Shutdown", "Shutdown?", "shutdown -h now"))
-        menu.add_menuitem("reboot", callback=functools.partial(self._on_command, "Reboot", "Reboot?", "reboot"))
+        reboot_cmd = self.parameter("reboot", "reboot")
+        shutdown_cmd = self.parameter("shutdown", "shutdown -h now")
+        logout_cmd = self.parameter("logout", "i3exit logout")
+        switch_user_cmd = self.parameter("switch_user", "i3exit switch_user")
+        lock_cmd = self.parameter("lock", "i3exit lock")
+        suspend_cmd = self.parameter("suspend", "i3exit suspend")
+        hibernate_cmd = self.parameter("hibernate", "i3exit hibernate")
+
+        menu.add_menuitem("shutdown", callback=functools.partial(self._on_command, "Shutdown", "Shutdown?", shutdown_cmd))
+        menu.add_menuitem("reboot", callback=functools.partial(self._on_command, "Reboot", "Reboot?", reboot_cmd))
         menu.add_menuitem("log out", callback=functools.partial(self._on_command, "Log out", "Log out?",  "i3exit logout"))
         # don't ask for these
-        menu.add_menuitem("switch user", callback=functools.partial(bumblebee.util.execute, "i3exit switch_user"))
-        menu.add_menuitem("lock", callback=functools.partial(bumblebee.util.execute, "i3exit lock"))
-        menu.add_menuitem("suspend", callback=functools.partial(bumblebee.util.execute, "i3exit suspend"))
-        menu.add_menuitem("hibernate", callback=functools.partial(bumblebee.util.execute, "i3exit hibernate"))
+        menu.add_menuitem("switch user", callback=functools.partial(bumblebee.util.execute, switch_user_cmd))
+        menu.add_menuitem("lock", callback=functools.partial(bumblebee.util.execute, lock_cmd))
+        menu.add_menuitem("suspend", callback=functools.partial(bumblebee.util.execute, suspend_cmd))
+        menu.add_menuitem("hibernate", callback=functools.partial(bumblebee.util.execute, hibernate_cmd))
 
         menu.show(widget)
 
