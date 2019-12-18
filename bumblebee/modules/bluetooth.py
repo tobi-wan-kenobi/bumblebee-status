@@ -5,6 +5,7 @@ Parameters:
     * bluetooth.device : the device to read state from (default is hci0)
     * bluetooth.manager : application to launch on click (blueman-manager)
     * bluetooth.dbus_destination : dbus destination (defaults to org.blueman.Mechanism)
+    * bluetooth.dbus_destination_path : dbus destination path (defaults to /)
 
 """
 
@@ -97,10 +98,11 @@ class Module(bumblebee.engine.Module):
             state = "true"
 
         dst = self.parameter("dbus_destination", "org.blueman.Mechanism")
+        dst_path = self.parameter("dbus_destination_path", "/")
 
         cmd = "dbus-send --system --print-reply --dest={}"\
-              " / org.blueman.Mechanism.SetRfkillState"\
-              " boolean:{}".format(dst, state)
+              " {} org.blueman.Mechanism.SetRfkillState"\
+              " boolean:{}".format(dst, dst_path, state)
 
         bumblebee.util.execute(cmd)
 
