@@ -6,6 +6,7 @@ Parameters:
     * bluetooth.manager : application to launch on click (blueman-manager)
     * bluetooth.dbus_destination : dbus destination (defaults to org.blueman.Mechanism)
     * bluetooth.dbus_destination_path : dbus destination path (defaults to /)
+    * bluetooth.right_click_popup : use popup menu when right-clicked (defaults to True)
 
 """
 
@@ -36,9 +37,19 @@ class Module(bumblebee.engine.Module):
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                        cmd=self.manager)
-        engine.input.register_callback(self,
-                                       button=bumblebee.input.RIGHT_MOUSE,
-                                       cmd=self.popup)
+
+        # determine whether to use pop-up menu or simply toggle the device on/off
+        right_click_popup = bumblebee.util.asbool(
+            self.parameter("right_click_popup", True))
+
+        if right_click_popup:
+            engine.input.register_callback(self,
+                                           button=bumblebee.input.RIGHT_MOUSE,
+                                           cmd=self.popup)
+        else:
+            engine.input.register_callback(self,
+                                           button=bumblebee.input.RIGHT_MOUSE,
+                                           cmd=self._toggle)
 
     def status(self, widget):
         """Get status."""
@@ -86,11 +97,10 @@ class Module(bumblebee.engine.Module):
         # show menu and get return code
         ret = menu.show(widget)
         if ret == 0:
-            logging.debug('bt: toggling bluetooth')
             # first (and only) item selected.
             self._toggle()
 
-    def _toggle(self):
+    def _toggle(self, widget=None):
         """Toggle bluetooth state."""
         if self._status == "On":
             state = "false"
@@ -104,6 +114,7 @@ class Module(bumblebee.engine.Module):
               " {} org.blueman.Mechanism.SetRfkillState"\
               " boolean:{}".format(dst, dst_path, state)
 
+        logging.debug('bt: toggling bluetooth')
         bumblebee.util.execute(cmd)
 
     def state(self, widget):
