@@ -3,9 +3,9 @@
 """Displays battery status, remaining percentage and charging information.
 
 Parameters:
-    * battery.warning      : Warning threshold in % of remaining charge (defaults to 20)
-    * battery.critical     : Critical threshold in % of remaining charge (defaults to 10)
-    * battery.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
+    * battery-upower.warning      : Warning threshold in % of remaining charge (defaults to 20)
+    * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)
+    * battery-upower.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
 """
 
 import dbus
@@ -204,9 +204,8 @@ class Module(bumblebee.engine.Module):
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                        cmd="gnome-power-statistics")
 
-    def remaining(self):
-        estimate = int(self.power.get_full_device_information(self.device)['TimeToEmpty'])
-        return bumblebee.util.durationfmt(estimate, shorten=True, suffix=True)  # estimate is in minutes
+        self._showremaining = bumblebee.util.asbool(
+            self.parameter("showremaining", True))
 
     def capacity(self, widget):
         widget.set("capacity", -1)
@@ -218,12 +217,24 @@ class Module(bumblebee.engine.Module):
             widget.set("capacity", capacity)
             output = "{}%".format(capacity)
             widget.set("theme.minwidth", "100%")
-
-            if bumblebee.util.asbool(self.parameter("showremaining", True)) \
-                    and self.power.get_state(self.device) == "Discharging":
-                output = "{} {}".format(output, self.remaining())
         except Exception as e:
             logging.exception("unable to get battery capacity: {}".format(str(e)))
+
+        if self._showremaining:
+            try:
+                p = self.power # an alias to make each line of code shorter
+                proxy = p.bus.get_object(p.UPOWER_NAME, self.device)
+                interface = dbus.Interface(proxy, p.DBUS_PROPERTIES)
+                state = int(interface.Get(p.UPOWER_NAME+".Device", "State"))
+                # state: 1 => charging, 2 => discharging, other => don't care
+                remain = int(interface.Get(
+                    p.UPOWER_NAME+".Device", ["TimeToFull", "TimeToEmpty"][state-1]))
+                remain = bumblebee.util.durationfmt(remain, shorten=True, suffix=True)
+                output = "{} {}".format(output, remain)
+            except IndexError:
+                pass
+            except Exception as e:
+                logging.exception("unable to get battery remaining time: {}".format(str(e)))
 
         return output
 
