@@ -1,4 +1,5 @@
-"""Check updates to Arch Linux."""
+"""Check updates to Arch Linux.
+"""
 
 
 import subprocess
