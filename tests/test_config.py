@@ -67,7 +67,7 @@ class TestConfig(unittest.TestCase):
             cfg = Config(["-l", "modules"])
         result = self.stdout.getvalue()
         for module in all_modules():
-            self.assertTrue(module["name"] in result)
+            self.assertTrue(module["name"] in result, "module {} missing in result".format(module["name"]))
 
     def test_invalid_list(self):
         with self.assertRaises(SystemExit):
