@@ -62,13 +62,6 @@ class TestConfig(unittest.TestCase):
         for theme in themes():
             self.assertTrue(theme in result)
 
-    def test_list_modules(self):
-        with self.assertRaises(SystemExit):
-            cfg = Config(["-l", "modules"])
-        result = self.stdout.getvalue()
-        for module in all_modules():
-            self.assertTrue(module["name"] in result, "module {} missing in result".format(module["name"]))
-
     def test_invalid_list(self):
         with self.assertRaises(SystemExit):
             cfg = Config(["-l", "invalid"])
