@@ -164,6 +164,7 @@ class I3BarOutput(object):
             "align": self._theme.align(widget),
             "instance": widget.id,
             "name": module.id,
+            "markup": self._config.get("output.markup", "none"),
         })
 
     def begin(self):
