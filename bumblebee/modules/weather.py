@@ -86,7 +86,7 @@ class Module(bumblebee.engine.Module):
         if self._showminmax:
             self._showcity=False
             return self.city() + self.temperature() + "  Hi:" + self.tempmax() + "  Lo:" + self.tempmin()
-        elif self._city:
+        elif self._showcity:
             return self.city() + self.temperature()
         else:
             return self.temperature()
