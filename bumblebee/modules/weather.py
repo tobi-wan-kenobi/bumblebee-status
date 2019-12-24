@@ -12,6 +12,7 @@ Parameters:
                         Locations should be city names or city ids.
     * weather.unit: metric (default), kelvin, imperial
     * weather.showcity: If set to true, show location information, otherwise hide it (defaults to true)
+    * weather.showminmax: If set to true, show the minimum and maximum temperature, otherwise hide it (defaults to false)
     * weather.apikey: API key from http://api.openweathermap.org
 """
 
@@ -40,6 +41,7 @@ class Module(bumblebee.engine.Module):
             self._location = [self._location]
         self._index = 0
         self._showcity = bumblebee.util.asbool(self.parameter("showcity", True))
+        self._showminmax = bumblebee.util.asbool(self.parameter("showminmax", False))
         self._unit = self.parameter("unit", "metric")
         self._valid = False
         self.interval_factor(60)
@@ -68,6 +70,12 @@ class Module(bumblebee.engine.Module):
     def temperature(self):
         return u"{}°{}".format(self._temperature, self._unit_suffix())
 
+    def tempmin(self):
+        return u"{}°{}".format(self._tempmin, self._unit_suffix())
+
+    def tempmax(self):
+        return u"{}°{}".format(self._tempmax, self._unit_suffix())
+
     def city(self):
         city = re.sub('[_-]', ' ', self._city)
         return u"{} ".format(city)
@@ -75,7 +83,10 @@ class Module(bumblebee.engine.Module):
     def output(self, widget):
         if not self._valid:
             return u"?"
-        if self._showcity:
+        if self._showminmax:
+            self._showcity=False
+            return self.city() + self.temperature() + "  Hi:" + self.tempmax() + "  Lo:" + self.tempmin()
+        elif self._city:
             return self.city() + self.temperature()
         else:
             return self.temperature()
@@ -117,6 +128,8 @@ class Module(bumblebee.engine.Module):
             weather = requests.get(weather_url).json()
             self._city = weather['name']
             self._temperature = int(weather['main']['temp'])
+            self._tempmin = int(weather['main']['temp_min'])
+            self._tempmax = int(weather['main']['temp_max'])
             self._weather = weather['weather'][0]['main'].lower()
             self._valid = True
         except Exception:
