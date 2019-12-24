@@ -13,6 +13,7 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+import glob
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -20,7 +21,7 @@ class Module(bumblebee.engine.Module):
                                      bumblebee.output.Widget(full_text=self.brightness))
         self._brightness = 0
 
-        self._device_path = self.parameter("device_path", "/sys/class/backlight/intel_backlight")
+        self._device_path = self.find_device(self.parameter("device_path", "/sys/class/backlight/intel_backlight"))
         step = self.parameter("step", 2)
 
         if bumblebee.util.which("light"):
@@ -32,6 +33,9 @@ class Module(bumblebee.engine.Module):
         else:
             self.register_cmd(engine, "xbacklight +{}%".format(step),
                               "xbacklight -{}%".format(step))
+
+    def find_device(self, device_path):
+        return glob.glob(device_path)[0]
 
     def register_cmd(self, engine, upCmd, downCmd):
         engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP, cmd=upCmd)
