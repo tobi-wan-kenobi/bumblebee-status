@@ -35,7 +35,10 @@ class Module(bumblebee.engine.Module):
                               "xbacklight -{}%".format(step))
 
     def find_device(self, device_path):
-        return glob.glob(device_path)[0]
+        res = glob.glob(device_path)
+        if len(res) == 0:
+            return device_path
+        return res[0]
 
     def register_cmd(self, engine, upCmd, downCmd):
         engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP, cmd=upCmd)
