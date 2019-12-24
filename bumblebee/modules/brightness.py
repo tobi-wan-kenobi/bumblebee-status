@@ -4,7 +4,7 @@
 
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
-    * brightness.device_path: The device path (defaults to /sys/class/backlight/intel_backlight)
+    * brightness.device_path: The device path (defaults to /sys/class/backlight/intel_backlight), can contain wildcards (in this case, the first matching path will be used)
 
 """
 
