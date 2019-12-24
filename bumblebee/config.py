@@ -51,7 +51,7 @@ def create_parser():
     parser.add_argument("-m", "--modules", nargs="+", action='append', default=[],
         help=MODULE_HELP)
     parser.add_argument("-t", "--theme", default="default", help=THEME_HELP)
-    parser.add_argument("--markup", default="none", help="Specify the markup type of the output")
+    parser.add_argument("--markup", default="none", help="Specify the markup type of the output (e.g. 'pango')")
     parser.add_argument("-p", "--parameters", nargs="+", action='append', default=[],
         help=PARAMETER_HELP)
     parser.add_argument("-l", "--list", choices=["modules", "themes"], action=print_usage,
