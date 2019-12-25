@@ -5,9 +5,12 @@
 import sys
 import json
 import uuid
+import logging
 
 import bumblebee.store
 import bumblebee.util
+
+log = logging.getLogger(__name__)
 
 def scrollable(func):
     def wrapper(module, widget):
@@ -178,6 +181,9 @@ class I3BarOutput(object):
         if self._config and self._config.reverse():
             widgets = list(reversed(widgets))
         sys.stdout.write(json.dumps(widgets))
+        if len(self._config.unused_keys()) > 0:
+            for key in self._config.unused_keys():
+                log.warning("unused parameter {} - please check the documentation of the affected module to ensure the parameter exists".format(key))
 
     def end(self):
         """Finalizes output"""
