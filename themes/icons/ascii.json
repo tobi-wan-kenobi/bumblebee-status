@@ -349,5 +349,8 @@
       "off": { "prefix": "pom" },
       "paused": { "prefix": "||" },
       "on": { "prefix": " >" }
+  },
+  "hddtemp": {
+        "prefix": "hddtemp"
   }
 }

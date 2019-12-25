@@ -251,5 +251,6 @@
       "paused": { "prefix": "" },
       "work": { "prefix": "" },
       "break": { "prefix": "" }
-  }
+  },
+  "hddtemp": { "prefix": "" }
 }
