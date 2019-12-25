@@ -53,9 +53,9 @@ class Module(bumblebee.engine.Module):
         self._channel = "sink" if self.name == "pasink" else "source"
 
         self._patterns = [
-            {"expr": "name:", "callback": (lambda line: False)},
-            {"expr": "muted:", "callback": (lambda line: self.mute(False if " no" in line.lower() else True))},
-            {"expr": "volume:", "callback": self.getvolume},
+            {"expr": "Name:", "callback": (lambda line: False)},
+            {"expr": "Mute:", "callback": (lambda line: self.mute(False if " no" in line.lower() else True))},
+            {"expr": "Volume:", "callback": self.getvolume},
         ]
 
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd="pavucontrol")
@@ -111,8 +111,8 @@ class Module(bumblebee.engine.Module):
         return True
 
     def _default_device(self):
-        output = bumblebee.util.execute("pacmd stat")
-        pattern = "Default sink name: " if self.name == "pasink" else "Default source name: "
+        output = bumblebee.util.execute("pactl info")
+        pattern = "Default {}: ".format("Sink" if self.name == "pasink" else "Source")
         for line in output.split("\n"):
             if line.startswith(pattern):
                 return line.replace(pattern, "")
@@ -134,11 +134,11 @@ class Module(bumblebee.engine.Module):
             channel = "sinks" if self.name == "pasink" else "sources"
             device = self._default_device()
 
-            result = bumblebee.util.execute("pacmd list-{}".format(channel))
+            result = bumblebee.util.execute("pactl list {}".format(channel))
             found = False
 
             for line in result.split("\n"):
-                if "<"+device+">" in line:
+                if "Name: {}".format(device) in line:
                     found = True
                     continue
                 if found is False:
