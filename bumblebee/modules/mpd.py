@@ -79,7 +79,27 @@ class Module(bumblebee.engine.Module):
     def _load_song(self):
         info = ""
         try:
-            info = bumblebee.util.execute('mpc -f "tag artist %artist%\ntag title %title%"' + self._hostcmd)
+            tags = {'name',
+                    'artist',
+                    'album',
+                    'albumartist',
+                    'comment',
+                    'composer',
+                    'date',
+                    'originaldate',
+                    'disc',
+                    'genre',
+                    'performer',
+                    'title',
+                    'track',
+                    'time',
+                    'file',
+                    'id',
+                    'prio',
+                    'mtime',
+                    'mdate'}
+            joinedtags = "\n".join(["tag {0} %{0}%".format(tag) for tag in tags])
+            info = bumblebee.util.execute('mpc -f ' + '"' + joinedtags + '"' + self._hostcmd)
         except RuntimeError:
             pass
         self._tags = defaultdict(lambda: '')
