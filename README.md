@@ -94,6 +94,12 @@ $ ./bumblebee-status -l themes
 $ ./bumblebee-status -l modules
 ```
 
+You can also narrow you modules list using the filter at the end:
+```
+$ cd bumblebee-status
+$ ./bumblebee-status -l modules xkcd zpool
+```
+
 Any parameter you can specify with `-p <name>=<value>`, you can alternatively specify in `~/.bumblebee-status.conf` or `~/.config/bumblebee-status.conf`. This parameters act as a **fallback**, so values specified with `-p` have priority.
 
 Parameters can also be used to override theme settings, such as:
