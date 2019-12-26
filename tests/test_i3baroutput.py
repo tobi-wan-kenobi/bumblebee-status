@@ -26,7 +26,12 @@ class TestI3BarOutput(unittest.TestCase):
         self.theme.bg.return_value = "#ababab"
         self.theme.align.return_value = None
         self.theme.minwidth.return_value = ""
-        self.output = I3BarOutput(self.theme)
+
+        self.config = mock.Mock()
+        self.config.markup.return_value = ""
+        self.config.unused_keys.return_value = []
+
+        self.output = I3BarOutput(self.theme, self.config)
 
         self._stdout = mock.patch("bumblebee.output.sys.stdout", new_callable=StringIO)
         self.stdout = self._stdout.start()

@@ -15,6 +15,7 @@ except NameError:
 
 import tests.mocks as mocks
 
+import bumblebee.util
 from bumblebee.config import Config
 from bumblebee.input import WHEEL_UP, WHEEL_DOWN
 from bumblebee.modules.brightness import Module
@@ -22,6 +23,21 @@ from bumblebee.modules.brightness import Module
 class TestBrightnessModule(unittest.TestCase):
     def setUp(self):
         mocks.setup_test(self, Module)
+        self.tool = ""
+        self.up = ""
+        self.down = ""
+        if bumblebee.util.which("light"):
+            self.tool = "light"
+            self.up = "-A {}%"
+            self.down = "-U {}%"
+        elif bumblebee.util.which("brightnessctl"):
+            self.tool = "brightnessctl"
+            self.up = "s {}%+"
+            self.down = "s {}%-"
+        else:
+            self.tool = "xbacklight"
+            self.up = "+{}%"
+            self.down = "-{}%"
 
     def tearDown(self):
         mocks.teardown_test(self)
@@ -32,27 +48,17 @@ class TestBrightnessModule(unittest.TestCase):
 
     def test_wheel_up(self):
         mocks.mouseEvent(stdin=self.stdin, button=WHEEL_UP, inp=self.input, module=self.module)
-        self.popen.assert_call("xbacklight +2%")
+        self.popen.assert_call("{} {}".format(self.tool, self.up.format(2)))
 
     def test_wheel_down(self):
         mocks.mouseEvent(stdin=self.stdin, button=WHEEL_DOWN, inp=self.input, module=self.module)
-        self.popen.assert_call("xbacklight -2%")
+        self.popen.assert_call("{} {}".format(self.tool, self.down.format(2)))
 
     def test_custom_step(self):
         self.config.set("brightness.step", "10")
         module = Module(engine=self.engine, config={"config": self.config})
         mocks.mouseEvent(stdin=self.stdin, button=WHEEL_DOWN, inp=self.input, module=module)
-        self.popen.assert_call("xbacklight -10%")
-
-#    @mock.patch('bumblebee.modules.brightness.open', create=True)
-#    def test_update(self, mock_open):
-#        mock_open.side_effect = [
-#                mock.mock_open(read_data="20").return_value,
-#                mock.mock_open(read_data="100").return_value
-#                ]
-#        self.module.update_all()
-#        self.assertEquals(self.module.brightness(self.anyWidget), "020%")
-#        self.assertEquals(len(self.module.brightness(self.anyWidget)), len("100%"))
+        self.popen.assert_call("{} {}".format(self.tool, self.down.format(10)))
 
     @mock.patch('bumblebee.modules.brightness.open', create=True)
     def test_error(self,mock_open):
