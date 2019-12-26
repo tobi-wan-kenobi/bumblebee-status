@@ -24,26 +24,29 @@ class print_usage(argparse.Action):
         self._indent = " "*2
 
     def __call__(self, parser, namespace, value, option_string=None):
-        if value == "modules":
-            self.print_modules()
-        elif value == "themes":
+        if value[0] == "modules":
+            self.print_modules(value[1:])
+        elif value[0] == "themes":
             self.print_themes()
+        else:
+            print("Listing '" + value[0] + "' is not supported! Only 'modules' or 'themes'")
         sys.exit(0)
 
     def print_themes(self):
         print(", ".join(bumblebee.theme.themes()))
 
-    def print_modules(self):
+    def print_modules(self, modules):
         for m in bumblebee.engine.all_modules():
-            try:
-                mod = importlib.import_module("bumblebee.modules.{}".format(m["name"]))
-                print(textwrap.fill("{}:".format(m["name"]), 80,
-                        initial_indent=self._indent*2, subsequent_indent=self._indent*2))
-                for line in mod.__doc__.split("\n"):
-                    print(textwrap.fill(line, 80,
-                        initial_indent=self._indent*3, subsequent_indent=self._indent*6))
-            except:
-                pass
+            if not modules or m["name"] in modules:
+                try:
+                    mod = importlib.import_module("bumblebee.modules.{}".format(m["name"]))
+                    print(textwrap.fill("{}:".format(m["name"]), 80,
+                            initial_indent=self._indent*2, subsequent_indent=self._indent*2))
+                    for line in mod.__doc__.split("\n"):
+                        print(textwrap.fill(line, 80,
+                            initial_indent=self._indent*3, subsequent_indent=self._indent*6))
+                except:
+                    pass
 
 def create_parser():
     """Create the argument parser"""
@@ -54,7 +57,7 @@ def create_parser():
     parser.add_argument("--markup", default="none", help="Specify the markup type of the output (e.g. 'pango')")
     parser.add_argument("-p", "--parameters", nargs="+", action='append', default=[],
         help=PARAMETER_HELP)
-    parser.add_argument("-l", "--list", choices=["modules", "themes"], action=print_usage,
+    parser.add_argument("-l", "--list", nargs='+', action=print_usage,
         help=LIST_HELP)
     parser.add_argument("-d", "--debug", action="store_true",
         help=DEBUG_HELP)
