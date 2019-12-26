@@ -79,7 +79,7 @@ class Module(bumblebee.engine.Module):
     def _load_song(self):
         info = ""
         try:
-            tags = {'name',
+            tags = ['name',
                     'artist',
                     'album',
                     'albumartist',
@@ -97,7 +97,7 @@ class Module(bumblebee.engine.Module):
                     'id',
                     'prio',
                     'mtime',
-                    'mdate'}
+                    'mdate']
             joinedtags = "\n".join(["tag {0} %{0}%".format(tag) for tag in tags])
             info = bumblebee.util.execute('mpc -f ' + '"' + joinedtags + '"' + self._hostcmd)
         except RuntimeError:
