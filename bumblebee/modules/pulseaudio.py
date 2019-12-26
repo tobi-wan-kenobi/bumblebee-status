@@ -14,7 +14,6 @@ Requires the following executable:
     * pulseaudio
     * pactl
     * pavucontrol
-    * pacmd
 """
 
 import re
