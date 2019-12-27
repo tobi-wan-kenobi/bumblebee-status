@@ -7,7 +7,31 @@ Requires the following executable:
     * mpc
 
 Parameters:
-    * mpd.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
+    * mpd.format: Format string for the song information.
+      Supported tags (see `man mpc` for additional information)
+        * {name}
+        * {artist}
+        * {album}
+        * {albumartist}
+        * {comment}
+        * {composer}
+        * {date}
+        * {originaldate}
+        * {disc}
+        * {genre}
+        * {performer}
+        * {title}
+        * {track}
+        * {time}
+        * {file}
+        * {id}
+        * {prio}
+        * {mtime}
+        * {mdate}
+      Additional tags:
+        * {position} - position of currently playing song
+                       not to be confused with %position% mpc tag
+        * {duration} - duration of currently playing song
     * mpd.host: MPD host to connect to. (mpc behaviour by default)
 """
 
