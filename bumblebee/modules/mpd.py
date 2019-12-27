@@ -32,12 +32,17 @@ Parameters:
         * {position} - position of currently playing song
                        not to be confused with %position% mpc tag
         * {duration} - duration of currently playing song
+        * {file1} - song file name without path prefix
+                    if {file} = '/foo/bar.baz', then {file1} = 'bar.baz'
+        * {file2} - song file name without path prefix and extension suffix
+                    if {file} = '/foo/bar.baz', then {file2} = 'bar'
     * mpd.host: MPD host to connect to. (mpc behaviour by default)
 """
 
 from collections import defaultdict
 
 import string
+import os
 
 import bumblebee.util
 import bumblebee.input
@@ -156,5 +161,10 @@ class Module(bumblebee.engine.Module):
             if line.startswith("tag"):
                 key, value = line.split(" ", 2)[1:]
                 self._tags.update({key: value})
+                if key == "file":
+                    self._tags.update({"file1": os.path.basename(value)})
+                    self._tags.update(
+                        {"file2":
+                         os.path.splitext(os.path.basename(value))[0]})
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
