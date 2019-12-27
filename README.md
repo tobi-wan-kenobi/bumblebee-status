@@ -7,6 +7,8 @@
 
 **Many, many thanks to all contributors! As of now, 52 of the modules are from various contributors (!), and only 19 from myself.**
 
+![List of modules](./Modules.md)
+
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
 
 bumblebee-status is a modular, theme-able status line generator for the [i3 window manager](https://i3wm.org/).

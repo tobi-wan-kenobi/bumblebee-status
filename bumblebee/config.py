@@ -25,6 +25,7 @@ class print_usage(argparse.Action):
 
     def __call__(self, parser, namespace, value, option_string=None):
         if value == "modules":
+            self._args = namespace
             self.print_modules()
         elif value == "themes":
             self.print_themes()
@@ -34,14 +35,22 @@ class print_usage(argparse.Action):
         print(", ".join(bumblebee.theme.themes()))
 
     def print_modules(self):
+        if self._args.list_format == "markdown":
+            print("# Table of modules")
+            print("|Name |Description |")
+            print("|-----|------------|")
+
         for m in bumblebee.engine.all_modules():
             try:
                 mod = importlib.import_module("bumblebee.modules.{}".format(m["name"]))
-                print(textwrap.fill("{}:".format(m["name"]), 80,
-                        initial_indent=self._indent*2, subsequent_indent=self._indent*2))
-                for line in mod.__doc__.split("\n"):
-                    print(textwrap.fill(line, 80,
-                        initial_indent=self._indent*3, subsequent_indent=self._indent*6))
+                if self._args.list_format == "markdown":
+                    print("|{} |{} |".format(m["name"], mod.__doc__.replace("\n", "<br>")))
+                else:
+                    print(textwrap.fill("{}:".format(m["name"]), 80,
+                            initial_indent=self._indent*2, subsequent_indent=self._indent*2))
+                    for line in mod.__doc__.split("\n"):
+                        print(textwrap.fill(line, 80,
+                            initial_indent=self._indent*3, subsequent_indent=self._indent*6))
             except:
                 pass
 
@@ -56,6 +65,7 @@ def create_parser():
         help=PARAMETER_HELP)
     parser.add_argument("-l", "--list", choices=["modules", "themes"], action=print_usage,
         help=LIST_HELP)
+    parser.add_argument("--list-format", choices=["plain", "markdown"], help="output format of -l, *must* be specified before -l")
     parser.add_argument("-d", "--debug", action="store_true",
         help=DEBUG_HELP)
     parser.add_argument("-r", "--right-to-left", action="store_true",
