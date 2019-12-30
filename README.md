@@ -5,7 +5,7 @@
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 
-**Many, many thanks to all contributors! As of now, 52 of the modules are from various contributors (!), and only 19 from myself.**
+**Many, many thanks to all contributors! As of now, 53 of the modules are from various contributors (!), and only 19 from myself.**
 
 ![List of modules](./Modules.md)
 
