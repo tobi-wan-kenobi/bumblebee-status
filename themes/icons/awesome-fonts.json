@@ -20,6 +20,7 @@
   "load": { "prefix": "" },
   "layout": { "prefix": "" },
   "layout-xkb": { "prefix": "" },
+  "layout-xkbswitch": { "prefix": "" },
   "notmuch_count": {
     "empty": { "prefix": "\uf0e0" },
     "items": { "prefix": "\uf0e0" }
