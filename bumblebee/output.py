@@ -156,6 +156,11 @@ class I3BarOutput(object):
         if width:
             full_text = full_text.ljust(len(width) + len(prefix) + len(suffix))
 
+        markup = "none" if not self._config else self._config.markup()
+
+        if markup == "pango":
+            full_text = full_text.replace("&", "&amp;")
+
         self._widgets.append({
             u"full_text": full_text,
             "color": self._theme.fg(widget),
@@ -167,7 +172,7 @@ class I3BarOutput(object):
             "align": self._theme.align(widget),
             "instance": widget.id,
             "name": module.id,
-            "markup": "none" if not self._config else self._config.markup(),
+            "markup": markup,
         })
 
     def begin(self):
