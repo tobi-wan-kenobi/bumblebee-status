@@ -11,7 +11,7 @@ Few command examples:
 
 Parameters:
     * shell.command:  Command to execute
-                      Use single parentheses if evaluating anything inside
+                      Use single parentheses if evaluating anything inside (sh-style)
                       For example shell.command='echo $(date +"%H:%M:%S")'
                       But NOT shell.command="echo $(date +'%H:%M:%S')"
                       Second one will be evaluated only once at startup
@@ -23,6 +23,7 @@ Parameters:
                       (defaults to False)
 """
 
+import os
 import subprocess
 import threading
 
@@ -73,6 +74,7 @@ class Module(bumblebee.engine.Module):
     def _get_command_output_or_error(command):
         try:
             command_output = subprocess.check_output(command,
+                                                     executable=os.environ.get('SHELL'),
                                                      shell=True,
                                                      stderr=subprocess.STDOUT)
             return command_output.decode('utf-8').strip()
