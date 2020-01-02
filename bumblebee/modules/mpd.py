@@ -3,8 +3,6 @@
 
 """Displays information about the current song in mpd.
 
-If mpd is not running or mpc fails for some reason, it will show "n/a".
-
 Requires the following executable:
     * mpc
 
@@ -63,7 +61,6 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(name="mpd.repeat"),
         ]
         super(Module, self).__init__(engine, config, widgets)
-        self._mpd_running = False
 
         if not self.parameter("host"):
             self._hostcmd = ""
@@ -88,13 +85,10 @@ class Module(bumblebee.engine.Module):
         self._tags = defaultdict(lambda: '')
 
     def hidden(self):
-        if self._mpd_running == True and 
-        return self._mpd_running is True and self._status is None
+        return self._status is None
 
     @scrollable
     def description(self, widget):
-        if not self._mpd_running:
-            return "n/a"
         return string.Formatter().vformat(self._fmt, (), self._tags)
 
     def update(self, widgets):
@@ -113,7 +107,6 @@ class Module(bumblebee.engine.Module):
 
     def _load_song(self):
         info = ""
-        self._mpd_running = True
         try:
             tags = ['name',
                     'artist',
@@ -136,8 +129,8 @@ class Module(bumblebee.engine.Module):
                     'mdate']
             joinedtags = "\n".join(["tag {0} %{0}%".format(tag) for tag in tags])
             info = bumblebee.util.execute('mpc -f ' + '"' + joinedtags + '"' + self._hostcmd)
-        except Exception:
-            self._mpd_running = False
+        except RuntimeError:
+            pass
         self._tags = defaultdict(lambda: '')
         self._status = None
         for line in info.split("\n"):
