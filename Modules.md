@@ -2,7 +2,7 @@
 |Name |Description |
 |-----|------------|
 |amixer |get volume level<br><br> |
-|apt |Displays APT package update information (<toupgrade>/<security>)<br>Requires the following debian packages:<br>    * update-notifier-common<br><br> |
+|apt |Displays APT package update information (<toupgrade>/<toremove>)<br>Requires the following debian packages:<br>    * aptitude<br><br>    * python-parse<br><br> |
 |arch-update |Check updates to Arch Linux.<br> |
 |battery-upower |Displays battery status, remaining percentage and charging information.<br><br>Parameters:<br>    * battery-upower.warning      : Warning threshold in % of remaining charge (defaults to 20)<br>    * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)<br>    * battery-upower.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged<br> |
 |battery |Displays battery status, remaining percentage and charging information.<br><br>Parameters:<br>    * battery.device     : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)<br>    * battery.warning    : Warning threshold in % of remaining charge (defaults to 20)<br>    * battery.critical   : Critical threshold in % of remaining charge (defaults to 10)<br>    * battery.showdevice : If set to "true", add the device name to the widget (defaults to False)<br>    * battery.decorate   : If set to "false", hides additional icons (charging, etc.) (defaults to True)<br> |
