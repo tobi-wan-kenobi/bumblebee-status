@@ -37,6 +37,7 @@ Parameters:
         * {file2} - song file name without path prefix and extension suffix
                     if {file} = '/foo/bar.baz', then {file2} = 'bar'
     * mpd.host: MPD host to connect to. (mpc behaviour by default)
+    * mpd.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles mpd.prev, mpd.next, mpd.shuffle and mpd.repeat, and the main display with play/pause function mpd.main.
 """
 
 from collections import defaultdict
@@ -53,36 +54,46 @@ from bumblebee.output import scrollable
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
-        widgets = [
-            bumblebee.output.Widget(name="mpd.prev"),
-            bumblebee.output.Widget(name="mpd.main", full_text=self.description),
-            bumblebee.output.Widget(name="mpd.next"),
-            bumblebee.output.Widget(name="mpd.shuffle"),
-            bumblebee.output.Widget(name="mpd.repeat"),
-        ]
-        super(Module, self).__init__(engine, config, widgets)
+        super(Module, self).__init__(engine, config, [])
 
-        if not self.parameter("host"):
-            self._hostcmd = ""
-        else:
-            self._hostcmd = " -h " + self.parameter("host")
-
-        engine.input.register_callback(widgets[0], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc prev" + self._hostcmd)
-        engine.input.register_callback(widgets[1], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc toggle" + self._hostcmd)
-        engine.input.register_callback(widgets[2], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc next" + self._hostcmd)
-        engine.input.register_callback(widgets[3], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc random" + self._hostcmd)
-        engine.input.register_callback(widgets[4], button=bumblebee.input.LEFT_MOUSE,
-            cmd="mpc repeat" + self._hostcmd)
+        self._layout = self.parameter("layout", "mpd.prev mpd.main mpd.next mpd.shuffle mpd.repeat")
 
         self._fmt = self.parameter("format", "{artist} - {title} {position}/{duration}")
         self._status = None
         self._shuffle = False
         self._repeat = False
         self._tags = defaultdict(lambda: '')
+
+        if not self.parameter("host"):
+            self._hostcmd = ""
+        else:
+            self._hostcmd = " -h " + self.parameter("host")
+
+        # Create widgets
+        widget_list = []
+        widget_map = {}
+        for widget_name in self._layout.split():
+            widget = bumblebee.output.Widget(name=widget_name)
+            widget_list.append(widget)
+
+            if widget_name == "mpd.prev":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "mpc prev" + self._hostcmd}
+            elif widget_name == "mpd.main":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "mpc toggle" + self._hostcmd}
+                widget.full_text(self.description)
+            elif widget_name == "mpd.next":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "mpc next" + self._hostcmd}
+            elif widget_name == "mpd.shuffle":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "mpc random" + self._hostcmd}
+            elif widget_name == "mpd.repeat":
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "mpc repeat" + self._hostcmd}
+            else:
+                raise KeyError("The mpd module does not support a {widget_name!r} widget".format(widget_name=widget_name))
+        self.widgets(widget_list)
+
+        # Register input callbacks
+        for widget, callback_options in widget_map.items():
+            engine.input.register_callback(widget, **callback_options)
 
     def hidden(self):
         return self._status is None
