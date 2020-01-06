@@ -8,6 +8,13 @@
   "cpu": {
     "prefix": "cpu"
   },
+  "cpu2": {
+    "freq": { "prefix": "freq" },
+    "load": { "prefix": "load" },
+    "loads": { "prefix": "" },
+    "temp": { "prefix": "temp" },
+    "fan": { "prefix": "fan" }
+  },
   "disk": {
     "prefix": "hdd"
   },

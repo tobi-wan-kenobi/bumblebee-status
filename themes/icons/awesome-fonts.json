@@ -12,6 +12,13 @@
   "datetimetz": { "prefix": "" },
   "memory": { "prefix": "" },
   "cpu": { "prefix": "" },
+  "cpu2": {
+    "freq": { "prefix": "" },
+    "load": { "prefix": "" },
+    "loads": { "prefix": "" },
+    "temp": { "prefix": "" },
+    "fan": { "prefix": "" }
+  },
   "disk": { "prefix": "" },
   "dnf": { "prefix": "" },
   "apt": { "prefix": "" },
