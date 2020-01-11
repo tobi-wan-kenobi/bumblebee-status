@@ -9,6 +9,8 @@ Parameters:
     * pulseaudio.percent_change: How much to change volume by when scrolling on the module (default is 2%)
     * pulseaudio.limit: Upper limit for setting the volume (default is 0%, which means "no limit")
                         Note: If the left and right channels have different volumes, the limit might not be reached exactly.
+    * pulseaudio.showbars: 1 for showing volume bars, requires --markup=pango;
+                           0 for not showing volume bars (default)
 
 Requires the following executable:
     * pulseaudio
@@ -50,6 +52,7 @@ class Module(bumblebee.engine.Module):
         self._mute = False
         self._failed = False
         self._channel = "sink" if self.name == "pasink" else "source"
+        self._showbars = bumblebee.util.asbool(self.parameter("showbars", 0))
 
         self._patterns = [
             {"expr": "Name:", "callback": (lambda line: False)},
@@ -121,11 +124,25 @@ class Module(bumblebee.engine.Module):
         if self._failed == True:
             return "n/a"
         if int(self._mono) > 0:
-            return "{}%".format(self._mono)
+            vol = "{}%".format(self._mono)
+            if self._showbars:
+                vol = "{} {}".format(
+                    vol, bumblebee.output.hbar(float(self._mono)))
+            return vol
         elif self._left == self._right:
-            return "{}%".format(self._left)
+            vol = "{}%".format(self._left)
+            if self._showbars:
+                vol = "{} {}".format(
+                    vol, bumblebee.output.hbar(float(self._left)))
+            return vol
         else:
-            return "{}%/{}%".format(self._left, self._right)
+            if self._showbars:
+                vol = "{} {}{}".format(
+                    vol,
+                    bumblebee.output.hbar(float(self._left)),
+                    bumblebee.output.hbar(float(self._right)))
+            vol = "{}%/{}%".format(self._left, self._right)
+            return vol
 
     def update(self, widgets):
         try:
