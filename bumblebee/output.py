@@ -249,8 +249,19 @@ class I3BarOutput(object):
             if not any(state in widget.state() for state in ["warning", "critical"]):
                 return
         padding = self._theme.padding(widget)
+
         prefix = self._theme.prefix(widget, padding)
         suffix = self._theme.suffix(widget, padding)
+
+        if self._config.markup() == "pango":
+            # add prefix/suffix colors
+            fg = self._theme.prefix_fg(widget)
+            bg = self._theme.prefix_bg(widget)
+            prefix = "<span {} {}>{}</span>".format(
+                "foreground='{}'".format(fg) if fg else "",
+                "background='{}'".format(bg) if bg else "",
+                prefix
+            )
 
         if prefix:
             full_text = u"{}{}".format(prefix, full_text)

@@ -118,6 +118,22 @@ class Theme(object):
         pre = self._get(widget, "prefix", None)
         return u"{}{}{}".format(padding, pre, padding) if pre else default
 
+    def prefix_fg(self, widget):
+        """Return the foreground color for the prefix"""
+        return self._get(widget, "prefixfg", None)
+
+    def prefix_bg(self, widget):
+        """Return the background color for the prefix"""
+        return self._get(widget, "prefixbg", None)
+
+    def suffix_fg(self, widget):
+        """Return the foreground color for the suffix"""
+        return self._get(widget, "suffixfg", None)
+
+    def suffix_bg(self, widget):
+        """Return the background color for the suffix"""
+        return self._get(widget, "suffixbg", None)
+
     def symbol(self, widget, name, default=None):
         return self._get(widget, name, default)
 
