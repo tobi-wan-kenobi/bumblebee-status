@@ -46,6 +46,16 @@ def execute(cmd, wait=True):
     return rv
 
 def bytefmt(num):
+    """
+        format a value of bytes to a more human readable pattern
+        example: 15 * 1024 becomes 15KiB
+
+        Args:
+
+            num (int): bytes
+
+        Return: string
+    """
     for unit in ["", "Ki", "Mi", "Gi"]:
         if num < 1024.0:
             return "{:.2f}{}B".format(num, unit)
