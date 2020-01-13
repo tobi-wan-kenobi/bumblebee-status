@@ -24,6 +24,13 @@ class TestUtil(unittest.TestCase):
         self.assertEquals(bu.bytefmt(22 * 1024 * 1024 * 1024), "22.00GiB")
         self.assertEquals(bu.bytefmt(35 * 1024 * 1024 * 1024 * 1024), "35840.00GiB")
 
+        fmt = "{:.0f}"
+        self.assertEquals(bu.bytefmt(10, fmt), "10B")
+        self.assertEquals(bu.bytefmt(15 * 1024, fmt), "15KiB")
+        self.assertEquals(bu.bytefmt(20 * 1024 * 1024, fmt), "20MiB")
+        self.assertEquals(bu.bytefmt(22 * 1024 * 1024 * 1024, fmt), "22GiB")
+        self.assertEquals(bu.bytefmt(35 * 1024 * 1024 * 1024 * 1024, fmt), "35840GiB")
+
     def test_durationfmt(self):
         self.assertEquals(bu.durationfmt(00), "00:00")
         self.assertEquals(bu.durationfmt(25), "00:25")

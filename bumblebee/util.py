@@ -45,12 +45,24 @@ def execute(cmd, wait=True):
     logging.info(u"command returned '{}'".format("" if not rv else rv))
     return rv
 
-def bytefmt(num):
+def bytefmt(num, fmt="{:.2f}"):
+    """
+        format a value of bytes to a more human readable pattern
+        example: 15 * 1024 becomes 15KiB
+
+        Args:
+
+            num (int): bytes
+
+            fmt (string): format
+
+        Return: string
+    """
     for unit in ["", "Ki", "Mi", "Gi"]:
         if num < 1024.0:
-            return "{:.2f}{}B".format(num, unit)
+            return "{}{}B".format(fmt, unit).format(num)
         num /= 1024.0
-    return "{:.2f}GiB".format(num*1024.0)
+    return "{}GiB".format(fmt).format(num*1024.0)
 
 def durationfmt(duration, shorten=False, suffix=False):
     duration = int(duration)
