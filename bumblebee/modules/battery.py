@@ -96,7 +96,7 @@ class Module(bumblebee.engine.Module):
             output = "{} {}".format(output, self.remaining())
 
         if bumblebee.util.asbool(self.parameter("showdevice", False)):
-            output = "{} ({})".format(output, r.read())
+            output = "{} ({})".format(output, os.path.basename(widget.name))
 
         return output
        
