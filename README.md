@@ -229,6 +229,8 @@ Here are some screenshots for all themes that currently exist:
 
 :exclamation: Some themes (all 'Powerline' themes) require [Font Awesome](http://fontawesome.io/) and a powerline-compatible font ([powerline-fonts](https://github.com/powerline/fonts), for example) to display all icons correctly.
 
+:exclamation: If you want to add your own team, just drop it into `~/.config/bumblebee-status/themes/`
+
 Gruvbox Powerline (`-t gruvbox-powerline`) (contributed by [@TheEdgeOfRage](https://github.com/TheEdgeOfRage)):
 
 ![Gruvbox Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-gruvbox.png)
