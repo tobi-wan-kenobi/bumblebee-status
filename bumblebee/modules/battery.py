@@ -79,11 +79,18 @@ class Module(bumblebee.engine.Module):
                 capacity = int(f.read())
         except IOError:
             return "n/a"
+
         capacity = capacity if capacity < 100 else 100
         widget.set("capacity", capacity)
-        output =  "{}%".format(capacity)
+
+        # Read power conumption
+        if bumblebee.util.asbool(self.parameter("showpowerconsumption", False)):
+            r=open(widget.name + '/power_now', "r")
+            output =  "{}% ({})".format(capacity,str(int(r.read())/1000000) + "W")
+        else:
+             output =  "{}%".format(capacity)
+
         widget.set("theme.minwidth", "100%")
-        
         if bumblebee.util.asbool(self.parameter("showremaining", True))\
                 and self.getCharge(widget) == "Discharging":
             output = "{} {}".format(output, self.remaining())
