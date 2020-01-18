@@ -8,6 +8,7 @@ Parameters:
     * battery.critical   : Critical threshold in % of remaining charge (defaults to 10)
     * battery.showdevice : If set to "true", add the device name to the widget (defaults to False)
     * battery.decorate   : If set to "false", hides additional icons (charging, etc.) (defaults to True)
+    * battery.showpowerconsumption: If set to "true", show current power consumption (defaults to False)
 """
 
 import os
