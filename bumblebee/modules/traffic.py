@@ -6,8 +6,11 @@ Parameters:
     * traffic.exclude: Comma-separated list of interface prefixes to exclude (defaults to "lo,virbr,docker,vboxnet,veth")
     * traffic.states: Comma-separated list of states to show (prefix with "^" to invert - i.e. ^down -> show all devices that are not in state down)
     * traffic.showname: If set to False, hide network interface name (defaults to True)
+    * traffic.format: Format string for download/upload speeds.
+                      Defaults to "{:.2f}"
 """
 
+import re
 import time
 import psutil
 import netifaces
@@ -25,6 +28,7 @@ class Module(bumblebee.engine.Module):
         self._status = ""
 
         self._showname = bumblebee.util.asbool(self.parameter("showname", True))
+        self._format = self.parameter("format", "{:.2f}")
         self._prev = {}
         self._states = {}
         self._lastcheck = 0
@@ -67,6 +71,20 @@ class Module(bumblebee.engine.Module):
             return []
         return retval
 
+    def get_minwidth_str(self):
+        """computes theme.minwidth string based on traffic.format parameter"""
+        minwidth_str = "1000"
+        try:
+            length = int(re.match("{:\.(\d+)f}", self._format).group(1))
+            if length > 0:
+                minwidth_str += "." + "0" * length
+        except AttributeError:
+            # return default value
+            return "1000.00MB"
+        finally:
+            minwidth_str += "MB"
+        return minwidth_str
+
     def _update_widgets(self, widgets):
         interfaces = [i for i in netifaces.interfaces() if not i.startswith(self._exclude)]
 
@@ -100,10 +118,12 @@ class Module(bumblebee.engine.Module):
 
             for direction in ["rx", "tx"]:
                 name = "traffic.{}-{}".format(direction, interface)
-                widget = self.create_widget(widgets, name, attributes={"theme.minwidth": "1000.00MB"})
+                widget = self.create_widget(widgets, name, attributes={"theme.minwidth": self.get_minwidth_str()})
                 prev = self._prev.get(name, 0)
-                speed = bumblebee.util.bytefmt((int(data[direction]) - int(prev))/timediff)
-                txtspeed ='{0}/s'.format(speed)
+                speed = bumblebee.util.bytefmt(
+                    (int(data[direction]) - int(prev))/timediff,
+                    self._format)
+                txtspeed = '{0}/s'.format(speed)
                 widget.full_text(txtspeed) 
                 self._prev[name] = data[direction]
 
