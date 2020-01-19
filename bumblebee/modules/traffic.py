@@ -112,8 +112,6 @@ class Module(bumblebee.engine.Module):
         self._lastcheck = now
         for interface in interfaces:
             if self._graphlen > 0:
-                import logging
-                logging.info(self._graphdata)
                 if interface not in self._graphdata:
                     self._graphdata[interface] = {
                         "rx": [0] * self._graphlen,
