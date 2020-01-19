@@ -3,12 +3,10 @@
 """Test module
 """
 
-import bumblebee.engine
+import core.module
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text="test")
-        )
+class Module(core.module.Module):
+    def __init__(self):
+        pass
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
