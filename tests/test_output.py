@@ -1,62 +1,27 @@
 import unittest
+import json
 
-import bumblebee.output
+import core.output
 
-
-class TestHBar(unittest.TestCase):
-    """tests for bumblebee.output.HBar"""
+class i3(unittest.TestCase):
     def setUp(self):
-        self.value = 1
-        self.values = [10, 20, 30, 40, 55, 65, 80, 90]
-        self.hbar = bumblebee.output.HBar(self.value)
+        self.i3 = core.output.i3()
 
-    def test___init__(self):
-        """bumblebee.output.HBar.__init__()"""
-        self.assertEqual(
-            self.hbar.step, bumblebee.output.MAX_PERCENTS / bumblebee.output.CHARS)
+    def tearDown(self):
+        pass
 
-    def test_get_char(self):
-        """bumblebee.output.HBar.get_char()"""
-        for i in range(bumblebee.output.CHARS):
-            hbar = bumblebee.output.HBar(self.values[i])
-            self.assertEqual(hbar.get_char(), bumblebee.output.HBARS[i])
-        # edge case for 100%
-        hbar = bumblebee.output.HBar(100)
-        self.assertEqual(hbar.get_char(), bumblebee.output.HBARS[-1])
+    def test_start(self):
+        data = json.loads(self.i3.start())
+        self.assertEquals(1, data['version'], 'i3bar protocol version 1 expected')
+        self.assertTrue(data['click_events'], 'click events should be enabled')
 
+    def test_begin_status_line(self):
+        self.assertEquals('[', self.i3.begin_status_line(), 'each line must be a JSON array')
 
-class TestVBar(unittest.TestCase):
-    """tests for bumblebee.output.VBar"""
-    def setUp(self):
-        self.value = 1
-        self.values = [10, 20, 30, 40, 55, 65, 80, 90]
-        self.vbar = bumblebee.output.VBar(self.value)
+    def test_end_status_line(self):
+        self.assertEquals('],\n', self.i3.end_status_line(), 'each line must terminate properly')
 
-    def test___init__(self):
-        """bumblebee.output.VBar.__init__()"""
-        self.assertEqual(
-            self.vbar.step, bumblebee.output.MAX_PERCENTS / bumblebee.output.CHARS)
+    def test_stop(self):
+        self.assertEquals(']\n', self.i3.stop())
 
-    def test_get_chars(self):
-        """bumblebee.output.VBar.get_char()"""
-        for i in range(bumblebee.output.CHARS):
-            vbar = bumblebee.output.VBar(self.values[i])
-            self.assertEqual(vbar.get_chars(), bumblebee.output.VBARS[i])
-        # edge case for 100%
-        vbar = bumblebee.output.VBar(100)
-        self.assertEqual(vbar.get_chars(), bumblebee.output.VBARS[-1])
-        # 0.x chars filled
-        value = 0.1
-        vbar = bumblebee.output.VBar(value, 3)
-        expected_chars = vbar.bars[0] + "  "
-        self.assertEqual(vbar.get_chars(), expected_chars)
-        # 1.x chars filled
-        value = 35
-        vbar = bumblebee.output.VBar(value, 3)
-        expected_chars = vbar.bars[-1] + vbar.bars[0] + " "
-        self.assertEqual(vbar.get_chars(), expected_chars)
-        # 2.x chars filled
-        value = 67
-        vbar = bumblebee.output.VBar(value, 3)
-        expected_chars = vbar.bars[-1] * 2 + vbar.bars[0]
-        self.assertEqual(vbar.get_chars(), expected_chars)
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

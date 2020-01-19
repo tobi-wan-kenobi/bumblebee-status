@@ -1,5 +1,0 @@
-#!/bin/sh
-
-ln -s /usr/share/bumblebee-status/bumblebee-status /usr/local/bin/bumblebee-status
-
-

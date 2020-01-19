@@ -1,7 +1,0 @@
-{
-	"icons": [ "ascii" ],
-	"defaults": {
-		"urgent": true,
-		"fg": "#aabbcc"
-	}
-}
