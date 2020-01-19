@@ -8,6 +8,9 @@ Parameters:
     * traffic.showname: If set to False, hide network interface name (defaults to True)
     * traffic.format: Format string for download/upload speeds.
                       Defaults to "{:.2f}"
+    * traffic.graphlen: Graph lenth in seconds. Positive even integer. Each
+                        char shows 2 seconds. If set, enables up/down traffic
+                        graphs
 """
 
 import re
@@ -39,6 +42,10 @@ class Module(bumblebee.engine.Module):
                 self._states["exclude"].append(state[1:])
             else:
                 self._states["include"].append(state)
+        self._graphlen = int(self.parameter("graphlen", 0))
+        if self._graphlen > 0:
+            self._graphdata = {}
+        self._first_run = True
         self._update_widgets(widgets)
 
     def state(self, widget):
@@ -72,8 +79,16 @@ class Module(bumblebee.engine.Module):
         return retval
 
     def get_minwidth_str(self):
-        """computes theme.minwidth string based on traffic.format parameter"""
-        minwidth_str = "1000"
+        """
+            computes theme.minwidth string
+            based on traffic.format and traffic.graphlen parameters
+        """
+        minwidth_str = ""
+        if self._graphlen > 0:
+            graph_len = int(self._graphlen / 2)
+            graph_prefix = "0" * graph_len
+            minwidth_str += graph_prefix
+        minwidth_str += "1000"
         try:
             length = int(re.match("{:\.(\d+)f}", self._format).group(1))
             if length > 0:
@@ -96,6 +111,11 @@ class Module(bumblebee.engine.Module):
         if timediff <= 0: timediff = 1
         self._lastcheck = now
         for interface in interfaces:
+            if self._graphlen > 0:
+                if interface not in self._graphdata:
+                    self._graphdata[interface] = {
+                        "rx": [0] * self._graphlen,
+                        "tx": [0] * self._graphlen}
             if not interface: interface = "lo"
             state = "down"
             if len(self.get_addresses(interface)) > 0:
@@ -120,10 +140,19 @@ class Module(bumblebee.engine.Module):
                 name = "traffic.{}-{}".format(direction, interface)
                 widget = self.create_widget(widgets, name, attributes={"theme.minwidth": self.get_minwidth_str()})
                 prev = self._prev.get(name, 0)
-                speed = bumblebee.util.bytefmt(
-                    (int(data[direction]) - int(prev))/timediff,
-                    self._format)
+                bspeed = (int(data[direction]) - int(prev))/timediff
+                speed = bumblebee.util.bytefmt(bspeed, self._format)
                 txtspeed = '{0}/s'.format(speed)
+                if self._graphlen > 0:
+                    # skip first value returned by psutil, because it is
+                    # giant and ruins the grapth ratio until it gets pushed
+                    # out of saved list
+                    if self._first_run is True:
+                        self._first_run = False
+                    else:
+                        self._graphdata[interface][direction] = self._graphdata[interface][direction][1:]
+                        self._graphdata[interface][direction].append(bspeed)
+                    txtspeed = "{}{}".format(bumblebee.output.bgraph(self._graphdata[interface][direction]), txtspeed)
                 widget.full_text(txtspeed) 
                 self._prev[name] = data[direction]
 
