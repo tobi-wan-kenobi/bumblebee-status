@@ -10,7 +10,10 @@ Parameters:
     * pomodoro.format: Timer display format with "%m" and "%s" for minutes and seconds (defaults to "%m:%s")
                        Examples: "%m min %s sec", "%mm", "", "timer"
     * pomodoro.notify: Notification command to run when timer ends/starts (defaults to nothing)
-                       Example: 'notify-send "Time up!"'
+                       Example: 'notify-send "Time up!"'. If you want to chain multiple commands,
+                       please use an external wrapper script and invoke that. The module itself does
+                       not support command chaining (see https://github.com/tobi-wan-kenobi/bumblebee-status/issues/532
+                       for a detailled explanation)
 """
 
 from __future__ import absolute_import
