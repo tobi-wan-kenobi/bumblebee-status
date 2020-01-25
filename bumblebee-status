@@ -17,6 +17,7 @@ def main():
             module.update()
             sys.stdout.write(output.draw(module))
         sys.stdout.write(output.end_status_line())
+        output.sleep(config.interval())
     sys.stdout.write(output.stop())
         
 
