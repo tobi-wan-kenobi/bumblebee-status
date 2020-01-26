@@ -3,6 +3,7 @@
 - pass if modules are missing
 - minimize dependencies, code
 - test everything
+- think about pylint
 
 # Features
 
