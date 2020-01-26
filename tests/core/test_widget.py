@@ -28,11 +28,11 @@ class widget(unittest.TestCase):
     def test_callable_fulltext(self):
         newWidget = core.widget.Widget(full_text=self.someCallback)
         self.assertEqual(newWidget.full_text(), self.callbackReturnValue)
-        self.someCallback.assert_called_once()
+        self.someCallback.assert_called_once_with(unittest.mock.ANY)
 
     def test_set_callable_fulltext(self):
         self.someWidget.full_text(self.someCallback)
         self.assertEqual(self.someWidget.full_text(), self.callbackReturnValue)
-        self.someCallback.assert_called_once()
+        self.someCallback.assert_called_once_with(unittest.mock.ANY)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
