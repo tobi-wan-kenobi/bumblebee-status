@@ -1,4 +1,5 @@
 import json
+import time
 
 class i3(object):
     def start(self):
@@ -12,5 +13,8 @@ class i3(object):
 
     def end_status_line(self):
         return '],\n'
+
+    def wait(self, interval):
+        time.sleep(interval)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
