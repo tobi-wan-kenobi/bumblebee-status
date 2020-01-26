@@ -12,8 +12,14 @@ def load(module_name):
     return getattr(mod, 'Module')()
 
 class Module(object):
+    def __init__(self, widgets):
+        self._widgets = widgets if isinstance(widgets, list) else [ widgets ]
+
     def update(self):
         pass
+
+    def widgets(self):
+        return self._widgets
 
 class Error(Module):
     def __init__(self, loaded_module_name):
