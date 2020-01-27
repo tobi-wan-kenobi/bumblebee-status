@@ -3,6 +3,7 @@
 import shlex
 import logging
 import subprocess
+import os
 
 try:
     from exceptions import RuntimeError
@@ -29,7 +30,9 @@ def aslist(val):
 def execute(cmd, wait=True):
     logging.info("executing command '{}'".format(cmd))
     args = shlex.split(cmd)
-    proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    my_env = os.environ.copy()
+    my_env['LC_ALL'] = "C"
+    proc = subprocess.Popen(args, env=my_env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     rv = None
 
     if wait:
