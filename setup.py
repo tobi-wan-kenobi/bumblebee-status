@@ -2,7 +2,7 @@
 # -*- coding: utf8 - *-
 import sys
 
-from setuptools import setup
+from setuptools import setup, Extension
 
 about = {}
 with open("bumblebee/__about__.py") as fp:
@@ -45,7 +45,7 @@ EXTRAS_REQUIREMENTS_MAP = {
     "yubikey": read_module("yubikey"),
 }
 
-if sys.version_info[0] > 2:  # LATER: README needs to be reStructuredText for pypi
+if sys.version_info[0] > 2:
     readme = open('README.md', encoding='utf-8').read()
 else:
     readme = open('README.md').read()
@@ -65,6 +65,7 @@ setup(
     author_email=about['__email__'],
     description=about['__description__'],
     long_description=readme,
+    long_description_content_type='text/markdown',
     packages=['bumblebee'],
     include_package_data=True,
     install_requires=install_reqs,
