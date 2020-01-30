@@ -24,7 +24,10 @@ repos = ["core", "extra", "community", "multilib", "testing", "other"]
 
 def get_pacman_info(widget, path):
     try:
-        result = bumblebee.util.execute("{}/../../bin/pacman-updates".format(path))
+        cmd = "{}/../../bin/pacman-updates".format(path)
+        if not os.path.exists(cmd):
+            cmd = "/usr/share/bumblebee-status/bin/pacman-update"
+        result = bumblebee.util.execute(cmd)
     except:
         pass
 
