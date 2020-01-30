@@ -13,6 +13,17 @@
 
 bumblebee-status is a modular, theme-able status line generator for the [i3 window manager](https://i3wm.org/).
 
+**How to install**
+```
+# from AUR:
+git clone https://aur.archlinux.org/bumblebee-status.git
+cd bumblebee-status
+makepkg -sicr
+
+# from PyPI (thanks @tony):
+pip install --user bumblebee-status
+```
+
 Focus is on:
 * Ease of use (no configuration files!)
 * Theme support
