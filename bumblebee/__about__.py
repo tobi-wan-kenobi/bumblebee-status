@@ -1,6 +1,6 @@
 __title__ = 'bumblebee-status'
 __package_name__ = 'bumblebee_status'
-__version__ = '1.9.0'
+__version__ = '1.10.0'
 __description__ = 'a modular, theme-able status line generator for the i3 window manager.'
 __author__ = 'tobi-wan-kenobi'
 __email__ = 'github@tobi-wan-kenobi.at'
