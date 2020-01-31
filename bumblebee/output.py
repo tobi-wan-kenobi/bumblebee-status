@@ -334,6 +334,7 @@ class WidgetDrawer(object):
         self._theme = theme
         self._config = config
         self._widgets = []
+        self._markup = None
         self._prefix = None
         self._suffix = None
 
@@ -365,14 +366,14 @@ class WidgetDrawer(object):
         separator = self._theme.separator(widget)
         self.add_separator(widget, separator)
 
-        markup = "none" if not self._config else self._config.markup()
+        self._markup = "none" if not self._config else self._config.markup()
 
         padding = self._theme.padding(widget)
 
         self._prefix = self._theme.prefix(widget, padding)
         self._suffix = self._theme.suffix(widget, padding)
 
-        if markup == "pango":
+        if self._markup == "pango":
             # add prefix/suffix colors
             fg = self._theme.prefix_fg(widget)
             bg = self._theme.prefix_bg(widget)
@@ -394,7 +395,7 @@ class WidgetDrawer(object):
         if width:
             full_text = full_text.ljust(len(width) + len(self._prefix) + len(self._suffix))
 
-        if markup == "pango":
+        if self._markup == "pango":
             full_text = full_text.replace("&", "&amp;")
 
         self._widgets.append({
@@ -408,7 +409,7 @@ class WidgetDrawer(object):
             "align": self._theme.align(widget),
             "instance": widget.id,
             "name": module.id,
-            "markup": markup,
+            "markup": self._markup,
         })
         return self._widgets
 
