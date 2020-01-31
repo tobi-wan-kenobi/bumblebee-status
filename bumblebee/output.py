@@ -353,6 +353,10 @@ class WidgetDrawer(object):
                     list[0] - optional if the theme has a separator
                     list[1] - JSON text for the widget
         """
+
+        separator = self._theme.separator(widget)
+        self.add_separator(widget, separator)
+
         full_text = widget.full_text()
         if widget.get_module() and widget.get_module().hidden():
             return []
@@ -378,9 +382,6 @@ class WidgetDrawer(object):
             full_text = u"{}{}".format(prefix, full_text)
         if suffix:
             full_text = u"{}{}".format(full_text, suffix)
-
-        separator = self._theme.separator(widget)
-        self.add_separator(widget, separator)
 
         width = self._theme.minwidth(widget)
 
