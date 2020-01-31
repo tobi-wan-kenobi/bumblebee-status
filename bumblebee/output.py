@@ -367,6 +367,13 @@ class WidgetDrawer(object):
         if self._prefix:
             self._full_text = u"{}{}".format(self._prefix, self._full_text)
 
+    def add_suffix(self, widget, padding):
+        """add suffix to full_text"""
+        self._suffix = self._theme.suffix(widget, padding)
+
+        if self._suffix:
+            self._full_text = u"{}{}".format(self._full_text, self._suffix)
+
     def draw(self, widget, module=None, engine=None):
         """
             Keep the same argument signature as I3BarOutput.draw()
@@ -392,10 +399,7 @@ class WidgetDrawer(object):
 
         self.add_prefix(widget, padding)
 
-        self._suffix = self._theme.suffix(widget, padding)
-
-        if self._suffix:
-            self._full_text = u"{}{}".format(self._full_text, self._suffix)
+        self.add_suffix(widget, padding)
 
         width = self._theme.minwidth(widget)
 
