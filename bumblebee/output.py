@@ -370,7 +370,9 @@ class WidgetDrawer(object):
         self._prefix = self._theme.prefix(widget, padding)
         self._suffix = self._theme.suffix(widget, padding)
 
-        if self._config.markup() == "pango":
+        markup = "none" if not self._config else self._config.markup()
+
+        if markup == "pango":
             # add prefix/suffix colors
             fg = self._theme.prefix_fg(widget)
             bg = self._theme.prefix_bg(widget)
@@ -391,8 +393,6 @@ class WidgetDrawer(object):
 
         if width:
             full_text = full_text.ljust(len(width) + len(self._prefix) + len(self._suffix))
-
-        markup = "none" if not self._config else self._config.markup()
 
         if markup == "pango":
             full_text = full_text.replace("&", "&amp;")
