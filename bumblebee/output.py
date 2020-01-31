@@ -350,10 +350,8 @@ class WidgetDrawer(object):
                 "separator_block_width": self._theme.separator_block_width(widget),
             })
 
-    def add_prefix(self, widget, padding):
-        """add prefix to full_text"""
-        self._prefix = self._theme.prefix(widget, padding)
-
+    def add_prefix_colors(self, widget):
+        """add custom theme colors for prefix"""
         if self._markup == "pango":
             # add prefix/suffix colors
             fg = self._theme.prefix_fg(widget)
@@ -363,6 +361,12 @@ class WidgetDrawer(object):
                 "background='{}'".format(bg) if bg else "",
                 self._prefix
             )
+
+    def add_prefix(self, widget, padding):
+        """add prefix to full_text"""
+        self._prefix = self._theme.prefix(widget, padding)
+
+        self.add_prefix_colors(widget)
 
         if self._prefix:
             self._full_text = u"{}{}".format(self._prefix, self._full_text)
