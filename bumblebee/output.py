@@ -374,6 +374,11 @@ class WidgetDrawer(object):
         if self._suffix:
             self._full_text = u"{}{}".format(self._full_text, self._suffix)
 
+    def escape_amp(self):
+        """escape & in full_text, because pango requires it"""
+        if self._markup == "pango":
+            self._full_text = self._full_text.replace("&", "&amp;")
+
     def draw(self, widget, module=None, engine=None):
         """
             Keep the same argument signature as I3BarOutput.draw()
@@ -406,8 +411,7 @@ class WidgetDrawer(object):
         if width:
             self._full_text = self._full_text.ljust(len(width) + len(self._prefix) + len(self._suffix))
 
-        if self._markup == "pango":
-            self._full_text = self._full_text.replace("&", "&amp;")
+        self.escape_amp()
 
         self._widgets.append({
             u"full_text": self._full_text,
