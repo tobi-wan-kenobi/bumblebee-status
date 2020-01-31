@@ -335,6 +335,17 @@ class WidgetDrawer(object):
         self._config = config
         self._widgets = []
 
+    def add_separator(self, widget, separator):
+        """Add separator (if theme has one)"""
+        if separator:
+            self._widgets.append({
+                u"full_text": separator,
+                "separator": False,
+                "color": self._theme.separator_fg(widget),
+                "background": self._theme.separator_bg(widget),
+                "separator_block_width": self._theme.separator_block_width(widget),
+            })
+
     def draw(self, widget, module=None, engine=None):
         """
             Keep the same argument signature as I3BarOutput.draw()
@@ -369,14 +380,8 @@ class WidgetDrawer(object):
             full_text = u"{}{}".format(full_text, suffix)
 
         separator = self._theme.separator(widget)
-        if separator:
-            self._widgets.append({
-                u"full_text": separator,
-                "separator": False,
-                "color": self._theme.separator_fg(widget),
-                "background": self._theme.separator_bg(widget),
-                "separator_block_width": self._theme.separator_block_width(widget),
-            })
+        self.add_separator(widget, separator)
+
         width = self._theme.minwidth(widget)
 
         if width:
