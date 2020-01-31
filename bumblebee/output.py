@@ -354,15 +354,17 @@ class WidgetDrawer(object):
                     list[1] - JSON text for the widget
         """
 
-        separator = self._theme.separator(widget)
-        self.add_separator(widget, separator)
-
-        full_text = widget.full_text()
         if widget.get_module() and widget.get_module().hidden():
             return []
         if widget.get_module() and widget.get_module().name in self._config.autohide():
             if not any(state in widget.state() for state in ["warning", "critical"]):
                 return []
+
+        separator = self._theme.separator(widget)
+        self.add_separator(widget, separator)
+
+        full_text = widget.full_text()
+
         padding = self._theme.padding(widget)
 
         prefix = self._theme.prefix(widget, padding)
