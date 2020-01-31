@@ -334,6 +334,8 @@ class WidgetDrawer(object):
         self._theme = theme
         self._config = config
         self._widgets = []
+        self._prefix = None
+        self._suffix = None
 
     def add_separator(self, widget, separator):
         """Add separator (if theme has one)"""
@@ -367,28 +369,28 @@ class WidgetDrawer(object):
 
         padding = self._theme.padding(widget)
 
-        prefix = self._theme.prefix(widget, padding)
-        suffix = self._theme.suffix(widget, padding)
+        self._prefix = self._theme.prefix(widget, padding)
+        self._suffix = self._theme.suffix(widget, padding)
 
         if self._config.markup() == "pango":
             # add prefix/suffix colors
             fg = self._theme.prefix_fg(widget)
             bg = self._theme.prefix_bg(widget)
-            prefix = "<span {} {}>{}</span>".format(
+            self._prefix = "<span {} {}>{}</span>".format(
                 "foreground='{}'".format(fg) if fg else "",
                 "background='{}'".format(bg) if bg else "",
-                prefix
+                self._prefix
             )
 
-        if prefix:
-            full_text = u"{}{}".format(prefix, full_text)
-        if suffix:
-            full_text = u"{}{}".format(full_text, suffix)
+        if self._prefix:
+            full_text = u"{}{}".format(self._prefix, full_text)
+        if self._suffix:
+            full_text = u"{}{}".format(full_text, self._suffix)
 
         width = self._theme.minwidth(widget)
 
         if width:
-            full_text = full_text.ljust(len(width) + len(prefix) + len(suffix))
+            full_text = full_text.ljust(len(width) + len(self._prefix) + len(self._suffix))
 
         markup = "none" if not self._config else self._config.markup()
 
@@ -402,7 +404,7 @@ class WidgetDrawer(object):
             "separator_block_width": self._theme.separator_block_width(widget),
             "separator": True if separator is None else False,
             "min_width": None,
-#            "min_width": width + "A"*(len(prefix) + len(suffix)) if width else None,
+#            "min_width": width + "A"*(len(self._prefix) + len(self._suffix)) if width else None,
             "align": self._theme.align(widget),
             "instance": widget.id,
             "name": module.id,
