@@ -350,6 +350,23 @@ class WidgetDrawer(object):
                 "separator_block_width": self._theme.separator_block_width(widget),
             })
 
+    def add_prefix(self, widget, padding):
+        """add prefix to full_text"""
+        self._prefix = self._theme.prefix(widget, padding)
+
+        if self._markup == "pango":
+            # add prefix/suffix colors
+            fg = self._theme.prefix_fg(widget)
+            bg = self._theme.prefix_bg(widget)
+            self._prefix = "<span {} {}>{}</span>".format(
+                "foreground='{}'".format(fg) if fg else "",
+                "background='{}'".format(bg) if bg else "",
+                self._prefix
+            )
+
+        if self._prefix:
+            self._full_text = u"{}{}".format(self._prefix, self._full_text)
+
     def draw(self, widget, module=None, engine=None):
         """
             Keep the same argument signature as I3BarOutput.draw()
@@ -373,21 +390,10 @@ class WidgetDrawer(object):
 
         padding = self._theme.padding(widget)
 
-        self._prefix = self._theme.prefix(widget, padding)
+        self.add_prefix(widget, padding)
+
         self._suffix = self._theme.suffix(widget, padding)
 
-        if self._markup == "pango":
-            # add prefix/suffix colors
-            fg = self._theme.prefix_fg(widget)
-            bg = self._theme.prefix_bg(widget)
-            self._prefix = "<span {} {}>{}</span>".format(
-                "foreground='{}'".format(fg) if fg else "",
-                "background='{}'".format(bg) if bg else "",
-                self._prefix
-            )
-
-        if self._prefix:
-            self._full_text = u"{}{}".format(self._prefix, self._full_text)
         if self._suffix:
             self._full_text = u"{}{}".format(self._full_text, self._suffix)
 
