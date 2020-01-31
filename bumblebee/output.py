@@ -321,33 +321,26 @@ class Widget(bumblebee.store.Store):
             else:
                 return self._full_text
 
-class I3BarOutput(object):
-    """Manage output according to the i3bar protocol"""
+
+class WidgetDrawer(object):
+    """
+        Wrapper for I3BarOutput.draw(),
+        because that function is getting too big
+    """
     def __init__(self, theme, config=None):
+        """
+            Keep the same signature as I3BarOutput.__init__()
+        """
         self._theme = theme
-        self._widgets = []
-        self._started = False
         self._config = config
-
-    def started(self):
-        return self._started
-
-    def start(self):
-        """Print start preamble for i3bar protocol"""
-        self._started = True
-        sys.stdout.write(json.dumps({"version": 1, "click_events": True}) + "\n[\n")
-
-    def stop(self):
-        """Finish i3bar protocol"""
-        sys.stdout.write("]\n")
+        self._widgets = []
 
     def draw(self, widget, module=None, engine=None):
         """
-            Draw a single widget
-
-            Note: technically, this method doesn't draw anything. It only adds
-            blocks of JSON text to self._widgets: one for separator, if the
-            theme contains a separator and one for the widget itself
+            Keep the same argument signature as I3BarOutput.draw()
+            Return: list
+                    list[0] - optional if the theme has a separator
+                    list[1] - JSON text for the widget
         """
         full_text = widget.full_text()
         if widget.get_module() and widget.get_module().hidden():
@@ -407,6 +400,39 @@ class I3BarOutput(object):
             "name": module.id,
             "markup": markup,
         })
+        return self._widgets
+
+
+class I3BarOutput(object):
+    """Manage output according to the i3bar protocol"""
+    def __init__(self, theme, config=None):
+        self._theme = theme
+        self._widgets = []
+        self._started = False
+        self._config = config
+
+    def started(self):
+        return self._started
+
+    def start(self):
+        """Print start preamble for i3bar protocol"""
+        self._started = True
+        sys.stdout.write(json.dumps({"version": 1, "click_events": True}) + "\n[\n")
+
+    def stop(self):
+        """Finish i3bar protocol"""
+        sys.stdout.write("]\n")
+
+    def draw(self, widget, module=None, engine=None):
+        """
+            Draw a single widget
+
+            Note: technically, this method doesn't draw anything. It only adds
+            blocks of JSON text to self._widgets: one for separator, if the
+            theme contains a separator and one for the widget itself
+        """
+        widget_drawer = WidgetDrawer(self._theme, self._config)
+        self._widgets.extend(widget_drawer.draw(widget, module, engine))
 
     def begin(self):
         """Start one output iteration"""
