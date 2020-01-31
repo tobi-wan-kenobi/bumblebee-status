@@ -365,8 +365,6 @@ class WidgetDrawer(object):
         separator = self._theme.separator(widget)
         self.add_separator(widget, separator)
 
-        full_text = widget.full_text()
-
         padding = self._theme.padding(widget)
 
         self._prefix = self._theme.prefix(widget, padding)
@@ -381,6 +379,8 @@ class WidgetDrawer(object):
                 "background='{}'".format(bg) if bg else "",
                 self._prefix
             )
+
+        full_text = widget.full_text()
 
         if self._prefix:
             full_text = u"{}{}".format(self._prefix, full_text)
