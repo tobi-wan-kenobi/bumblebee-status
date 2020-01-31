@@ -365,12 +365,12 @@ class WidgetDrawer(object):
         separator = self._theme.separator(widget)
         self.add_separator(widget, separator)
 
+        markup = "none" if not self._config else self._config.markup()
+
         padding = self._theme.padding(widget)
 
         self._prefix = self._theme.prefix(widget, padding)
         self._suffix = self._theme.suffix(widget, padding)
-
-        markup = "none" if not self._config else self._config.markup()
 
         if markup == "pango":
             # add prefix/suffix colors
