@@ -342,7 +342,13 @@ class I3BarOutput(object):
         sys.stdout.write("]\n")
 
     def draw(self, widget, module=None, engine=None):
-        """Draw a single widget"""
+        """
+            Draw a single widget
+
+            Note: technically, this method doesn't draw anything. It only adds
+            blocks of JSON text to self._widgets: one for separator, if the
+            theme contains a separator and one for the widget itself
+        """
         full_text = widget.full_text()
         if widget.get_module() and widget.get_module().hidden():
             return
