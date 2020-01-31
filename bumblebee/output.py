@@ -335,6 +335,7 @@ class WidgetDrawer(object):
         self._config = config
         self._widgets = []
         self._markup = None
+        self._full_text = None
         self._prefix = None
         self._suffix = None
 
@@ -368,6 +369,8 @@ class WidgetDrawer(object):
 
         self._markup = "none" if not self._config else self._config.markup()
 
+        self._full_text = widget.full_text()
+
         padding = self._theme.padding(widget)
 
         self._prefix = self._theme.prefix(widget, padding)
@@ -383,23 +386,21 @@ class WidgetDrawer(object):
                 self._prefix
             )
 
-        full_text = widget.full_text()
-
         if self._prefix:
-            full_text = u"{}{}".format(self._prefix, full_text)
+            self._full_text = u"{}{}".format(self._prefix, self._full_text)
         if self._suffix:
-            full_text = u"{}{}".format(full_text, self._suffix)
+            self._full_text = u"{}{}".format(self._full_text, self._suffix)
 
         width = self._theme.minwidth(widget)
 
         if width:
-            full_text = full_text.ljust(len(width) + len(self._prefix) + len(self._suffix))
+            self._full_text = self._full_text.ljust(len(width) + len(self._prefix) + len(self._suffix))
 
         if self._markup == "pango":
-            full_text = full_text.replace("&", "&amp;")
+            self._full_text = self._full_text.replace("&", "&amp;")
 
         self._widgets.append({
-            u"full_text": full_text,
+            u"full_text": self._full_text,
             "color": self._theme.fg(widget),
             "background": self._theme.bg(widget),
             "separator_block_width": self._theme.separator_block_width(widget),
