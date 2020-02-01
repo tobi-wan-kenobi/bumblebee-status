@@ -3,6 +3,7 @@
 import sys
 import core.config
 import core.output
+import core.module
 
 def main():
     config = core.config.Config(sys.argv[1:])
@@ -10,15 +11,15 @@ def main():
     modules = []
     for module in config.modules():
         modules.append(core.module.load(module))
-    sys.stdout.write(output.start())
+    output.draw('start')
     while True:
-        sys.stdout.write(output.begin_status_line())
+        output.clear()
         for module in modules:
             module.update()
-            sys.stdout.write(output.draw(module))
-        sys.stdout.write(output.end_status_line())
+            output.append(module)
+        output.draw('statusline')
         output.wait(config.interval())
-    sys.stdout.write(output.stop())
+    output.draw('stop')
         
 
 if __name__ == "__main__":
