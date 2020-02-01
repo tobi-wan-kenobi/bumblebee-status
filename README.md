@@ -21,6 +21,7 @@ cd bumblebee-status
 makepkg -sicr
 
 # from PyPI (thanks @tony):
+# will install bumblebee-status into ~/.local/bin/bumblebee-status
 pip install --user bumblebee-status
 ```
 
