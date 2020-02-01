@@ -42,10 +42,14 @@ EXTRAS_REQUIREMENTS_MAP = {
     "yubikey": read_module("yubikey"),
 }
 
+import glob
 setup(
     install_requires=INSTALL_REQS,
     extras_require=EXTRAS_REQUIREMENTS_MAP,
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     zip_safe=False,
+    data_files=[('share/bumblebee-status/themes', glob.glob('themes/*.json')),
+        ('share/bumblebee-status/themes/icons', glob.glob('themes/icons/*.json'))
+    ]
 )

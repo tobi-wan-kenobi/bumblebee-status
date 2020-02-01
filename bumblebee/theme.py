@@ -22,6 +22,7 @@ def theme_path():
     """Return the path of the theme directory"""
     return [
         os.path.dirname("{}/../themes/".format(os.path.dirname(os.path.realpath(__file__)))),
+        os.path.dirname("{}/../../../../share/bumblebee-status/themes/".format(os.path.dirname(os.path.realpath(__file__)))),
         os.path.dirname(os.path.expanduser("~/.config/bumblebee-status/themes/")),
     ]
 
