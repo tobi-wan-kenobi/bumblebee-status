@@ -19,6 +19,7 @@ class i3(object):
         if 'suffix' in data:
             sys.stdout.write(data['suffix'])
         sys.stdout.write('\n')
+        sys.stdout.flush()
 
     def start(self):
         return {
