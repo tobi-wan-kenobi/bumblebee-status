@@ -16,3 +16,5 @@
 
 ## Improvements
 - pango output (improve - maybe autodetect? see #531)
+- only update specific, affected modules when clicking
+- allow handlers to specify whether to update or not (e.g. scroll)

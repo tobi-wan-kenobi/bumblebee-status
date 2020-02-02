@@ -4,7 +4,13 @@ import time
 
 class i3(object):
     def __init__(self):
+        self._modules = []
         self.clear()
+
+    def modules(self, modules=None):
+        if not modules:
+            return self._modules
+        self._modules = modules if isinstance(modules, list) else [ modules ]
 
     def draw(self, what):
         data = getattr(self, what)()
@@ -26,15 +32,15 @@ class i3(object):
     def clear(self):
         self._statusline = []
 
-    def append(self, module):
-        for widget in module.widgets():
-            self._statusline.append({
-                'full_text': widget.full_text()
-            })
-
     def statusline(self):
+        status = []
+        for module in self._modules:
+            for widget in module.widgets():
+                status.append({
+                    'full_text': widget.full_text()
+                })
         return {
-            'data': self._statusline,
+            'data': status,
             'suffix': ','
         }
 

@@ -11,12 +11,12 @@ def main():
     modules = []
     for module in config.modules():
         modules.append(core.module.load(module))
+    output.modules(modules)
     output.draw('start')
     while True:
         output.clear()
         for module in modules:
             module.update()
-            output.append(module)
         output.draw('statusline')
         output.wait(config.interval())
     output.draw('stop')
