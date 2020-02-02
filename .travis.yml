@@ -19,8 +19,9 @@ install:
   - pip install pytz
   - pip install tzlocal
   - pip install dbus-python
+  - pip install coverage
 script:
-  - nosetests -v --with-coverage --cover-erase tests/
+  - coverage run -m unittest discover -v
   - CODECLIMATE_REPO_TOKEN=40cb00907f7a10e04868e856570bb997ab9c42fd3b63d980f2b2269433195fdf codeclimate-test-reporter
 addons:
   code_climate:
