@@ -12,7 +12,7 @@ class i3(unittest.TestCase):
         self.i3 = core.output.i3()
         widget = unittest.mock.MagicMock()
         widget.full_text.return_value = "test"
-        self.someModule = TestModule([widget, widget, widget])
+        self.someModule = TestModule(widgets=[widget, widget, widget])
 
     def tearDown(self):
         pass

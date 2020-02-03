@@ -10,7 +10,7 @@ def main():
     output = core.output.i3()
     modules = []
     for module in config.modules():
-        modules.append(core.module.load(module))
+        modules.append(core.module.load(module, config))
     output.modules(modules)
     output.draw('start')
     while True:
