@@ -1,29 +1,29 @@
 import unittest
 
+import shlex
+
 import core.module
 import core.widget
+import core.config
 
 class TestModule(core.module.Module):
     pass
 
 class module(unittest.TestCase):
     def setUp(self):
-        self._invalidModuleName = 'invalid-module-name'
-        self._validModuleName = 'test'
+        self.invalidModuleName = 'invalid-module-name'
+        self.validModuleName = 'test'
         self.someWidget = core.widget.Widget('randomeWidgetContent')
         self.anotherWidget = core.widget.Widget('more Widget content')
 
-    def tearDown(self):
-        pass
-
-    def test_load_invalid_module(self):
-        module = core.module.load(module_name=self._invalidModuleName)
+    def test_loadinvalid_module(self):
+        module = core.module.load(module_name=self.invalidModuleName)
         self.assertEqual('core.module', module.__class__.__module__, 'module must be a module object')
         self.assertEqual('Error', module.__class__.__name__, 'an invalid module must be a core.module.Error')
 
-    def test_load_valid_module(self):
-        module = core.module.load(module_name=self._validModuleName)
-        self.assertEqual('modules.{}'.format(self._validModuleName), module.__class__.__module__, 'module must be a modules.<name> object')
+    def test_loadvalid_module(self):
+        module = core.module.load(module_name=self.validModuleName)
+        self.assertEqual('modules.{}'.format(self.validModuleName), module.__class__.__module__, 'module must be a modules.<name> object')
         self.assertEqual('Module', module.__class__.__name__, 'a valid module must have a Module class')
 
     def test_empty_widgets(self):
@@ -39,7 +39,23 @@ class module(unittest.TestCase):
         self.assertEqual([ self.someWidget, self.anotherWidget ], module.widgets())
 
     def test_module_Name(self):
-        module = TestModule([])
+        module = TestModule()
         self.assertEqual('test_module', module.name(), 'module has wrong name')
+        self.assertEqual('test_module', module.module_name(), 'module has wrong name')
+
+    def testvalid_parameter(self):
+        cfg = core.config.Config(shlex.split('-p test_module.foo=5'))
+        module = TestModule(config=cfg)
+        self.assertEqual(5, int(module.parameter('foo')))
+
+    def test_default_parameter(self):
+        cfg = core.config.Config([])
+        module = TestModule(config=cfg)
+        self.assertEqual('default', module.parameter('foo', 'default'))
+
+    def test_default_is_none(self):
+        cfg = core.config.Config([])
+        module = TestModule(config=cfg)
+        self.assertEqual(None, module.parameter('foo'))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
