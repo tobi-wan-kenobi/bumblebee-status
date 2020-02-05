@@ -9,31 +9,30 @@ import json
 import io
 import re
 import logging
-
-try:
-    import requests
-    from requests.exceptions import RequestException
-except ImportError:
-    pass
+import pkg_resources
 
 import bumblebee.error
 
 def theme_path():
     """Return the path of the theme directory"""
     return [
-        os.path.dirname("{}/../themes/".format(os.path.dirname(os.path.realpath(__file__)))),
-        os.path.dirname("{}/../../../../share/bumblebee-status/themes/".format(os.path.dirname(os.path.realpath(__file__)))),
-        os.path.dirname(os.path.expanduser("~/.config/bumblebee-status/themes/")),
+        os.path.realpath(x) for x in [
+            os.path.dirname("{}/../themes/".format(os.path.dirname(os.path.realpath(__file__)))),
+            os.path.dirname(
+                "{}/../../../../share/bumblebee-status/themes/".format(
+                    os.path.dirname(os.path.realpath(__file__)))),
+            os.path.dirname(os.path.expanduser("~/.config/bumblebee-status/themes/")),
+            pkg_resources.resource_filename('bumblebee', 'themes')] if os.path.exists(x)
     ]
 
 def themes():
-    themes = {}
+    themes_dict = {}
 
     for path in theme_path():
         for filename in glob.iglob("{}/*.json".format(path)):
             if "test" not in filename:
-                themes[os.path.basename(filename).replace(".json", "")] = 1
-    result = list(themes.keys())
+                themes_dict[os.path.basename(filename).replace(".json", "")] = 1
+    result = list(themes_dict.keys())
     result.sort()
     return result
 
@@ -59,7 +58,7 @@ class Theme(object):
         path = os.path.expanduser("~/.config/bumblebee-status/")
         try:
             os.makedirs(path)
-        except Exception:
+        except OSError:
             pass
         try:
             if os.path.exists("{}/symbols.json".format(path)):
@@ -73,8 +72,8 @@ class Theme(object):
                         code = chr(code)
                     self._symbols["${{{}}}".format(icon["id"])] = code
                     self._symbols["${{{}}}".format(icon["name"])] = code
-        except Exception as e:
-            logging.error("failed to load symbols: {}".format(str(e)))
+        except Exception as err:
+            logging.error("failed to load symbols: %s", err)
 
     def _init(self, data):
         """Initialize theme from data structure"""
@@ -96,7 +95,7 @@ class Theme(object):
 
     def reset(self):
         """Reset theme to initial state"""
-        self._cycle = self._cycles[0] if len(self._cycles) > 0 else {}
+        self._cycle = self._cycles[0] if self._cycles else {}
         self._cycle_idx = 0
         self._widget = None
         self._prevbg = None
@@ -105,6 +104,7 @@ class Theme(object):
         icon = self._get(widget, "icon", None)
         if icon is None:
             return self._get(widget, "prefix", None)
+        return None
 
     def get(self, widget, attribute, default_value=""):
         return self._get(widget, attribute, default_value)
@@ -189,10 +189,10 @@ class Theme(object):
     def _load_colors(self, name):
         """Load colors for a theme"""
         try:
-            if name == "wal":
+            if name.lower() == "wal":
                 return self._load_wal_colors()
-        except Exception as e:
-            logging.error("failed to load colors: {}".format(str(e)))
+        except Exception as err:
+            logging.error("failed to load colors: %s", err)
 
     def _load_icons(self, name):
         """Load icons for a theme"""
@@ -217,7 +217,7 @@ class Theme(object):
         if os.path.isfile(full_name):
             path = os.path.dirname(full_name)
             name = os.path.basename(full_name)
-            name,_,_ = name.rpartition(".json")
+            name, _, _ = name.rpartition(".json")
             return self.load(name, path)
 
         if not isinstance(path, list):
@@ -249,7 +249,7 @@ class Theme(object):
         if self._widget != widget:
             self._prevbg = self.bg(self._widget)
             self._widget = widget
-            if len(self._cycles) > 0:
+            if self._cycles:
                 self._cycle_idx = (self._cycle_idx + 1) % len(self._cycles)
                 self._cycle = self._cycles[self._cycle_idx]
 
@@ -283,7 +283,7 @@ class Theme(object):
         if mod and not mod.parameter("is-unittest"):
             value = widget.get_module().parameter("theme.{}".format(name), value)
 
-        if isinstance(value, list) or isinstance(value, dict):
+        if isinstance(value, (dict, list)):
             return value
         return self._colorset.get(value, value)
 
