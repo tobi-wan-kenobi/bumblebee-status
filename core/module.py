@@ -1,6 +1,8 @@
 import importlib
 import logging
 
+import core.input
+
 log = logging.getLogger(__name__)
 
 def load(module_name, config=None):
@@ -11,8 +13,9 @@ def load(module_name, config=None):
         return Error(module_name)
     return getattr(mod, 'Module')(config)
 
-class Module(object):
+class Module(core.input.Object):
     def __init__(self, config=None, widgets=[]):
+        super().__init__()
         self._config = config
         self._widgets = widgets if isinstance(widgets, list) else [ widgets ]
         self._name = None

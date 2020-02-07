@@ -13,13 +13,13 @@ import locale
 
 import core.module
 import core.widget
+import core.input
 
 class Module(core.module.Module):
     def __init__(self, config):
         super().__init__(config, core.widget.Widget(self.full_text))
-        # TODO: register callback
-        #engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-        #                            cmd='calendar')
+
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd='calendar')
         self._fmt = self.parameter('format', self.default_format())
         l = locale.getdefaultlocale()
         if not l or l == (None, None):
