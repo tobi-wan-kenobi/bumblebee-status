@@ -25,16 +25,22 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+def autostart_daemon():
+    try:
+        bumblebee.util.execute("pulseaudio --check")
+    except Exception:
+        try:
+            bumblebee.util.execute("pulseaudio --start")
+        except:
+            pass
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.volume)
         )
-        try:
-            if bumblebee.util.asbool(self.parameter("autostart", False)):
-                bumblebee.util.execute("pulseaudio --start")
-        except Exception:
-            pass
+        if bumblebee.util.asbool(self.parameter("autostart", False)):
+            autostart_daemon()
 
         self._change = 2
         self._change = int(self.parameter("percent_change", "2%").strip("%"))
@@ -167,11 +173,8 @@ class Module(bumblebee.engine.Module):
         except Exception:
             self._failed = True
             if bumblebee.util.asbool(self.parameter("autostart", False)):
-                try:
-                    bumblebee.util.execute("pulseaudio --start")
-                    self.update(widgets)
-                except Exception:
-                    pass
+                autostart_daemon()
+                self.update(widgets)
 
     def state(self, widget):
         if self._mute:
