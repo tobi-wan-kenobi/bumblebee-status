@@ -10,6 +10,6 @@ class Widget(util.store.Store):
         else:
             if callable(self._full_text):
                 return self._full_text()
-            return self._full_text
+        return self._full_text
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
