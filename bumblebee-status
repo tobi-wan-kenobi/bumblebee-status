@@ -1,14 +1,51 @@
 #!/usr/bin/env python
 
 import sys
+import json
+import select
+import logging
+import threading
+
 import core.config
 import core.output
 import core.module
+import core.input
+
+def handle_input():
+    poll = select.poll()
+    poll.register(sys.stdin.fileno(), select.POLLIN)
+
+    while True:
+        events = poll.poll()
+
+        for fileno, event in events:
+            line = '['
+            while line.startswith('['):
+                line = sys.stdin.readline().strip(',').strip()
+            logging.info('input event: {}'.format(line))
+            try:
+                event = json.loads(line)
+                core.input.trigger(event)
+            except ValueError:
+                pass
+
+    poll.unregister(sys.stdin.fileno())
 
 def main():
+    logging.basicConfig(
+        level=logging.DEBUG,
+        format="[%(asctime)s] %(module)-16s %(levelname)-8s %(message)s",
+        stream=sys.stderr
+    )
+
     config = core.config.Config(sys.argv[1:])
     output = core.output.i3()
     modules = []
+
+    input_thread = threading.Thread(target=handle_input)
+    input_thread.daemon = True
+    input_thread.start()
+
     for module in config.modules():
         modules.append(core.module.load(module, config))
     output.modules(modules)
@@ -20,7 +57,6 @@ def main():
         output.draw('statusline')
         output.wait(config.interval())
     output.draw('stop')
-        
 
 if __name__ == "__main__":
     main()
