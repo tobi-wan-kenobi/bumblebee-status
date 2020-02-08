@@ -10,6 +10,7 @@ class config(unittest.TestCase):
         self.anotherEvent = { 'button': core.input.RIGHT_MOUSE, 'instance': self.inputObject.id() }
         self.callback = unittest.mock.MagicMock()
         self.callback2 = unittest.mock.MagicMock()
+        self.someCommand = 'some sample command'
 
     def test_callable_gets_called(self):
         core.input.register(self.inputObject, self.someEvent['button'], self.callback)
@@ -33,5 +34,20 @@ class config(unittest.TestCase):
         core.input.trigger(self.someEvent)
         self.callback.assert_called_once_with(self.someEvent)
         self.callback2.assert_called_once_with(self.someEvent)
+
+    def test_event_names(self):
+        self.assertEqual(core.input.button_name(core.input.LEFT_MOUSE), 'left-mouse')
+        self.assertEqual(core.input.button_name(core.input.RIGHT_MOUSE), 'right-mouse')
+        self.assertEqual(core.input.button_name(core.input.MIDDLE_MOUSE), 'middle-mouse')
+        self.assertEqual(core.input.button_name(core.input.WHEEL_UP), 'wheel-up')
+        self.assertEqual(core.input.button_name(core.input.WHEEL_DOWN), 'wheel-down')
+        self.assertEqual(core.input.button_name(12345), 'n/a')
+
+    def test_non_callable_callback(self):
+        with unittest.mock.patch('core.input.util.cli') as cli:
+            cli.execute.return_value = ''
+            core.input.register(self.inputObject, self.someEvent['button'], self.someCommand)
+            core.input.trigger(self.someEvent)
+            cli.execute.assert_called_once_with(self.someCommand, wait=False)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
