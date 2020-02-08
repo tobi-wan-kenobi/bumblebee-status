@@ -299,6 +299,10 @@ Dracula Powerline (-t dracula-powerline) (contributed by [xsteadfastx](https://g
 
 ![Dracula Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/dracula-powerline.png)
 
+Nord Powerline (-t nord-powerline) (contributed by [uselessthird](https://github.com/uselessthird)):
+
+![Nord Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/nord-powerline.png)
+
 Default (nothing or `-t default`):
 
 ![Default](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/default.png)
