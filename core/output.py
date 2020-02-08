@@ -5,15 +5,16 @@ import time
 class i3(object):
     def __init__(self):
         self._modules = []
-        self.clear()
+        self._status = []
 
     def modules(self, modules=None):
         if not modules:
             return self._modules
         self._modules = modules if isinstance(modules, list) else [ modules ]
 
-    def draw(self, what):
-        data = getattr(self, what)()
+    def draw(self, what, args=None):
+        cb = getattr(self, what)
+        data = cb(args) if args else cb()
         if 'data' in data:
             sys.stdout.write(json.dumps(data['data']))
         if 'suffix' in data:
@@ -30,20 +31,20 @@ class i3(object):
     def stop(self):
         return { 'suffix': '\n]' }
 
-    def clear(self):
-        self._statusline = []
+    def patch(self, affected_modules):
+        pass # TODO
 
     def statusline(self):
-        status = []
+        self._status = []
         for module in self._modules:
             for widget in module.widgets():
-                status.append({
+                self._status.append({
                     'full_text': widget.full_text(),
                     'instance': widget.id(),
                     'name': module.id(),
                 })
         return {
-            'data': status,
+            'data': self._status,
             'suffix': ','
         }
 

@@ -11,13 +11,14 @@ import core.output
 import core.module
 import core.input
 
-def handle_input():
+def handle_input(output):
     poll = select.poll()
     poll.register(sys.stdin.fileno(), select.POLLIN)
 
     while True:
         events = poll.poll()
 
+        modules = {}
         for fileno, event in events:
             line = '['
             while line.startswith('['):
@@ -26,8 +27,11 @@ def handle_input():
             try:
                 event = json.loads(line)
                 core.input.trigger(event)
+                if 'name' in event:
+                    modules[event['name']] = True
             except ValueError:
                 pass
+        output.draw('patch', modules.keys())
 
     poll.unregister(sys.stdin.fileno())
 
@@ -42,7 +46,7 @@ def main():
     output = core.output.i3()
     modules = []
 
-    input_thread = threading.Thread(target=handle_input)
+    input_thread = threading.Thread(target=handle_input, args=(output,))
     input_thread.daemon = True
     input_thread.start()
 
@@ -51,7 +55,6 @@ def main():
     output.modules(modules)
     output.draw('start')
     while True:
-        output.clear()
         for module in modules:
             module.update()
         output.draw('statusline')
