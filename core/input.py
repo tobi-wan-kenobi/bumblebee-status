@@ -1,4 +1,5 @@
 import uuid
+import util.cli
 
 LEFT_MOUSE = 1
 MIDDLE_MOUSE = 2
@@ -10,7 +11,8 @@ callbacks = {}
 
 class Object(object):
     def __init__(self):
-        self._id = uuid.uuid4()
+        super(Object, self).__init__()
+        self._id = str(uuid.uuid4())
 
     def id(self):
         return self._id
@@ -31,5 +33,7 @@ def _invoke(event, callback):
     for cb in callback.get(event['button']):
         if callable(cb):
             cb(event)
+        else:
+            util.cli.execute(cb, wait=False)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
