@@ -38,7 +38,9 @@ class i3(object):
         for module in self._modules:
             for widget in module.widgets():
                 status.append({
-                    'full_text': widget.full_text()
+                    'full_text': widget.full_text(),
+                    'instance': widget.id(),
+                    'name': module.id(),
                 })
         return {
             'data': status,

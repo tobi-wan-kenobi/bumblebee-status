@@ -1,7 +1,9 @@
+import core.input
 import util.store
 
-class Widget(util.store.Store):
+class Widget(util.store.Store, core.input.Object):
     def __init__(self, full_text):
+        super(Widget, self).__init__()
         self._full_text = full_text
 
     def full_text(self, value=None):

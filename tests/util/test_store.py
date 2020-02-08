@@ -2,7 +2,7 @@ import unittest
 
 import util.store
 
-class config(unittest.TestCase):
+class store(unittest.TestCase):
     def setUp(self):
         self.store = util.store.Store()
 
@@ -11,9 +11,6 @@ class config(unittest.TestCase):
         self.someOtherKey = "anotherRandomKey"
         self.someValue = "someRandomValue"
         self.someOtherValue = "anotherRandomValue"
-
-    def tearDown(self):
-        pass
 
     def test_get_of_unset_key(self):
         self.assertEqual(None, self.store.get(self.unusedKey), 'default value expected to be None')

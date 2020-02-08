@@ -8,6 +8,7 @@ this module
 class Store(object):
     """Interface for storing and retrieving simple values"""
     def __init__(self):
+        super(Store, self).__init__()
         self._data = {}
 
     def set(self, key, value):
