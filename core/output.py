@@ -31,16 +31,20 @@ class i3(object):
     def stop(self):
         return { 'suffix': '\n]' }
 
+    def widgets(self, module):
+        widgets = []
+        for widget in module.widgets():
+            widgets.append({
+                'full_text': widget.full_text(),
+                'instance': widget.id(),
+                'name': module.id(),
+            })
+        return widgets
+
     def update(self, affected_modules=None):
         for module in self._modules:
             module.update()
-            self._status[module] = []
-            for widget in module.widgets():
-                self._status[module].append({
-                    'full_text': widget.full_text(),
-                    'instance': widget.id(),
-                    'name': module.id(),
-                })
+            self._status[module] = self.widgets(module)
 
     def statusline(self):
         widgets = []
