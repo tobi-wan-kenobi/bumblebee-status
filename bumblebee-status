@@ -31,7 +31,8 @@ def handle_input(output):
                     modules[event['name']] = True
             except ValueError:
                 pass
-        output.draw('patch', modules.keys())
+        output.update(modules.keys())
+        output.draw('statusline')
 
     poll.unregister(sys.stdin.fileno())
 
@@ -55,8 +56,7 @@ def main():
     output.modules(modules)
     output.draw('start')
     while True:
-        for module in modules:
-            module.update()
+        output.update()
         output.draw('statusline')
         output.wait(config.interval())
     output.draw('stop')

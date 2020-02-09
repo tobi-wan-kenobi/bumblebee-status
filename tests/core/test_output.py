@@ -14,9 +14,6 @@ class i3(unittest.TestCase):
         widget.full_text.return_value = "test"
         self.someModule = TestModule(widgets=[widget, widget, widget])
 
-    def tearDown(self):
-        pass
-
     def test_start(self):
         all_data = self.i3.start()
         data = all_data['data']
@@ -52,6 +49,7 @@ class i3(unittest.TestCase):
 
     def test_statusline(self):
         self.i3.modules([ self.someModule, self.someModule, self.someModule ])
+        self.i3.update()
         data = self.i3.statusline()
         self.assertEqual(len(self.someModule.widgets())*3, len(data['data']), 'wrong number of widgets')
 

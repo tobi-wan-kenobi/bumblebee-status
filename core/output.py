@@ -5,7 +5,7 @@ import time
 class i3(object):
     def __init__(self):
         self._modules = []
-        self._status = []
+        self._status = {}
 
     def modules(self, modules=None):
         if not modules:
@@ -31,20 +31,23 @@ class i3(object):
     def stop(self):
         return { 'suffix': '\n]' }
 
-    def patch(self, affected_modules):
-        pass # TODO
-
-    def statusline(self):
-        self._status = []
+    def update(self, affected_modules=None):
         for module in self._modules:
+            module.update()
+            self._status[module] = []
             for widget in module.widgets():
-                self._status.append({
+                self._status[module].append({
                     'full_text': widget.full_text(),
                     'instance': widget.id(),
                     'name': module.id(),
                 })
+
+    def statusline(self):
+        widgets = []
+        for module in self._modules:
+            widgets += self._status[module]
         return {
-            'data': self._status,
+            'data': widgets,
             'suffix': ','
         }
 
