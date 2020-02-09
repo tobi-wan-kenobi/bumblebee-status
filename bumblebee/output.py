@@ -321,6 +321,118 @@ class Widget(bumblebee.store.Store):
             else:
                 return self._full_text
 
+
+class WidgetDrawer(object):
+    """
+        Wrapper for I3BarOutput.draw(),
+        because that function is getting too big
+    """
+    def __init__(self, theme, config=None):
+        """
+            Keep the same signature as I3BarOutput.__init__()
+        """
+        self._theme = theme
+        self._config = config
+        self._widgets = []
+        self._markup = None
+        self._full_text = None
+        self._prefix = None
+        self._suffix = None
+
+    def add_separator(self, widget, separator):
+        """Add separator (if theme has one)"""
+        if separator:
+            self._widgets.append({
+                u"full_text": separator,
+                "separator": False,
+                "color": self._theme.separator_fg(widget),
+                "background": self._theme.separator_bg(widget),
+                "separator_block_width": self._theme.separator_block_width(widget),
+            })
+
+    def add_prefix_colors(self, widget):
+        """add custom theme colors for prefix"""
+        if self._markup == "pango":
+            # add prefix/suffix colors
+            fg = self._theme.prefix_fg(widget)
+            bg = self._theme.prefix_bg(widget)
+            self._prefix = "<span {} {}>{}</span>".format(
+                "foreground='{}'".format(fg) if fg else "",
+                "background='{}'".format(bg) if bg else "",
+                self._prefix
+            )
+
+    def add_prefix(self, widget, padding):
+        """add prefix to full_text"""
+        self._prefix = self._theme.prefix(widget, padding)
+
+        self.add_prefix_colors(widget)
+
+        if self._prefix:
+            self._full_text = u"{}{}".format(self._prefix, self._full_text)
+
+    def add_suffix(self, widget, padding):
+        """add suffix to full_text"""
+        self._suffix = self._theme.suffix(widget, padding)
+
+        if self._suffix:
+            self._full_text = u"{}{}".format(self._full_text, self._suffix)
+
+    def escape_amp(self):
+        """escape & in full_text, because pango requires it"""
+        if self._markup == "pango":
+            self._full_text = self._full_text.replace("&", "&amp;")
+
+    def draw(self, widget, module=None, engine=None):
+        """
+            Keep the same argument signature as I3BarOutput.draw()
+            Return: list
+                    list[0] - optional if the theme has a separator
+                    list[1] - JSON text for the widget
+        """
+
+        if widget.get_module() and widget.get_module().hidden():
+            return []
+        if widget.get_module() and widget.get_module().name in self._config.autohide():
+            if not any(state in widget.state() for state in ["warning", "critical"]):
+                return []
+
+        separator = self._theme.separator(widget)
+        self.add_separator(widget, separator)
+
+        self._markup = "none" if not self._config else self._config.markup()
+
+        self._full_text = widget.full_text()
+
+        padding = self._theme.padding(widget)
+
+        self.add_prefix(widget, padding)
+
+        self.add_suffix(widget, padding)
+
+        width = self._theme.minwidth(widget)
+
+        if width:
+            self._full_text = self._full_text.ljust(len(width) + len(self._prefix) + len(self._suffix))
+
+        self.escape_amp()
+
+        self._widgets.append({
+            u"full_text": self._full_text,
+            "color": self._theme.fg(widget),
+            "background": self._theme.bg(widget),
+            "separator_block_width": self._theme.separator_block_width(widget),
+            "separator": True if separator is None else False,
+            "min_width": None,
+#            "min_width": width + "A"*(len(self._prefix) + len(self._suffix)) if width else None,
+            "align": self._theme.align(widget),
+            "instance": widget.id,
+            "name": module.id,
+            "markup": self._markup,
+        })
+        return self._widgets
+
+
 class I3BarOutput(object):
     """Manage output according to the i3bar protocol"""
     def __init__(self, theme, config=None):
@@ -342,65 +454,15 @@ class I3BarOutput(object):
         sys.stdout.write("]\n")
 
     def draw(self, widget, module=None, engine=None):
-        """Draw a single widget"""
-        full_text = widget.full_text()
-        if widget.get_module() and widget.get_module().hidden():
-            return
-        if widget.get_module() and widget.get_module().name in self._config.autohide():
-            if not any(state in widget.state() for state in ["warning", "critical"]):
-                return
-        padding = self._theme.padding(widget)
+        """
+            Draw a single widget
 
-        prefix = self._theme.prefix(widget, padding)
-        suffix = self._theme.suffix(widget, padding)
-
-        if self._config.markup() == "pango":
-            # add prefix/suffix colors
-            fg = self._theme.prefix_fg(widget)
-            bg = self._theme.prefix_bg(widget)
-            prefix = "<span {} {}>{}</span>".format(
-                "foreground='{}'".format(fg) if fg else "",
-                "background='{}'".format(bg) if bg else "",
-                prefix
-            )
-
-        if prefix:
-            full_text = u"{}{}".format(prefix, full_text)
-        if suffix:
-            full_text = u"{}{}".format(full_text, suffix)
-
-        separator = self._theme.separator(widget)
-        if separator:
-            self._widgets.append({
-                u"full_text": separator,
-                "separator": False,
-                "color": self._theme.separator_fg(widget),
-                "background": self._theme.separator_bg(widget),
-                "separator_block_width": self._theme.separator_block_width(widget),
-            })
-        width = self._theme.minwidth(widget)
-
-        if width:
-            full_text = full_text.ljust(len(width) + len(prefix) + len(suffix))
-
-        markup = "none" if not self._config else self._config.markup()
-
-        if markup == "pango":
-            full_text = full_text.replace("&", "&amp;")
-
-        self._widgets.append({
-            u"full_text": full_text,
-            "color": self._theme.fg(widget),
-            "background": self._theme.bg(widget),
-            "separator_block_width": self._theme.separator_block_width(widget),
-            "separator": True if separator is None else False,
-            "min_width": None,
-#            "min_width": width + "A"*(len(prefix) + len(suffix)) if width else None,
-            "align": self._theme.align(widget),
-            "instance": widget.id,
-            "name": module.id,
-            "markup": markup,
-        })
+            Note: technically, this method doesn't draw anything. It only adds
+            blocks of JSON text to self._widgets: one for separator, if the
+            theme contains a separator and one for the widget itself
+        """
+        widget_drawer = WidgetDrawer(self._theme, self._config)
+        self._widgets.extend(widget_drawer.draw(widget, module, engine))
 
     def begin(self):
         """Start one output iteration"""
