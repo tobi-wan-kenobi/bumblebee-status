@@ -44,7 +44,8 @@ def main():
     )
 
     config = core.config.Config(sys.argv[1:])
-    output = core.output.i3()
+    theme = core.theme.Theme(config.theme(), config.iconset())
+    output = core.output.i3(theme)
     modules = []
 
     input_thread = threading.Thread(target=handle_input, args=(output,))

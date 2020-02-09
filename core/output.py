@@ -2,8 +2,10 @@ import sys
 import json
 import time
 
+import core.theme
+
 class i3(object):
-    def __init__(self):
+    def __init__(self, theme=core.theme.Theme()):
         self._modules = []
         self._status = {}
 
