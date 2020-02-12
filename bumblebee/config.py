@@ -17,6 +17,7 @@ THEME_HELP = "Specify the theme to use for drawing modules"
 PARAMETER_HELP = "Provide configuration parameters in the form of <module>.<key>=<value>"
 LIST_HELP = "Display a list of either available themes or available modules along with their parameters."
 DEBUG_HELP = "Enable debug log, This will create '~/bumblebee-status-debug.log' by default, can be changed with the '-f' option"
+ICONMARKUP_HELP = "A Python format string that is valid Pango markup used for low level customization of icons on top of themes. There is no validation performed, this is delegated to the user. Used together with --markup=pango. Example: \"<span foreground='#ffffff' background='#000000'>{}</span>\". WARNING: highly experimental feature"
 
 class print_usage(argparse.Action):
     def __init__(self, option_strings, dest, nargs=None, **kwargs):
@@ -61,6 +62,7 @@ def create_parser():
         help=MODULE_HELP)
     parser.add_argument("-t", "--theme", default="default", help=THEME_HELP)
     parser.add_argument("--markup", default="none", help="Specify the markup type of the output (e.g. 'pango')")
+    parser.add_argument("--iconmarkup", default="none", help=ICONMARKUP_HELP)
     parser.add_argument("-p", "--parameters", nargs="+", action='append', default=[],
         help=PARAMETER_HELP)
     parser.add_argument("-l", "--list", choices=["modules", "themes"], action=print_usage,
@@ -128,5 +130,8 @@ class Config(bumblebee.store.Store):
 
     def markup(self):
         return self._args.markup
+
+    def iconmarkup(self):
+        return self._args.iconmarkup
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
