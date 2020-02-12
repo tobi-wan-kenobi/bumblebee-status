@@ -6,6 +6,7 @@ import sys
 import json
 import uuid
 import logging
+import xml.etree.ElementTree
 
 import bumblebee.store
 import bumblebee.util
@@ -337,6 +338,9 @@ class WidgetDrawer(object):
         self._markup = None
         self._full_text = None
         self._prefix = None
+        self._prefix_fg = None
+        self._prefix_bg = None
+        self._iconmarkup = None
         self._suffix = None
 
     def add_separator(self, widget, separator):
@@ -350,30 +354,55 @@ class WidgetDrawer(object):
                 "separator_block_width": self._theme.separator_block_width(widget),
             })
 
+    def add_prefix_iconmarkup(self, widget):
+        """add custom Pango markup for prefix"""
+        element = xml.etree.ElementTree.XML(self._iconmarkup)
+        # if the custom markup has neither 'foreground' or 'fgcolor'
+        # attributes, but theme has prefixfg, merge it
+        if 'foreground' not in element.keys() and 'fgcolor' not in element.keys() and self._prefix_fg is not None:
+            element.set("foreground", self._prefix_fg)
+        # if the custom markup has neither 'background' or 'bgcolor'
+        # attributes, but theme has prefixbg, merge it
+        if 'background' not in element.keys() and 'bgcolor' not in element.keys() and self._prefix_bg is not None:
+            element.set("background", self._prefix_bg)
+        self._prefix = xml.etree.ElementTree.tostring(element).decode("utf-8").format(self._prefix)
+
     def add_prefix_colors(self, widget):
         """add custom theme colors for prefix"""
-        if self._markup == "pango":
-            # add prefix/suffix colors
-            fg = self._theme.prefix_fg(widget)
-            bg = self._theme.prefix_bg(widget)
-            self._prefix = "<span {} {}>{}</span>".format(
-                "foreground='{}'".format(fg) if fg else "",
-                "background='{}'".format(bg) if bg else "",
-                self._prefix
-            )
+        self._prefix = "<span {} {}>{}</span>".format(
+            "foreground='{}'".format(self._prefix_fg) if self._prefix_fg else "",
+            "background='{}'".format(self._prefix_bg) if self._prefix_bg else "",
+            self._prefix
+        )
 
     def add_prefix(self, widget, padding):
         """add prefix to full_text"""
         self._prefix = self._theme.prefix(widget, padding)
 
-        self.add_prefix_colors(widget)
+        if self._markup == "pango":
+            # add prefix/suffix colors
+            self._prefix_fg = self._theme.prefix_fg(widget)
+            self._prefix_bg = self._theme.prefix_bg(widget)
+            self._iconmarkup = self._config.iconmarkup()
+            if self._iconmarkup != "none":
+                self.add_prefix_iconmarkup(widget)
+            else:
+                self.add_prefix_colors(widget)
 
         if self._prefix:
             self._full_text = u"{}{}".format(self._prefix, self._full_text)
 
+    def add_suffix_iconmarkup(self, widget):
+        """add custom Pango markup for suffix"""
+        self._suffix = self._iconmarkup.format(self._suffix)
+
     def add_suffix(self, widget, padding):
         """add suffix to full_text"""
         self._suffix = self._theme.suffix(widget, padding)
+
+        if self._markup == "pango":
+            if self._iconmarkup != "none":
+                self.add_suffix_iconmarkup(widget)
 
         if self._suffix:
             self._full_text = u"{}{}".format(self._full_text, self._suffix)
