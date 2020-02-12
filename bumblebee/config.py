@@ -45,7 +45,10 @@ class print_usage(argparse.Action):
             try:
                 mod = importlib.import_module("bumblebee.modules.{}".format(m["name"]))
                 if self._args.list_format == "markdown":
-                    print("|{} |{} |".format(m["name"], mod.__doc__.replace("\n", "<br>")))
+                    doc = mod.__doc__.replace("<", "\<")
+                    doc = doc.replace(">", "\>")
+                    doc = doc.replace("\n", "<br>")
+                    print("|{} |{} |".format(m["name"], doc))
                 else:
                     print(textwrap.fill("{}:".format(m["name"]), 80,
                             initial_indent=self._indent*2, subsequent_indent=self._indent*2))
