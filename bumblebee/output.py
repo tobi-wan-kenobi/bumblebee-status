@@ -354,21 +354,21 @@ class WidgetDrawer(object):
 
     def add_prefix_colors(self, widget):
         """add custom theme colors for prefix"""
-        if self._markup == "pango":
-            # add prefix/suffix colors
-            self._prefix_fg = self._theme.prefix_fg(widget)
-            self._prefix_bg = self._theme.prefix_bg(widget)
-            self._prefix = "<span {} {}>{}</span>".format(
-                "foreground='{}'".format(self._prefix_fg) if self._prefix_fg else "",
-                "background='{}'".format(self._prefix_bg) if self._prefix_bg else "",
-                self._prefix
-            )
+        self._prefix = "<span {} {}>{}</span>".format(
+            "foreground='{}'".format(self._prefix_fg) if self._prefix_fg else "",
+            "background='{}'".format(self._prefix_bg) if self._prefix_bg else "",
+            self._prefix
+        )
 
     def add_prefix(self, widget, padding):
         """add prefix to full_text"""
         self._prefix = self._theme.prefix(widget, padding)
 
-        self.add_prefix_colors(widget)
+        if self._markup == "pango":
+            # add prefix/suffix colors
+            self._prefix_fg = self._theme.prefix_fg(widget)
+            self._prefix_bg = self._theme.prefix_bg(widget)
+            self.add_prefix_colors(widget)
 
         if self._prefix:
             self._full_text = u"{}{}".format(self._prefix, self._full_text)
