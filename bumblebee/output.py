@@ -337,6 +337,8 @@ class WidgetDrawer(object):
         self._markup = None
         self._full_text = None
         self._prefix = None
+        self._prefix_fg = None
+        self._prefix_bg = None
         self._suffix = None
 
     def add_separator(self, widget, separator):
@@ -354,11 +356,11 @@ class WidgetDrawer(object):
         """add custom theme colors for prefix"""
         if self._markup == "pango":
             # add prefix/suffix colors
-            prefix_fg = self._theme.prefix_fg(widget)
-            prefix_bg = self._theme.prefix_bg(widget)
+            self._prefix_fg = self._theme.prefix_fg(widget)
+            self._prefix_bg = self._theme.prefix_bg(widget)
             self._prefix = "<span {} {}>{}</span>".format(
-                "foreground='{}'".format(prefix_fg) if prefix_fg else "",
-                "background='{}'".format(prefix_bg) if prefix_bg else "",
+                "foreground='{}'".format(self._prefix_fg) if self._prefix_fg else "",
+                "background='{}'".format(self._prefix_bg) if self._prefix_bg else "",
                 self._prefix
             )
 
