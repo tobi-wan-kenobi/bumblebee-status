@@ -1,9 +1,11 @@
 """Input classes"""
 
+import os
 import sys
 import json
 import uuid
 import time
+import socket
 import select
 import logging
 import threading
@@ -23,38 +25,62 @@ def is_terminated():
             return True
     return False
 
+class CommandSocket(object):
+    def __init__(self):
+        self._name = "/tmp/.bumblebee-status.{}".format(os.getpid())
+        self._socket = None
+
+    def __enter__(self):
+        self._socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self._socket.bind(self._name)
+        self._socket.listen(5)
+        return self._socket
+
+    def __exit__(self, type, value, traceback):
+        self._socket.close()
+        os.unlink(self._name)
+
 def read_input(inp):
     """Read i3bar input and execute callbacks"""
-    poll = select.poll()
-    poll.register(sys.stdin.fileno(), select.POLLIN)
-    log.debug("starting click event processing")
-    while inp.running:
-        if is_terminated():
-            return
 
-        try:
-            events = poll.poll(1000)
-        except Exception:
-            continue
-        for fileno, event in events:
-            line = "["
-            while line.startswith("["):
-                line = sys.stdin.readline().strip(",").strip()
-                log.debug("new event: {}".format(line))
-            inp.has_event = True
+    with CommandSocket() as cmdsocket:
+        poll = select.poll()
+        poll.register(sys.stdin, select.POLLIN)
+        poll.register(cmdsocket, select.POLLIN)
+        log.debug("starting click event processing")
+        while inp.running:
+            if is_terminated():
+                return
+
             try:
-                event = json.loads(line)
-                if "instance" in event:
-                    inp.callback(event)
-                    inp.redraw()
+                events = poll.poll(1000)
+            except Exception:
+                continue
+            for fileno, event in events:
+
+                if fileno == cmdsocket.fileno():
+                    tmp, _ = cmdsocket.accept()
+                    line = tmp.recv(4096).decode()
+                    tmp.close()
                 else:
-                    log.debug("field 'instance' missing in input, not processing the event")
-            except ValueError as e:
-                log.debug("failed to parse event: {}".format(e))
-    log.debug("exiting click event processing")
-    poll.unregister(sys.stdin.fileno())
-    inp.has_event = True
-    inp.clean_exit = True
+                    line = "["
+                    while line.startswith("["):
+                        line = sys.stdin.readline().strip(",").strip()
+                        log.debug("new event: {}".format(line))
+                inp.has_event = True
+                try:
+                    event = json.loads(line)
+                    if "instance" in event:
+                        inp.callback(event)
+                        inp.redraw()
+                    else:
+                        log.debug("field 'instance' missing in input, not processing the event")
+                except ValueError as e:
+                    log.debug("failed to parse event: {}".format(e))
+        log.debug("exiting click event processing")
+        poll.unregister(sys.stdin.fileno())
+        inp.has_event = True
+        inp.clean_exit = True
 
 class I3BarInput(object):
     """Process incoming events from the i3bar"""
