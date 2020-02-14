@@ -295,8 +295,12 @@ class Engine(object):
             self._current_module = module
             module.update_wrapper(module.widgets())
             if module.error is None:
+                widget_ids = module.parameter('id', '').split(',')
+                idx = 0
                 for widget in module.widgets():
                     widget.link_module(module)
+                    widget.id = widget_ids[idx] if idx < len(widget_ids) else widget.id
+                    idx = idx + 1
                     self._output.draw(widget=widget, module=module, engine=self)
             else:
                 self._output.draw(widget=module.errorWidget(), module=module, engine=self)
