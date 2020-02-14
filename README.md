@@ -240,6 +240,8 @@ Modules and commandline utilities are only required for modules, the core itself
 * zpool (for module 'zpool')
 * progress (for module 'progress')
 * i3exit (for module 'system')
+* dunst (for module 'dunst')
+* hddtemp (for module 'hddtemp')
 
 # Examples
 Here are some screenshots for all themes that currently exist:
