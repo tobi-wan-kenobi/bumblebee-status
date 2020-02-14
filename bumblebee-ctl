@@ -17,7 +17,7 @@ def main():
     parser = argparse.ArgumentParser(description='send commands to bumblebee-status')
     parser.add_argument('-b', '--button', choices=['left-mouse', 'right-mouse', 'middle-mouse', 'wheel-up', 'wheel-down'], help='button to emulate', default='left-mouse')
     parser.add_argument('-i', '--id', help='ID of widget to trigger', required=True)
-    parser.add_argument('-n', '--name', help='name of the module to trigger', required=True)
+    parser.add_argument('-m', '--module', help='name of the module to trigger', required=True)
 
     args = parser.parse_args()
 
@@ -26,7 +26,7 @@ def main():
         s = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
         s.connect(f)
         s.sendall(json.dumps({
-            'name': args.name,
+            'name': args.module,
             'instance': args.id, 
             'button': button[args.button],
         }).encode('ascii'))
