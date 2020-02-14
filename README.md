@@ -69,6 +69,7 @@ bar {
 ```
 
 # Documentation
+
 See [the wiki](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki) for documentation.
 
 See [FAQ](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/FAQ) for, well, FAQs.
@@ -78,6 +79,10 @@ Other resources:
 * A list of [available modules](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/Available-Modules)
 * [How to write a theme](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/How-to-write-a-theme)
 * [How to write a module](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/How-to-write-a-module)
+
+User contributions:
+
+[@somospocos:bumblebee-status-contrib](https://github.com/somospocos/bumblebee-status-contrib): Collected resources and useful tricks by @somospocos
 
 # Installation
 ```
