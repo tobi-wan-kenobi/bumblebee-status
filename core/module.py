@@ -2,6 +2,7 @@ import importlib
 import logging
 
 import core.input
+import core.widget
 
 log = logging.getLogger(__name__)
 
@@ -9,8 +10,8 @@ def load(module_name, config=None):
     try:
         mod = importlib.import_module('modules.{}'.format(module_name))
     except ImportError as error:
-        log.fatal('failed to import {}: {}'.format(module_name, str(error)))
-        return Error(module_name)
+        log.fatal('failed to import {}: {}'.format(module_name, error))
+        return Error(config, module_name, error)
     return getattr(mod, 'Module')(config)
 
 class Module(core.input.Object):
@@ -41,7 +42,12 @@ class Module(core.input.Object):
         return self._widgets
 
 class Error(Module):
-    def __init__(self, loaded_module_name):
-        self._loaded_module_name = loaded_module_name
+    def __init__(self, config, module, error):
+        super().__init__(config, core.widget.Widget(self.full_text))
+        self._module = module
+        self._error = error
+
+    def full_text(self):
+        return '{}: {}'.format(self._module, self._error)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
