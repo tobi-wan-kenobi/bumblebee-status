@@ -67,7 +67,9 @@ def main():
         import time
         while True:
             output.begin()
-            error = bumblebee.modules.error.Module(engine, config)
+            error = bumblebee.modules.error.Module(engine, {
+                "config": config, "name": "error"
+            })
             error.set("exception occurred: {} in {}".format(e, module))
             widget = error.widgets()[0]
             widget.link_module(error)
