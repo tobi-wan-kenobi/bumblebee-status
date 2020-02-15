@@ -8,6 +8,7 @@ class i3(object):
     def __init__(self, theme=core.theme.Theme()):
         self._modules = []
         self._status = {}
+        self._theme = theme
 
     def modules(self, modules=None):
         if not modules:
@@ -40,6 +41,8 @@ class i3(object):
                 'full_text': widget.full_text(),
                 'instance': widget.id(),
                 'name': module.id(),
+                'color': self._theme.fg(widget),
+                'background': self._theme.bg(widget),
             })
         return widgets
 
