@@ -39,6 +39,9 @@ class Theme(object):
     def default_separators(self, widget=None):
         return self.__get(widget, 'default-separators', True)
 
+    def separator_block_width(self, widget=None):
+        return self.__get(widget, 'separator-block-width', 0)
+
     def __start(self):
         self.__widget_count = 0
 

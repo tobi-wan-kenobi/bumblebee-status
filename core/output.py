@@ -48,6 +48,7 @@ class i3(object):
                 'color': self._theme.fg(widget),
                 'background': self._theme.bg(widget),
                 'separator': self._theme.default_separators(),
+                'separator_block_width': self._theme.separator_block_width(),
             })
             core.event.trigger('next-widget')
         return widgets
