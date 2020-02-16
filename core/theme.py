@@ -31,11 +31,18 @@ class Theme(object):
     def bg(self, widget=None):
         return self.__get(widget, 'bg')
 
+    def default_separators(self, widget=None):
+        return self.__get(widget, 'default-separators', True)
+
     def __get(self, widget, key, default=None):
         value = default
-        if 'defaults' in self._data:
-            value = self._data['defaults'].get(key, value)
 
+        for option in ['defaults', 'cycle']:
+            if option in self._data:
+                tmp = self._data[option]
+                if isinstance(tmp, list):
+                    tmp = tmp[0]
+                value = tmp.get(key, value)
         return value
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

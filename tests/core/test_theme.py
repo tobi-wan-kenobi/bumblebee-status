@@ -6,10 +6,16 @@ class theme(unittest.TestCase):
     def setUp(self):
         self.invalidThemeName = 'this-theme-does-not-exist'
         self.validThemeName = 'default'
-        self.defaults = {
+        self.defaultsTheme = {
             'defaults': {
                 'fg': 'red', 'bg': 'black'
             }
+        }
+        self.cycleTheme = {
+            'cycle': [
+                { 'fg': 'red', 'bg': 'black' },
+                { 'fg': 'black', 'bg': 'red' }
+            ]
         }
 
     def test_invalid_theme(self):
@@ -21,8 +27,13 @@ class theme(unittest.TestCase):
         self.assertEqual(self.validThemeName, theme.name)
 
     def test_defaults(self):
-        theme = core.theme.Theme(raw_data=self.defaults)
-        self.assertEqual(self.defaults['defaults']['fg'], theme.fg())
-        self.assertEqual(self.defaults['defaults']['bg'], theme.bg())
+        theme = core.theme.Theme(raw_data=self.defaultsTheme)
+        self.assertEqual(self.defaultsTheme['defaults']['fg'], theme.fg())
+        self.assertEqual(self.defaultsTheme['defaults']['bg'], theme.bg())
+
+    def test_cycle(self):
+        theme = core.theme.Theme(raw_data=self.cycleTheme)
+        self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.fg())
+        self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.bg())
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

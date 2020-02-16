@@ -43,6 +43,7 @@ class i3(object):
                 'name': module.id(),
                 'color': self._theme.fg(widget),
                 'background': self._theme.bg(widget),
+                'separator': self._theme.default_separators(),
             })
         return widgets
 
