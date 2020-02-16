@@ -1,0 +1,198 @@
+{
+  "defaults": {
+    "separator": "\ue0b2",
+    "padding": "\u2800",
+    "unknown": { "prefix": "\uf100" }
+  },
+  "date": { "prefix": "\uf2d1" },
+  "time": { "prefix": "\uf3b3" },
+  "datetime": { "prefix": "\uf3b3" },
+  "memory": { "prefix": "\uf389" },
+  "cpu": { "prefix": "\uf4b0" },
+  "disk": { "prefix": "\u26c1" },
+  "dnf": { "prefix": "\uf2be" },
+  "apt": { "prefix": "\uf2be" },
+  "pacman": { "prefix": "\uf2be" },
+  "brightness": { "prefix": "\u263c" },
+  "load": { "prefix": "\uf13d" },
+  "layout": { "prefix": "\uf38c" },
+  "layout-xkb": { "prefix": "\uf38c" },
+  "todo": {
+    "empty": { "prefix": "\uf453" },
+    "items": { "prefix": "\uf454" },
+    "uptime": { "prefix": "\uf4c1" }
+  },
+  "zpool": {
+    "poolread": { "prefix": "\u26c1\uf3d6" },
+    "poolwrite": { "prefix": "\u26c1\uf3d5" },
+    "ONLINE": { "prefix": "\u26c1" },
+    "FAULTED": { "prefix": "\u26c1\uf3bc" },
+    "DEGRADED": { "prefix": "\u26c1\uf3bc" }
+  },
+  "cmus": {
+    "playing": { "prefix": "\uf488" },
+    "paused": { "prefix": "\uf210" },
+    "stopped": { "prefix": "\uf24f" },
+    "prev": { "prefix": "\uf4ab" },
+    "next": { "prefix": "\uf4ad" },
+    "shuffle-on": { "prefix": "\uf4a8" },
+    "shuffle-off": { "prefix": "\uf453" },
+    "repeat-on": { "prefix": "\uf459" },
+    "repeat-off": { "prefix": "\uf30f" }
+  },
+  "gpmdp": {
+    "playing": { "prefix": "\uf488" },
+    "paused": { "prefix": "\uf210" },
+    "stopped": { "prefix": "\uf24f" },
+    "prev": { "prefix": "\uf4ab" },
+    "next": { "prefix": "\uf4ad" }
+  },
+  "pasink": {
+    "muted": { "prefix": "\uf3b9" },
+    "unmuted": { "prefix": "\uf3ba" }
+  },
+  "amixer": {
+    "muted": { "prefix": "\uf3b9" },
+    "unmuted": { "prefix": "\uf3ba" }
+  },
+  "pasource": {
+    "muted": { "prefix": "\uf395" },
+    "unmuted": { "prefix": "\uf2ec" }
+  },
+  "kernel": {
+    "prefix": "\uf17c"
+  },
+  "nic": {
+    "wireless-up": { "prefix": "\uf25c" },
+    "wireless-down": { "prefix": "\uf3d0" },
+    "wired-up": { "prefix": "\uf270" },
+    "wired-down": { "prefix": "\uf271" },
+    "tunnel-up": { "prefix": "\uf133" },
+    "tunnel-down": { "prefix": "\uf306" }
+  },
+  "bluetooth": {
+    "ON": { "prefix": "\uf116" },
+    "OFF": { "prefix": "\uf116" },
+    "?": { "prefix": "\uf116" }
+  },
+  "battery": {
+    "charged": { "prefix": "\uf113", "suffix": "\uf493" },
+    "AC": { "suffix": "\uf493" },
+    "charging": {
+      "prefix": ["\uf112", "\uf115", "\uf114", "", "\uf111"],
+      "suffix": "\uf493"
+    },
+    "discharging-10": { "prefix": "\uf112", "suffix": "\uf3bc" },
+    "discharging-25": { "prefix": "\uf115", "suffix": "\uf3e6" },
+    "discharging-50": { "prefix": "\uf115", "suffix": "\uf3e6" },
+    "discharging-80": { "prefix": "\uf114", "suffix": "\uf3e6" },
+    "discharging-100": { "prefix": "\uf113", "suffix": "\uf3e6" },
+    "unknown-10": { "prefix": "\uf112", "suffix": "\uf3bc" },
+    "unknown-25": { "prefix": "\uf115", "suffix": "\uf142" },
+    "unknown-50": { "prefix": "\uf115", "suffix": "\uf142" },
+    "unknown-80": { "prefix": "\uf114", "suffix": "\uf142" },
+    "unknown-100": { "prefix": "\uf113", "suffix": "\uf142" },
+    "unlimited": { "prefix": "\uf402", "suffix": "\uf493" },
+    "estimate": { "prefix": "\uf402" }
+  },
+  "battery_all": {
+    "charged": { "prefix": "\uf113", "suffix": "\uf493" },
+    "AC": { "suffix": "\uf493" },
+    "charging": {
+      "prefix": ["\uf112", "\uf115", "\uf114", "", "\uf111"],
+      "suffix": "\uf493"
+    },
+    "discharging-10": { "prefix": "\uf112", "suffix": "\uf3bc" },
+    "discharging-25": { "prefix": "\uf115", "suffix": "\uf3e6" },
+    "discharging-50": { "prefix": "\uf115", "suffix": "\uf3e6" },
+    "discharging-80": { "prefix": "\uf114", "suffix": "\uf3e6" },
+    "discharging-100": { "prefix": "\uf113", "suffix": "\uf3e6" },
+    "unknown-10": { "prefix": "\uf112", "suffix": "\uf3bc" },
+    "unknown-25": { "prefix": "\uf115", "suffix": "\uf142" },
+    "unknown-50": { "prefix": "\uf115", "suffix": "\uf142" },
+    "unknown-80": { "prefix": "\uf114", "suffix": "\uf142" },
+    "unknown-100": { "prefix": "\uf113", "suffix": "\uf142" },
+    "unlimited": { "prefix": "\uf402", "suffix": "\uf493" },
+    "estimate": { "prefix": "\uf402" }
+  },
+  "caffeine": {
+    "activated": { "prefix": "\uf272\u3000\uf354" },
+    "deactivated": { "prefix": "\uf272\u3000\uf355" }
+  },
+  "xrandr": {
+    "on": { "prefix": "\uf465\u3000\uf354" },
+    "off": { "prefix": "\uf465\u3000\uf355" }
+  },
+  "redshift": {
+    "day": { "prefix": "\uf4b6" },
+    "night": { "prefix": "\uf467" },
+    "transition": { "prefix": "\uf475" }
+  },
+  "sensors": {
+    "prefix": "\uf3b6"
+  },
+  "traffic": {
+    "rx": { "prefix": "\uf365" },
+    "tx": { "prefix": "\uf35f" }
+  },
+  "network_traffic": {
+    "rx": { "prefix": "\uf365" },
+    "tx": { "prefix": "\uf35f" }
+  },
+  "mpd": {
+    "playing": { "prefix": "\uf488" },
+    "paused": { "prefix": "\uf210" },
+    "stopped": { "prefix": "\uf24f" },
+    "prev": { "prefix": "\uf4ab" },
+    "next": { "prefix": "\uf4ad" },
+    "shuffle-on": { "prefix": "\uf4a8" },
+    "shuffle-off": { "prefix": "\uf453" },
+    "repeat-on": { "prefix": "\uf459" },
+    "repeat-off": { "prefix": "\uf30f" }
+  },
+  "github": {
+    "prefix": "\uf233"
+  },
+  "deezer": {
+    "prefix": "\uf305"
+  },
+  "spotify": {
+    "prefix": "\uf305"
+  },
+  "publicip": {
+    "prefix": "\uf268"
+  },
+  "weather": {
+    "clouds": { "prefix": "\uf12b" },
+    "rain": { "prefix": "\uf495" },
+    "snow": { "prefix": "\uf4ae" },
+    "clear": { "prefix": "\uf3b0" },
+    "thunder": { "prefix": "\uf4bd" }
+  },
+  "taskwarrior": {
+    "prefix": "\uf454"
+  },
+  "dunst": {
+    "muted": { "prefix": "\uf39a" },
+    "unmuted": { "prefix": "\uf39b" }
+  },
+  "twmn": {
+    "muted": { "prefix": "\uf1f6" },
+    "unmuted": { "prefix": "\uf0f3" }
+  },
+  "system": {
+    "prefix": "  \uf2a9  "
+  },
+  "sun": {
+    "prefix": "\uf3b0"
+  },
+  "rss": {
+    "prefix": "\uf1ea"
+  },
+  "pomodoro": {
+      "off": { "prefix": "\uf24f" },
+      "paused": { "prefix": "\uf210" },
+      "on": { "prefix": "\uf488" }
+  }
+
+}

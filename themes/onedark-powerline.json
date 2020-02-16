@@ -1,0 +1,55 @@
+{
+	"icons": [ "awesome-fonts" ],
+	"defaults": {
+		"separator-block-width": 0,
+		"warning": {
+			"fg": "#282C34",
+			"bg": "#E5C07B"
+		},
+		"critical": {
+			"fg": "#282C34",
+			"bg": "#E06C75"
+		}
+	},
+	"cycle": [
+		{"fg": "#ABB2BF", "bg": "#4B5263"},
+		{"fg": "#ABB2BF", "bg": "#282C34"}
+	],
+	"dnf": {
+		"good": {
+			"fg": "#282C34",
+			"bg": "#98C379"
+		}
+	},
+	"pacman": {
+		"good": {
+			"fg": "#282C34",
+			"bg": "#98C379"
+		}
+	},
+	"battery": {
+		"charged": {
+			"fg": "#282C34",
+			"bg": "#98C379"
+		},
+		"AC": {
+			"fg": "#282C34",
+			"bg": "#98C379"
+		}
+	},
+    "pomodoro": {
+        "paused": {
+            "fg": "#282C34",
+            "bg": "#E5C07B"
+        },
+        "work": {
+            "fg": "#98C379",
+            "bg": "#282C34"
+        },
+        "break": {
+            "fg": "#282C34",
+            "bg": "#98C379"
+        }
+    }
+
+}

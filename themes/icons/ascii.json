@@ -1,0 +1,363 @@
+{
+  "defaults": {
+    "padding": " "
+  },
+  "memory": {
+    "prefix": "ram"
+  },
+  "cpu": {
+    "prefix": "cpu"
+  },
+  "cpu2": {
+    "freq": { "prefix": "freq" },
+    "load": { "prefix": "load" },
+    "loads": { "prefix": "" },
+    "temp": { "prefix": "temp" },
+    "fan": { "prefix": "fan" }
+  },
+  "disk": {
+    "prefix": "hdd"
+  },
+  "dnf": {
+    "prefix": "dnf"
+  },
+  "apt": {
+    "prefix": "apt"
+  },
+  "brightness": {
+    "prefix": "o"
+  },
+  "cmus": {
+    "playing": {
+      "prefix": ">"
+    },
+    "paused": {
+      "prefix": "||"
+    },
+    "stopped": {
+      "prefix": "[]"
+    },
+    "prev": {
+      "prefix": "|<"
+    },
+    "next": {
+      "prefix": ">|"
+    },
+    "shuffle-on": {
+      "prefix": "S"
+    },
+    "shuffle-off": {
+      "prefix": "[s]"
+    },
+    "repeat-on": {
+      "prefix": "R"
+    },
+    "repeat-off": {
+      "prefix": "[r]"
+    }
+  },
+  "pasink": {
+    "muted": {
+      "prefix": "audio(mute)"
+    },
+    "unmuted": {
+      "prefix": "audio"
+    }
+  },
+  "amixer": {
+    "muted": {
+      "prefix": "audio(mute)"
+    },
+    "unmuted": {
+      "prefix": "audio"
+    }
+  },
+  "pasource": {
+    "muted": {
+      "prefix": "mic(mute)"
+    },
+    "unmuted": {
+      "prefix": "mic"
+    }
+  },
+  "nic": {
+    "wireless-up": {
+      "prefix": "wifi"
+    },
+    "wireless-down": {
+      "prefix": "wifi"
+    },
+    "wired-up": {
+      "prefix": "lan"
+    },
+    "wired-down": {
+      "prefix": "lan"
+    },
+    "tunnel-up": {
+      "prefix": "tun"
+    },
+    "tunnel-down": {
+      "prefix": "tun"
+    }
+  },
+  "battery-upower": {
+    "charged": {
+      "suffix": "full"
+    },
+    "charging": {
+      "suffix": "chr"
+    },
+    "AC": {
+      "suffix": "ac"
+    },
+    "discharging-10": {
+      "prefix": "!",
+      "suffix": "dis"
+    },
+    "discharging-25": {
+      "suffix": "dis"
+    },
+    "discharging-50": {
+      "suffix": "dis"
+    },
+    "discharging-80": {
+      "suffix": "dis"
+    },
+    "discharging-100": {
+      "suffix": "dis"
+    },
+    "unknown-25": {
+      "suffix": "?"
+    },
+    "unknown-50": {
+      "suffix": "?"
+    },
+    "unknown-80": {
+      "suffix": "?"
+    },
+    "unknown-100": {
+      "suffix": "?"
+    }
+  },
+  "battery": {
+    "charged": {
+      "suffix": "full"
+    },
+    "charging": {
+      "suffix": "chr"
+    },
+    "AC": {
+      "suffix": "ac"
+    },
+    "discharging-10": {
+      "prefix": "!",
+      "suffix": "dis"
+    },
+    "discharging-25": {
+      "suffix": "dis"
+    },
+    "discharging-50": {
+      "suffix": "dis"
+    },
+    "discharging-80": {
+      "suffix": "dis"
+    },
+    "discharging-100": {
+      "suffix": "dis"
+    },
+    "unknown-25": {
+      "suffix": "?"
+    },
+    "unknown-50": {
+      "suffix": "?"
+    },
+    "unknown-80": {
+      "suffix": "?"
+    },
+    "unknown-100": {
+      "suffix": "?"
+    }
+  },
+  "battery_all": {
+    "charged": {
+      "suffix": "full"
+    },
+    "charging": {
+      "suffix": "chr"
+    },
+    "AC": {
+      "suffix": "ac"
+    },
+    "discharging-10": {
+      "prefix": "!",
+      "suffix": "dis"
+    },
+    "discharging-25": {
+      "suffix": "dis"
+    },
+    "discharging-50": {
+      "suffix": "dis"
+    },
+    "discharging-80": {
+      "suffix": "dis"
+    },
+    "discharging-100": {
+      "suffix": "dis"
+    },
+    "unknown-25": {
+      "suffix": "?"
+    },
+    "unknown-50": {
+      "suffix": "?"
+    },
+    "unknown-80": {
+      "suffix": "?"
+    },
+    "unknown-100": {
+      "suffix": "?"
+    }
+  },
+  "caffeine": {
+    "activated": {
+      "prefix": "caf-on"
+    },
+    "deactivated": {
+      "prefix": "caf-off "
+    }
+  },
+  "xrandr": {
+    "on": {
+      "prefix": " off "
+    },
+    "off": {
+      "prefix": " on "
+    },
+    "refresh": {
+      "prefix": " refresh "
+    }
+  },
+  "redshift": {
+    "day": {
+      "prefix": "day"
+    },
+    "night": {
+      "prefix": "night"
+    },
+    "transition": {
+      "prefix": "trans"
+    }
+  },
+  "docker_ps": {
+    "prefix": "containers"
+  },
+  "sensors": {
+    "prefix": "sensors"
+  },
+  "traffic": {
+    "rx": {
+      "prefix": "down"
+    },
+    "tx": {
+      "prefix": "up"
+    }
+  },
+  "mpd": {
+    "playing": {
+      "prefix": ">"
+    },
+    "paused": {
+      "prefix": "||"
+    },
+    "stopped": {
+      "prefix": "[]"
+    },
+    "prev": {
+      "prefix": "|<"
+    },
+    "next": {
+      "prefix": ">|"
+    },
+    "shuffle-on": {
+      "prefix": "S"
+    },
+    "shuffle-off": {
+      "prefix": "[s]"
+    },
+    "repeat-on": {
+      "prefix": "R"
+    },
+    "repeat-off": {
+      "prefix": "[r]"
+    }
+  },
+  "github": {
+    "prefix": "github"
+  },
+  "deezer": {
+    "prefix": ""
+  },
+  "spotify": {
+    "prefix": ""
+  },
+  "uptime": {
+    "prefix": "uptime"
+  },
+  "zpool": {
+    "poolread": {
+      "prefix": "pool read "
+    },
+    "poolwrite": {
+      "prefix": "pool write "
+    },
+    "ONLINE": {
+      "prefix": "pool"
+    },
+    "FAULTED": {
+      "prefix": "pool (!)"
+    },
+    "DEGRADED": {
+      "prefix": "pool (!)"
+    }
+  },
+  "git": {
+    "main": {
+      "prefix": ""
+    },
+    "new": {
+      "prefix": "[n]"
+    },
+    "modified": {
+      "prefix": "[m]"
+    },
+    "deleted": {
+      "prefix": "[d]"
+    }
+  },
+  "dunst": {
+    "muted": {
+      "prefix": "dunst(muted)"
+    },
+    "unmuted": {
+      "prefix": "dunst"
+    }
+  },
+  "twmn": {
+    "muted": {
+      "prefix": "twmn"
+    },
+    "unmuted": {
+      "prefix": "twmn(muted)"
+    }
+  },
+  "system": {
+		"prefix": "system"
+  },
+  "pomodoro": {
+      "off": { "prefix": "pom" },
+      "paused": { "prefix": "||" },
+      "on": { "prefix": " >" }
+  },
+  "hddtemp": {
+        "prefix": "hddtemp"
+  }
+}
