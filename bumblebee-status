@@ -63,6 +63,13 @@ def main():
     output.draw('stop')
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except Exception as e:
+        output = core.output.i3()
+        output.modules(core.module.Error(None, 'main', e))
+        output.draw('start')
+        output.update()
+        output.draw('statusline')
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
