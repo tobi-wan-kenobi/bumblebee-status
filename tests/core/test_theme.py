@@ -14,7 +14,8 @@ class theme(unittest.TestCase):
         self.cycleTheme = {
             'cycle': [
                 { 'fg': 'red', 'bg': 'black' },
-                { 'fg': 'black', 'bg': 'red' }
+                { 'fg': 'black', 'bg': 'red' },
+                { 'fg': 'white', 'bg': 'blue' }
             ]
         }
 
@@ -33,6 +34,13 @@ class theme(unittest.TestCase):
 
     def test_cycle(self):
         theme = core.theme.Theme(raw_data=self.cycleTheme)
+        self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.fg())
+        self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.bg())
+        core.event.trigger('next-widget')
+        core.event.trigger('next-widget')
+        self.assertEqual(self.cycleTheme['cycle'][2]['fg'], theme.fg())
+        self.assertEqual(self.cycleTheme['cycle'][2]['bg'], theme.bg())
+        core.event.trigger('start')
         self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.fg())
         self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.bg())
 

@@ -49,6 +49,7 @@ class i3(object):
                 'background': self._theme.bg(widget),
                 'separator': self._theme.default_separators(),
             })
+            core.event.trigger('next-widget')
         return widgets
 
     def update(self, affected_modules=None):
