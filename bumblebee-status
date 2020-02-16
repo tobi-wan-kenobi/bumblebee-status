@@ -10,6 +10,7 @@ import core.config
 import core.output
 import core.module
 import core.input
+import core.event
 
 def handle_input(output):
     poll = select.poll()
@@ -32,7 +33,7 @@ def handle_input(output):
             except ValueError:
                 pass
         output.update(modules.keys())
-        output.draw('statusline')
+        core.event.trigger('update')
 
     poll.unregister(sys.stdin.fileno())
 
@@ -55,12 +56,12 @@ def main():
     for module in config.modules():
         modules.append(core.module.load(module, config))
     output.modules(modules)
-    output.draw('start')
+    core.event.trigger('start')
     while True:
         output.update()
-        output.draw('statusline')
+        core.event.trigger('update')
         output.wait(config.interval())
-    output.draw('stop')
+    core.event.trigger('stop')
 
 if __name__ == "__main__":
     try:

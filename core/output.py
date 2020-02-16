@@ -3,12 +3,16 @@ import json
 import time
 
 import core.theme
+import core.event
 
 class i3(object):
     def __init__(self, theme=core.theme.Theme()):
         self._modules = []
         self._status = {}
         self._theme = theme
+        core.event.register('start', self.draw, 'start')
+        core.event.register('update', self.draw, 'statusline')
+        core.event.register('stop', self.draw, 'stop')
 
     def modules(self, modules=None):
         if not modules:
