@@ -22,6 +22,14 @@ class Theme(object):
         core.event.register('start', self.__start)
         core.event.register('next-widget', self.__next_widget)
 
+        for attr, default in [
+            ('fg', None), ('bg', None),
+            ('default-separators', True),
+            ('separator-block-width', 0),
+            ('separator', None)
+        ]:
+            setattr(self, attr.replace('-', '_'), lambda widget=None, default=default, attr=attr: self.__get(widget, attr, default))
+
     def load(self, name):
         for path in PATHS:
             theme_file = os.path.join(path, '{}.json'.format(name))
@@ -29,18 +37,6 @@ class Theme(object):
                 with io.open(theme_file, encoding='utf-8') as data:
                     return json.load(data)
         raise RuntimeError('unable to find theme {}'.format(name))
-
-    def fg(self, widget=None):
-        return self.__get(widget, 'fg')
-
-    def bg(self, widget=None):
-        return self.__get(widget, 'bg')
-
-    def default_separators(self, widget=None):
-        return self.__get(widget, 'default-separators', True)
-
-    def separator_block_width(self, widget=None):
-        return self.__get(widget, 'separator-block-width', 0)
 
     def __start(self):
         self.__widget_count = 0
