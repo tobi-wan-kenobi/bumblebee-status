@@ -188,6 +188,25 @@ For example:
 
 `$ bumblebee-status -p disk.left-click="nautilus {instance}"`
 
+Advanced usage:
+
+You can also "programmatically" trigger click events like this:
+```
+$ bumblebee-ctl --button <button> --id <ID of the widget> --module <name of the module>
+```
+
+For that to work, you need to know the ID of the widget - this can be configured by adding the `<name>.id` parameter - it's a comma-separated list with one entry per widget (for multi-widget modules).
+
+Example:
+
+```
+$ bumblebee-status -m cmus -p cmus.id="prev,main,next,shuffle,repeat"
+# to "simulate" a left-click on "next":
+$ bumblebee-ctl --button left-mouse --module cmus --id next
+```
+
+For a full synopsis, please see `bumblebee-ctl --help`.
+
 ## Errors
 If errors occur, you should see them in the i3bar itself. If that does not work, or you need more information for troubleshooting, you can activate a debug log using the `-d` or `--debug` switch:
 
