@@ -5,6 +5,11 @@
 - test everything
 - think about pylint
 
+# small stuff
+- rethink documentation (wiki vs. in-code)
+- @parameter? (or was it @attribute?)
+- use __ for private?
+
 # Features
 
 ## Backwards-compatibility
@@ -13,6 +18,7 @@
 - minimize modules
 - hide modules if not in warning/error state (-a)
 - WAL support
+- tkinter / popups
 
 ## Improvements
 - pango output (improve - maybe autodetect? see #531)
