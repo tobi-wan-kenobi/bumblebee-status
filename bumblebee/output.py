@@ -72,6 +72,13 @@ def scrollable(func):
         if width < 0:
             return text
         if len(text) <= width:
+            # do alignment
+            align = module.parameter("theme.align", "left")
+            print("alignment: {}".format(align))
+            if align == "right":
+                text = "{:>{}}".format(text, width)
+            if align == "center":
+                text = "{:^{}}".format(text, width)
             return text
         # we need to shorten
 
