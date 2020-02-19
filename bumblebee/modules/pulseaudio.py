@@ -142,12 +142,12 @@ class Module(bumblebee.engine.Module):
                     vol, bumblebee.output.hbar(float(self._left)))
             return vol
         else:
+            vol = "{}%/{}%".format(self._left, self._right)
             if self._showbars:
                 vol = "{} {}{}".format(
                     vol,
                     bumblebee.output.hbar(float(self._left)),
                     bumblebee.output.hbar(float(self._right)))
-            vol = "{}%/{}%".format(self._left, self._right)
             return vol
 
     def update(self, widgets):
