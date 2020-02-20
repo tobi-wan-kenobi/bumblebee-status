@@ -1,5 +1,11 @@
 {
     "icons": [ "awesome-fonts" ],
+    "colors": [{
+        "red": "#BF616A",
+        "orange": "#D08770",
+        "yellow": "#EBCB8B",
+        "green": "#A3BE8C"
+    }],
     "defaults": {
         "separator-block-width": 0,
         "warning": {
