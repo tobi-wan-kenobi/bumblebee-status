@@ -6,6 +6,9 @@ def register(event, callback, *args, **kwargs):
         lambda: callback(*args, **kwargs)
     )
 
+def clear():
+    callbacks.clear()
+
 def trigger(event):
     for callback in callbacks.get(event, []):
         callback()

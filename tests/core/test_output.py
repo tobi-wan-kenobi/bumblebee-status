@@ -15,6 +15,8 @@ class i3(unittest.TestCase):
         self.someModule = TestModule(widgets=[widget, widget, widget])
 
     def test_start(self):
+        core.event.clear()
+
         all_data = self.i3.start()
         data = all_data['data']
         self.assertEqual(1, data['version'], 'i3bar protocol version 1 expected')

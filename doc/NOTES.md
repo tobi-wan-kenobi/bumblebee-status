@@ -19,6 +19,7 @@
 - hide modules if not in warning/error state (-a)
 - WAL support
 - tkinter / popups
+- scrolling decorator (incl. minwidth, alignment)
 
 ## Improvements
 - pango output (improve - maybe autodetect? see #531)

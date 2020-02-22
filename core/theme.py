@@ -19,14 +19,18 @@ class Theme(object):
             self.__data = raw_data
         else:
             self.__data = self.load(name)
-        core.event.register('start', self.__start)
+        core.event.register('update', self.__start)
         core.event.register('next-widget', self.__next_widget)
 
         for attr, default in [
             ('fg', None), ('bg', None),
             ('default-separators', True),
             ('separator-block-width', 0),
-            ('separator', None)
+            ('separator', None),
+            ('border-top', 0),
+            ('border-bottom', 0),
+            ('border-left', 0),
+            ('border-right', 0),
         ]:
             setattr(self, attr.replace('-', '_'), lambda widget=None, default=default, attr=attr: self.__get(widget, attr, default))
 
@@ -40,6 +44,14 @@ class Theme(object):
 
     def __start(self):
         self.__widget_count = 0
+
+    def prev_bg(self, widget):
+        if self.__widget_count == 0:
+            return None
+        self.__widget_count = self.__widget_count - 1
+        value = self.bg(widget)
+        self.__widget_count = self.__widget_count + 1
+        return value
 
     def __next_widget(self):
         self.__widget_count = self.__widget_count + 1
