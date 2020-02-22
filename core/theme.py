@@ -3,6 +3,7 @@ import io
 import json
 
 import core.event
+import util.algorithm
 
 THEME_BASE_DIR=os.path.dirname(os.path.realpath(__file__))
 PATHS=[
@@ -19,6 +20,11 @@ class Theme(object):
             self.__data = raw_data
         else:
             self.__data = self.load(name)
+            for icons in self.__data['icons']:
+                util.algorithm.merge(self.__data, self.load(icons, 'icons'))
+            if iconset:
+                util.algorithm.merge(self.__data, iconset)
+
         core.event.register('update', self.__start)
         core.event.register('next-widget', self.__next_widget)
 
@@ -34,9 +40,9 @@ class Theme(object):
         ]:
             setattr(self, attr.replace('-', '_'), lambda widget=None, default=default, attr=attr: self.__get(widget, attr, default))
 
-    def load(self, name):
+    def load(self, name, subdir=''):
         for path in PATHS:
-            theme_file = os.path.join(path, '{}.json'.format(name))
+            theme_file = os.path.join(path, subdir, '{}.json'.format(name))
             if os.path.isfile(theme_file):
                 with io.open(theme_file, encoding='utf-8') as data:
                     return json.load(data)
