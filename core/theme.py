@@ -13,7 +13,7 @@ PATHS=[
 ]
 
 class Theme(object):
-    def __init__(self, name='default', iconset=None, raw_data=None):
+    def __init__(self, name='default', iconset='auto', raw_data=None):
         self.name = name
         self.__widget_count = 0
         if raw_data:
@@ -22,7 +22,7 @@ class Theme(object):
             self.__data = self.load(name)
             for icons in self.__data['icons']:
                 util.algorithm.merge(self.__data, self.load(icons, 'icons'))
-            if iconset:
+            if iconset != 'auto':
                 util.algorithm.merge(self.__data, self.load(iconset, 'icons'))
 
         core.event.register('update', self.__start)
