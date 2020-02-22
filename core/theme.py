@@ -23,7 +23,7 @@ class Theme(object):
             for icons in self.__data['icons']:
                 util.algorithm.merge(self.__data, self.load(icons, 'icons'))
             if iconset:
-                util.algorithm.merge(self.__data, iconset)
+                util.algorithm.merge(self.__data, self.load(iconset, 'icons'))
 
         core.event.register('update', self.__start)
         core.event.register('next-widget', self.__next_widget)
