@@ -2,7 +2,7 @@ import shlex
 import subprocess
 import logging
 
-def execute(cmd, wait=True):
+def execute(cmd, wait=True, ignore_errors=False):
     args = shlex.split(cmd)
     logging.debug(cmd)
     try:
@@ -12,7 +12,7 @@ def execute(cmd, wait=True):
 
     if wait:
         out, _ = proc.communicate()
-        if proc.returncode != 0:
+        if proc.returncode != 0 and not ignore_errors:
             raise RuntimeError('{} exited with {}'.format(cmd, proc.returncode))
         return out.decode('utf-8')
     return '' 

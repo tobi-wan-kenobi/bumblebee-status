@@ -26,6 +26,12 @@ class cli(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             util.cli.execute('cat {}'.format(self.nonExistentCommand))
 
+    def test_command_exit_code_no_error(self):
+        try:
+            util.cli.execute('cat {}'.format(self.nonExistentCommand), ignore_errors=True)
+        except Exception:
+            self.fail('exception was thrown')
+
     def test_async(self):
         rv = util.cli.execute(self.validCommand, wait=False)
         self.assertEqual('', rv)
