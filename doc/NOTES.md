@@ -14,10 +14,10 @@
 
 ## Backwards-compatibility
 - aliases
-- charts (hbar, vbar, braille)
+- charts (braille)
 - minimize modules
 - hide modules if not in warning/error state (-a)
-- WAL support
+- WAL support / colorscheme support
 - tkinter / popups
 - scrolling decorator (incl. minwidth, alignment)
 - states

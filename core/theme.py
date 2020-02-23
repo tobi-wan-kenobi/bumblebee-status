@@ -61,7 +61,9 @@ class Theme(object):
         self.__current.clear()
 
     def __get(self, widget, key, default=None):
-        if widget and isinstance(widget, str):
+        if not widget:
+            widget = core.widget.Widget('')
+        if isinstance(widget, str):
             # special handling
             if widget == 'previous':
                 return self.__previous.get(key, None)
@@ -74,6 +76,11 @@ class Theme(object):
                 if isinstance(tmp, list):
                     tmp = tmp[self.__widget_count % len(tmp)]
                 value = tmp.get(key, value)
+
+        if not key in widget.state():
+            for state in widget.state():
+                theme = self.__get(widget, state, {})
+                value = theme.get(key, value)
 
         self.__current[key] = value
         return value

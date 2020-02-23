@@ -20,6 +20,8 @@ class Module(core.input.Object):
         super().__init__()
         self._config = config
         self._widgets = widgets if isinstance(widgets, list) else [ widgets ]
+        for widget in self._widgets:
+            widget.module(self)
         self._name = None
 
     def parameter(self, key, default=None):
@@ -44,6 +46,9 @@ class Module(core.input.Object):
 
     def widgets(self):
         return self._widgets
+
+    def state(self, widget):
+        return []
 
 class Error(Module):
     def __init__(self, config, module, error):

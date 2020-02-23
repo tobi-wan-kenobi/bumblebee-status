@@ -78,6 +78,8 @@ class i3(object):
 
     def update(self, affected_modules=None):
         for module in self._modules:
+            if affected_modules and not module.id() in affected_modules:
+                continue
             module.update()
             self._status[module] = self.widgets(module)
 
