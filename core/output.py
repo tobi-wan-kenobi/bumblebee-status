@@ -44,7 +44,7 @@ class i3(object):
         return [{
             'full_text': self._theme.separator(),
             'color': self._theme.bg(widget),
-            'background': self._theme.prev_bg(widget),
+            'background': self._theme.bg('previous'),
             'separator': False,
             'separator_block_width': self._theme.separator_block_width(),
             'border_top': self._theme.border_top(),

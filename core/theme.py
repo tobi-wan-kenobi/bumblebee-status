@@ -16,6 +16,8 @@ class Theme(object):
     def __init__(self, name='default', iconset='auto', raw_data=None):
         self.name = name
         self.__widget_count = 0
+        self.__previous = {}
+        self.__current = {}
         if raw_data:
             self.__data = raw_data
         else:
@@ -50,19 +52,20 @@ class Theme(object):
 
     def __start(self):
         self.__widget_count = 0
-
-    def prev_bg(self, widget):
-        if self.__widget_count == 0:
-            return None
-        self.__widget_count = self.__widget_count - 1
-        value = self.bg(widget)
-        self.__widget_count = self.__widget_count + 1
-        return value
+        self.__current.clear()
+        self.__previous.clear()
 
     def __next_widget(self):
         self.__widget_count = self.__widget_count + 1
+        self.__previous = dict(self.__current)
+        self.__current.clear()
 
     def __get(self, widget, key, default=None):
+        if widget and isinstance(widget, str):
+            # special handling
+            if widget == 'previous':
+                return self.__previous.get(key, None)
+
         value = default
 
         for option in ['defaults', 'cycle']:
@@ -71,6 +74,8 @@ class Theme(object):
                 if isinstance(tmp, list):
                     tmp = tmp[self.__widget_count % len(tmp)]
                 value = tmp.get(key, value)
+
+        self.__current[key] = value
         return value
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

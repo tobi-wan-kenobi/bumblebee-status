@@ -36,11 +36,11 @@ class theme(unittest.TestCase):
 
     def test_cycle(self):
         theme = core.theme.Theme(raw_data=self.cycleTheme)
-        self.assertEqual(None, theme.prev_bg(None))
+        self.assertEqual(None, theme.bg('previous'))
         self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.fg())
         self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.bg())
         core.event.trigger('next-widget')
-        self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.prev_bg(None))
+        self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.bg('previous'))
         core.event.trigger('next-widget')
         self.assertEqual(self.cycleTheme['cycle'][2]['fg'], theme.fg())
         self.assertEqual(self.cycleTheme['cycle'][2]['bg'], theme.bg())
