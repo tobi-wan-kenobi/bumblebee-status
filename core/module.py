@@ -30,6 +30,9 @@ class Module(core.input.Object):
         # TODO retrieve from config file
         return value
 
+    def set(self, key, value):
+        self._config.set('{}.{}'.format(self.name(), key), value)
+
     def update(self):
         pass
 
@@ -48,7 +51,9 @@ class Error(Module):
         self._module = module
         self._error = error
 
-        self.widgets()[0].set('theme.width', 15)
+        self.set('scrolling.bounce', False)
+        self.set('scrolling.speed', 2)
+        self.set('width', 15)
 
     @core.decorators.scrollable
     def full_text(self, widget):

@@ -11,7 +11,7 @@ def scrollable(func):
         if width < 0 or len(text) <= width:
             return text
 
-        bounce = util.format.asint(module.parameter('scrolling.bounce', 1))
+        bounce = util.format.asbool(module.parameter('scrolling.bounce', True))
         scroll_speed = util.format.asint(module.parameter('scrolling.speed', 1))
         start = widget.get('scrolling.start', -1)
         direction = widget.get('scrolling.direction', 'right')
