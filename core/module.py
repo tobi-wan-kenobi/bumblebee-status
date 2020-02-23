@@ -3,6 +3,7 @@ import logging
 
 import core.input
 import core.widget
+import core.decorators
 
 log = logging.getLogger(__name__)
 
@@ -47,7 +48,10 @@ class Error(Module):
         self._module = module
         self._error = error
 
-    def full_text(self):
+        self.widgets()[0].set('theme.width', 15)
+
+    @core.decorators.scrollable
+    def full_text(self, widget):
         return '{}: {}'.format(self._module, self._error)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

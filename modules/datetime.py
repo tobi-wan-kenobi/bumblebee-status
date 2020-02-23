@@ -33,7 +33,7 @@ class Module(core.module.Module):
     def default_format(self):
         return '%x %X'
 
-    def full_text(self):
+    def full_text(self, widget):
         enc = locale.getpreferredencoding()
         retval = datetime.datetime.now().strftime(self._fmt)
         if hasattr(retval, 'decode'):

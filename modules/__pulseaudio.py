@@ -113,7 +113,7 @@ class Module(core.module.Module):
         logging.error('no pulseaudio device found')
         return 'n/a'
 
-    def volume(self):
+    def volume(self, widget):
         if self._failed == True:
             return 'n/a'
         if int(self._mono) > 0:
