@@ -17,7 +17,8 @@ class module(unittest.TestCase):
         self.anotherWidget = core.widget.Widget('more Widget content')
 
     def test_loadinvalid_module(self):
-        module = core.module.load(module_name=self.invalidModuleName)
+        config = unittest.mock.MagicMock()
+        module = core.module.load(module_name=self.invalidModuleName, config=config)
         self.assertEqual('core.module', module.__class__.__module__, 'module must be a module object')
         self.assertEqual('Error', module.__class__.__name__, 'an invalid module must be a core.module.Error')
 
