@@ -20,6 +20,7 @@
 - WAL support
 - tkinter / popups
 - scrolling decorator (incl. minwidth, alignment)
+- states
 
 ## Improvements
 - pango output (improve - maybe autodetect? see #531)

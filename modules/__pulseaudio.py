@@ -25,8 +25,9 @@ import core.module
 import core.widget
 import core.input
 
-import util.format
 import util.cli
+import util.graph
+import util.format
 
 class Module(core.module.Module):
     def __init__(self, config, channel):
@@ -44,7 +45,7 @@ class Module(core.module.Module):
         self._mute = False
         self._failed = False
         self._channel = channel
-        #self._showbars = core.fmt.bool(self.parameter('showbars', 0))
+        self._showbars = util.format.asbool(self.parameter('showbars', 0))
 
         self._patterns = [
             {'expr': 'Name:', 'callback': (lambda line: False)},
@@ -117,23 +118,23 @@ class Module(core.module.Module):
             return 'n/a'
         if int(self._mono) > 0:
             vol = '{}%'.format(self._mono)
-            #if self._showbars:
-            #    vol = '{} {}'.format(
-            #        vol, bumblebee.output.hbar(float(self._mono)))
+            if self._showbars:
+                vol = '{} {}'.format(
+                    vol, util.graph.hbar(float(self._mono)))
             return vol
         elif self._left == self._right:
             vol = '{}%'.format(self._left)
-            #if self._showbars:
-            #    vol = '{} {}'.format(
-            #        vol, bumblebee.output.hbar(float(self._left)))
+            if self._showbars:
+                vol = '{} {}'.format(
+                    vol, util.graph.hbar(float(self._left)))
             return vol
         else:
-            #if self._showbars:
-            #    vol = '{} {}{}'.format(
-            #        vol,
-            #        bumblebee.output.hbar(float(self._left)),
-            #        bumblebee.output.hbar(float(self._right)))
             vol = '{}%/{}%'.format(self._left, self._right)
+            if self._showbars:
+                vol = '{} {}{}'.format(
+                    vol,
+                    util.graph.hbar(float(self._left)),
+                    util.graph.hbar(float(self._right)))
             return vol
 
     def update(self):
