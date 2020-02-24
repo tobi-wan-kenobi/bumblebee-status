@@ -1,0 +1,39 @@
+import unittest
+
+import core.decorators
+import core.widget
+import core.module
+import core.config
+
+class TestModule(core.module.Module):
+    def __init__(self, config=None):
+        config = core.config.Config([])
+        super().__init__(config, core.widget.Widget(self.get))
+        self.text = ''
+
+    @core.decorators.scrollable
+    def get(self, widget):
+        return self.text
+
+class config(unittest.TestCase):
+    def setUp(self):
+        self.module = TestModule()
+        self.widget = self.module.widgets()[0]
+        self.width = 10
+        self.module.set('width', self.width)
+
+    def test_no_text(self):
+        self.assertEqual('', self.module.text)
+        self.assertEqual('', self.module.get(self.widget))
+
+    def test_smaller(self):
+        self.module.text = 'test'
+        self.assertLess(len(self.module.text), self.width)
+        self.assertEqual('test', self.module.get(self.widget))
+
+    def test_bigger(self):
+        self.module.text = 'abcdefghijklmnopqrst'
+        self.assertGreater(len(self.module.text), self.width)
+        self.assertEqual(self.module.text[:self.width], self.module.get(self.widget))
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

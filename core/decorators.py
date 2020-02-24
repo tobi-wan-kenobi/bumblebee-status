@@ -17,7 +17,7 @@ def scrollable(func):
         direction = widget.get('scrolling.direction', 'right')
         start += scroll_speed if direction == 'right' else -(scroll_speed)
 
-        if width + start > len(text) + (scroll_speed -1):
+        if width + start > len(text) + (scroll_speed - 1):
             if bounce:
                 widget.set('scrolling.direction', 'left')
             else:
