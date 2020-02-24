@@ -14,6 +14,7 @@
 
 ## Backwards-compatibility
 - aliases
+- icons (prefix/postfix)
 - charts (braille)
 - minimize modules
 - hide modules if not in warning/error state (-a)
