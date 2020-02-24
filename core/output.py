@@ -70,13 +70,14 @@ class i3(object):
             'full_text': self._theme.separator(),
             'color': self._theme.bg(widget),
             'background': self._theme.bg('previous'),
+            '_decorator': True,
         })
         return [attr]
 
-    def __main(self, module, widget):
+    def __main(self, module, widget, text):
         attr = self.__common_attributes(module, widget)
         attr.update({
-            'full_text': self.__decorate(module, widget, widget.full_text()),
+            'full_text': self.__decorate(module, widget, text),
             'color': self._theme.fg(widget),
             'background': self._theme.bg(widget),
         })
@@ -86,7 +87,7 @@ class i3(object):
         widgets = []
         for widget in module.widgets():
             widgets += self.__separator(module, widget)
-            widgets += self.__main(module, widget)
+            widgets += self.__main(module, widget, self._status[widget])
             core.event.trigger('next-widget')
         return widgets
 
@@ -95,13 +96,13 @@ class i3(object):
             if affected_modules and not module.id() in affected_modules:
                 continue
             module.update()
-            self._status[module] = self.widgets(module)
+            for widget in module.widgets():
+                self._status[widget] = widget.full_text()
 
     def statusline(self):
         widgets = []
         for module in self._modules:
-            if module in self._status:
-                widgets += self._status[module]
+            widgets += self.widgets(module)
         return {
             'data': widgets,
             'suffix': ','
