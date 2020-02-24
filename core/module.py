@@ -64,4 +64,7 @@ class Error(Module):
     def full_text(self, widget):
         return '{}: {}'.format(self._module, self._error)
 
+    def state(self, widget):
+        return ['critical']
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
