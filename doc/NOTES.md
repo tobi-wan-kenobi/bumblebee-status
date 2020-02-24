@@ -14,14 +14,12 @@
 
 ## Backwards-compatibility
 - aliases
-- icons (prefix/postfix)
 - charts (braille)
 - minimize modules
 - hide modules if not in warning/error state (-a)
 - WAL support / colorscheme support
 - tkinter / popups
 - scrolling decorator (incl. minwidth, alignment)
-- states
 
 ## Improvements
 - pango output (improve - maybe autodetect? see #531)

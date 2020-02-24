@@ -15,7 +15,9 @@ class Widget(util.store.Store, core.input.Object):
                 return self._full_text(self)
         return self._full_text
 
-    def module(self, module):
+    def module(self, module=None):
+        if not module:
+            return self._module
         self._module = module
 
     def state(self):

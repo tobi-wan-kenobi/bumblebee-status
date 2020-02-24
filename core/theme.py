@@ -39,6 +39,8 @@ class Theme(object):
             ('border-bottom', 0),
             ('border-left', 0),
             ('border-right', 0),
+            ('padding', ''),
+            ('prefix', ''), ('suffix', ''),
         ]:
             setattr(self, attr.replace('-', '_'), lambda widget=None, default=default, attr=attr: self.__get(widget, attr, default))
 
@@ -76,6 +78,11 @@ class Theme(object):
                 if isinstance(tmp, list):
                     tmp = tmp[self.__widget_count % len(tmp)]
                 value = tmp.get(key, value)
+
+        value = self.__data.get(key, value)
+
+        if widget.module():
+            value = self.__get(None, widget.module().name(), {}).get(key, value)
 
         if not key in widget.state():
             for state in widget.state():

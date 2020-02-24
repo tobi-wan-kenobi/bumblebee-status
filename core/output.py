@@ -38,6 +38,18 @@ class i3(object):
     def stop(self):
         return { 'suffix': '\n]' }
 
+    def __pad(self, module, widget, full_text):
+        padding = self._theme.padding()
+        if not full_text: return padding
+        return '{}{}{}'.format(padding, full_text, padding)
+
+    def __decorate(self, module, widget, full_text):
+        return '{}{}{}'.format(
+            self.__pad(module, widget, self._theme.prefix(widget)),
+            full_text,
+            self.__pad(module, widget, self._theme.suffix(widget))
+        )
+
     def __common_attributes(self, module, widget):
         return {
             'separator': self._theme.default_separators(),
@@ -64,7 +76,7 @@ class i3(object):
     def __main(self, module, widget):
         attr = self.__common_attributes(module, widget)
         attr.update({
-            'full_text': widget.full_text(),
+            'full_text': self.__decorate(module, widget, widget.full_text()),
             'color': self._theme.fg(widget),
             'background': self._theme.bg(widget),
         })
