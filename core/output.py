@@ -80,6 +80,7 @@ class i3(object):
             'full_text': self.__decorate(module, widget, text),
             'color': self._theme.fg(widget),
             'background': self._theme.bg(widget),
+            'min_width': widget.get('theme.minwidth'),
         })
         return [attr]
 

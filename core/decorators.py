@@ -13,21 +13,21 @@ def scrollable(func):
 
         bounce = util.format.asbool(module.parameter('scrolling.bounce', True))
         scroll_speed = util.format.asint(module.parameter('scrolling.speed', 1))
-        start = widget.get('scrolling.start', -1)
-        direction = widget.get('scrolling.direction', 'right')
-        start += scroll_speed if direction == 'right' else -(scroll_speed)
+        start = widget.get('scrolling.start', 0)
 
-        if width + start > len(text) + (scroll_speed - 1):
+        if start + width > len(text):
             if bounce:
                 widget.set('scrolling.direction', 'left')
+                start -= scroll_speed*2
             else:
                 start = 0
-        elif start <= 0:
+        elif start < 0:
             if bounce:
                 widget.set('scrolling.direction', 'right')
-            else:
-                start = len(text)
-        widget.set('scrolling.start', start)
+        direction = widget.get('scrolling.direction', 'right')
+        if direction == 'left':
+            scroll_speed = -scroll_speed
+        widget.set('scrolling.start', start + scroll_speed)
         text = text[start:width+start]
 
         return text
