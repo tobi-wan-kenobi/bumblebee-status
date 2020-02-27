@@ -76,7 +76,7 @@ class Module(bumblebee.engine.Module):
 
         try:
             bumblebee.util.execute("nmcli c up \"{vpn}\""
-                                   .format(vpn=self._connected_vpn_profile))
+                                   .format(vpn=self._selected_vpn_profile))
             self._connected_vpn_profile = name
         except Exception as e:
             logging.exception("Couldn't establish VPN connection")
