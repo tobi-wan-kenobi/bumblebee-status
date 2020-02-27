@@ -186,9 +186,14 @@ class Theme(object):
                     result[key] = colors[field][key]
         return result
 
+    def color(self, color_name, default=None):
+        return self._colorset.get(color_name, default)
+
     def _load_colors(self, name):
         """Load colors for a theme"""
         try:
+            if isinstance(name, dict):
+                return name
             if name.lower() == "wal":
                 return self._load_wal_colors()
         except Exception as err:
@@ -285,7 +290,7 @@ class Theme(object):
 
         if isinstance(value, (dict, list)):
             return value
-        return self._colorset.get(value, value)
+        return self.color(value, value)
 
     # algorithm copied from
     # http://blog.impressiver.com/post/31434674390/deep-merge-multiple-python-dicts

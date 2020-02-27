@@ -1,13 +1,19 @@
 {
 	"icons": [ "paxy97", "awesome-fonts" ],
+	"colors": [{
+		"fg0": "#fbf1c7",
+		"bg0_h": "#1d2021",
+		"yellow": "#d79921",
+		"red": "#cc241d"
+	}],
 	"defaults": {
 		"warning": {
-			"fg": "#1d2021",
-			"bg": "#d79921"
+			"fg": "bg0_h",
+			"bg": "yellow"
 		},
 		"critical": {
-			"fg": "#fbf1c7",
-			"bg": "#cc241d"
+			"fg": "fg0",
+			"bg": "red"
 		},
 		"default-separators": false,
 		"separator-block-width": 0

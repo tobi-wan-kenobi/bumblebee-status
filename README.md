@@ -69,6 +69,7 @@ bar {
 ```
 
 # Documentation
+
 See [the wiki](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki) for documentation.
 
 See [FAQ](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/FAQ) for, well, FAQs.
@@ -78,6 +79,14 @@ Other resources:
 * A list of [available modules](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/Available-Modules)
 * [How to write a theme](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/How-to-write-a-theme)
 * [How to write a module](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/How-to-write-a-module)
+
+User contributions:
+
+[@somospocos:bumblebee-status-contrib](https://github.com/somospocos/bumblebee-status-contrib): Collected resources and useful tricks by @somospocos
+
+[@somospocos:bumblebee-bridge-dwm](https://github.com/somospocos/bumblebee-bridge-dwm): Bridge bumblebee-status output into dwm status bar
+
+[@somospocos:bumblebee-bridge-dzen2](https://github.com/somospocos/bumblebee-bridge-dzen2): Bridge bumblebee-status output into dzen2
 
 # Installation
 ```
@@ -183,6 +192,25 @@ For example:
 
 `$ bumblebee-status -p disk.left-click="nautilus {instance}"`
 
+Advanced usage:
+
+You can also "programmatically" trigger click events like this:
+```
+$ bumblebee-ctl --button <button> --id <ID of the widget> --module <name of the module>
+```
+
+For that to work, you need to know the ID of the widget - this can be configured by adding the `<name>.id` parameter - it's a comma-separated list with one entry per widget (for multi-widget modules).
+
+Example:
+
+```
+$ bumblebee-status -m cmus -p cmus.id="prev,main,next,shuffle,repeat"
+# to "simulate" a left-click on "next":
+$ bumblebee-ctl --button left-mouse --module cmus --id next
+```
+
+For a full synopsis, please see `bumblebee-ctl --help`.
+
 ## Errors
 If errors occur, you should see them in the i3bar itself. If that does not work, or you need more information for troubleshooting, you can activate a debug log using the `-d` or `--debug` switch:
 
@@ -235,6 +263,8 @@ Modules and commandline utilities are only required for modules, the core itself
 * zpool (for module 'zpool')
 * progress (for module 'progress')
 * i3exit (for module 'system')
+* dunst (for module 'dunst')
+* hddtemp (for module 'hddtemp')
 
 # Examples
 Here are some screenshots for all themes that currently exist:

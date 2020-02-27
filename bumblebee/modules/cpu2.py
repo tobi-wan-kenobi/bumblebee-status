@@ -91,17 +91,16 @@ class Module(bumblebee.engine.Module):
     def cpuload(self, _):
         return "{}%".format(self._cpuload)
 
-    @staticmethod
-    def add_color(bar):
+    def add_color(self, bar):
         """add color as pango markup to a bar"""
         if bar in ["▁", "▂"]:
-            color = "green"
+            color = self.theme().color("green", "green")
         elif bar in ["▃", "▄"]:
-            color = "yellow"
+            color = self.theme().color("yellow", "yellow")
         elif bar in ["▅", "▆"]:
-            color = "orange"
+            color = self.theme().color("orange", "orange")
         elif bar in ["▇", "█"]:
-            color = "red"
+            color = self.theme().color("red", "red")
         colored_bar = "<span foreground='{}'>{}</span>".format(color, bar)
         return colored_bar
 
