@@ -86,6 +86,8 @@ User contributions:
 
 [@somospocos:bumblebee-bridge-dwm](https://github.com/somospocos/bumblebee-bridge-dwm): Bridge bumblebee-status output into dwm status bar
 
+[@somospocos:bumblebee-bridge-dzen2](https://github.com/somospocos/bumblebee-bridge-dzen2): Bridge bumblebee-status output into dzen2
+
 # Installation
 ```
 $ git clone git://github.com/tobi-wan-kenobi/bumblebee-status
