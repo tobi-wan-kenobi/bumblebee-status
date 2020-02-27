@@ -18,6 +18,7 @@ import logging
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+import bumblebee.popup_v2
 import functools
 
 class Module(bumblebee.engine.Module):
