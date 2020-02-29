@@ -89,7 +89,7 @@ class Module(bumblebee.engine.Module):
         return "{:.2f}GHz".format(self._maxfreq)
 
     def cpuload(self, _):
-        return "{}%".format(self._cpuload)
+        return "{:>3}%".format(self._cpuload)
 
     def add_color(self, bar):
         """add color as pango markup to a bar"""
