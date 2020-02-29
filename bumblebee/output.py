@@ -397,6 +397,7 @@ class WidgetDrawer(object):
 
         if self._prefix:
             self._full_text = u"{}{}".format(self._prefix, self._full_text)
+        return self._prefix
 
     def add_suffix_iconmarkup(self, widget):
         """add custom Pango markup for suffix"""
@@ -412,6 +413,7 @@ class WidgetDrawer(object):
 
         if self._suffix:
             self._full_text = u"{}{}".format(self._full_text, self._suffix)
+        return self._suffix
 
     def escape_amp(self):
         """escape & in full_text, because pango requires it"""
@@ -441,10 +443,8 @@ class WidgetDrawer(object):
         raw = self._full_text
 
         padding = self._theme.padding(widget)
-
-        self.add_prefix(widget, padding)
-
-        self.add_suffix(widget, padding)
+        prefix = self.add_prefix(widget, padding)
+        suffix = self.add_suffix(widget, padding)
 
         width = self._theme.minwidth(widget)
 
@@ -466,6 +466,8 @@ class WidgetDrawer(object):
             "name": module.id,
             "markup": self._markup,
             "_raw": raw,
+            "_prefix": prefix,
+            "_suffix": suffix,
         })
         return self._widgets
 
