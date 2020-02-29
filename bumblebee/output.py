@@ -438,6 +438,7 @@ class WidgetDrawer(object):
         self._markup = "none" if not self._config else self._config.markup()
 
         self._full_text = widget.full_text()
+        raw = self._full_text
 
         padding = self._theme.padding(widget)
 
@@ -464,6 +465,7 @@ class WidgetDrawer(object):
             "instance": widget.id,
             "name": module.id,
             "markup": self._markup,
+            "_raw": raw,
         })
         return self._widgets
 
