@@ -44,6 +44,10 @@ class config(unittest.TestCase):
         self.assertEqual('cd', self.module.get(self.widget))
         self.assertEqual('bc', self.module.get(self.widget))
         self.assertEqual('ab', self.module.get(self.widget))
+        self.assertEqual('bc', self.module.get(self.widget))
+        self.assertEqual('cd', self.module.get(self.widget))
+        self.assertEqual('bc', self.module.get(self.widget))
+        self.assertEqual('ab', self.module.get(self.widget))
 
     def test_nobounce(self):
         self.module.set('scrolling.bounce', False)
@@ -53,5 +57,7 @@ class config(unittest.TestCase):
         self.assertEqual('bc', self.module.get(self.widget))
         self.assertEqual('cd', self.module.get(self.widget))
         self.assertEqual('ab', self.module.get(self.widget))
+        self.assertEqual('bc', self.module.get(self.widget))
+        self.assertEqual('cd', self.module.get(self.widget))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
