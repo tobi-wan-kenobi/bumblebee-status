@@ -60,7 +60,7 @@ class i3(unittest.TestCase):
 
     def test_padding(self):
         self.i3.theme(self.paddedTheme)
-        result = self.i3.__pad(self.someModule, self.someModule.widgets()[0], 'abc')
+        result = self.i3.__pad(self.someModule, self.someModule.widget(), 'abc')
         self.assertEqual(' abc ', result)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -36,7 +36,7 @@ class module(unittest.TestCase):
         cfg = core.config.Config(shlex.split('-p test_module.foo=5'))
         module = core.module.Error(cfg, 'test-mod', 'xyz')
         self.assertEqual(['critical'], module.state(None), 'error module must have critical state')
-        full_text = module.full_text(module.widgets()[0])
+        full_text = module.full_text(module.widget())
         self.assertTrue('test-mod' in full_text)
         self.assertTrue('xyz' in full_text)
 

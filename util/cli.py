@@ -1,3 +1,4 @@
+import os
 import shlex
 import subprocess
 import logging
@@ -15,6 +16,6 @@ def execute(cmd, wait=True, ignore_errors=False):
         if proc.returncode != 0 and not ignore_errors:
             raise RuntimeError('{} exited with {}'.format(cmd, proc.returncode))
         return out.decode('utf-8')
-    return '' 
+    return ''
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

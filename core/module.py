@@ -43,7 +43,7 @@ class Module(core.input.Object):
             self.update()
         except Exception as e:
             module = Error(self._config, 'error', str(e))
-            self._widgets = [module.widgets()[0]]
+            self._widgets = [module.widget()]
             self.update = module.update
 
     def name(self):
@@ -54,6 +54,13 @@ class Module(core.input.Object):
 
     def widgets(self):
         return self._widgets
+
+    def widget(self, name=None):
+        if not name: return self.widgets()[0]
+
+        for w in self.widgets():
+            if w.name() == name: return w
+        return None
 
     def state(self, widget):
         return []

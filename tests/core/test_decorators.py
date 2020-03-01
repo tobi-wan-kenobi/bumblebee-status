@@ -18,7 +18,7 @@ class TestModule(core.module.Module):
 class config(unittest.TestCase):
     def setUp(self):
         self.module = TestModule()
-        self.widget = self.module.widgets()[0]
+        self.widget = self.module.widget()
         self.width = 10
         self.module.set('width', self.width)
 

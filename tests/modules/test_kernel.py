@@ -11,6 +11,6 @@ class kernel(unittest.TestCase):
 
     def test_full_text(self):
         self.assertEqual(1, len(self.module.widgets()))
-        self.assertEqual(self.someKernel, self.module.widgets()[0].full_text())
+        self.assertEqual(self.someKernel, self.module.widget().full_text())
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

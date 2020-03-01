@@ -3,10 +3,14 @@ import core.decorators
 import util.store
 
 class Widget(util.store.Store, core.input.Object):
-    def __init__(self, full_text):
+    def __init__(self, full_text='', name=None, module=None):
         super(Widget, self).__init__()
         self._full_text = full_text
-        self._module = None
+        self._module = module
+        self._name = name
+
+    def name(self):
+        return self._name
 
     def full_text(self, value=None):
         if value:
