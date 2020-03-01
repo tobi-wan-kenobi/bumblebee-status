@@ -23,5 +23,5 @@
 
 ## Improvements
 - pango output (improve - maybe autodetect? see #531)
-- only update specific, affected modules when clicking
 - allow handlers to specify whether to update or not (e.g. scroll)
+- error handling: don't catch too many exceptions in a module (pulseaudio!), instead, propagate them as error widgets

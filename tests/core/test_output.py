@@ -13,6 +13,9 @@ class i3(unittest.TestCase):
         widget = unittest.mock.MagicMock()
         widget.full_text.return_value = "test"
         self.someModule = TestModule(widgets=[widget, widget, widget])
+        self.paddedTheme = core.theme.Theme(raw_data = {
+            'defaults': { 'padding': ' ' }
+        });
 
     def test_start(self):
         core.event.clear()
@@ -54,5 +57,10 @@ class i3(unittest.TestCase):
         self.i3.update()
         data = self.i3.statusline()
         self.assertEqual(len(self.someModule.widgets())*3, len(data['data']), 'wrong number of widgets')
+
+    def test_padding(self):
+        self.i3.theme(self.paddedTheme)
+        result = self.i3.__pad(self.someModule, self.someModule.widgets()[0], 'abc')
+        self.assertEqual(' abc ', result)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -38,6 +38,14 @@ class Module(core.input.Object):
     def update(self):
         pass
 
+    def update_wrapper(self):
+        try:
+            self.update()
+        except Exception as e:
+            module = Error(self._config, 'error', str(e))
+            self._widgets = [module.widgets()[0]]
+            self.update = module.update
+
     def name(self):
         return self._name if self._name else self.module_name()
 

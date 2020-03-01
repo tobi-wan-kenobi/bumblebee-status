@@ -6,13 +6,19 @@ import core.theme
 import core.event
 
 class i3(object):
-    def __init__(self, theme=core.theme.Theme()):
+    def __init__(self, theme=core.theme.Theme(), config=None):
         self._modules = []
         self._status = {}
         self._theme = theme
+        self._config = config
         core.event.register('start', self.draw, 'start')
         core.event.register('update', self.draw, 'statusline')
         core.event.register('stop', self.draw, 'stop')
+
+    def theme(self, new_theme=None):
+        if new_theme:
+            self._theme = new_theme
+        return self._theme
 
     def modules(self, modules=None):
         if not modules:
@@ -96,7 +102,7 @@ class i3(object):
         for module in self._modules:
             if affected_modules and not module.id() in affected_modules:
                 continue
-            module.update()
+            module.update_wrapper()
             for widget in module.widgets():
                 self._status[widget] = widget.full_text()
 

@@ -1,4 +1,5 @@
 import core.input
+import core.decorators
 import util.store
 
 class Widget(util.store.Store, core.input.Object):

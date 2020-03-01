@@ -26,10 +26,19 @@ class module(unittest.TestCase):
         module = core.module.load(module_name=self.validModuleName)
         self.assertEqual('modules.{}'.format(self.validModuleName), module.__class__.__module__, 'module must be a modules.<name> object')
         self.assertEqual('Module', module.__class__.__name__, 'a valid module must have a Module class')
+        self.assertEqual([], module.state(None), 'default state of module is empty')
 
     def test_empty_widgets(self):
         module = core.module.Module(widgets=[])
         self.assertEqual([], module.widgets())
+
+    def test_error_widget(self):
+        cfg = core.config.Config(shlex.split('-p test_module.foo=5'))
+        module = core.module.Error(cfg, 'test-mod', 'xyz')
+        self.assertEqual(['critical'], module.state(None), 'error module must have critical state')
+        full_text = module.full_text(module.widgets()[0])
+        self.assertTrue('test-mod' in full_text)
+        self.assertTrue('xyz' in full_text)
 
     def test_single_widget(self):
         module = core.module.Module(widgets=self.someWidget)
