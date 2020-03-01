@@ -162,6 +162,8 @@ class Module(core.module.Module):
             logging.exception(e)
             if util.format.asbool(self.parameter('autostart', False)):
                 util.cli.execute('pulseaudio --start', ignore_errors=True)
+            else:
+                raise e
 
     def state(self, widget):
         if self._mute:
