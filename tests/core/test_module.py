@@ -7,7 +7,10 @@ import core.widget
 import core.config
 
 class TestModule(core.module.Module):
-    pass
+    def update(self):
+        if self.fail:
+            raise Exception(self.error)
+        pass
 
 class module(unittest.TestCase):
     def setUp(self):
@@ -67,5 +70,14 @@ class module(unittest.TestCase):
         cfg = core.config.Config([])
         module = TestModule(config=cfg)
         self.assertEqual(None, module.parameter('foo'))
+
+    def test_error_widget(self):
+        cfg = core.config.Config([])
+        module = TestModule(config=cfg)
+        module.fail = True
+        module.error = '!!'
+        module.update_wrapper()
+        self.assertEqual(1, len(module.widgets()))
+        self.assertEqual('error: !!', module.widget().full_text())
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
