@@ -80,7 +80,7 @@ class Module(bumblebee.engine.Module):
                 self.remaining_time -= timediff
                 self.time = datetime.datetime.now()
 
-            if self.remaining_time.seconds <= 0:
+            if self.remaining_time.total_seconds() <= 0:
                 self.notify()
                 if self.pomodoro["type"] == "Work":
                     self.pomodoro["type"] = "Break"
