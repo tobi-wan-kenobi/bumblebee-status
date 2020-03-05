@@ -16,8 +16,9 @@ class module(unittest.TestCase):
     def setUp(self):
         self.invalidModuleName = 'invalid-module-name'
         self.validModuleName = 'test'
-        self.someWidget = core.widget.Widget('randomeWidgetContent')
-        self.anotherWidget = core.widget.Widget('more Widget content')
+        self.someWidget = core.widget.Widget('randomeWidgetContent', name='A')
+        self.anotherWidget = core.widget.Widget('more Widget content', name='B')
+        self.unusedWidgetName = 'C'
 
     def test_loadinvalid_module(self):
         config = unittest.mock.MagicMock()
@@ -79,5 +80,14 @@ class module(unittest.TestCase):
         module.update_wrapper()
         self.assertEqual(1, len(module.widgets()))
         self.assertEqual('error: !!', module.widget().full_text())
+
+    def test_get_widget_by_name(self):
+        cfg = core.config.Config([])
+        module = TestModule(config=cfg, widgets=[self.someWidget, self.anotherWidget])
+
+        self.assertEqual(self.someWidget, module.widget(self.someWidget.name()))
+        self.assertEqual(self.anotherWidget, module.widget(self.anotherWidget.name()))
+        self.assertEqual(None, module.widget(self.unusedWidgetName))
+        self.assertEqual(self.someWidget, module.widget())
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
