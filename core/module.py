@@ -65,6 +65,13 @@ class Module(core.input.Object):
     def state(self, widget):
         return []
 
+    def threshold_state(self, value, warn, crit):
+        if value > float(self.parameter('critical', crit)):
+            return 'critical'
+        if value > float(self.parameter('warning', warn)):
+            return 'warning'
+        return None
+
 class Error(Module):
     def __init__(self, config, module, error):
         super().__init__(config, core.widget.Widget(self.full_text))
