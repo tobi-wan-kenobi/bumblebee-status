@@ -95,9 +95,10 @@ class Module(bumblebee.engine.Module):
                 minwidth_str += "." + "0" * length
         except AttributeError:
             # return default value
-            return "1000.00MB"
+            return "1000.00KiB/s"
         finally:
-            minwidth_str += "MB"
+            minwidth_str += "KiB/s"
+        print(minwidth_str)
         return minwidth_str
 
     def _update_widgets(self, widgets):
