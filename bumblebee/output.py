@@ -450,6 +450,7 @@ class WidgetDrawer(object):
 
         if width:
             self._full_text = self._full_text.ljust(len(width) + len(self._prefix) + len(self._suffix))
+            raw = raw.ljust(len(width))
 
         self.escape_amp()
 
