@@ -5,6 +5,11 @@ import core.input
 import core.widget
 import core.decorators
 
+try:
+    error = ModuleNotFoundError('')
+except Exception as e:
+    ModuleNotFoundError = Exception
+
 log = logging.getLogger(__name__)
 
 def load(module_name, config=None):
