@@ -5,5 +5,5 @@
 - module __init__ has less parameters
 - super() works differently
 - engine.input.register_callback is now core.input.register
-- update() doesn't have a list of widgets anymore
+- update() only has a single parameter (self) (no widgets anymore)
 

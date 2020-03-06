@@ -15,21 +15,17 @@ import core.module
 import core.widget
 import core.input
 
-class Container(object):
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
+import util.format
 
 class Module(core.module.Module):
     def __init__(self, config=None):
         super().__init__(config, core.widget.Widget(self.memory_usage))
-        self.update(None)
-
-        core.input.register_callback(self, button=core.input.LEFT_MOUSE,
+        core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd='gnome-system-monitor')
 
     @property
     def _format(self):
-        if bumblebee.util.asbool(self.parameter('usedonly', False)):
+        if util.format.asbool(self.parameter('usedonly', False)):
             return '{used}'
         else:
             return self.parameter('format', '{used}/{total} ({percent:05.02f}%)')
@@ -37,7 +33,7 @@ class Module(core.module.Module):
     def memory_usage(self, widget):
         return self._format.format(**self._mem)
 
-    def update(self, widgets):
+    def update(self):
         data = {}
         with open('/proc/meminfo', 'r') as f:
             for line in f:
@@ -52,10 +48,10 @@ class Module(core.module.Module):
         else:
             used = data['MemTotal'] - data['MemFree'] - data['Buffers'] - data['Cached'] - data['Slab']
         self._mem = {
-            'total': bumblebee.util.bytefmt(data['MemTotal']),
-            'available': bumblebee.util.bytefmt(data['MemAvailable']),
-            'free': bumblebee.util.bytefmt(data['MemFree']),
-            'used': bumblebee.util.bytefmt(used),
+            'total': util.format.byte(data['MemTotal']),
+            'available': util.format.byte(data['MemAvailable']),
+            'free': util.format.byte(data['MemFree']),
+            'used': util.format.byte(used),
             'percent': float(used)/float(data['MemTotal'])*100.0
         }
 

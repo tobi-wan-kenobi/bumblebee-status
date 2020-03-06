@@ -23,4 +23,11 @@ def aslist(val):
         return val
     return str(val).replace(' ', '').split(',')
 
+def byte(val, fmt='{:.2f}'):
+    for unit in ['', 'Ki', 'Mi', 'Gi']:
+        if val < 1024.0:
+            return '{}{}B'.format(fmt, unit).format(val)
+        val /= 1024.0
+    return '{}GiB'.format(fmt).format(val*1024.0)
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
