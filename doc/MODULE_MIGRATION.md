@@ -6,4 +6,4 @@
 - super() works differently
 - engine.input.register_callback is now core.input.register
 - update() only has a single parameter (self) (no widgets anymore)
-
+- bumblebee.util.format stuff moved into util.format (byte, aslist, asbool, etc.)
