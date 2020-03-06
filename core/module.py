@@ -8,12 +8,19 @@ import core.decorators
 log = logging.getLogger(__name__)
 
 def load(module_name, config=None):
-    try:
-        mod = importlib.import_module('modules.{}'.format(module_name))
-    except ImportError as error:
-        log.fatal('failed to import {}: {}'.format(module_name, error))
-        return Error(config, module_name, error)
-    return getattr(mod, 'Module')(config)
+    error = None
+    for namespace in [ 'core', 'contrib' ]:
+        try:
+            mod = importlib.import_module('modules.{}.{}'.format(namespace, module_name))
+            return getattr(mod, 'Module')(config)
+        except ModuleNotFoundError as e:
+            pass
+        except ImportError as e:
+            error = str(e)
+    if not error:
+        error = 'No such module'
+    log.fatal('failed to import {}: {}'.format(module_name, error))
+    return Error(config, module_name, error)
 
 class Module(core.input.Object):
     def __init__(self, config=None, widgets=[]):

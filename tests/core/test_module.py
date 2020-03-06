@@ -26,9 +26,19 @@ class module(unittest.TestCase):
         self.assertEqual('core.module', module.__class__.__module__, 'module must be a module object')
         self.assertEqual('Error', module.__class__.__name__, 'an invalid module must be a core.module.Error')
 
+    def test_importerror(self):
+        with unittest.mock.patch('core.module.importlib') as importlib:
+            importlib.import_module.side_effect = ImportError('some-error')
+
+            config = unittest.mock.MagicMock()
+            module = core.module.load(module_name=self.validModuleName, config=config)
+            module.widget().full_text()
+            self.assertEqual('Error', module.__class__.__name__, 'an invalid module must be a core.module.Error')
+            self.assertEqual(module.widget().get('_raw'), 'test: some-error')
+
     def test_loadvalid_module(self):
         module = core.module.load(module_name=self.validModuleName)
-        self.assertEqual('modules.{}'.format(self.validModuleName), module.__class__.__module__, 'module must be a modules.<name> object')
+        self.assertEqual('modules.core.{}'.format(self.validModuleName), module.__class__.__module__, 'module must be a modules.core.<name> object')
         self.assertEqual('Module', module.__class__.__name__, 'a valid module must have a Module class')
         self.assertEqual([], module.state(None), 'default state of module is empty')
 
@@ -89,5 +99,15 @@ class module(unittest.TestCase):
         self.assertEqual(self.anotherWidget, module.widget(self.anotherWidget.name()))
         self.assertEqual(None, module.widget(self.unusedWidgetName))
         self.assertEqual(self.someWidget, module.widget())
+
+    def test_default_thresholds(self):
+        cfg = core.config.Config([])
+        module = TestModule(config=cfg, widgets=[self.someWidget, self.anotherWidget])
+
+        self.assertEqual('critical', module.threshold_state(100, 80, 99))
+        self.assertEqual('warning', module.threshold_state(100, 80, 100))
+        self.assertEqual('warning', module.threshold_state(81, 80, 100))
+        self.assertEqual(None, module.threshold_state(80, 80, 100))
+        self.assertEqual(None, module.threshold_state(10, 80, 100))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
