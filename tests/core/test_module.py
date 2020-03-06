@@ -1,5 +1,6 @@
 import unittest
 
+import sys
 import shlex
 
 import core.module
@@ -26,6 +27,7 @@ class module(unittest.TestCase):
         self.assertEqual('core.module', module.__class__.__module__, 'module must be a module object')
         self.assertEqual('Error', module.__class__.__name__, 'an invalid module must be a core.module.Error')
 
+    @unittest.skipIf(sys.version_info.major == 3 and sys.version_info.minor in [ 4, 5 ], 'importlib error reporting in Python 3.{4,5} different')
     def test_importerror(self):
         with unittest.mock.patch('core.module.importlib') as importlib:
             importlib.import_module.side_effect = ImportError('some-error')
