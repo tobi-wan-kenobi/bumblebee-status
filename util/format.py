@@ -30,4 +30,19 @@ def byte(val, fmt='{:.2f}'):
         val /= 1024.0
     return '{}GiB'.format(fmt).format(val*1024.0)
 
+def duration(duration, shorten=False, suffix=False):
+    duration = int(duration)
+    minutes, seconds = divmod(duration, 60)
+    hours, minutes = divmod(minutes, 60)
+    suf = 'm'
+    res = '{:02d}:{:02d}'.format(minutes, seconds)
+    if hours > 0:
+        if shorten:
+            res = '{:02d}:{:02d}'.format(hours, minutes)
+        else:
+            res = '{:02d}:{}'.format(hours, res)
+        suf = 'h'
+
+    return '{}{}'.format(res, suf if suffix else '')
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

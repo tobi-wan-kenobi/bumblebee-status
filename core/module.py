@@ -19,8 +19,9 @@ def load(module_name, config=None):
             mod = importlib.import_module('modules.{}.{}'.format(namespace, module_name))
             return getattr(mod, 'Module')(config)
         except ModuleNotFoundError as e:
-            pass
+            log.fatal('failed to import {}: {}'.format(module_name, e))
         except ImportError as e:
+            log.fatal('failed to import {}: {}'.format(module_name, e))
             error = str(e)
     if not error:
         error = 'No such module'

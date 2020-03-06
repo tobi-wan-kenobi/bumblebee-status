@@ -20,6 +20,7 @@
 - WAL support / colorscheme support
 - tkinter / popups
 - scrolling decorator (incl. minwidth, alignment)
+- theme.exclude??
 
 ## Improvements
 - pango output (improve - maybe autodetect? see #531)

@@ -13,13 +13,19 @@ Parameters:
 
 import os
 import glob
-import power
+import logging
+try:
+    import power
+except ImportError:
+    pass
 
 import core.module
 import core.widget
 import core.input
 
 import util.format
+
+log = logging.getLogger(__name__)
 
 class Module(core.module.Module):
     def __init__(self, config=None):
@@ -33,24 +39,16 @@ class Module(core.module.Module):
             self._batteries = ['/sys/class/power_supply/{}'.format(b) for b in self._batteries]
         if len(self._batteries) == 0:
             raise Exceptions('no batteries configured/found')
-        self.update()
         core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd='gnome-power-statistics')
 
-    def update(self, widgets):
-        new_widgets = []
         for path in self._batteries:
-            widget = self.widget(path)
-            if not widget:
-                widget = bumblebee.output.Widget(full_text=self.capacity, name=path)
-            new_widgets.append(widget)
-            self.capacity(widget)
-        while len(widgets) > 0: del widgets[0]
-        for widget in new_widgets:
-            if bumblebee.util.asbool(self.parameter('decorate', True)) == False:
-                widget.set('theme.exclude', 'suffix')
+            log.debug('adding new widget for {}'.format(path))
+            widget = core.widget.Widget(full_text=self.capacity, name=path, module=self)
             widgets.append(widget)
-        self._widgets = widgets
+            self.capacity(widget)
+            if util.format.asbool(self.parameter('decorate', True)) == False:
+                widget.set('theme.exclude', 'suffix')
 
     def remaining(self):
         estimate = 0.0
@@ -63,18 +61,18 @@ class Module(core.module.Module):
                 return ''
         except Exception:
             return ''
-        return bumblebee.util.durationfmt(estimate*60, shorten=True, suffix=True) # estimate is in minutes
+        return util.format.duration(estimate*60, shorten=True, suffix=True) # estimate is in minutes
 
     def capacity(self, widget):
         widget.set('capacity', -1)
         widget.set('ac', False)
-        if not os.path.exists(widget.name):
+        if not os.path.exists(widget.name()):
             widget.set('capacity', 100)
             widget.set('ac', True)
             return 'ac'
         capacity = 100
         try:
-            with open('{}/capacity'.format(widget.name)) as f:
+            with open('{}/capacity'.format(widget.name())) as f:
                 capacity = int(f.read())
         except IOError:
             return 'n/a'
@@ -83,18 +81,18 @@ class Module(core.module.Module):
         widget.set('capacity', capacity)
 
         # Read power conumption
-        if bumblebee.util.asbool(self.parameter('showpowerconsumption', False)):
-            r=open(widget.name + '/power_now', 'r')
+        if util.format.asbool(self.parameter('showpowerconsumption', False)):
+            r=open(widget.name() + '/power_now', 'r')
             output =  '{}% ({})'.format(capacity,str(int(r.read())/1000000) + 'W')
         else:
              output =  '{}%'.format(capacity)
 
         widget.set('theme.minwidth', '100%')
-        if bumblebee.util.asbool(self.parameter('showremaining', True))\
+        if util.format.asbool(self.parameter('showremaining', True))\
                 and self.getCharge(widget) == 'Discharging':
             output = '{} {}'.format(output, self.remaining())
 
-        if bumblebee.util.asbool(self.parameter('showdevice', False)):
+        if util.format.asbool(self.parameter('showdevice', False)):
             output = '{} ({})'.format(output, os.path.basename(widget.name))
 
         return output
@@ -104,6 +102,7 @@ class Module(core.module.Module):
         capacity = widget.get('capacity')
 
         if capacity < 0:
+            log.debug('battery state: {}'.format(state))
             return ['critical', 'unknown']
 
         if capacity < int(self.parameter('critical', 10)):
@@ -124,15 +123,15 @@ class Module(core.module.Module):
                     state.append('charged')
                 else:
                     state.append('charging')
-
         return state
 
     def getCharge(self, widget):
         charge = ''
         try:
-            with open('{}/status'.format(widget.name)) as f:
+            with open('{}/status'.format(widget.name())) as f:
                 charge = f.read().strip()
         except IOError:
                 pass
         return charge
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
