@@ -98,7 +98,6 @@ class Module(bumblebee.engine.Module):
             return "1000.00KiB/s"
         finally:
             minwidth_str += "KiB/s"
-        print(minwidth_str)
         return minwidth_str
 
     def _update_widgets(self, widgets):
