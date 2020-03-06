@@ -13,30 +13,28 @@ Parameters:
 
 import os
 import glob
+import power
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-import bumblebee.util
+import core.module
+import core.widget
+import core.input
 
-try:
-    import power
-except ImportError:
-    pass
+import util.format
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
+class Module(core.module.Module):
+    def __init__(self, config=None):
         widgets = []
-        super(Module, self).__init__(engine, config, widgets)
-        self._batteries = self.parameter('device', 'auto').split(',')
+        super().__init__(config, widgets)
+
+        self._batteries = util.format.aslist(self.parameter('device', 'auto'))
         if self._batteries[0] == 'auto':
             self._batteries = glob.glob('/sys/class/power_supply/BAT*')
         else:
             self._batteries = ['/sys/class/power_supply/{}'.format(b) for b in self._batteries]
         if len(self._batteries) == 0:
-            self._batteries = ['/sys/class/power_supply/BAT0']
-        self.update(widgets)
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+            raise Exceptions('no batteries configured/found')
+        self.update()
+        core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd='gnome-power-statistics')
 
     def update(self, widgets):
