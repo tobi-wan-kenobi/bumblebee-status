@@ -54,4 +54,13 @@ class format(unittest.TestCase):
     def test_list_from_str(self):
         self.assertEqual(['12', '13', '14'], aslist('12,13,14'))
 
+    def test_byteformat(self):
+        self.assertEqual('500.00B', byte(500))
+        self.assertEqual('1.00KiB', byte(1024))
+        self.assertEqual('1KiB', byte(1024, '{:.0f}'))
+        self.assertEqual('1.50KiB', byte(1024+512))
+        self.assertEqual('2.50MiB', byte(1024*1024*2 + 1024*512))
+        self.assertEqual('4.50GiB', byte(1024*1024*1024*4 + 1024*1024*512))
+        self.assertEqual('2048.00GiB', byte(1024*1024*1024*1024*2))
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
