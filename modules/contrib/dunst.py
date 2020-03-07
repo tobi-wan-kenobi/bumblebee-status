@@ -2,24 +2,20 @@
 
 '''Toggle dunst notifications.'''
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
 
+import util.cli
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-                bumblebee.output.Widget(full_text='')
-        )
+class Module(core.module.Module):
+    def __init__(self, config=None):
+        super().__init__(config, core.widget.Widget(''))
         self._paused = False
         # Make sure that dunst is currently not paused
-        try:
-            bumblebee.util.execute('killall -SIGUSR2 dunst')
-        except:
-            pass
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-                cmd=self.toggle_status
+        util.cli.execute('killall -SIGUSR2 dunst', ignore_errors=True)
+        core.input.register(self, button=core.input.LEFT_MOUSE,
+            cmd=self.toggle_status
         )
 
     def toggle_status(self, event):
@@ -27,9 +23,9 @@ class Module(bumblebee.engine.Module):
         
         try:
             if self._paused:
-                bumblebee.util.execute('killall -SIGUSR1 dunst')
+                util.cli.execute('killall -SIGUSR1 dunst')
             else:
-                bumblebee.util.execute('killall -SIGUSR2 dunst')
+                util.cli.execute('killall -SIGUSR2 dunst')
         except:
             self._paused = not self._paused # toggling failed
 
