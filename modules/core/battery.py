@@ -61,7 +61,7 @@ class Module(core.module.Module):
                 return ''
         except Exception:
             return ''
-        return util.format.duration(estimate*60, shorten=True, suffix=True) # estimate is in minutes
+        return util.format.duration(estimate*60, compact=True, unit=True) # estimate is in minutes
 
     def capacity(self, widget):
         widget.set('capacity', -1)

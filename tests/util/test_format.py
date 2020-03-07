@@ -63,4 +63,17 @@ class format(unittest.TestCase):
         self.assertEqual('4.50GiB', byte(1024*1024*1024*4 + 1024*1024*512))
         self.assertEqual('2048.00GiB', byte(1024*1024*1024*1024*2))
 
+    def test_duration(self):
+        self.assertEqual('04:20:00', duration(4*60*60+20*60))
+        self.assertEqual('04:20:00h', duration(4*60*60+20*60, unit=True))
+        self.assertEqual('04:20h', duration(4*60*60+20*60, compact=True, unit=True))
+
+        self.assertEqual('20:00', duration(20*60))
+        self.assertEqual('20:00m', duration(20*60, unit=True))
+        self.assertEqual('20:00m', duration(20*60, compact=True, unit=True))
+
+        self.assertEqual('00:20', duration(20))
+        self.assertEqual('00:20m', duration(20, unit=True))
+        self.assertEqual('00:20m', duration(20, compact=True, unit=True))
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
