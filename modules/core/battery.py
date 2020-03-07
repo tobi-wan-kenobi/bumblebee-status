@@ -14,10 +14,12 @@ Parameters:
 import os
 import glob
 import logging
+log = logging.getLogger(__name__)
+
 try:
     import power
 except ImportError:
-    pass
+    log.warning('unable to import module "power": Time estimates will not be available')
 
 import core.module
 import core.widget
@@ -25,7 +27,6 @@ import core.input
 
 import util.format
 
-log = logging.getLogger(__name__)
 
 class Module(core.module.Module):
     def __init__(self, config=None):
