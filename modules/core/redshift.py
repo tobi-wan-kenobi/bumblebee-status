@@ -6,22 +6,26 @@ Requires the following executable:
     * redshift
 
 Parameters:
-    * redshift.location : location provider, either of 'geoclue2' (default), \
-'ipinfo' (requires the requests package), or 'manual'
+    * redshift.location : location provider, either of 'auto' (default), 'geoclue2',
+        'ipinfo' (requires the requests package), or 'manual'
+        'auto' uses whatever redshift is configured to do
     * redshift.lat : latitude if location is set to 'manual'
     * redshift.lon : longitude if location is set to 'manual'
 '''
 
 import threading
+import logging
+log = logging.getLogger(__name__)
 try:
     import requests
 except ImportError:
-    pass
+    log.warning('unable to import module "requests": Location via IP disabled')
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
 
+import util.cli
 
 def is_terminated():
     for thread in threading.enumerate():
@@ -43,14 +47,14 @@ def get_redshift_value(widget, location, lat, lon):
             break
         widget.get('condition').release()
 
-        command = ['redshift', '-p', '-l']
+        command = ['redshift', '-p']
         if location == 'manual':
-            command.append(lat + ':' + lon)
-        else:
-            command.append('geoclue2')
+            command.extend(['-l', '{}:{}'.format(lat, lon)])
+        if location == 'geoclue2':
+            command.extend(['-l', 'geoclue2'])
 
         try:
-            res = bumblebee.util.execute(' '.join(command))
+            res = util.cli.execute(' '.join(command))
         except Exception:
             res = ''
             widget.set('temp', 'n/a')
@@ -70,18 +74,18 @@ def get_redshift_value(widget, location, lat, lon):
                     widget.set('state', 'transition')
                     widget.set('transition', ' '.join(line.split(' ')[2:]))
 
+class Module(core.module.Module):
+    def __init__(self, config=None):
+        widget = core.widget.Widget(self.text)
+        super().__init__(config, widget)
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        widget = bumblebee.output.Widget(full_text=self.text)
-        super(Module, self).__init__(engine, config, widget)
-
-        self._location = self.parameter('location', 'geoclue2')
+        self._location = self.parameter('location', 'auto')
         self._lat = self.parameter('lat', None)
         self._lon = self.parameter('lon', None)
 
         # Even if location method is set to manual, if we have no lat or lon,
         # fall back to the geoclue2 method.
+        #
         if self._location == 'manual' and (self._lat is None
                                            or self._lon is None):
             self._location == 'geoclue2'
@@ -102,8 +106,8 @@ class Module(bumblebee.engine.Module):
         self._condition = threading.Condition()
         widget.set('condition', self._condition)
         self._thread = threading.Thread(target=get_redshift_value,
-                                        args=(widget, self._location,
-                                              self._lat, self._lon))
+            args=(widget, self._location,
+            self._lat, self._lon))
         self._thread.start()
         self._condition.acquire()
         self._condition.notify()
@@ -112,8 +116,8 @@ class Module(bumblebee.engine.Module):
     def text(self, widget):
         return '{}'.format(self._text)
 
-    def update(self, widgets):
-        widget = widgets[0]
+    def update(self):
+        widget = self.widget()
         self._condition.acquire()
         self._condition.notify()
         self._condition.release()
