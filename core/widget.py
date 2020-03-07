@@ -9,8 +9,6 @@ class Widget(util.store.Store, core.input.Object):
         self._module = module
         self._name = name
 
-        self.minwidth = None
-
     def name(self):
         return self._name
 

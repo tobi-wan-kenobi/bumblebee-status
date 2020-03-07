@@ -8,7 +8,7 @@ def scrollable(func):
             return text
         width = widget.get('theme.width', util.format.asint(module.parameter('width', 30)))
         if util.format.asbool(module.parameter('scrolling.makewide', True)):
-            widget.minwidth = 'A'*width
+            widget.set('theme.minwidth', 'A'*width)
         if width < 0 or len(text) <= width:
             return text
 
