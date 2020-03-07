@@ -8,31 +8,32 @@ Parameters:
 
 '''
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-
 import glob
+import shutil
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-                                     bumblebee.output.Widget(full_text=self.brightness))
+import core.module
+import core.widget
+import core.input
+
+class Module(core.module.Module):
+    def __init__(self, config=None):
+        super().__init__(config, core.widget.Widget(self.brightness))
+
         self._brightness = 0
-
-        self._device_path = self.find_device(self.parameter('device_path', '/sys/class/backlight/intel_backlight'))
+        self._device_path = self.find_device(
+            self.parameter('device_path', '/sys/class/backlight/intel_backlight')
+        )
         step = self.parameter('step', 2)
 
-        if bumblebee.util.which('light'):
-            self.register_cmd(engine, 'light -A {}%'.format(step),
-                              'light -U {}%'.format(step))
-        elif bumblebee.util.which('brightnessctl'):
-            self.register_cmd(engine, 'brightnessctl s {}%+'.format(step),
-                              'brightnessctl s {}%-'.format(step))
+        if shutil.which('light'):
+            self.register_cmd('light -A {}%'.format(step),
+                'light -U {}%'.format(step))
+        elif shutil.which('brightnessctl'):
+            self.register_cmd('brightnessctl s {}%+'.format(step),
+                'brightnessctl s {}%-'.format(step))
         else:
             self.register_cmd(engine, 'xbacklight +{}%'.format(step),
-                              'xbacklight -{}%'.format(step))
+                'xbacklight -{}%'.format(step))
 
     def find_device(self, device_path):
         res = glob.glob(device_path)
@@ -40,9 +41,9 @@ class Module(bumblebee.engine.Module):
             return device_path
         return res[0]
 
-    def register_cmd(self, engine, upCmd, downCmd):
-        engine.input.register_callback(self, button=bumblebee.input.WHEEL_UP, cmd=upCmd)
-        engine.input.register_callback(self, button=bumblebee.input.WHEEL_DOWN, cmd=downCmd)
+    def register_cmd(self, up_cmd, down_cmd):
+        core.input.register(self, button=core.input.WHEEL_UP, cmd=up_cmd)
+        core.input.register(self, button=core.input.WHEEL_DOWN, cmd=down_cmd)
 
     def brightness(self, widget):
         if isinstance(self._brightness, float):
@@ -50,7 +51,7 @@ class Module(bumblebee.engine.Module):
         else:
             return 'n/a'
 
-    def update(self, widgets):
+    def update(self):
         try:
             with open('{}/brightness'.format(self._device_path)) as f:
                 backlight = int(f.readline())
