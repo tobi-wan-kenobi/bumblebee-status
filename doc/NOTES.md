@@ -11,6 +11,7 @@
 - use __ for private?
 
 # Features
+- new themeing? (and add a "version" for backwards compat)
 
 ## Backwards-compatibility
 - aliases
