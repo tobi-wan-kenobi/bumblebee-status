@@ -1,9 +1,12 @@
 import os
 import io
 import json
+import logging
 
 import core.event
 import util.algorithm
+
+log = logging.getLogger(__name__)
 
 THEME_BASE_DIR=os.path.dirname(os.path.realpath(__file__))
 PATHS=[
@@ -18,6 +21,7 @@ class Theme(object):
         self.__widget_count = 0
         self.__previous = {}
         self.__current = {}
+        self.__keywords = {}
         if raw_data:
             self.__data = raw_data
         else:
@@ -26,6 +30,8 @@ class Theme(object):
                 util.algorithm.merge(self.__data, self.load(icons, 'icons'))
             if iconset != 'auto':
                 util.algorithm.merge(self.__data, self.load(iconset, 'icons'))
+            for colors in self.__data.get('colors', []):
+                util.algorithm.merge(self.__keywords, self.load_keywords(colors))
 
         core.event.register('update', self.__start)
         core.event.register('next-widget', self.__next_widget)
@@ -51,6 +57,24 @@ class Theme(object):
                 with io.open(theme_file, encoding='utf-8') as data:
                     return json.load(data)
         raise RuntimeError('unable to find theme {}'.format(name))
+
+    def __load(self, filename, sections):
+        result = {}
+        with io.open(os.path.expanduser(filename)) as data:
+            colors = json.load(data)
+            for field in sections:
+                for key in colors[field]:
+                    result[key] = colors[field][key]
+        return result
+
+    def load_keywords(self, name):
+        try:
+            if isinstance(name, dict):
+                return name
+            if name.lower() == 'wal':
+                return self.__load('~/.cache/wal/colors.json', ['special', 'colors'])
+        except Exception as e:
+            log.error('failed to load colors: {}', e)
 
     def __start(self):
         self.__widget_count = 0
@@ -89,6 +113,8 @@ class Theme(object):
                 theme = self.__get(widget, state, {})
                 value = theme.get(key, value)
 
+        if not type(value) in (list, dict):
+            value = self.__keywords.get(value, value)
         self.__current[key] = value
         return value
 
