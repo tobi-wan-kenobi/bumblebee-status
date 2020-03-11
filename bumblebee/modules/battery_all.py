@@ -88,7 +88,7 @@ class Module(bumblebee.engine.Module):
        
     def state(self, widget):
         state = []
-        capacity = widget.get("capacity")
+        capacity = widget.get("capacity", -1)
 
         if capacity < 0:
             return ["critical", "unknown"]
