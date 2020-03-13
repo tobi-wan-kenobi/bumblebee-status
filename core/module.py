@@ -65,7 +65,9 @@ class Module(core.input.Object):
     def module_name(self):
         return self.__module__.split('.')[-1]
 
-    def widgets(self):
+    def widgets(self, widgets=None):
+        if widgets:
+            self._widgets = widgets
         return self._widgets
 
     def widget(self, name=None):

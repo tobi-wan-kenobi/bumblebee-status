@@ -20,22 +20,24 @@ import os
 import re
 import sys
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
+
+import util.cli
+import util.format
 
 try:
     import i3
 except:
     pass
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
+class Module(core.module.Module):
+    def __init__(self, config=None):
         widgets = []
-        self._engine = engine
-        super(Module, self).__init__(engine, config, widgets)
-        self._autoupdate = bumblebee.util.asbool(self.parameter('autoupdate', True))
+        super().__init__(config, widgets)
+
+        self._autoupdate = util.format.asbool(self.parameter('autoupdate', True))
         self._needs_update = True
 
         try:
@@ -46,7 +48,7 @@ class Module(bumblebee.engine.Module):
     def _output_update(self, event, data, _):
         self._needs_update = True
 
-    def update_widgets(self, widgets):
+    def update(self):
         new_widgets = []
 
         if self._autoupdate == False and self._needs_update == False:
@@ -54,7 +56,7 @@ class Module(bumblebee.engine.Module):
 
         self._needs_update = False
 
-        for line in bumblebee.util.execute('xrandr -q').split('\n'):
+        for line in util.cli.execute('xrandr -q').split('\n'):
             if not ' connected' in line:
                 continue
             display = line.split(' ', 2)[0]
@@ -62,26 +64,22 @@ class Module(bumblebee.engine.Module):
 
             widget = self.widget(display)
             if not widget:
-                widget = bumblebee.output.Widget(full_text=display, name=display)
-                self._engine.input.register_callback(widget, button=1, cmd=self._toggle)
-                self._engine.input.register_callback(widget, button=3, cmd=self._toggle)
+                widget = core.widget.Widget(full_text=display, name=display)
+                core.input.register(widget, button=1, cmd=self._toggle)
+                core.input.register(widget, button=3, cmd=self._toggle)
             new_widgets.append(widget)
+            widget.module(self)
             widget.set('state', 'on' if m else 'off')
             widget.set('pos', int(m.group(1)) if m else sys.maxsize)
 
-        while len(widgets) > 0:
-            del widgets[0]
-        for widget in new_widgets:
-            widgets.append(widget)
+        self.widgets(new_widgets)
 
         if self._autoupdate == False:
-            widget = bumblebee.output.Widget(full_text='')
+            widget = core.widget.Widget(full_text='')
+            widget.module(self)
             widget.set('state', 'refresh')
-            self._engine.input.register_callback(widget, button=1, cmd=self._refresh)
-            widgets.append(widget)
-
-    def update(self, widgets):
-        self.update_widgets(widgets)
+            core.input.register(widget, button=1, cmd=self._refresh)
+            self.widgets().append(widget)
 
     def state(self, widget):
         return widget.get('state', 'off')
@@ -90,10 +88,10 @@ class Module(bumblebee.engine.Module):
         self._needs_update = True
 
     def _toggle(self, event):
-        self._needs_update = True
+        self._refresh(self, event)
         path = os.path.dirname(os.path.abspath(__file__))
 
-        if bumblebee.util.asbool(self.parameter('overwrite_i3config', False)) == True:
+        if util.format.asbool(self.parameter('overwrite_i3config', False)) == True:
             toggle_cmd = '{}/../../bin/toggle-display.sh'.format(path)
         else:
             toggle_cmd = 'xrandr'
@@ -101,18 +99,18 @@ class Module(bumblebee.engine.Module):
         widget = self.widget_by_id(event['instance'])
 
         if widget.get('state') == 'on':
-            bumblebee.util.execute('{} --output {} --off'.format(toggle_cmd, widget.name))
+            util.cli.execute('{} --output {} --off'.format(toggle_cmd, widget.name))
         else:
             first_neighbor = next((widget for widget in self.widgets() if widget.get('state') == 'on'), None)
             last_neighbor = next((widget for widget in reversed(self.widgets()) if widget.get('state') == 'on'), None)
 
-            neighbor = first_neighbor if event['button'] == bumblebee.input.LEFT_MOUSE else last_neighbor
+            neighbor = first_neighbor if event['button'] == core.input.LEFT_MOUSE else last_neighbor
 
             if neighbor is None:
-                bumblebee.util.execute('{} --output {} --auto'.format(toggle_cmd, widget.name))
+                util.cli.execute('{} --output {} --auto'.format(toggle_cmd, widget.name))
             else:
-                bumblebee.util.execute('{} --output {} --auto --{}-of {}'.format(toggle_cmd, widget.name,
-                    'left' if event.get('button') == bumblebee.input.LEFT_MOUSE else 'right',
+                util.cli.execute('{} --output {} --auto --{}-of {}'.format(toggle_cmd, widget.name,
+                    'left' if event.get('button') == core.input.LEFT_MOUSE else 'right',
                     neighbor.name))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
