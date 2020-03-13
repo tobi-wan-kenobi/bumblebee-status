@@ -5,48 +5,28 @@
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 
-**Many, many thanks to all contributors! As of now, 54 of the modules are from various contributors (!), and only 19 from myself.**
+**Many, many thanks to all contributors! All of the really cool modules have been contributed by somebody :)**
 
-![List of modules](./Modules.md)
+![List of modules](doc/MODULES.md)
 
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
 
 bumblebee-status is a modular, theme-able status line generator for the [i3 window manager](https://i3wm.org/).
 
 Focus is on:
-* Ease of use (no configuration files!)
-* Theme support
-* Extensibility (of course...)
+* Ease of use
+* Support for easily adding custom themes
+* Support for easily adding custom modules
 
-One thing I like in particular: You can use the mouse wheel up/down to switch workspaces forward and back everywhere throughout the bar (unless you have mapped the mouse wheel buttons to another action for a widget, in which case this doesn't work while hovering that particular widget).
-
-I hope you like it and appreciate any kind of feedback: Bug reports, Feature requests, etc. :)
+I hope you like it and I appreciate any kind of feedback: Bug reports, Feature requests, etc. :)
 
 Thanks a lot!
 
 Required i3wm version: 4.12+ (in earlier versions, blocks won't have background colors)
 
-Supported Python versions: 2.7, 3.3, 3.4, 3.5, 3.6
+Supported Python versions: 3.4, 3.5, 3.6, 3.7, 3.8
 
 Supported FontAwesome version: 4 (free version of 5 doesn't include some of the icons)
-
-Explicitly unsupported Python versions: 3.2 (missing unicode literals)
-
-:information_source: The ![Font Awesome](https://fontawesome.com/) is required for all themes that contain icons (because that is the font that includes these icons). Please refer to your distribution's package management on how to install them, or get them from their website directly. Also, please note that Font Awesome removed some icons used by `bumblebee-status` from the free set in version 5, so if possible, stick with 4.
-
-```
-# Font Awesome installation instructions
-
-# Arch Linux
-$ sudo pacman -S awesome-terminal-fonts
-
-# FreeBSD
-$ sudo pkg install font-awesome
-$ sudo pkg install py36-tzlocal py36-pytz py36-netifaces py36-psutil py36-requests #for dependencies
-
-# Other
-# see https://github.com/gabrielelana/awesome-terminal-fonts
-```
 
 Example usage:
 
@@ -59,13 +39,13 @@ bar {
 # Documentation
 See [the wiki](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki) for documentation.
 
-See [FAQ](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/FAQ) for, well, FAQs.
+See [FAQ](doc/FAQ.md) for FAQs.
 
 Other resources:
 
-* A list of [available modules](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/Available-Modules)
-* [How to write a theme](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/How-to-write-a-theme)
-* [How to write a module](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/How-to-write-a-module)
+* A list of [available modules](doc/MODULES.md)
+* [How to write a theme](doc/HOWTO_THEME.md)
+* [How to write a module](doc/HOWTO_MODULE.md)
 
 # Installation
 ```
@@ -73,7 +53,7 @@ $ git clone git://github.com/tobi-wan-kenobi/bumblebee-status
 ```
 
 # Dependencies
-[Available modules](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki/Available-Modules) lists the dependencies (Python modules and external executables)
+[Available modules](doc/MODULES.md) lists the dependencies (Python modules and external executables)
 for each module. If you are not using a module, you don't need the dependencies.
 
 # Usage
@@ -178,115 +158,12 @@ If errors occur, you should see them in the i3bar itself. If that does not work,
 $ ./bumblebee-status -d -m <list of modules>
 ```
 
-This will create a file called `~/bumblebee-status-debug.log` by default. The file name can be changed by using the `-f` or `--logfile` option.
+This will log to stderr, so unless you are running `bumblebee-status` interactively in the CLI, you'll need to redirect stderr to some file (i.e. `bumblebee-status <parameters> 2> error.log`).
 
 ### Advanced Usage
 If you want to have a minimal bar that stays out of the way, you can use the `-a` or `--autohide` switch to specify a list of module names. All those modules will only be displayed when (and as long as) their state is either warning or critical (high CPU usage, low disk space, etc.). As long as the module is in a "normal" state and does not require attention, it will remain hidden.
 Note that this parameter is specified *in addition* to `-m` (i.e. to autohide the CPU module, you would use `bumblebee-status -m cpu memory traffic -a cpu`).
 
-# Required Modules
-
-Modules and commandline utilities are only required for modules, the core itself has no external dependencies at all.
-
-* psutil (for the modules 'cpu', 'memory', 'traffic')
-* netifaces (for the modules 'nic', 'traffic')
-* requests (for the modules 'weather', 'github', 'getcrypto', 'stock', 'currency', 'sun')
-* power (for the module 'battery')
-* dbus (for the module 'spotify', 'deezer')
-* i3ipc (for the module 'title')
-* pacman-contrib (for module 'arch-update')
-* docker (for the module 'docker_ps')
-* pytz (for the module 'datetimetz')
-* localtz (for the module 'datetimetz')
-* suntime (for the module 'sun')
-* feedparser (for the module 'rss')
-
-# Required commandline utilities
-
-* xset (for the module 'caffeine')
-* notify-send (for the module 'caffeine')
-* cmus-remote (for the module 'cmus')
-* dnf (for the module 'dnf')
-* gpmdp-remote (for the module 'gpmdp')
-* setxkbmap (for the module 'layout')
-* fakeroot (for the module 'pacman')
-* pacman (for the module 'pacman')
-* pactl (for the module 'pulseaudio')
-* ping (for the module 'ping')
-* redshift (for the module 'redshift')
-* xrandr (for the module 'xrandr')
-* mpc (for the module 'mpd')
-* bluez / blueman (for module 'bluetooth')
-* dbus-send (for module 'bluetooth')
-* nvidia-smi (for module 'nvidiagpu')
-* sensors (for module 'sensors', as fallback)
-* zpool (for module 'zpool')
-* progress (for module 'progress')
-* i3exit (for module 'system')
-
 # Examples
-Here are some screenshots for all themes that currently exist:
 
-:exclamation: Some themes (all 'Powerline' themes) require [Font Awesome](http://fontawesome.io/) and a powerline-compatible font ([powerline-fonts](https://github.com/powerline/fonts), for example) to display all icons correctly.
-
-:exclamation: If you want to add your own team, just drop it into `~/.config/bumblebee-status/themes/`
-
-Gruvbox Powerline (`-t gruvbox-powerline`) (contributed by [@TheEdgeOfRage](https://github.com/TheEdgeOfRage)):
-
-![Gruvbox Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-gruvbox.png)
-
-Gruvbox Powerline Light (`-t gruvbox-powerline-light`) (contributed by [freed00m](https://github.com/freed00m)):
-
-![Gruvbox Powerline Light](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/gruvbox-powerline-light.png)
-
-Solarized Powerline (`-t solarized-powerline`):
-
-![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
-
-Gruvbox (`-t gruvbox`):
-
-![Gruvbox](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/gruvbox.png)
-
-Gruvbox Light (`-t gruvbox-light`) (contributed by [freed00m](https://github.com/freed00m)):
-
-![Gruvbox Light](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/gruvbox-light.png)
-
-Solarized (`-t solarized`):
-
-![Solarized](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/solarized.png)
-
-Powerline (`-t powerline`):
-
-![Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline.png)
-
-Greyish Powerline (`-t greyish-powerline`) (contributed by Joshua Bark):
-
-![Greyish Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-greyish.png)
-
-Iceberg (`-t iceberg`) (contributed by [whzup](https://github.com/whzup)):
-
-![Iceberg](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/iceberg.png)
-
-Iceberg Powerline (`-t iceberg-powerline`) (contributed by [whzup](https://github.com/whzup)):
-
-![Iceberg Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/iceberg-powerline.png)
-
-Iceberg Dark Powerline (`-t iceberg-dark-powerline`) (contributed by [gkeep](https://github.com/gkeep)):
-
-![Iceberg Dark Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/iceberg-dark-powerline.png)
-
-Iceberg Rainbow (`-t iceberg-rainbow`) (contributed by [whzup](https://github.com/whzup)):
-
-![Iceberg Rainbow](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/iceberg-rainbow.png)
-
-One Dark Powerline (`-t onedark-powerline`) (contributed by [dillasyx](https://github.com/dillasyx)):
-
-![One Dark Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/onedark-powerline.png)
-
-Dracula Powerline (-t dracula-powerline) (contributed by [xsteadfastx](https://github.com/xsteadfastx)):
-
-![Dracula Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/dracula-powerline.png)
-
-Default (nothing or `-t default`):
-
-![Default](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/default.png)
+![List of themes](./doc/THEMES.md)
