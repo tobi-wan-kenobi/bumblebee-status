@@ -14,23 +14,27 @@ Parameters:
 
 import re
 
-import bumblebee.util
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config, None)
-        self._chip = self.parameter('chip', '')
-        self._data = {}
-        self._update()
+import util.cli
+import util.format
 
-        self.widgets(self._create_widgets())
+class Module(core.module.Module):
+    def __init__(self, config=None):
+        super().__init__(config, [])
 
-    def update(self, widgets):
-        self._update()
-        for widget in widgets:
-            self._update_widget(widget)
+        self.__chip = self.parameter('chip', '')
+        self.__data = {}
+        self.__update()
+
+        self.widgets(self.__create_widgets())
+
+    def update(self):
+        self.__update()
+        for widget in self.widgets():
+            self.__update_widget(widget)
 
     def state(self, widget):
         widget_type = widget.get('type', '')
@@ -44,28 +48,28 @@ class Module(bumblebee.engine.Module):
             pass
         return [widget_type]
 
-    def _create_widgets(self):
+    def __create_widgets(self):
         widgets = []
-        show_temp = bumblebee.util.asbool(self.parameter('showtemp', 'true'))
-        show_fan = bumblebee.util.asbool(self.parameter('showfan', 'true'))
-        show_other = bumblebee.util.asbool(self.parameter('showother', 'false'))
+        show_temp = util.format.asbool(self.parameter('showtemp', True))
+        show_fan = util.format.asbool(self.parameter('showfan', True)) 
+        show_other = util.format.asbool(self.parameter('showother', False))
 
-        if bumblebee.util.asbool(self.parameter('showcpu', 'true')):
-            widget = bumblebee.output.Widget(full_text=self._cpu)
+        if util.format.asbool(self.parameter('showcpu', True)):
+            widget = core.widget.Widget(full_text=self.__cpu)
             widget.set('type', 'cpu')
             widgets.append(widget)
 
-        for adapter in self._data:
-            for package in self._data[adapter]:
-                if bumblebee.util.asbool(self.parameter('showname', 'false')):
-                    widget = bumblebee.output.Widget(full_text=package)
+        for adapter in self.__data:
+            for package in self.__data[adapter]:
+                if util.format.asbool(self.parameter('showname', False)):
+                    widget = core.widget.Widget(full_text=package)
                     widget.set('data', self._data[adapter][package])
                     widget.set('package', package)
                     widget.set('field', '')
                     widget.set('adapter', adapter)
                     widgets.append(widget)
-                for field in self._data[adapter][package]:
-                    widget = bumblebee.output.Widget()
+                for field in self.__data[adapter][package]:
+                    widget = core.widget.Widget()
                     widget.set('package', package)
                     widget.set('field', field)
                     widget.set('adapter', adapter)
@@ -83,10 +87,10 @@ class Module(bumblebee.engine.Module):
                         widgets.append(widget)
         return widgets
 
-    def _update_widget(self, widget):
+    def __update_widget(self, widget):
         if widget.get('field', '') == '':
             return # nothing to do
-        data = self._data[widget.get('adapter')][widget.get('package')][widget.get('field')]
+        data = self.__data[widget.get('adapter')][widget.get('package')][widget.get('field')]
         if 'temp' in widget.get('field'):
             widget.full_text(u'{:0.01f}°C'.format(data['input']))
         elif 'fan' in widget.get('field'):
@@ -94,11 +98,11 @@ class Module(bumblebee.engine.Module):
         else:
             widget.full_text(u'{:0.0f}'.format(data['input']))
 
-    def _update(self):
-        output = bumblebee.util.execute('sensors -u {}'.format(self._chip))
-        self._data = self._parse(output)
+    def __update(self):
+        output = util.cli.execute('sensors -u {}'.format(self.__chip))
+        self.__data = self.__parse(output)
 
-    def _parse(self, data):
+    def __parse(self, data):
         output = {}
         package = ''
         adapter = None
@@ -107,8 +111,8 @@ class Module(bumblebee.engine.Module):
             if 'Adapter' in line:
                 # new adapter
                 line = line.replace('Adapter: ', '')
-                output[chip + ' ' + line] = {}
-                adapter = chip + ' ' + line
+                adapter = '{} {}'.format(chip, line)
+                output[adapter] = {}
             chip = line #default - line before adapter is always the chip
             if not adapter: continue
             key, value = (line.split(':') + ['', ''])[:2]
@@ -131,7 +135,7 @@ class Module(bumblebee.engine.Module):
                     pass
         return output
 
-    def _cpu(self, _):
+    def __cpu(self, _):
         mhz = None
         try:
             output = open('/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq').read()
