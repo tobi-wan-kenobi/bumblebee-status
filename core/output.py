@@ -6,7 +6,7 @@ import core.theme
 import core.event
 
 class i3(object):
-    def __init__(self, theme=core.theme.Theme(), config=None):
+    def __init__(self, theme=core.theme.Theme(), config=core.config.Config([])):
         self._modules = []
         self._status = {}
         self._theme = theme
