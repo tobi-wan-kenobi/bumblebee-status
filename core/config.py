@@ -39,4 +39,7 @@ class Config(util.store.Store):
     def iconset(self):
         return self._args.iconset
 
+    def autohide(self, name):
+        return name in self._args.autohide
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
