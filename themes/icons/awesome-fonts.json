@@ -90,6 +90,7 @@
     "OFF": { "prefix": "" },
     "?": { "prefix": "" }
   },
+  "bluetooth2": { "prefix": "" },
   "battery-upower": {
     "charged": { "prefix": "", "suffix": "" },
     "AC": { "suffix": "" },
