@@ -1,6 +1,7 @@
 import json
 import unittest
 
+import core.config
 import core.output
 import core.module
 
@@ -12,7 +13,8 @@ class i3(unittest.TestCase):
         self.i3 = core.output.i3()
         widget = unittest.mock.MagicMock()
         widget.full_text.return_value = "test"
-        self.someModule = TestModule(widgets=[widget, widget, widget])
+        self.someModule = TestModule(config=core.config.Config([]),
+            widgets=[widget, widget, widget])
         self.paddedTheme = core.theme.Theme(raw_data = {
             'defaults': { 'padding': ' ' }
         });

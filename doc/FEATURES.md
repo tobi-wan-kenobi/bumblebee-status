@@ -3,3 +3,4 @@
 - theme.minwidth
 - scrolling decorator
 - theme.exclude
+- per module update interval
