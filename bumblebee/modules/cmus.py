@@ -14,6 +14,9 @@ Parameters:
         * {file2} - song file name without path prefix and extension suffix
                     if {file} = '/foo/bar.baz', then {file2} = 'bar'
     * cmus.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles cmus.prev, cmus.next, cmus.shuffle and cmus.repeat, and the main display with play/pause function cmus.main.
+    * cmus.server: The address of the cmus server, either a UNIX socket or host[:port]. Connects to the local instance by default.
+    * cmus.passwd: The password to use for the TCP/IP connection.
+
 """
 
 from collections import defaultdict
@@ -28,12 +31,15 @@ import bumblebee.engine
 
 from bumblebee.output import scrollable
 
+
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config, [])
 
         self._layout = self.parameter("layout", "cmus.prev cmus.main cmus.next cmus.shuffle cmus.repeat")
         self._fmt = self.parameter("format", "{artist} - {title} {position}/{duration}")
+        self._server = self.parameter("server", None)
+        self._passwd = self.parameter("passwd", None)
         self._status = None
         self._shuffle = False
         self._repeat = False
@@ -45,18 +51,23 @@ class Module(bumblebee.engine.Module):
         for widget_name in self._layout.split():
             widget = bumblebee.output.Widget(name=widget_name)
             widget_list.append(widget)
+            self._cmd = "cmus-remote"
+            if self._server is not None:
+                self._cmd = "{cmd} --server {server}".format(cmd=self._cmd, server=self._server)
+                if self._passwd is not None:
+                    self._cmd = "{cmd} --passwd {passwd}".format(cmd=self._cmd, passwd=self._passwd)
 
             if widget_name == "cmus.prev":
-                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -r"}
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "{cmd} -r".format(cmd=self._cmd)}
             elif widget_name == "cmus.main":
-                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -u"}
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "{cmd} -u".format(cmd=self._cmd)}
                 widget.full_text(self.description)
             elif widget_name == "cmus.next":
-                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -n"}
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "{cmd} -n".format(cmd=self._cmd)}
             elif widget_name == "cmus.shuffle":
-                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -S"}
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "{cmd} -S".format(cmd=self._cmd)}
             elif widget_name == "cmus.repeat":
-                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "cmus-remote -R"}
+                widget_map[widget] = {"button": bumblebee.input.LEFT_MOUSE, "cmd": "{cmd} -R".format(cmd=self._cmd)}
             else:
                 raise KeyError("The cmus module does not support a {widget_name!r} widget".format(widget_name=widget_name))
         self.widgets(widget_list)
@@ -109,7 +120,7 @@ class Module(bumblebee.engine.Module):
     def _load_song(self):
         info = ""
         try:
-            info = bumblebee.util.execute("cmus-remote -Q")
+            info = bumblebee.util.execute("{cmd} -Q".format(cmd=self._cmd))
         except RuntimeError:
             self._status = None
 
