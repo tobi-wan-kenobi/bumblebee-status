@@ -102,10 +102,15 @@ class i3(object):
         return widgets
 
     def update(self, affected_modules=None):
+        now = time.time()
         for module in self._modules:
             if affected_modules and not module.id() in affected_modules:
                 continue
+            if not affected_modules and module.next_update:
+                if now < module.next_update:
+                    continue
             module.update_wrapper()
+            module.next_update = now + float(module.parameter('interval', self._config.interval()))
             for widget in module.widgets():
                 self._status[widget] = widget.full_text()
 

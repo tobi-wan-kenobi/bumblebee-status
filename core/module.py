@@ -36,6 +36,7 @@ class Module(core.input.Object):
         for widget in self._widgets:
             widget.module(self)
         self._name = None
+        self.next_update = None
 
     def parameter(self, key, default=None):
         value = default
