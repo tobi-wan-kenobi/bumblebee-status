@@ -10,6 +10,12 @@ Parameters:
     * sensors2.showfan: Enable or disable fan display (default: true)
     * sensors2.showother: Enable or display "other" sensor readings (default: false)
     * sensors2.showname: Enable or disable show of sensor name (default: false)
+    * sensors2.chip_include: Comma-separated list of chip to include (defaults to "" will include all by default, example: "coretemp,bat")
+    * sensors2.chip_exlude:Comma separated list of chip to exclude (defaults to "" will include none by default)
+    * sensors2.field_include: Comma separated list of chip to include (defaults to "" will include all by default, example: "temp,fan")
+    * sensors2.field_exlude: Comma separated list of chip to exclude (defaults to "" will exclude none by default)
+    * sensors2.chip_field_exclude: Comma separated list of chip field to exclude (defaults to "" will exclude none by default, example: "coretemp-isa-0000.temp1,coretemp-isa-0000.fan1")
+    * sensors2.chip_field_include: Comma-separated list of adaper field to include (defaults to "" will include all by default)
 """
 
 import re
@@ -49,6 +55,12 @@ class Module(bumblebee.engine.Module):
         show_temp = bumblebee.util.asbool(self.parameter("showtemp", "true"))
         show_fan = bumblebee.util.asbool(self.parameter("showfan", "true"))
         show_other = bumblebee.util.asbool(self.parameter("showother", "false"))
+        include_chip = tuple(filter(len, self.parameter("chip_include", "").split(",")))
+        exclude_chip = tuple(filter(len, self.parameter("chip_exclude", "").split(",")))
+        include_field = tuple(filter(len, self.parameter("field_include", "").split(",")))
+        exclude_field = tuple(filter(len, self.parameter("field_exclude", "").split(",")))
+        include_chip_field = tuple(filter(len, self.parameter("chip_field_include", "").split(",")))
+        exclude_chip_field = tuple(filter(len, self.parameter("chip_field_exclude", "").split(",")))
 
         if bumblebee.util.asbool(self.parameter("showcpu", "true")):
             widget = bumblebee.output.Widget(full_text=self._cpu)
@@ -56,6 +68,21 @@ class Module(bumblebee.engine.Module):
             widgets.append(widget)
 
         for adapter in self._data:
+            if include_chip or exclude_chip:
+                if include_chip:
+                    if any([chip not in adapter for chip in include_chip]):
+                        continue
+                else:
+                    if any([chip in adapter for chip in exclude_chip]):
+                        continue
+
+            if include_chip_field:
+                try:
+                    if any([i.split('.')[0] not in adapter for i in include_chip_field]):
+                        continue
+                except:
+                    pass
+
             for package in self._data[adapter]:
                 if bumblebee.util.asbool(self.parameter("showname", "false")):
                     widget = bumblebee.output.Widget(full_text=package)
@@ -65,6 +92,26 @@ class Module(bumblebee.engine.Module):
                     widget.set("adapter", adapter)
                     widgets.append(widget)
                 for field in self._data[adapter][package]:
+
+                    if include_field or exclude_field:
+                        if include_field:
+                            if any([included not in field for included in include_field]):
+                                continue
+                        else:
+                            if any([excluded in field for excluded in exclude_field]):
+                                continue
+
+                    try:
+                        if include_chip_field or exclude_chip_field:
+                            if include_chip_field:
+                                if any([i.split('.')[1] not in field for i in include_chip_field if i.split('.')[0] in adapter]):
+                                    continue
+                            else:
+                                if any([i.split('.')[1] in field for i in exclude_chip_field if i.split('.')[0] in adapter]):
+                                    continue
+                    except:
+                        pass
+
                     widget = bumblebee.output.Widget()
                     widget.set("package", package)
                     widget.set("field", field)
