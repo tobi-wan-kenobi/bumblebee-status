@@ -2,6 +2,10 @@
 
 """Displays sunrise and sunset times
 
+Requires the following python packages:
+    * requests
+    * suntime
+
 Parameters:
     * cpu.lat : Latitude of your location
     * cpu.lon : Longitude of your location
