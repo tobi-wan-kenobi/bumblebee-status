@@ -2,6 +2,21 @@ import unittest
 import unittest.mock
 
 import core.widget
+import core.module
+import core.config
+
+class TestModule(core.module.Module):
+    def __init__(self, widgets, config=core.config.Config([])):
+        super().__init__(config, widgets)
+        self.states = []
+
+    def update(self):
+        if self.fail:
+            raise Exception(self.error)
+        pass
+
+    def state(self, widget):
+        return self.states
 
 class widget(unittest.TestCase):
     def setUp(self):
@@ -34,5 +49,25 @@ class widget(unittest.TestCase):
         self.someWidget.full_text(self.someCallback)
         self.assertEqual(self.someWidget.full_text(), self.callbackReturnValue)
         self.someCallback.assert_called_once_with(self.someWidget)
+
+    def test_state_defaults_to_empty(self):
+        self.assertEqual([], self.someWidget.state())
+
+    def test_single_widget_state(self):
+        self.someWidget.set('state', 'state1')
+        self.assertEqual(['state1'], self.someWidget.state())
+
+    def test_multiple_widget_states(self):
+        self.someWidget.set('state', ['state1', 'state2'])
+        self.assertEqual(['state1', 'state2'], self.someWidget.state())
+
+    def test_widget_module_state(self):
+        module = TestModule(widgets=self.someWidget)
+        self.someWidget.set('state', ['state1', 'state2'])
+
+        module.states = 'x'
+        self.assertEqual(['state1', 'state2', 'x'], self.someWidget.state())
+        module.states = ['a', 'b']
+        self.assertEqual(['state1', 'state2', 'a', 'b'], self.someWidget.state())
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

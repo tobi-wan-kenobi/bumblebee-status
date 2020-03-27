@@ -29,16 +29,10 @@ class Widget(util.store.Store, core.input.Object):
         rv = []
         if self.get('state', None):
             tmp = self.get('state')
-            if isinstance(tmp, list):
-                rv.extend(tmp)
-            else:
-                rv.append(tmp)
+            rv = tmp[:] if isinstance(tmp, list) else [tmp]
         if self._module:
             tmp = self._module.state(self)
-            if isinstance(tmp, list):
-                rv.extend(tmp)
-            else:
-                rv.append(tmp)
-        return rv if isinstance(rv, list) else [rv]
+            rv.extend(tmp if isinstance(tmp, list) else [tmp])
+        return rv
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
