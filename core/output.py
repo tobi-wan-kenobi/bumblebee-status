@@ -93,7 +93,7 @@ class i3(object):
     def widgets(self, module):
         widgets = []
         for widget in module.widgets():
-            if self._config.autohide(widget.module().name()):
+            if widget.module() and self._config.autohide(widget.module().name()):
                 if not any(state in widget.state() for state in [ 'warning', 'critical']):
                     continue
             widgets += self.__separator(module, widget)

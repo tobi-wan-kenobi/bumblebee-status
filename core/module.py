@@ -26,7 +26,7 @@ def load(module_name, config=None):
     if not error:
         error = 'No such module'
     log.fatal('failed to import {}: {}'.format(module_name, error))
-    return Error(config, module_name, error)
+    return Error(config=config, module=module_name, error=error)
 
 class Module(core.input.Object):
     def __init__(self, config=None, widgets=[]):
@@ -56,7 +56,7 @@ class Module(core.input.Object):
         try:
             self.update()
         except Exception as e:
-            module = Error(self._config, 'error', str(e))
+            module = Error(config=self._config, module='error', error=str(e))
             self._widgets = [module.widget()]
             self.update = module.update
 
@@ -89,7 +89,7 @@ class Module(core.input.Object):
         return None
 
 class Error(Module):
-    def __init__(self, config, module, error):
+    def __init__(self, module, error, config=core.config.Config([])):
         super().__init__(config, core.widget.Widget(self.full_text))
         self._module = module
         self._error = error

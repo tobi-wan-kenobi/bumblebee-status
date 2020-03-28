@@ -68,7 +68,7 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         output = core.output.i3()
-        output.modules(core.module.Error(None, 'main', e))
+        output.modules(core.module.Error(module='main', error=e))
         output.draw('start')
         output.update()
         output.draw('statusline')

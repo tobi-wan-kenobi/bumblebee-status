@@ -27,11 +27,9 @@ class Module(core.module.Module):
 
         self.__chip = self.parameter('chip', '')
         self.__data = {}
-        self.__update()
-
-        self.widgets(self.__create_widgets())
 
     def update(self):
+        self.widgets(self.__create_widgets())
         self.__update()
         for widget in self.widgets():
             self.__update_widget(widget)
