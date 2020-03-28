@@ -32,7 +32,7 @@ class Module(core.module.Module):
             self.register_cmd('brightnessctl s {}%+'.format(step),
                 'brightnessctl s {}%-'.format(step))
         else:
-            self.register_cmd(engine, 'xbacklight +{}%'.format(step),
+            self.register_cmd('xbacklight +{}%'.format(step),
                 'xbacklight -{}%'.format(step))
 
     def find_device(self, device_path):
