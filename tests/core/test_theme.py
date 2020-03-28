@@ -25,6 +25,9 @@ class theme(unittest.TestCase):
                 'red': '#ff0000', 'blue': '#0000ff'
             }]
         }
+        self.walTheme = {
+            'colors': ['wal']
+        }
 
     def test_invalid_theme(self):
         with self.assertRaises(RuntimeError):
@@ -68,5 +71,23 @@ class theme(unittest.TestCase):
         self.assertEqual({}, theme.keywords())
         theme = core.theme.Theme(raw_data=self.colorTheme)
         self.assertEqual(self.colorTheme['colors'][0], theme.keywords())
+
+    def test_wal_colors(self):
+        with unittest.mock.patch('core.theme.io') as io:
+            io.open.return_value.__enter__.return_value.read.return_value='''
+                { "colors": { "red": "#ff0000" } }
+            '''
+
+            theme = core.theme.Theme(raw_data=self.walTheme)
+            self.assertEqual({'red': '#ff0000'}, theme.keywords())
+
+    def test_wal_special(self):
+        with unittest.mock.patch('core.theme.io') as io:
+            io.open.return_value.__enter__.return_value.read.return_value='''
+                { "special": { "background": "#ff0000" } }
+            '''
+
+            theme = core.theme.Theme(raw_data=self.walTheme)
+            self.assertEqual({'background': '#ff0000'}, theme.keywords())
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

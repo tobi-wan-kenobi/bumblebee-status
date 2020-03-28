@@ -26,7 +26,6 @@ class Theme(object):
         for icons in self.__data.get('icons', []):
             util.algorithm.merge(self.__data, self.load(icons, 'icons'))
         if iconset != 'auto':
-            print("merging iconset")
             util.algorithm.merge(self.__data, self.load(iconset, 'icons'))
         for colors in self.__data.get('colors', []):
             util.algorithm.merge(self.__keywords, self.load_keywords(colors))
@@ -52,11 +51,7 @@ class Theme(object):
         return self.__keywords
 
     def load(self, name, subdir=''):
-        if isinstance(name, dict):
-            print("returning name")
-            return name # support plain data
-        else:
-            print("not returning name")
+        if isinstance(name, dict): return name # support plain data
         for path in PATHS:
             theme_file = os.path.join(path, subdir, '{}.json'.format(name))
             if os.path.isfile(theme_file):
@@ -69,7 +64,7 @@ class Theme(object):
         with io.open(os.path.expanduser(filename)) as data:
             colors = json.load(data)
             for field in sections:
-                for key in colors[field]:
+                for key in colors.get(field, []):
                     result[key] = colors[field][key]
         return result
 
