@@ -20,6 +20,11 @@ class theme(unittest.TestCase):
                 { 'fg': 'white', 'bg': 'blue' }
             ]
         }
+        self.colorTheme = {
+            'colors': [{
+                'red': '#ff0000', 'blue': '#0000ff'
+            }]
+        }
 
     def test_invalid_theme(self):
         with self.assertRaises(RuntimeError):
@@ -49,5 +54,19 @@ class theme(unittest.TestCase):
             core.event.trigger('update')
             self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.fg())
             self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.bg())
+
+    def test_custom_iconset(self):
+        theme = core.theme.Theme(raw_data=self.defaultsTheme)
+        self.assertNotEqual('aaa', theme.padding())
+        theme = core.theme.Theme(raw_data=self.defaultsTheme, iconset={
+            'defaults': { 'padding': 'aaa' }
+        })
+        self.assertEqual('aaa', theme.padding())
+
+    def test_colors(self):
+        theme = core.theme.Theme(raw_data=self.defaultsTheme)
+        self.assertEqual({}, theme.keywords())
+        theme = core.theme.Theme(raw_data=self.colorTheme)
+        self.assertEqual(self.colorTheme['colors'][0], theme.keywords())
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

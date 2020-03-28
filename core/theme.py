@@ -22,16 +22,14 @@ class Theme(object):
         self.__previous = {}
         self.__current = {}
         self.__keywords = {}
-        if raw_data:
-            self.__data = raw_data
-        else:
-            self.__data = self.load(name)
-            for icons in self.__data['icons']:
-                util.algorithm.merge(self.__data, self.load(icons, 'icons'))
-            if iconset != 'auto':
-                util.algorithm.merge(self.__data, self.load(iconset, 'icons'))
-            for colors in self.__data.get('colors', []):
-                util.algorithm.merge(self.__keywords, self.load_keywords(colors))
+        self.__data = raw_data if raw_data else self.load(name)
+        for icons in self.__data.get('icons', []):
+            util.algorithm.merge(self.__data, self.load(icons, 'icons'))
+        if iconset != 'auto':
+            print("merging iconset")
+            util.algorithm.merge(self.__data, self.load(iconset, 'icons'))
+        for colors in self.__data.get('colors', []):
+            util.algorithm.merge(self.__keywords, self.load_keywords(colors))
 
         core.event.register('update', self.__start)
         core.event.register('next-widget', self.__next_widget)
@@ -50,7 +48,15 @@ class Theme(object):
         ]:
             setattr(self, attr.replace('-', '_'), lambda widget=None, default=default, attr=attr: self.__get(widget, attr, default))
 
+    def keywords(self):
+        return self.__keywords
+
     def load(self, name, subdir=''):
+        if isinstance(name, dict):
+            print("returning name")
+            return name # support plain data
+        else:
+            print("not returning name")
         for path in PATHS:
             theme_file = os.path.join(path, subdir, '{}.json'.format(name))
             if os.path.isfile(theme_file):
