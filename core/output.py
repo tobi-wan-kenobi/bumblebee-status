@@ -50,6 +50,7 @@ class i3(object):
         return '{}{}{}'.format(padding, full_text, padding)
 
     def __decorate(self, module, widget, full_text):
+        if full_text is None: return None
         return '{}{}{}'.format(
             self.__pad(module, widget, self._theme.prefix(widget)),
             full_text,
@@ -88,6 +89,10 @@ class i3(object):
             'background': self._theme.bg(widget),
             'min_width': self.__decorate(module, widget, widget.get('theme.minwidth')),
         })
+        if (self._config.debug()):
+            attr.update({
+                '__state': ", ".join(module.state(widget))
+            })
         return [attr]
 
     def widgets(self, module):

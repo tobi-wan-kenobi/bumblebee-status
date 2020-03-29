@@ -13,7 +13,7 @@ class Module(core.module.Module):
         super().__init__(config, core.widget.Widget(''))
         self._paused = False
         # Make sure that dunst is currently not paused
-        util.cli.execute('killall -SIGUSR2 dunst', ignore_errors=True)
+        util.cli.execute('killall -s SIGUSR2 dunst', ignore_errors=True)
         core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd=self.toggle_status
         )
@@ -23,9 +23,9 @@ class Module(core.module.Module):
         
         try:
             if self._paused:
-                util.cli.execute('killall -SIGUSR1 dunst')
+                util.cli.execute('killall -s SIGUSR1 dunst')
             else:
-                util.cli.execute('killall -SIGUSR2 dunst')
+                util.cli.execute('killall -s SIGUSR2 dunst')
         except:
             self._paused = not self._paused # toggling failed
 

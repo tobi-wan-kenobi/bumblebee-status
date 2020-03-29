@@ -18,8 +18,10 @@ class Config(util.store.Store):
         parser.add_argument('-t', '--theme', default='default', help=THEME_HELP)
         parser.add_argument('-i', '--iconset', default='auto',
             help='Specify the name of an iconset to use (overrides theme default)')
-        parser.add_argument("-a", "--autohide", nargs="+", default=[],
-            help="Specify a list of modules to hide when not in warning/error state")
+        parser.add_argument('-a', '--autohide', nargs='+', default=[],
+            help='Specify a list of modules to hide when not in warning/error state')
+        parser.add_argument('--debug', action='store_true',
+            help='Add debug fields to i3 output')
         self._args = parser.parse_args(args)
 
         parameters = [ item for sub in self._args.parameters for item in sub ]
@@ -32,6 +34,9 @@ class Config(util.store.Store):
 
     def interval(self):
         return float(self.get('interval', 1))
+
+    def debug(self):
+        return self._args.debug
 
     def theme(self):
         return self._args.theme
