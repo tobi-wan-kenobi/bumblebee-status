@@ -246,6 +246,7 @@
   "vpn": {
     "prefix": ""
   },
+  "smartstatus": { "prefix": "" },
   "system": {
     "prefix": "    "
   },
