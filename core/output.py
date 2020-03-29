@@ -65,8 +65,8 @@ class i3(object):
             'border_left': self._theme.border_left(),
             'border_right': self._theme.border_right(),
             'border_bottom': self._theme.border_bottom(),
-            'instance': widget.id(),
-            'name': module.id(),
+            'instance': widget.id,
+            'name': module.id,
         }
 
     def __separator(self, module, widget):
@@ -109,7 +109,7 @@ class i3(object):
     def update(self, affected_modules=None):
         now = time.time()
         for module in self._modules:
-            if affected_modules and not module.id() in affected_modules:
+            if affected_modules and not module.id in affected_modules:
                 continue
             if not affected_modules and module.next_update:
                 if now < module.next_update:

@@ -22,22 +22,19 @@ callbacks = {}
 class Object(object):
     def __init__(self):
         super(Object, self).__init__()
-        self._id = str(uuid.uuid4())
-
-    def id(self):
-        return self._id
+        self.id = str(uuid.uuid4())
 
 def register(obj, button=None, cmd=None):
-    logging.debug('registering callback {} {}'.format(obj.id(), button))
-    callbacks.setdefault(obj.id(), {}).setdefault(button, []).append(cmd)
+    logging.debug('registering callback {} {}'.format(obj.id, button))
+    callbacks.setdefault(obj.id, {}).setdefault(button, []).append(cmd)
 
 def trigger(event):
     for field in ['instance', 'name']:
         if field in event:
             cb = callbacks.get(event[field])
-            _invoke(event, cb)
+            __invoke(event, cb)
 
-def _invoke(event, callback):
+def __invoke(event, callback):
     if not callback: return
     if not 'button' in event: return
 

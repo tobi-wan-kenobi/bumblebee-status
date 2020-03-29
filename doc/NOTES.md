@@ -34,3 +34,4 @@
 - theme: `load` vs. `__load` vs. `load_keywords`
 - themes: use colors to improve theme readability
 - brightness: read from CLI tools
+- input: use events?

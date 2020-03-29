@@ -6,8 +6,8 @@ class config(unittest.TestCase):
     def setUp(self):
         self.inputObject = core.input.Object()
         self.anotherObject = core.input.Object()
-        self.someEvent = { 'button': core.input.LEFT_MOUSE, 'instance': self.inputObject.id() }
-        self.anotherEvent = { 'button': core.input.RIGHT_MOUSE, 'instance': self.inputObject.id() }
+        self.someEvent = { 'button': core.input.LEFT_MOUSE, 'instance': self.inputObject.id }
+        self.anotherEvent = { 'button': core.input.RIGHT_MOUSE, 'instance': self.inputObject.id}
         self.callback = unittest.mock.MagicMock()
         self.callback2 = unittest.mock.MagicMock()
         self.someCommand = 'some sample command'
