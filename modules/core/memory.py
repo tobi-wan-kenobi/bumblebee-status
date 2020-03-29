@@ -18,7 +18,7 @@ import core.input
 import util.format
 
 class Module(core.module.Module):
-    def __init__(self, config=None):
+    def __init__(self, config):
         super().__init__(config, core.widget.Widget(self.memory_usage))
         core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd='gnome-system-monitor')

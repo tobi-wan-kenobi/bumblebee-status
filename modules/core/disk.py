@@ -19,7 +19,7 @@ import core.input
 import util.format
 
 class Module(core.module.Module):
-    def __init__(self, config=None):
+    def __init__(self, config):
         super().__init__(config, core.widget.Widget(self.diskspace))
 
         self._path = self.parameter('path', '/')

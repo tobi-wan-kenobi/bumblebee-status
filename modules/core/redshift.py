@@ -75,7 +75,7 @@ def get_redshift_value(widget, location, lat, lon):
                     widget.set('transition', ' '.join(line.split(' ')[2:]))
 
 class Module(core.module.Module):
-    def __init__(self, config=None):
+    def __init__(self, config):
         widget = core.widget.Widget(self.text)
         super().__init__(config, widget)
 

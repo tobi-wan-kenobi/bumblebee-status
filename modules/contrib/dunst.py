@@ -9,7 +9,7 @@ import core.input
 import util.cli
 
 class Module(core.module.Module):
-    def __init__(self, config=None):
+    def __init__(self, config):
         super().__init__(config, core.widget.Widget(''))
         self._paused = False
         # Make sure that dunst is currently not paused

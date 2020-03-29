@@ -33,7 +33,7 @@ except:
     pass
 
 class Module(core.module.Module):
-    def __init__(self, config=None):
+    def __init__(self, config):
         widgets = []
         super().__init__(config, widgets)
 

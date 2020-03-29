@@ -16,7 +16,7 @@ import core.widget
 import core.input
 
 class Module(core.module.Module):
-    def __init__(self, config=None):
+    def __init__(self, config):
         super().__init__(config, core.widget.Widget(self.brightness))
 
         self._brightness = 0
