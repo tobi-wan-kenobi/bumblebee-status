@@ -1,5 +1,14 @@
 import util.format
 
+def every(minutes=0, seconds=0):
+    def decorator_init(init):
+        def call_init(obj, *args, **kwargs):
+            init(obj, *args, **kwargs)
+            if obj.parameter('interval') is None:
+                obj.set('interval', minutes*60 + seconds)
+        return call_init
+    return decorator_init
+
 def scrollable(func):
     def wrapper(module, widget):
         text = func(module, widget)

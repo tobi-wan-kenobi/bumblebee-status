@@ -6,9 +6,10 @@ import platform
 
 import core.module
 import core.widget
+import core.decorators
 
 class Module(core.module.Module):
-    @core.module.every(minutes=60)
+    @core.decorators.every(minutes=60)
     def __init__(self, config):
         super().__init__(config, core.widget.Widget(self.full_text))
 
