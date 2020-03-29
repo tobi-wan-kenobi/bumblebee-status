@@ -35,3 +35,11 @@ class Module(core.module.Module):
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
 ```
+
+## `update` vs. `full_text`
+TODO
+
+## TODOs
+- default update interval
+- scrolling
+- 
