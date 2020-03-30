@@ -9,12 +9,15 @@ def execute(cmd, wait=True, ignore_errors=False):
     try:
         proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     except FileNotFoundError as e:
-        raise RuntimeError('{} not found'.format(cmd))
+       raise RuntimeError('{} not found'.format(cmd))
 
     if wait:
         out, _ = proc.communicate()
-        if proc.returncode != 0 and not ignore_errors:
-            raise RuntimeError('{} exited with {}'.format(cmd, proc.returncode))
+        if proc.returncode != 0:
+            err = '{} exited with code {}'.format(cmd, proc.returncode)
+            if ignore_errors:
+                return err
+            raise RuntimeError(err)
         return out.decode('utf-8')
     return ''
 

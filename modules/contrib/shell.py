@@ -3,7 +3,7 @@
 """ Execute command in shell and print result
 
 Few command examples:
-    'ping 1.1.1.1 -c 1 | grep -Po '(?<=time=)\d+(\.\d+)? ms''
+    'ping -c 1 1.1.1.1 | grep -Po '(?<=time=)\d+(\.\d+)? ms''
     'echo 'BTC=$(curl -s rate.sx/1BTC | grep -Po \'^\d+\')USD''
     'curl -s https://wttr.in/London?format=%l+%t+%h+%w'
     'pip3 freeze | wc -l'
@@ -27,66 +27,53 @@ import os
 import subprocess
 import threading
 
-import bumblebee.engine
-import bumblebee.input
-import bumblebee.output
+import core.module
+import core.widget
+import core.input
+import util.format
+import util.cli
 
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.get_output))
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        widget = bumblebee.output.Widget(full_text=self.get_output)
-        super(Module, self).__init__(engine, config, widget)
+        self.__command = self.parameter('command')
+        self.__async = util.format.asbool(self.parameter('async'))
 
-        if self.parameter('interval'):
-            self.interval(self.parameter('interval'))
-
-        self._command = self.parameter('command')
-        self._async = bumblebee.util.asbool(self.parameter('async'))
-        if self._async:
-            self._output = 'Computing...'
-            self._current_thread = None
-        else:
-            self._output = ''
+        self.__output = ''
+        if self.__async:
+            self.__output = 'please wait...'
+            self.__current_thread = None
 
         # LMB and RMB will update output regardless of timer
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.update)
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self.update)
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.update)
+        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.update)
 
     def get_output(self, _):
-        return self._output
+        return self.__output
 
-    def update(self, _):
+    def update(self):
         # if requested then run not async version and just execute command in this thread
-        if not self._async:
-            self._output = self._get_command_output_or_error(self._command)
+        if not self.__async:
+            self.__output = util.cli.execute(self.__command, ignore_errors=True)
             return
 
         # if previous thread didn't end yet then don't do anything
-        if self._current_thread:
+        if self.__current_thread:
             return
 
         # spawn new thread to execute command and pass callback method to get output from it
-        self._current_thread = threading.Thread(target=self._run_command_in_thread,
-                                                args=(self._command, self._output_function))
-        self._current_thread.start()
+        self.__current_thread = threading.Thread(
+            target=self.__run,
+            args=(self.__command, self.__output_function)
+        )
+        self.__current_thread.start()
 
-    @staticmethod
-    def _get_command_output_or_error(command):
-        try:
-            command_output = subprocess.check_output(command,
-                                                     executable=os.environ.get('SHELL'),
-                                                     shell=True,
-                                                     stderr=subprocess.STDOUT)
-            return command_output.decode('utf-8').strip()
-        except subprocess.CalledProcessError as exception:
-            exception_output = exception.output.decode('utf-8').replace('\n', '')
-            return 'Status:{} output:{}'.format(exception.returncode, exception_output)
+    def __run(self, command, output_callback):
+        output_callback(util.cli.execute(command, ignore_errors=True))
 
-    def _run_command_in_thread(self, command, output_callback):
-        output_callback(self._get_command_output_or_error(command))
-
-    def _output_function(self, text):
-        self._output = text
+    def __output_function(self, text):
+        self.__output = text
         # clear this thread data, so next update will spawn a new one
         self._current_thread = None
 
