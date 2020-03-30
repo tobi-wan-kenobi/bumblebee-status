@@ -3,8 +3,8 @@
 """ Execute command in shell and print result
 
 Few command examples:
-    'ping 1.1.1.1 -c 1 | grep -Po "(?<=time=)\d+(\.\d+)? ms"'
-    'echo "BTC=$(curl -s rate.sx/1BTC | grep -Po \"^\d+\")USD"'
+    'ping 1.1.1.1 -c 1 | grep -Po '(?<=time=)\d+(\.\d+)? ms''
+    'echo 'BTC=$(curl -s rate.sx/1BTC | grep -Po \'^\d+\')USD''
     'curl -s https://wttr.in/London?format=%l+%t+%h+%w'
     'pip3 freeze | wc -l'
     'any_custom_script.sh | grep arguments'
@@ -12,8 +12,8 @@ Few command examples:
 Parameters:
     * shell.command:  Command to execute
                       Use single parentheses if evaluating anything inside (sh-style)
-                      For example shell.command='echo $(date +"%H:%M:%S")'
-                      But NOT shell.command="echo $(date +'%H:%M:%S')"
+                      For example shell.command='echo $(date +'%H:%M:%S')'
+                      But NOT shell.command='echo $(date +'%H:%M:%S')'
                       Second one will be evaluated only once at startup
     * shell.interval: Update interval in seconds
                       (defaults to 1s == every bumblebee-status update)
