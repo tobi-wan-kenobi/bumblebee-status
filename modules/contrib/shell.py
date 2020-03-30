@@ -40,14 +40,16 @@ class Module(core.module.Module):
         self.__command = self.parameter('command')
         self.__async = util.format.asbool(self.parameter('async'))
 
-        self.__output = ''
         if self.__async:
             self.__output = 'please wait...'
-            self.__current_thread = None
+            self.__current_thread = threading.Thread()
 
         # LMB and RMB will update output regardless of timer
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.update)
         core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.update)
+
+    def set_output(self, value):
+        self.__output = value
 
     def get_output(self, _):
         return self.__output
@@ -59,22 +61,14 @@ class Module(core.module.Module):
             return
 
         # if previous thread didn't end yet then don't do anything
-        if self.__current_thread:
+        if self.__current_thread.is_alive():
             return
 
         # spawn new thread to execute command and pass callback method to get output from it
         self.__current_thread = threading.Thread(
-            target=self.__run,
-            args=(self.__command, self.__output_function)
+            target=lambda obj, cmd: obj.set_output(util.cli.execute(cmd, ignore_errors=True)),
+            args=(self, self.__command)
         )
         self.__current_thread.start()
-
-    def __run(self, command, output_callback):
-        output_callback(util.cli.execute(command, ignore_errors=True))
-
-    def __output_function(self, text):
-        self.__output = text
-        # clear this thread data, so next update will spawn a new one
-        self._current_thread = None
 
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
