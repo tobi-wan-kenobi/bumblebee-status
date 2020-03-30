@@ -70,7 +70,7 @@ class Module(bumblebee.engine.Module):
         for adapter in self._data:
             if include_chip or exclude_chip:
                 if include_chip:
-                    if any([chip not in adapter for chip in include_chip]):
+                    if all([chip not in adapter for chip in include_chip]):
                         continue
                 else:
                     if any([chip in adapter for chip in exclude_chip]):
@@ -78,7 +78,7 @@ class Module(bumblebee.engine.Module):
 
             if include_chip_field:
                 try:
-                    if any([i.split('.')[0] not in adapter for i in include_chip_field]):
+                    if all([i.split('.')[0] not in adapter for i in include_chip_field]):
                         continue
                 except:
                     pass
@@ -95,7 +95,7 @@ class Module(bumblebee.engine.Module):
 
                     if include_field or exclude_field:
                         if include_field:
-                            if any([included not in field for included in include_field]):
+                            if all([included not in field for included in include_field]):
                                 continue
                         else:
                             if any([excluded in field for excluded in exclude_field]):
@@ -104,7 +104,7 @@ class Module(bumblebee.engine.Module):
                     try:
                         if include_chip_field or exclude_chip_field:
                             if include_chip_field:
-                                if any([i.split('.')[1] not in field for i in include_chip_field if i.split('.')[0] in adapter]):
+                                if all([i.split('.')[1] not in field for i in include_chip_field if i.split('.')[0] in adapter]):
                                     continue
                             else:
                                 if any([i.split('.')[1] in field for i in exclude_chip_field if i.split('.')[0] in adapter]):
