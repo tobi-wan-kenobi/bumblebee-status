@@ -9,12 +9,12 @@ import socket
 import bumblebee.engine
 import bumblebee.output
 
-HOST = "localhost"
+HOST = 'localhost'
 PORT = 7634
 
 CHUNK_SIZE = 1024
 RECORD_SIZE = 5
-SEPARATOR = "|"
+SEPARATOR = '|'
 
 
 class Module(bumblebee.engine.Module):
@@ -31,7 +31,7 @@ class Module(bumblebee.engine.Module):
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock:
                 sock.connect((HOST, PORT))
-                data = ""
+                data = ''
                 while True:
                     chunk = sock.recv(CHUNK_SIZE)
                     if chunk:
@@ -48,7 +48,7 @@ class Module(bumblebee.engine.Module):
             split data using | separator and remove first item
             (because the first item is empty)
         """
-        parts = data.split("|")[1:]
+        parts = data.split('|')[1:]
         return parts
 
     @staticmethod
@@ -66,20 +66,20 @@ class Module(bumblebee.engine.Module):
             get device name (without /dev part, to save space on bar)
             and temperature (in °C) as tuple
         """
-        device_name = device_record[0].split("/")[-1]
+        device_name = device_record[0].split('/')[-1]
         device_temp = device_record[2]
         return (device_name, device_temp)
 
     @staticmethod
     def _get_hddtemp(device_record):
         name, temp = device_record
-        hddtemp = "{}+{}°C".format(name, temp)
+        hddtemp = '{}+{}°C'.format(name, temp)
         return hddtemp
 
     def _get_hddtemps(self):
         data = self._fetch_data()
         if data is None:
-            return "n/a"
+            return 'n/a'
         parts = self._get_parts(data)
         per_disk = self._partition_parts(parts)
         names_and_temps = [self._get_name_and_temp(x) for x in per_disk]
