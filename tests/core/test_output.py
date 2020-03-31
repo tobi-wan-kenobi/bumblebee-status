@@ -18,6 +18,10 @@ class i3(unittest.TestCase):
         self.paddedTheme = core.theme.Theme(raw_data = {
             'defaults': { 'padding': ' ' }
         });
+        self.separator = '***';
+        self.separatorTheme = core.theme.Theme(raw_data = {
+            'defaults': { 'separator': self.separator }
+        });
 
     def test_start(self):
         core.event.clear()
@@ -64,5 +68,17 @@ class i3(unittest.TestCase):
         self.i3.theme(self.paddedTheme)
         result = self.i3.__pad(self.someModule, self.someModule.widget(), 'abc')
         self.assertEqual(' abc ', result)
+
+    def test_no_separator(self):
+        result = self.i3.__separator(self.someModule, self.someModule.widget())
+        self.assertEqual([], result)
+
+    def test_separator(self):
+        self.i3.theme(self.separatorTheme)
+        result = self.i3.__separator(self.someModule, self.someModule.widget())
+        self.assertEqual(1, len(result))
+        self.assertEqual('***', result[0]['full_text'])
+        self.assertTrue(result[0].get('_decorator', False))
+        self.assertEqual(self.separatorTheme.bg(self.someModule.widget()), result[0]['color'])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
