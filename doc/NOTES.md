@@ -36,3 +36,4 @@
 - brightness: read from CLI tools
 - input: use events?
 - themes: rotating icons (battery!)
+- weather: improve code

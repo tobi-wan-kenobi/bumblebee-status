@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # pylint: disable=C0111,R0903
 
-'''Displays the temperature on the current location based on the ip
+"""Displays the temperature on the current location based on the ip
 
 Requires the following python packages:
     * requests
@@ -14,11 +14,14 @@ Parameters:
     * weather.showcity: If set to true, show location information, otherwise hide it (defaults to true)
     * weather.showminmax: If set to true, show the minimum and maximum temperature, otherwise hide it (defaults to false)
     * weather.apikey: API key from http://api.openweathermap.org
-'''
+"""
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
+
+import util.format
+
 import re
 
 try:
@@ -27,112 +30,105 @@ try:
 except ImportError:
     pass
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.output)
-        )
-        self._temperature = 0
-        self._apikey = self.parameter('apikey', 'af7bfe22287c652d032a3064ffa44088')
-        self._location = self.parameter('location', 'auto')
-        if ',' in self._location:
-            self._location = self._location.split(',')
-        else:
-            self._location = [self._location]
-        self._index = 0
-        self._showcity = bumblebee.util.asbool(self.parameter('showcity', True))
-        self._showminmax = bumblebee.util.asbool(self.parameter('showminmax', False))
-        self._unit = self.parameter('unit', 'metric')
-        self._valid = False
-        self.interval_factor(60)
-        self.interval(15)
+class Module(core.module.Module):
+    @core.decorators.every(minutes=15)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.output))
 
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self._next_location)
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self._prev_location)
+        self.__temperature = 0
+        self.__apikey = self.parameter('apikey', 'af7bfe22287c652d032a3064ffa44088')
+        self.__location = util.format.aslist(self.parameter('location', 'auto'))
 
-    def _next_location(self, event):
-        self._index = 0 if self._index >= len(self._location) - 1 else self._index + 1
+        self.__index = 0
+        self.__showcity = util.format.asbool(self.parameter('showcity', True))
+        self.__showminmax = util.format.asbool(self.parameter('showminmax', False))
+        self.__unit = self.parameter('unit', 'metric')
+        self.__valid = False
+
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.__next_location)
+        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.__prev_location)
+
+    def __next_location(self, event):
+        self.__index = (self.__index + 1) % len(self.__location)
         self.update(self.widgets())
 
-    def _prev_location(self, event):
-        self._index = len(self._location)-1 if self._index <= 0 else self._index - 1
+    def __prev_location(self, event):
+        self.__index = len(self.__location) - 1 if self.__index <= 0 else self.__index - 1
         self.update(self.widgets())
 
-    def _unit_suffix(self):
-        if self._unit == 'metric':
+    def __unit_suffix(self):
+        if self.__unit == 'metric':
             return 'C'
-        if self._unit == 'kelvin':
+        if self.__unit == 'kelvin':
             return 'K'
-        if self._unit == 'imperial':
+        if self.__unit == 'imperial':
             return 'F'
         return ''
 
     def temperature(self):
-        return u'{}°{}'.format(self._temperature, self._unit_suffix())
+        return u'{}°{}'.format(self.__temperature, self.__unit_suffix())
 
     def tempmin(self):
-        return u'{}°{}'.format(self._tempmin, self._unit_suffix())
+        return u'{}°{}'.format(self.__tempmin, self.__unit_suffix())
 
     def tempmax(self):
-        return u'{}°{}'.format(self._tempmax, self._unit_suffix())
+        return u'{}°{}'.format(self.__tempmax, self.__unit_suffix())
 
     def city(self):
-        city = re.sub('[_-]', ' ', self._city)
+        city = re.sub('[_-]', ' ', self.__city)
         return u'{} '.format(city)
 
     def output(self, widget):
-        if not self._valid:
+        if not self.__valid:
             return u'?'
-        if self._showminmax:
-            self._showcity=False
+        if self.__showminmax:
+            self.__showcity=False
             return self.city() + self.temperature() + '  Hi:' + self.tempmax() + '  Lo:' + self.tempmin()
-        elif self._showcity:
+        elif self.__showcity:
             return self.city() + self.temperature()
         else:
             return self.temperature()
 
     def state(self, widget):
-        if self._valid:
-            if 'thunderstorm' in self._weather:
+        if self.__valid:
+            if 'thunderstorm' in self.__weather:
                 return ['thunder']
-            elif 'drizzle' in self._weather:
+            elif 'drizzle' in self.__weather:
                 return ['rain']
-            elif 'rain' in self._weather:
+            elif 'rain' in self.__weather:
                 return ['rain']
-            elif 'snow' in self._weather:
+            elif 'snow' in self.__weather:
                 return ['snow']
-            elif 'sleet' in self._weather:
+            elif 'sleet' in self.__weather:
                 return ['sleet']
-            elif 'clear' in self._weather:
+            elif 'clear' in self.__weather:
                 return ['clear']
-            elif 'cloud' in self._weather:
+            elif 'cloud' in self.__weather:
                 return ['clouds']
-            else:
-                return []
 
         return []
 
-    def update(self, widgets):
+    def update(self):
         try:
-            weather_url = 'http://api.openweathermap.org/data/2.5/weather?appid={}'.format(self._apikey)
-            weather_url = '{}&units={}'.format(weather_url, self._unit)
-            if self._location[self._index] == 'auto':
+            weather_url = 'http://api.openweathermap.org/data/2.5/weather?appid={}'.format(self.__apikey)
+            weather_url = '{}&units={}'.format(weather_url, self.__unit)
+            if self.__location[self.__index] == 'auto':
                 location_url = 'http://ipinfo.io/json'
                 location = requests.get(location_url).json()
                 coord = location['loc'].split(',')
                 weather_url = '{url}&lat={lat}&lon={lon}'.format(url=weather_url, lat=coord[0], lon=coord[1])
-            elif self._location[self._index].isdigit():
-                weather_url = '{url}&id={id}'.format(url=weather_url, id=self._location[self._index])
+            elif self.__location[self.__index].isdigit():
+                weather_url = '{url}&id={id}'.format(url=weather_url, id=self.__location[self.__index])
             else:
-                weather_url = '{url}&q={city}'.format(url=weather_url, city=self._location[self._index])
+                weather_url = '{url}&q={city}'.format(url=weather_url, city=self.__location[self.__index])
             weather = requests.get(weather_url).json()
-            self._city = weather['name']
-            self._temperature = int(weather['main']['temp'])
-            self._tempmin = int(weather['main']['temp_min'])
-            self._tempmax = int(weather['main']['temp_max'])
-            self._weather = weather['weather'][0]['main'].lower()
-            self._valid = True
+            self.__city = weather['name']
+            self.__temperature = int(weather['main']['temp'])
+            self.__tempmin = int(weather['main']['temp_min'])
+            self.__tempmax = int(weather['main']['temp_max'])
+            self.__weather = weather['weather'][0]['main'].lower()
+            self.__valid = True
         except Exception:
-            self._valid = False
+            self.__valid = False
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
