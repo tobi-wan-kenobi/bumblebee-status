@@ -17,6 +17,11 @@ class config(unittest.TestCase):
         core.input.trigger(self.someEvent)
         self.callback.assert_called_once_with(self.someEvent)
 
+    def test_nonexistent_callback(self):
+        core.input.register(self.inputObject, self.someEvent['button'], self.callback)
+        core.input.trigger(self.anotherEvent)
+        self.callback.assert_not_called()
+
     def test_different_events(self):
         core.input.register(self.inputObject, self.someEvent['button'], self.callback)
         core.input.register(self.inputObject, self.anotherEvent['button'], self.callback)

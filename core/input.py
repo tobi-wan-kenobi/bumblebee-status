@@ -38,7 +38,7 @@ def __invoke(event, callback):
     if not callback: return
     if not 'button' in event: return
 
-    for cb in callback.get(event['button']):
+    for cb in callback.get(event['button'], []):
         if callable(cb):
             cb(event)
         else:
