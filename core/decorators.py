@@ -1,11 +1,11 @@
 import util.format
 
-def every(minutes=0, seconds=0):
+def every(hours=0, minutes=0, seconds=0):
     def decorator_init(init):
         def call_init(obj, *args, **kwargs):
             init(obj, *args, **kwargs)
             if obj.parameter('interval') is None:
-                obj.set('interval', minutes*60 + seconds)
+                obj.set('interval', hours*3600 + minutes*60 + seconds)
         return call_init
     return decorator_init
 

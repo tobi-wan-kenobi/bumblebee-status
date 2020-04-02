@@ -1,15 +1,17 @@
 # pylint: disable=C0111,R0903
 
-'''Displays the current date and time.
+"""Displays the current date and time.
 
 Parameters:
     * time.format: strftime()-compatible formatting string
     * time.locale: locale to use rather than the system default
-'''
+"""
 
+import core.decorators
 from .datetime import Module
 
 class Module(Module):
+    @core.decorators.every(seconds=59) # ensures one update per minute
     def __init__(self, config):
         super().__init__(config)
 

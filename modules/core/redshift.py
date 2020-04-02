@@ -1,6 +1,6 @@
 # pylint: disable=C0111,R0903
 
-'''Displays the current color temperature of redshift
+"""Displays the current color temperature of redshift
 
 Requires the following executable:
     * redshift
@@ -11,7 +11,7 @@ Parameters:
         'auto' uses whatever redshift is configured to do
     * redshift.lat : latitude if location is set to 'manual'
     * redshift.lon : longitude if location is set to 'manual'
-'''
+"""
 
 import threading
 import logging
@@ -24,6 +24,7 @@ except ImportError:
 import core.module
 import core.widget
 import core.input
+import core.decorators
 
 import util.cli
 
@@ -75,6 +76,7 @@ def get_redshift_value(widget, location, lat, lon):
                     widget.set('transition', ' '.join(line.split(' ')[2:]))
 
 class Module(core.module.Module):
+    @core.decorators.every(seconds=10)
     def __init__(self, config):
         widget = core.widget.Widget(self.text)
         super().__init__(config, widget)

@@ -1,6 +1,6 @@
 #pylint: disable=C0111,R0903
 
-'''Displays the name, IP address(es) and status of each available network interface.
+"""Displays the name, IP address(es) and status of each available network interface.
 
 Requires the following python module:
     * netifaces
@@ -10,7 +10,7 @@ Parameters:
     * nic.include: Comma-separated list of interfaces to include
     * nic.states: Comma-separated list of states to show (prefix with '^' to invert - i.e. ^down -> show all devices that are not in state down)
     * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid}')
-'''
+"""
 
 import shutil
 import netifaces
@@ -18,10 +18,12 @@ import subprocess
 
 import core.widget
 import core.module
+import core.decorators
 import util.cli
 import util.format
 
 class Module(core.module.Module):
+    @core.decorators.every(seconds=10)
     def __init__(self, config):
         widgets = []
         super().__init__(config, widgets)

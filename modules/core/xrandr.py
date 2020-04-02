@@ -23,6 +23,7 @@ import sys
 import core.module
 import core.widget
 import core.input
+import core.decorators
 
 import util.cli
 import util.format
@@ -33,6 +34,7 @@ except:
     pass
 
 class Module(core.module.Module):
+    @core.decorators.every(seconds=5) # takes up to 5s to detect a new screen
     def __init__(self, config):
         widgets = []
         super().__init__(config, widgets)

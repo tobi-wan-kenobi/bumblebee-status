@@ -1,12 +1,12 @@
 # pylint: disable=C0111,R0903
 
-'''Displays the brightness of a display
+"""Displays the brightness of a display
 
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
     * brightness.device_path: The device path (defaults to /sys/class/backlight/intel_backlight), can contain wildcards (in this case, the first matching path will be used)
 
-'''
+"""
 
 import glob
 import shutil
@@ -14,8 +14,10 @@ import shutil
 import core.module
 import core.widget
 import core.input
+import core.decorators
 
 class Module(core.module.Module):
+    @core.decorators.every(seconds=30) # takes 30s to pick up on "external" changes
     def __init__(self, config):
         super().__init__(config, core.widget.Widget(self.brightness))
 
