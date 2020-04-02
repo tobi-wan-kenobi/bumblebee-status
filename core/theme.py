@@ -116,6 +116,12 @@ class Theme(object):
 
         if not type(value) in (list, dict):
             value = self.__keywords.get(value, value)
+
+        if isinstance(value, list):
+            key = '__{}-idx__'.format(key)
+            idx = widget.get(key, 0)
+            widget.set(key, (idx + 1) % len(value))
+            value = value[idx]
         self.__current[key] = value
         return value
 
