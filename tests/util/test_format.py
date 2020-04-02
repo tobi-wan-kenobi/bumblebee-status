@@ -76,4 +76,16 @@ class format(unittest.TestCase):
         self.assertEqual('00:20m', duration(20, unit=True))
         self.assertEqual('00:20m', duration(20, compact=True, unit=True))
 
+    def test_seconds(self):
+        self.assertEqual(10, seconds(10))
+        self.assertEqual(10, seconds('10'))
+
+        self.assertEqual(300, seconds('5m'))
+        self.assertEqual(320, seconds('5m20s'))
+
+        self.assertEqual(4*3600, seconds('4h'))
+        self.assertEqual(4*3600 + 5*60 + 22, seconds('4h5m22s'))
+
+        self.assertEqual(4*3600 + 5*60, seconds('4h5m'))
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

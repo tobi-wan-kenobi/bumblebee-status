@@ -1,6 +1,7 @@
 import argparse
 
 import util.store
+import util.format
 
 MODULE_HELP = 'Specify a space-separated list of modules to load. The order of the list determines their order in the i3bar (from left to right). Use <module>:<alias> to provide an alias in case you want to load the same module multiple times, but specify different parameters.'
 PARAMETER_HELP = 'Provide configuration parameters in the form of <module>.<key>=<value>'
@@ -32,8 +33,8 @@ class Config(util.store.Store):
     def modules(self):
         return [item for sub in self._args.modules for item in sub]
 
-    def interval(self):
-        return float(self.get('interval', 1))
+    def interval(self, default=1):
+        return util.format.seconds(self.get('interval', default))
 
     def debug(self):
         return self._args.debug

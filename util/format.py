@@ -1,3 +1,4 @@
+import re
 
 def asbool(val):
     if val is None:
@@ -15,7 +16,6 @@ def asint(val, minimum=None, maximum=None):
     val = max(val, minimum if minimum else val)
     return val
 
-
 def aslist(val):
     if val is None:
         return []
@@ -29,6 +29,22 @@ def byte(val, fmt='{:.2f}'):
             return '{}{}B'.format(fmt, unit).format(val)
         val /= 1024.0
     return '{}GiB'.format(fmt).format(val*1024.0)
+
+__seconds_pattern = re.compile('(([\d\.?]+)h)?(([\d\.]+)m)?([\d\.]+)?s?')
+def seconds(duration):
+    if isinstance(duration, int) or isinstance(duration, float):
+        return float(duration)
+
+    matches = __seconds_pattern.match(duration)
+    result = 0.0
+    if matches.group(2):
+        result += float(matches.group(2))*3600 # hours
+    if matches.group(4):
+        result += float(matches.group(4))*60 # minutes
+    if matches.group(5):
+        result += float(matches.group(5)) # seconds
+
+    return result
 
 def duration(duration, compact=False, unit=False):
     duration = int(duration)
