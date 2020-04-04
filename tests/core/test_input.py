@@ -55,4 +55,14 @@ class config(unittest.TestCase):
             core.input.trigger(self.someEvent)
             cli.execute.assert_called_once_with(self.someCommand, wait=False)
 
+    def test_non_existent_callback(self):
+        with unittest.mock.patch('core.input.util.cli') as cli:
+            cli.execute.return_value = ''
+            cli.execute.side_effect = RuntimeError('some-error')
+            core.input.register(self.inputObject, self.someEvent['button'], self.someCommand)
+            try:
+                core.input.trigger(self.someEvent)
+            except Exception:
+                self.fail('input module propagated exception')
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

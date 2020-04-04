@@ -44,6 +44,10 @@ def __invoke(event, callback):
         if callable(cb):
             cb(event)
         else:
-            util.cli.execute(cb, wait=False)
+            try:
+                util.cli.execute(cb, wait=False)
+            except Exception as e:
+                logging.error('failed to invoke callback: {}'.format(e))
+                return
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
