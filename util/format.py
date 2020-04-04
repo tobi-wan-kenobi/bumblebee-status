@@ -23,6 +23,13 @@ def aslist(val):
         return val
     return str(val).replace(' ', '').split(',')
 
+__UNITS = {
+    'metric': 'C', 'kelvin': 'K', 'imperial': 'F',
+    'default': 'C'
+}
+def astemperature(value, unit='metric'):
+    return u'{}°{}'.format(int(value), __UNITS.get(unit, __UNITS['default']))
+
 def byte(val, fmt='{:.2f}'):
     for unit in ['', 'Ki', 'Mi', 'Gi']:
         if val < 1024.0:

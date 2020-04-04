@@ -88,4 +88,10 @@ class format(unittest.TestCase):
 
         self.assertEqual(4*3600 + 5*60, seconds('4h5m'))
 
+    def test_temperature(self):
+        self.assertEqual('10°C', astemperature(10))
+        self.assertEqual('10°C', astemperature(10, 'metric'))
+        self.assertEqual('-100°F', astemperature(-100, 'imperial'))
+        self.assertEqual('-100°K', astemperature('-100', 'kelvin'))
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

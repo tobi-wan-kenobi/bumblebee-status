@@ -24,11 +24,8 @@ import util.format
 
 import re
 
-try:
-    import requests
-    from requests.exceptions import RequestException
-except ImportError:
-    pass
+import requests
+from requests.exceptions import RequestException
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=15)
@@ -50,29 +47,20 @@ class Module(core.module.Module):
 
     def __next_location(self, event):
         self.__index = (self.__index + 1) % len(self.__location)
-        self.update(self.widgets())
+        self.update()
 
     def __prev_location(self, event):
         self.__index = len(self.__location) - 1 if self.__index <= 0 else self.__index - 1
-        self.update(self.widgets())
-
-    def __unit_suffix(self):
-        if self.__unit == 'metric':
-            return 'C'
-        if self.__unit == 'kelvin':
-            return 'K'
-        if self.__unit == 'imperial':
-            return 'F'
-        return ''
+        self.update()
 
     def temperature(self):
-        return u'{}°{}'.format(self.__temperature, self.__unit_suffix())
+        return util.format.astemperature(self.__temperature, self.__unit)
 
     def tempmin(self):
-        return u'{}°{}'.format(self.__tempmin, self.__unit_suffix())
+        return util.format.astemperature(self.__tempmin, self.__unit)
 
     def tempmax(self):
-        return u'{}°{}'.format(self.__tempmax, self.__unit_suffix())
+        return util.format.astemperature(self.__tempmax, self.__unit)
 
     def city(self):
         city = re.sub('[_-]', ' ', self.__city)
@@ -113,6 +101,7 @@ class Module(core.module.Module):
             weather_url = 'http://api.openweathermap.org/data/2.5/weather?appid={}'.format(self.__apikey)
             weather_url = '{}&units={}'.format(weather_url, self.__unit)
             if self.__location[self.__index] == 'auto':
+                # TODO: make that a general "provider"
                 location_url = 'http://ipinfo.io/json'
                 location = requests.get(location_url).json()
                 coord = location['loc'].split(',')
