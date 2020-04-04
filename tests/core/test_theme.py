@@ -1,7 +1,9 @@
 import unittest
+import types
 
 import core.theme
 import core.event
+import core.widget
 
 class theme(unittest.TestCase):
     def setUp(self):
@@ -27,6 +29,15 @@ class theme(unittest.TestCase):
         }
         self.walTheme = {
             'colors': ['wal']
+        }
+        self.cycleValueTheme = {
+            'defaults': {
+                'fg': [ 'red', 'green', 'blue' ]
+            }
+        }
+        self.stateTheme = {
+            'warning': { 'fg': 'yellow' },
+            'critical': { 'fg': 'red' }
         }
 
     def test_invalid_theme(self):
@@ -89,5 +100,25 @@ class theme(unittest.TestCase):
 
             theme = core.theme.Theme(raw_data=self.walTheme)
             self.assertEqual({'background': '#ff0000'}, theme.keywords())
+
+    def test_cycle_value(self):
+        widget = core.widget.Widget()
+        expected = self.cycleValueTheme['defaults']['fg']
+        theme = core.theme.Theme(raw_data=self.cycleValueTheme)
+
+        for i in range(0, len(expected)*3):
+            self.assertEqual(expected[i%len(expected)], theme.fg(widget))
+
+    def test_state(self):
+        widget = core.widget.Widget()
+        theme = core.theme.Theme(raw_data=self.stateTheme)
+
+        self.assertEqual(None, theme.fg(widget))
+
+        widget.state = types.MethodType(lambda self: ['warning'], widget)
+        self.assertEqual(self.stateTheme['warning']['fg'], theme.fg(widget))
+
+        widget.state = types.MethodType(lambda self: ['critical'], widget)
+        self.assertEqual(self.stateTheme['critical']['fg'], theme.fg(widget))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

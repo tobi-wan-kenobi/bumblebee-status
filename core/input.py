@@ -1,6 +1,8 @@
 import uuid
 import logging
 
+import core.event
+
 import util.cli
 
 LEFT_MOUSE = 1
