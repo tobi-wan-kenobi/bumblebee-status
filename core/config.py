@@ -23,29 +23,29 @@ class Config(util.store.Store):
             help='Specify a list of modules to hide when not in warning/error state')
         parser.add_argument('--debug', action='store_true',
             help='Add debug fields to i3 output')
-        self._args = parser.parse_args(args)
+        self.__args = parser.parse_args(args)
 
-        parameters = [ item for sub in self._args.parameters for item in sub ]
+        parameters = [ item for sub in self.__args.parameters for item in sub ]
         for param in parameters:
             key, value = param.split('=', 1)
             self.set(key, value)
 
     def modules(self):
-        return [item for sub in self._args.modules for item in sub]
+        return [item for sub in self.__args.modules for item in sub]
 
     def interval(self, default=1):
         return util.format.seconds(self.get('interval', default))
 
     def debug(self):
-        return self._args.debug
+        return self.__args.debug
 
     def theme(self):
-        return self._args.theme
+        return self.__args.theme
 
     def iconset(self):
-        return self._args.iconset
+        return self.__args.iconset
 
     def autohide(self, name):
-        return name in self._args.autohide
+        return name in self.__args.autohide
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
