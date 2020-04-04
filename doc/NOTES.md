@@ -6,9 +6,9 @@
 - think about pylint
 
 # small stuff
-- rethink documentation (wiki vs. in-code)
+- rethink documentation (use mostly md files)
 - @parameter? (or was it @attribute?) - remove getter/setters
-- use __ for private?
+- use __ for private
 
 # Features
 - new themeing? (and add a "version" for backwards compat?)
@@ -17,7 +17,6 @@
 - aliases
 - charts (braille)
 - minimize modules
-- WAL support / colorscheme support
 - tkinter / popups
 - scrolling decorator (incl. minwidth, alignment)
 - theme.exclude??
@@ -34,4 +33,3 @@
 - theme: `load` vs. `__load` vs. `load_keywords`
 - themes: use colors to improve theme readability
 - brightness: read from CLI tools
-- input: use events?
