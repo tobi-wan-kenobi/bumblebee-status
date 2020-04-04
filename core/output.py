@@ -74,21 +74,59 @@ class i3(object):
             return []
         attr = self.__common_attributes(module, widget)
         attr.update({
-            'full_text': self.__theme.separator(),
-            'color': self.__theme.bg(widget),
-            'background': self.__theme.bg('previous'),
             '_decorator': True,
         })
+        pango = self.__theme.pango(widget)
+        prev_pango = self.__theme.pango('previous') or {}
+        if pango:
+            pango = dict(pango)
+            if 'bgcolor' in pango:
+                pango['fgcolor'] = pango['bgcolor']
+                del pango['bgcolor']
+            if 'background' in pango:
+                pango['foreground'] = pango['background']
+                del pango['background']
+            if 'bgcolor' in prev_pango:
+                pango['bgcolor'] = prev_pango['bgcolor']
+            if 'background' in prev_pango:
+                pango['background'] = prev_pango['background']
+
+            attr.update({
+                'full_text': self.__pango(self.__theme.separator(), pango),
+                'markup': 'pango'
+            })
+        else:
+            attr.update({
+                'full_text': self.__theme.separator(),
+                'color': self.__theme.bg(widget),
+                'background': self.__theme.bg('previous'),
+            })
         return [attr]
+
+    def __pango(self, text, attributes):
+        result = '<span'
+        for key, value in attributes.items():
+            result = '{} {}="{}"'.format(result, key, value)
+        result = '{}>{}</span>'.format(result, text)
+        return result
 
     def __main(self, module, widget, text):
         attr = self.__common_attributes(module, widget)
         attr.update({
-            'full_text': self.__decorate(module, widget, text),
-            'color': self.__theme.fg(widget),
-            'background': self.__theme.bg(widget),
             'min_width': self.__decorate(module, widget, widget.get('theme.minwidth')),
         })
+        pango = self.__theme.pango(widget)
+        if pango:
+            attr.update({
+                'full_text': self.__pango(self.__decorate(module, widget, text), pango),
+                'markup': 'pango'
+            })
+        else:
+            attr.update({
+                'full_text': self.__decorate(module, widget, text),
+                'color': self.__theme.fg(widget),
+                'background': self.__theme.bg(widget),
+            })
         if (self.__config.debug()):
             attr.update({
                 '__state': ", ".join(module.state(widget))

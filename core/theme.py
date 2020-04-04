@@ -44,6 +44,7 @@ class Theme(object):
             ('border-right', 0),
             ('padding', ''),
             ('prefix', ''), ('suffix', ''),
+            ('pango', None),
         ]:
             setattr(self, attr.replace('-', '_'), lambda widget=None, default=default, attr=attr: self.__get(widget, attr, default))
 
