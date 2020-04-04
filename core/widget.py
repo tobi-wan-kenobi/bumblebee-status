@@ -5,33 +5,33 @@ import util.store
 class Widget(util.store.Store, core.input.Object):
     def __init__(self, full_text='', name=None, module=None):
         super(Widget, self).__init__()
-        self._full_text = full_text
-        self._module = module
-        self._name = name
+        self.__full_text = full_text
+        self.__module = module
+        self.__name = name
 
     def name(self):
-        return self._name
+        return self.__name
 
     def full_text(self, value=None):
         if value:
-            self._full_text = value
+            self.__full_text = value
         else:
-            if callable(self._full_text):
-                return self._full_text(self)
-        return self._full_text
+            if callable(self.__full_text):
+                return self.__full_text(self)
+        return self.__full_text
 
     def module(self, module=None):
         if not module:
-            return self._module
-        self._module = module
+            return self.__module
+        self.__module = module
 
     def state(self):
         rv = []
         if self.get('state', None):
             tmp = self.get('state')
             rv = tmp[:] if isinstance(tmp, list) else [tmp]
-        if self._module:
-            tmp = self._module.state(self)
+        if self.__module:
+            tmp = self.__module.state(self)
             rv.extend(tmp if isinstance(tmp, list) else [tmp])
         return rv
 
