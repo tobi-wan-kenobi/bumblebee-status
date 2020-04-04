@@ -2,12 +2,12 @@ import unittest
 
 import core.event
 
-
 class event(unittest.TestCase):
     def setUp(self):
         self.someEvent = 'event'
         self.called = {}
         self.params = []
+        core.event.clear()
 
     def callback1(self):
         self.called['callback1'] = True
@@ -40,6 +40,18 @@ class event(unittest.TestCase):
     def test_kwargs_callback(self):
         core.event.register(self.someEvent, self.callback_kwargs, 'a', 'b', key1='test', key2='x')
         core.event.trigger(self.someEvent)
+        self.assertEqual(1, len(self.called.keys()))
+        self.assertEqual(['a', 'b', 'test', 'x'], self.params)
+
+    def test_arg_trigger(self):
+        core.event.register(self.someEvent, self.callback_args)
+        core.event.trigger(self.someEvent, 'a', 'b')
+        self.assertEqual(1, len(self.called.keys()))
+        self.assertEqual(['a', 'b'], self.params)
+
+    def test_kwargs_trigger(self):
+        core.event.register(self.someEvent, self.callback_kwargs)
+        core.event.trigger(self.someEvent, 'a', 'b', key1='test', key2='x')
         self.assertEqual(1, len(self.called.keys()))
         self.assertEqual(['a', 'b', 'test', 'x'], self.params)
 

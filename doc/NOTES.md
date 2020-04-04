@@ -28,6 +28,7 @@
 - allow handlers to specify whether to update or not (e.g. scroll)
 - API documentation
 - github pages
+- Add module that indicates arbitrary errors that occurred (via eventing)
 
 ## TODO
 - theme: `load` vs. `__load` vs. `load_keywords`
