@@ -6,6 +6,7 @@
     a VPN connection using that profile.
 
     Prerequisites:
+         * tk python library (usually python-tk or python3-tk, depending on your distribution)
          * nmcli needs to be installed and configured properly.
            To quickly test, whether nmcli is working correctly, type "nmcli -g NAME,TYPE,DEVICE con" which
            lists all the connection profiles that are configured. Make sure that your VPN profile is in that list!
