@@ -19,35 +19,32 @@ def button_name(button):
     if button == WHEEL_DOWN: return 'wheel-down'
     return 'n/a'
 
-callbacks = {}
-
 class Object(object):
     def __init__(self):
         super(Object, self).__init__()
         self.id = str(uuid.uuid4())
 
+def __event_id(obj_id, button):
+    return '{}::{}'.format(obj_id, button_name(button))
+
+def __execute(cmd):
+    try:
+        util.cli.execute(cmd, wait=False)
+    except Exception as e:
+        logging.error('failed to invoke callback: {}'.format(e))
+
 def register(obj, button=None, cmd=None):
-    logging.debug('registering callback {} {}'.format(obj.id, button))
-    callbacks.setdefault(obj.id, {}).setdefault(button, []).append(cmd)
+    event_id = __event_id(obj.id, button)
+    logging.debug('registering callback {}'.format(event_id))
+    if callable(cmd):
+        core.event.register(event_id, cmd)
+    else:
+        core.event.register(event_id, lambda _: __execute(cmd))
 
 def trigger(event):
-    for field in ['instance', 'name']:
-        if field in event:
-            cb = callbacks.get(event[field])
-            __invoke(event, cb)
-
-def __invoke(event, callback):
-    if not callback: return
     if not 'button' in event: return
-
-    for cb in callback.get(event['button'], []):
-        if callable(cb):
-            cb(event)
-        else:
-            try:
-                util.cli.execute(cb, wait=False)
-            except Exception as e:
-                logging.error('failed to invoke callback: {}'.format(e))
-                return
+    for field in ['instance', 'name']:
+        if not field in event: continue
+        core.event.trigger(__event_id(event[field], event['button']), event)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
