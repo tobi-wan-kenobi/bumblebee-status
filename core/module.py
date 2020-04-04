@@ -32,10 +32,10 @@ class Module(core.input.Object):
     def __init__(self, config=None, widgets=[]):
         super().__init__()
         self._config = config
-        self._widgets = widgets if isinstance(widgets, list) else [ widgets ]
-        for widget in self._widgets:
+        self.__widgets = widgets if isinstance(widgets, list) else [ widgets ]
+        for widget in self.__widgets:
             widget.module(self)
-        self._name = None
+        self.__name = None
         self.next_update = None
 
     def parameter(self, key, default=None):
@@ -57,19 +57,19 @@ class Module(core.input.Object):
             self.update()
         except Exception as e:
             module = Error(config=self._config, module='error', error=str(e))
-            self._widgets = [module.widget()]
+            self.__widgets = [module.widget()]
             self.update = module.update
 
     def name(self):
-        return self._name if self._name else self.module_name()
+        return self.__name if self.__name else self.module_name()
 
     def module_name(self):
         return self.__module__.split('.')[-1]
 
     def widgets(self, widgets=None):
         if widgets:
-            self._widgets = widgets
-        return self._widgets
+            self.__widgets = widgets
+        return self.__widgets
 
     def widget(self, name=None):
         if not name: return self.widgets()[0]
@@ -91,8 +91,8 @@ class Module(core.input.Object):
 class Error(Module):
     def __init__(self, module, error, config=core.config.Config([])):
         super().__init__(config, core.widget.Widget(self.full_text))
-        self._module = module
-        self._error = error
+        self.__module = module
+        self.__error = error
 
         self.set('scrolling.bounce', False)
         self.set('scrolling.speed', 2)
@@ -100,7 +100,7 @@ class Error(Module):
 
     @core.decorators.scrollable
     def full_text(self, widget):
-        return '{}: {}'.format(self._module, self._error)
+        return '{}: {}'.format(self.__module, self.__error)
 
     def state(self, widget):
         return ['critical']
