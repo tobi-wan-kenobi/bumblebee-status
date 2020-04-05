@@ -1,4 +1,8 @@
 """Check updates to Arch Linux.
+
+Requires the following executable:
+    * checkupdates (from pacman-contrib)
+
 """
 
 
