@@ -20,14 +20,14 @@ class i3(unittest.TestCase):
         });
         self.separator = '***';
         self.separatorTheme = core.theme.Theme(raw_data = {
-            'defaults': { 'separator': self.separator }
+            'defaults': { 'separator': self.separator, 'fg': 'red', 'bg': 'blue' }
         });
 
     def test_start(self):
         core.event.clear()
 
         all_data = self.i3.start()
-        data = all_data['data']
+        data = all_data['blocks']
         self.assertEqual(1, data['version'], 'i3bar protocol version 1 expected')
         self.assertTrue(data['click_events'], 'click events should be enabled')
         self.assertEqual('\n[', all_data['suffix'])
@@ -48,37 +48,39 @@ class i3(unittest.TestCase):
 
     def test_draw_existing_module(self):
         self.i3.test_draw = unittest.mock.MagicMock(return_value={
-            'data': { 'test': True }, 'suffix': 'end'
+            'blocks': { 'test': True }, 'suffix': 'end'
         })
         self.i3.draw('test_draw')
         self.i3.test_draw.assert_called_once_with()
 
     def test_empty_status_line(self):
         data = self.i3.statusline()
-        self.assertEqual([], data['data'], 'expected empty list of status line entries')
+        self.assertEqual([], data['blocks'], 'expected empty list of status line entries')
         self.assertEqual(',', data['suffix'], 'expected "," as suffix')
 
     def test_statusline(self):
         self.i3.modules([ self.someModule, self.someModule, self.someModule ])
         self.i3.update()
         data = self.i3.statusline()
-        self.assertEqual(len(self.someModule.widgets())*3, len(data['data']), 'wrong number of widgets')
+        self.assertEqual(len(self.someModule.widgets())*3, len(data['blocks']), 'wrong number of widgets')
 
     def test_padding(self):
         self.i3.theme(self.paddedTheme)
-        result = self.i3.__pad(self.someModule, self.someModule.widget(), 'abc')
+        blk = core.output.block(self.i3.theme(), self.someModule, self.someModule.widget())
+        blk.set('full_text', 'abc')
+        result = blk.dict()['full_text']
         self.assertEqual(' abc ', result)
 
     def test_no_separator(self):
-        result = self.i3.__separator(self.someModule, self.someModule.widget())
+        result = self.i3.__separator_block(self.someModule, self.someModule.widget())
         self.assertEqual([], result)
 
     def test_separator(self):
         self.i3.theme(self.separatorTheme)
-        result = self.i3.__separator(self.someModule, self.someModule.widget())
+        result = self.i3.__separator_block(self.someModule, self.someModule.widget())
         self.assertEqual(1, len(result))
-        self.assertEqual('***', result[0]['full_text'])
-        self.assertTrue(result[0].get('_decorator', False))
-        self.assertEqual(self.separatorTheme.bg(self.someModule.widget()), result[0]['color'])
+        self.assertEqual('***', result[0].dict()['full_text'])
+        self.assertTrue(result[0].dict().get('_decorator', False))
+        self.assertEqual(self.separatorTheme.bg(self.someModule.widget()), result[0].dict()['color'])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

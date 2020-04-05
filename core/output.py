@@ -6,29 +6,76 @@ import core.theme
 import core.event
 
 def dump_json(obj):
-    return obj.__dict__
+    return obj.dict()
+
+def assign(src, dst, key, src_key=None, default=None):
+    if not src_key:
+        src_key = key.replace('_', '-') # automagically replace - with _
+
+    for k in src_key if isinstance(src_key, list) else [src_key]:
+        if k in src:
+            dst[key] = src[k]
+            return
+    if default is not None:
+        dst[key] = default
 
 class block(object):
     __COMMON_THEME_FIELDS = [
-        'separator', 'separator_block_width',
-        'border_top', 'border_left', 'border_right', 'border_bottom',
-        'pango', 'fg', 'bg'
+        'separator', 'separator-block-width', 'default-separators',
+        'border-top', 'border-left', 'border-right', 'border-bottom',
+        'pango', 'fg', 'bg', 'padding', 'prefix', 'suffix'
     ]
     def __init__(self, theme, module, widget):
         self.__attributes = {}
         for key in self.__COMMON_THEME_FIELDS:
             tmp = theme.get(key, widget)
-            if tmp:
+            if tmp is not None:
                 self.__attributes[key] = tmp
 
         self.__attributes['name'] = module.id
         self.__attributes['instance'] = widget.id
+        self.__attributes['prev-bg'] = theme.get('bg', 'previous')
 
     def set(self, key, value):
         self.__attributes[key] = value
 
-    def __dict__(self):
-        return {}
+    def dict(self):
+        result = {}
+
+        assign(self.__attributes, result, 'full_text', ['full_text', 'separator'])
+        assign(self.__attributes, result, 'separator', 'default-separators')
+
+        if '_decorator' in self.__attributes:
+            assign(self.__attributes, result, 'color', 'bg')
+            assign(self.__attributes, result, 'background', 'prev-bg')
+            result['_decorator'] = True
+        else:
+            assign(self.__attributes, result, 'color', 'fg')
+            assign(self.__attributes, result, 'background', 'bg')
+
+        if 'full_text' in self.__attributes:
+            result['full_text'] = self.__format(self.__attributes['full_text'])
+
+        for k in [
+            'name', 'instance', 'separator_block_width', 'border', 'border_top',
+            'border_bottom', 'border_left', 'border_right'
+        ]:
+            assign(self.__attributes, result, k)
+
+        return result
+
+    def __pad(self, text):
+        padding = self.__attributes.get('padding', '')
+        if not text: return padding
+        return '{}{}{}'.format(padding, text, padding)
+
+    def __format(self, text):
+        if text is None: return None
+        return '{}{}{}'.format(
+            self.__pad(self.__attributes.get('prefix')),
+            text,
+            self.__pad(self.__attributes.get('suffix'))
+        )
 
 class i3(object):
     def __init__(self, theme=core.theme.Theme(), config=core.config.Config([])):
@@ -69,29 +116,17 @@ class i3(object):
     def stop(self):
         return { 'suffix': '\n]' }
 
-    def __pad(self, module, widget, full_text):
-        padding = self.__theme.padding()
-        if not full_text: return padding
-        return '{}{}{}'.format(padding, full_text, padding)
-
-    def __decorate(self, module, widget, full_text):
-        if full_text is None: return None
-        return '{}{}{}'.format(
-            self.__pad(module, widget, self.__theme.prefix(widget)),
-            full_text,
-            self.__pad(module, widget, self.__theme.suffix(widget))
-        )
-
     def __separator_block(self, module, widget):
+        if not self.__theme.get('separator'):
+            return []
         blk = block(self.__theme, module, widget)
         blk.set('_decorator', True)
-        return blk
+        return [blk]
 
     def __content_block(self, module, widget):
-        text = self.__content[widget]
         blk = block(self.__theme, module, widget)
-        blk.set('min_width', self.__decorate(module, widget, widget.get('theme.minwidth')))
-        blk.set('full_text', self.__decorate(module, widget, text))
+        blk.set('min_width', widget.get('theme.minwidth'))
+        blk.set('full_text', self.__content[widget])
         if self.__config.debug():
             blk.set('__state', ', '.join(module.state(widget)))
         return blk
@@ -102,11 +137,12 @@ class i3(object):
             if widget.module() and self.__config.autohide(widget.module().name()):
                 if not any(state in widget.state() for state in [ 'warning', 'critical']):
                     continue
-            blocks.append(self.__separator_block(module, widget))
+            blocks.extend(self.__separator_block(module, widget))
             blocks.append(self.__content_block(module, widget))
             core.event.trigger('next-widget')
         return blocks
 
+    # TODO: only updates full text, not the state!?
     def update(self, affected_modules=None):
         now = time.time()
         for module in self.__modules:
