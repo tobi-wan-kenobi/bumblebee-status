@@ -2,6 +2,7 @@ import os
 import io
 import json
 import logging
+import copy
 
 import core.event
 import util.algorithm
@@ -14,6 +15,17 @@ PATHS=[
     os.path.join(THEME_BASE_DIR, '../themes'),
     os.path.expanduser('~/.config/bumblebee-status/themes'),
 ]
+
+def merge_replace(value, new_value, key):
+    if not isinstance(value, dict):
+        return new_value
+    if isinstance(new_value, dict):
+        util.algorithm.merge(value, new_value)
+        return value
+    # right now, merging needs explicit pango support :(
+    if 'pango' in value:
+        value['pango']['full_text'] = new_value
+    return value
 
 class Theme(object):
     def __init__(self, name='default', iconset='auto', raw_data=None):
@@ -106,17 +118,20 @@ class Theme(object):
                 tmp = self.__data[option]
                 if isinstance(tmp, list):
                     tmp = tmp[self.__widget_count % len(tmp)]
-                value = tmp.get(key, value)
+                value = merge_replace(value, tmp.get(key, value), key)
 
-        value = self.__data.get(key, value)
+        if isinstance(value, dict):
+            value = copy.deepcopy(value)
+
+        value = merge_replace(value, self.__data.get(key, value), key)
 
         if widget.module():
-            value = self.__get(None, widget.module().name(), {}).get(key, value)
+            value = merge_replace(value, self.__get(None, widget.module().name(), {}).get(key, value), key)
 
         if not key in widget.state():
             for state in widget.state():
                 theme = self.__get(widget, state, {})
-                value = theme.get(key, value)
+                value = merge_replace(value, theme.get(key, value), key)
 
         if not type(value) in (list, dict):
             value = self.__keywords.get(value, value)

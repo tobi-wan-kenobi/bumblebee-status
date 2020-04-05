@@ -52,7 +52,6 @@ class block(object):
         text = attr.get('full_text', '')
         if 'full_text' in attr:
             del attr['full_text']
-
         result = '<span '
         for key, value in attr.items():
             result = '{} {}="{}"'.format(result, key, value)
