@@ -5,10 +5,35 @@ import time
 import core.theme
 import core.event
 
+def dump_json(obj):
+    return obj.__dict__
+
+class block(object):
+    __COMMON_THEME_FIELDS = [
+        'separator', 'separator_block_width',
+        'border_top', 'border_left', 'border_right', 'border_bottom',
+        'pango', 'fg', 'bg'
+    ]
+    def __init__(self, theme, module, widget):
+        self.__attributes = {}
+        for key in self.__COMMON_THEME_FIELDS:
+            tmp = theme.get(key, widget)
+            if tmp:
+                self.__attributes[key] = tmp
+
+        self.__attributes['name'] = module.id
+        self.__attributes['instance'] = widget.id
+
+    def set(self, key, value):
+        self.__attributes[key] = value
+
+    def __dict__(self):
+        return {}
+
 class i3(object):
     def __init__(self, theme=core.theme.Theme(), config=core.config.Config([])):
         self.__modules = []
-        self.__status = {}
+        self.__content = {}
         self.__theme = theme
         self.__config = config
         core.event.register('start', self.draw, 'start')
@@ -28,8 +53,8 @@ class i3(object):
     def draw(self, what, args=None):
         cb = getattr(self, what)
         data = cb(args) if args else cb()
-        if 'data' in data:
-            sys.stdout.write(json.dumps(data['data']))
+        if 'blocks' in data:
+            sys.stdout.write(json.dumps(data['blocks'], default=dump_json))
         if 'suffix' in data:
             sys.stdout.write(data['suffix'])
         sys.stdout.write('\n')
@@ -37,7 +62,7 @@ class i3(object):
 
     def start(self):
         return {
-            'data': { 'version': 1, 'click_events': True },
+            'blocks': { 'version': 1, 'click_events': True },
             'suffix': '\n[',
         }
 
@@ -57,92 +82,30 @@ class i3(object):
             self.__pad(module, widget, self.__theme.suffix(widget))
         )
 
-    def __common_attributes(self, module, widget):
-        return {
-            'separator': self.__theme.default_separators(),
-            'separator_block_width': self.__theme.separator_block_width(),
-            'border_top': self.__theme.border_top(),
-            'border_left': self.__theme.border_left(),
-            'border_right': self.__theme.border_right(),
-            'border_bottom': self.__theme.border_bottom(),
-            'instance': widget.id,
-            'name': module.id,
-        }
+    def __separator_block(self, module, widget):
+        blk = block(self.__theme, module, widget)
+        blk.set('_decorator', True)
+        return blk
 
-    def __separator(self, module, widget):
-        if not self.__theme.separator():
-            return []
-        attr = self.__common_attributes(module, widget)
-        attr.update({
-            '_decorator': True,
-        })
-        pango = self.__theme.pango(widget)
-        prev_pango = self.__theme.pango('previous') or {}
-        if pango:
-            pango = dict(pango)
-            if 'bgcolor' in pango:
-                pango['fgcolor'] = pango['bgcolor']
-                del pango['bgcolor']
-            if 'background' in pango:
-                pango['foreground'] = pango['background']
-                del pango['background']
-            if 'bgcolor' in prev_pango:
-                pango['bgcolor'] = prev_pango['bgcolor']
-            if 'background' in prev_pango:
-                pango['background'] = prev_pango['background']
+    def __content_block(self, module, widget):
+        text = self.__content[widget]
+        blk = block(self.__theme, module, widget)
+        blk.set('min_width', self.__decorate(module, widget, widget.get('theme.minwidth')))
+        blk.set('full_text', self.__decorate(module, widget, text))
+        if self.__config.debug():
+            blk.set('__state', ', '.join(module.state(widget)))
+        return blk
 
-            attr.update({
-                'full_text': self.__pango(self.__theme.separator(), pango),
-                'markup': 'pango'
-            })
-        else:
-            attr.update({
-                'full_text': self.__theme.separator(),
-                'color': self.__theme.bg(widget),
-                'background': self.__theme.bg('previous'),
-            })
-        return [attr]
-
-    def __pango(self, text, attributes):
-        result = '<span'
-        for key, value in attributes.items():
-            result = '{} {}="{}"'.format(result, key, value)
-        result = '{}>{}</span>'.format(result, text)
-        return result
-
-    def __main(self, module, widget, text):
-        attr = self.__common_attributes(module, widget)
-        attr.update({
-            'min_width': self.__decorate(module, widget, widget.get('theme.minwidth')),
-        })
-        pango = self.__theme.pango(widget)
-        if pango:
-            attr.update({
-                'full_text': self.__pango(self.__decorate(module, widget, text), pango),
-                'markup': 'pango'
-            })
-        else:
-            attr.update({
-                'full_text': self.__decorate(module, widget, text),
-                'color': self.__theme.fg(widget),
-                'background': self.__theme.bg(widget),
-            })
-        if (self.__config.debug()):
-            attr.update({
-                '__state': ", ".join(module.state(widget))
-            })
-        return [attr]
-
-    def widgets(self, module):
-        widgets = []
+    def blocks(self, module):
+        blocks = []
         for widget in module.widgets():
             if widget.module() and self.__config.autohide(widget.module().name()):
                 if not any(state in widget.state() for state in [ 'warning', 'critical']):
                     continue
-            widgets += self.__separator(module, widget)
-            widgets += self.__main(module, widget, self.__status[widget])
+            blocks.append(self.__separator_block(module, widget))
+            blocks.append(self.__content_block(module, widget))
             core.event.trigger('next-widget')
-        return widgets
+        return blocks
 
     def update(self, affected_modules=None):
         now = time.time()
@@ -155,14 +118,14 @@ class i3(object):
             module.update_wrapper()
             module.next_update = now + float(module.parameter('interval', self.__config.interval()))
             for widget in module.widgets():
-                self.__status[widget] = widget.full_text()
+                self.__content[widget] = widget.full_text()
 
     def statusline(self):
-        widgets = []
+        blocks = []
         for module in self.__modules:
-            widgets += self.widgets(module)
+            blocks.extend(self.blocks(module))
         return {
-            'data': widgets,
+            'blocks': blocks,
             'suffix': ','
         }
 
