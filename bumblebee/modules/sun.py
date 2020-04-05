@@ -64,6 +64,8 @@ class Module(bumblebee.engine.Module):
     def _calculate_times(self):
         self._isup = False
         try:
+            if not self._lat or not self._lon:
+                raise()
             sun = Sun(self._lat, self._lon)
         except Exception:
             self._sunrise = None
