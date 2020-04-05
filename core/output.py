@@ -23,7 +23,7 @@ class block(object):
     __COMMON_THEME_FIELDS = [
         'separator', 'separator-block-width', 'default-separators',
         'border-top', 'border-left', 'border-right', 'border-bottom',
-        'pango', 'fg', 'bg', 'padding', 'prefix', 'suffix'
+        'fg', 'bg', 'padding', 'prefix', 'suffix'
     ]
     def __init__(self, theme, module, widget):
         self.__attributes = {}
@@ -38,6 +38,26 @@ class block(object):
 
     def set(self, key, value):
         self.__attributes[key] = value
+
+    def is_pango(self, attr):
+        if isinstance(attr, dict) and 'pango' in attr:
+            return True
+        return False
+
+    def pangoize(self, text):
+        if not self.is_pango(text):
+            return text
+        self.__attributes['markup'] = 'pango'
+        attr = dict(text['pango'])
+        text = attr.get('full_text', '')
+        if 'full_text' in attr:
+            del attr['full_text']
+
+        result = '<span '
+        for key, value in attr.items():
+            result = '{} {}="{}"'.format(result, key, value)
+        result = '{}>{}</span>'.format(result, text)
+        return result
 
     def dict(self):
         result = {}
@@ -54,11 +74,12 @@ class block(object):
             assign(self.__attributes, result, 'background', 'bg')
 
         if 'full_text' in self.__attributes:
+            result['full_text'] = self.pangoize(result['full_text'])
             result['full_text'] = self.__format(self.__attributes['full_text'])
 
         for k in [
             'name', 'instance', 'separator_block_width', 'border', 'border_top',
-            'border_bottom', 'border_left', 'border_right'
+            'border_bottom', 'border_left', 'border_right', 'markup'
         ]:
             assign(self.__attributes, result, k)
 
@@ -71,10 +92,12 @@ class block(object):
 
     def __format(self, text):
         if text is None: return None
+        prefix = self.pangoize(self.__attributes.get('prefix'))
+        suffix = self.pangoize(self.__attributes.get('suffix'))
         return '{}{}{}'.format(
-            self.__pad(self.__attributes.get('prefix')),
+            self.__pad(prefix),
             text,
-            self.__pad(self.__attributes.get('suffix'))
+            self.__pad(suffix)
         )
 
 class i3(object):
