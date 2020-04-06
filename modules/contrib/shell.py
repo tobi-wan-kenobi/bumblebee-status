@@ -37,7 +37,7 @@ class Module(core.module.Module):
     def __init__(self, config):
         super().__init__(config, core.widget.Widget(self.get_output))
 
-        self.__command = self.parameter('command')
+        self.__command = self.parameter('command', 'echo "no command configured"')
         self.__async = util.format.asbool(self.parameter('async'))
 
         if self.__async:
@@ -57,7 +57,7 @@ class Module(core.module.Module):
     def update(self):
         # if requested then run not async version and just execute command in this thread
         if not self.__async:
-            self.__output = util.cli.execute(self.__command, ignore_errors=True)
+            self.__output = util.cli.execute(self.__command, ignore_errors=True).strip()
             return
 
         # if previous thread didn't end yet then don't do anything
@@ -70,5 +70,9 @@ class Module(core.module.Module):
             args=(self, self.__command)
         )
         self.__current_thread.start()
+
+    def state(self, _):
+        if self.__output == 'no command configured':
+            return 'warning'
 
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
