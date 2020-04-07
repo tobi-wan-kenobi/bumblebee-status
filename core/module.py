@@ -12,16 +12,18 @@ except Exception as e:
 
 log = logging.getLogger(__name__)
 
-def load(module_name, config=None):
+def load(module_name, config=core.config.Config([])):
     error = None
+    module_short, alias = (module_name.split(':') + [module_name])[0:2]
+    config.set('__alias__', alias)
     for namespace in [ 'core', 'contrib' ]:
         try:
-            mod = importlib.import_module('modules.{}.{}'.format(namespace, module_name))
+            mod = importlib.import_module('modules.{}.{}'.format(namespace, module_short))
             return getattr(mod, 'Module')(config)
         except ModuleNotFoundError as e:
-            log.fatal('failed to import {}: {}'.format(module_name, e))
+            log.fatal('failed to import {}: {}'.format(module_short, e))
         except ImportError as e:
-            log.fatal('failed to import {}: {}'.format(module_name, e))
+            log.fatal('failed to import {}: {}'.format(module_short, e))
             error = str(e)
     if not error:
         error = 'No such module'
@@ -29,25 +31,27 @@ def load(module_name, config=None):
     return Error(config=config, module=module_name, error=error)
 
 class Module(core.input.Object):
-    def __init__(self, config=None, widgets=[]):
+    def __init__(self, config=core.config.Config([]), widgets=[]):
         super().__init__()
-        self._config = config
+        self.__config = config
         self.__widgets = widgets if isinstance(widgets, list) else [ widgets ]
         for widget in self.__widgets:
             widget.module(self)
         self.__name = None
+        self.alias = self.__config.get('__alias__', None)
+        print('ALIAS {}'.format(self.alias))
         self.next_update = None
 
     def parameter(self, key, default=None):
         value = default
 
-        for prefix in [ self.name(), self.module_name() ]:
-            value = self._config.get('{}.{}'.format(prefix, key), value)
+        for prefix in [ self.name(), self.module_name(), self.alias ]:
+            value = self.__config.get('{}.{}'.format(prefix, key), value)
         # TODO retrieve from config file
         return value
 
     def set(self, key, value):
-        self._config.set('{}.{}'.format(self.name(), key), value)
+        self.__config.set('{}.{}'.format(self.name(), key), value)
 
     def update(self):
         pass
@@ -56,7 +60,7 @@ class Module(core.input.Object):
         try:
             self.update()
         except Exception as e:
-            module = Error(config=self._config, module='error', error=str(e))
+            module = Error(config=self.__config, module='error', error=str(e))
             self.__widgets = [module.widget()]
             self.update = module.update
 

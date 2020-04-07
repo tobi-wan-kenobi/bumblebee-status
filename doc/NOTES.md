@@ -14,7 +14,6 @@
 - new themeing? (and add a "version" for backwards compat?)
 
 ## Backwards-compatibility
-- aliases
 - charts (braille)
 - minimize modules
 - tkinter / popups
