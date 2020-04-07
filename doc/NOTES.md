@@ -24,11 +24,9 @@
 
 ## Improvements
 - generalize the battery/hbar/vbar concept
-- pango output (improve - maybe autodetect? see #531)
 - allow handlers to specify whether to update or not (e.g. scroll)
 - API documentation
 - github pages
-- Add module that indicates arbitrary errors that occurred (via eventing)
 
 ## TODO
 - theme: `load` vs. `__load` vs. `load_keywords`
