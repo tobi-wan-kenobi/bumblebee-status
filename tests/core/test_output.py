@@ -17,11 +17,16 @@ class i3(unittest.TestCase):
             widgets=[widget, widget, widget])
         self.paddedTheme = core.theme.Theme(raw_data = {
             'defaults': { 'padding': ' ' }
-        });
+        })
         self.separator = '***';
         self.separatorTheme = core.theme.Theme(raw_data = {
             'defaults': { 'separator': self.separator, 'fg': 'red', 'bg': 'blue' }
-        });
+        })
+        self.someBlock = core.output.block(
+            theme=self.separatorTheme,
+            module=self.someModule, 
+            widget=self.someModule.widget()
+        )
 
     def test_start(self):
         core.event.clear()
@@ -88,5 +93,47 @@ class i3(unittest.TestCase):
         obj.dict = unittest.mock.MagicMock()
         core.output.dump_json(obj)
         obj.dict_assert_called_once_with()
+
+    def test_assign(self):
+        src = {
+            'a': 'x', 'b': 'y', 'c': 'z'
+        }
+        dst = {}
+
+        core.output.assign(src, dst, 'a')
+        self.assertEqual(dst['a'], src['a'])
+
+        core.output.assign(src, dst, '123', 'b')
+        self.assertEqual(dst['123'], src['b'])
+
+        core.output.assign(src, dst, 'blub', default='def')
+        self.assertEqual('def', dst['blub'])
+
+    def test_pango_detection(self):
+        self.assertFalse(self.someBlock.is_pango({}))
+        self.assertTrue(self.someBlock.is_pango({ 'pango': {} }))
+
+    def test_pangoize(self):
+        self.assertEqual('test', self.someBlock.pangoize('test'))
+        self.assertFalse('markup' in self.someBlock.dict())
+
+        self.assertEqual('<span attr="blub" x="y">test</span>',
+            self.someBlock.pangoize({ 'pango': { 'attr': 'blub', 'x': 'y', 'full_text': 'test' } })
+        )
+        self.assertEqual('pango', self.someBlock.dict()['markup'])
+
+    def test_padding(self):
+        self.someBlock.set('padding', '***')
+        self.someBlock.set('full_text', 'test')
+
+        self.assertEqual('***test***', self.someBlock.dict()['full_text'])
+
+    def test_pre_suffix(self):
+        self.someBlock.set('padding', '*')
+        self.someBlock.set('prefix', 'pre')
+        self.someBlock.set('suffix', 'suf')
+        self.someBlock.set('full_text', 'test')
+
+        self.assertEqual('*pre*test*suf*', self.someBlock.dict()['full_text'])
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
