@@ -88,10 +88,9 @@ class Theme(object):
     def get(self, key, widget=None, default=None):
         if not widget:
             widget = core.widget.Widget('')
-        if isinstance(widget, str):
-            # special handling
-            if widget == 'previous':
-                return self.__previous.get(key, None)
+        # special handling
+        if widget == 'previous':
+            return self.__previous.get(key, None)
 
         value = default
 
