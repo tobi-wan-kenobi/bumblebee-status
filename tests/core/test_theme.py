@@ -50,32 +50,32 @@ class theme(unittest.TestCase):
 
     def test_defaults(self):
         theme = core.theme.Theme(raw_data=self.defaultsTheme)
-        self.assertEqual(self.defaultsTheme['defaults']['fg'], theme.fg())
-        self.assertEqual(self.defaultsTheme['defaults']['bg'], theme.bg())
+        self.assertEqual(self.defaultsTheme['defaults']['fg'], theme.get('fg'))
+        self.assertEqual(self.defaultsTheme['defaults']['bg'], theme.get('bg'))
 
     def test_cycle(self):
         theme = core.theme.Theme(raw_data=self.cycleTheme)
-        self.assertEqual(None, theme.bg('previous'))
-        self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.fg())
-        self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.bg())
+        self.assertEqual(None, theme.get('prev-bg'))
+        self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.get('fg'))
+        self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.get('bg'))
         core.event.trigger('next-widget')
-        self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.bg('previous'))
+        self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.get('bg', 'previous'))
         core.event.trigger('next-widget')
-        self.assertEqual(self.cycleTheme['cycle'][2]['fg'], theme.fg())
-        self.assertEqual(self.cycleTheme['cycle'][2]['bg'], theme.bg())
+        self.assertEqual(self.cycleTheme['cycle'][2]['fg'], theme.get('fg'))
+        self.assertEqual(self.cycleTheme['cycle'][2]['bg'], theme.get('bg'))
        
         with unittest.mock.patch('core.output.sys.stdout'):
             core.event.trigger('update')
-            self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.fg())
-            self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.bg())
+            self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.get('fg'))
+            self.assertEqual(self.cycleTheme['cycle'][0]['bg'], theme.get('bg'))
 
     def test_custom_iconset(self):
         theme = core.theme.Theme(raw_data=self.defaultsTheme)
-        self.assertNotEqual('aaa', theme.padding())
+        self.assertNotEqual('aaa', theme.get('padding'))
         theme = core.theme.Theme(raw_data=self.defaultsTheme, iconset={
             'defaults': { 'padding': 'aaa' }
         })
-        self.assertEqual('aaa', theme.padding())
+        self.assertEqual('aaa', theme.get('padding'))
 
     def test_colors(self):
         theme = core.theme.Theme(raw_data=self.defaultsTheme)
@@ -107,18 +107,18 @@ class theme(unittest.TestCase):
         theme = core.theme.Theme(raw_data=self.cycleValueTheme)
 
         for i in range(0, len(expected)*3):
-            self.assertEqual(expected[i%len(expected)], theme.fg(widget))
+            self.assertEqual(expected[i%len(expected)], theme.get('fg', widget))
 
     def test_state(self):
         widget = core.widget.Widget()
         theme = core.theme.Theme(raw_data=self.stateTheme)
 
-        self.assertEqual(None, theme.fg(widget))
+        self.assertEqual(None, theme.get('fg', widget))
 
         widget.state = types.MethodType(lambda self: ['warning'], widget)
-        self.assertEqual(self.stateTheme['warning']['fg'], theme.fg(widget))
+        self.assertEqual(self.stateTheme['warning']['fg'], theme.get('fg', widget))
 
         widget.state = types.MethodType(lambda self: ['critical'], widget)
-        self.assertEqual(self.stateTheme['critical']['fg'], theme.fg(widget))
+        self.assertEqual(self.stateTheme['critical']['fg'], theme.get('fg', widget))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

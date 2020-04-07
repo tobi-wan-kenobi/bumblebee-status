@@ -45,21 +45,6 @@ class Theme(object):
         core.event.register('update', self.__start)
         core.event.register('next-widget', self.__next_widget)
 
-        for attr, default in [
-            ('fg', None), ('bg', None),
-            ('default-separators', True),
-            ('separator-block-width', 0),
-            ('separator', None),
-            ('border-top', 0),
-            ('border-bottom', 0),
-            ('border-left', 0),
-            ('border-right', 0),
-            ('padding', ''),
-            ('prefix', ''), ('suffix', ''),
-            ('pango', None),
-        ]:
-            setattr(self, attr.replace('-', '_'), lambda widget=None, default=default, attr=attr: self.__get(widget, attr, default))
-
     def keywords(self):
         return self.__keywords
 
@@ -101,9 +86,6 @@ class Theme(object):
         self.__current.clear()
 
     def get(self, key, widget=None, default=None):
-        return self.__get(widget, key, default)
-
-    def __get(self, widget, key, default=None):
         if not widget:
             widget = core.widget.Widget('')
         if isinstance(widget, str):
@@ -126,11 +108,11 @@ class Theme(object):
         value = merge_replace(value, self.__data.get(key, value), key)
 
         if widget.module():
-            value = merge_replace(value, self.__get(None, widget.module().name(), {}).get(key, value), key)
+            value = merge_replace(value, self.get(widget.module().name(), None, {}).get(key, value), key)
 
         if not key in widget.state():
             for state in widget.state():
-                theme = self.__get(widget, state, {})
+                theme = self.get(state, widget, {})
                 value = merge_replace(value, theme.get(key, value), key)
 
         if not type(value) in (list, dict):

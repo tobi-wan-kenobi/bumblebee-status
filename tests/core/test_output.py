@@ -81,6 +81,12 @@ class i3(unittest.TestCase):
         self.assertEqual(1, len(result))
         self.assertEqual('***', result[0].dict()['full_text'])
         self.assertTrue(result[0].dict().get('_decorator', False))
-        self.assertEqual(self.separatorTheme.bg(self.someModule.widget()), result[0].dict()['color'])
+        self.assertEqual(self.separatorTheme.get('bg', self.someModule.widget()), result[0].dict()['color'])
+
+    def test_dump_json(self):
+        obj = unittest.mock.MagicMock()
+        obj.dict = unittest.mock.MagicMock()
+        core.output.dump_json(obj)
+        obj.dict_assert_called_once_with()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
