@@ -34,7 +34,7 @@ class block(object):
 
         self.__attributes['name'] = module.id
         self.__attributes['instance'] = widget.id
-        self.__attributes['prev-bg'] = theme.get('prev-bg')
+        self.__attributes['prev-bg'] = theme.get('bg', 'previous')
 
     def set(self, key, value):
         self.__attributes[key] = value
