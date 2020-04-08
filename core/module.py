@@ -39,7 +39,6 @@ class Module(core.input.Object):
             widget.module(self)
         self.__name = None
         self.alias = self.__config.get('__alias__', None)
-        print('ALIAS {}'.format(self.alias))
         self.next_update = None
 
     def parameter(self, key, default=None):
