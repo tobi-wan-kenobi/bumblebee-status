@@ -1,7 +1,10 @@
 import argparse
+import logging
 
 import util.store
 import util.format
+
+log = logging.getLogger(__name__)
 
 MODULE_HELP = 'Specify a space-separated list of modules to load. The order of the list determines their order in the i3bar (from left to right). Use <module>:<alias> to provide an alias in case you want to load the same module multiple times, but specify different parameters.'
 PARAMETER_HELP = 'Provide configuration parameters in the form of <module>.<key>=<value>'
@@ -27,6 +30,9 @@ class Config(util.store.Store):
 
         parameters = [ item for sub in self.__args.parameters for item in sub ]
         for param in parameters:
+            if not '=' in param:
+                log.error('missing value for parameter "{}" - ignoring this parameter'.format(param))
+                continue
             key, value = param.split('=', 1)
             self.set(key, value)
 
