@@ -38,13 +38,16 @@ class Module(bumblebee.engine.Module):
         for line in lines:
             info = line.split(':')
             try:
-                if info[1] == "vpn":
+                if self._isvpn(info[1]):
                     self._vpn_profiles.append(info[0])
             except:
                 pass
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                        cmd=self.popup)
+
+    def _isvpn(self, connection_type):
+        return connection_type in ["vpn", "wireguard"]
 
     def update(self, widgets):
         try:
@@ -53,7 +56,7 @@ class Module(bumblebee.engine.Module):
             self._connected_vpn_profile = None
             for line in lines:
                 info = line.split(':')
-                if info[1] == "vpn" and info[2] != "":
+                if self._isvpn(info[1]) and info[2] != "":
                     self._connected_vpn_profile = info[0]
 
         except Exception as e:
