@@ -84,13 +84,15 @@ class Module(bumblebee.engine.Module):
         for (root, folders, files) in os.walk('/dev'):
             if root == '/dev':
                 devices = {"".join(filter(lambda i: i.isdigit() == False, file)) for file in files if 'sd' in file}
+                nvme = {file for file in files if('nvme0n' in file and 'p' not in file)}
+                devices.update(nvme)
                 return devices
 
     def smart(self, disk_name):
         SMARTCTL_PATH = which('smartctl')
         assessment = None
         cmd = Popen(
-            ['sudo', SMARTCTL_PATH, '--health', os.path.join('/dev/', disk_name.replace('nvd','nvme'))],
+            ['sudo', SMARTCTL_PATH, '--health', os.path.join('/dev/', disk_name)],
             stdout=PIPE,
             stderr=PIPE,
         )
@@ -105,7 +107,7 @@ class Module(bumblebee.engine.Module):
 
         if assessment == 'OK':
             cmd = Popen(
-                ['sudo', SMARTCTL_PATH, '-A', os.path.join('/dev/', disk_name.replace('nvd','nvme'))],
+                ['sudo', SMARTCTL_PATH, '-A', os.path.join('/dev/', disk_name)],
                 stdout=PIPE,
                 stderr=PIPE,
             )
