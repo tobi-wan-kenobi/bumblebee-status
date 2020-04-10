@@ -13,23 +13,22 @@ Requires the following executable:
    * progress
 """
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+
+import util.cli
+import util.format
 
 import re
 
-
-class Module(bumblebee.engine.Module):
-
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.get_progress_text)
-        )
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.get_progress_text))
+        self.__active = False
 
     def get_progress_text(self, widget):
         if self.update_progress_info(widget):
-            width = self.parameter('barwidth', 8)
+            width = util.format.asint(self.parameter('barwidth', 8))
             count = round((width * widget.get('per')) / 100)
             filledchar = self.parameter('barfilledchar', '#')
             emptychar = self.parameter('baremptychar', '-')
@@ -55,6 +54,7 @@ class Module(bumblebee.engine.Module):
 
     def update_progress_info(self, widget):
         """Update widget's informations about the copy"""
+        if not self.__active: return
 
         # These regex extracts following groups:
         #  1. pid
@@ -68,12 +68,12 @@ class Module(bumblebee.engine.Module):
         extract_wtspeed = re.compile('\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\) (\d*\.\d .*) remaining (\d*:\d*:\d*)\n.*')
 
         try:
-            raw = bumblebee.util.execute('progress -qW 0.1')
+            raw = util.cli.execute('progress -qW 0.1')
             result = extract_wtspeed.match(raw)
 
             if not result:
                 # Abord speed measures
-                raw = bumblebee.util.execute('progress -q')
+                raw = util.cli.execute('progress -q')
                 result = extract_nospeed.match(raw)
 
                 widget.set('spd', '???.? B/s')
@@ -91,14 +91,12 @@ class Module(bumblebee.engine.Module):
         except Exception:
             return False
 
+    def update(self):
+        self.__active = bool(util.cli.execute('progress -q'))
+
     def state(self, widget):
-        if self._active():
+        if self.__active:
             return 'copying'
         return 'pending'
-
-    def _active(self):
-        """Checks wether a copy is running or not"""
-        raw = bumblebee.util.execute('progress -q')
-        return bool(raw)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
