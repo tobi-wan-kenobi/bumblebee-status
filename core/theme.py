@@ -52,26 +52,27 @@ class Theme(object):
         if isinstance(name, dict): return name # support plain data
         for path in PATHS:
             theme_file = os.path.join(path, subdir, '{}.json'.format(name))
-            if os.path.isfile(theme_file):
-                with io.open(theme_file, encoding='utf-8') as data:
-                    return json.load(data)
+            result = self.__load_json(theme_file)
+            if result != {}: return result
         raise RuntimeError('unable to find theme {}'.format(name))
 
-    def __load(self, filename, sections):
-        result = {}
-        with io.open(os.path.expanduser(filename)) as data:
-            colors = json.load(data)
-            for field in sections:
-                for key in colors.get(field, []):
-                    result[key] = colors[field][key]
-        return result
+    def __load_json(self, filename):
+        filename = os.path.expanduser(filename)
+        if not os.path.isfile(filename): return {}
+        with io.open(filename) as data:
+            return json.load(data)
 
     def load_keywords(self, name):
         try:
             if isinstance(name, dict):
                 return name
             if name.lower() == 'wal':
-                return self.__load('~/.cache/wal/colors.json', ['special', 'colors'])
+                wal = self.__load_json('~/.cache/wal/colors.json')
+                result = {}
+                for field in ['special', 'colors']:
+                    for key in wal.get(field, {}):
+                        result[key] = wal[field][key]
+                return result
         except Exception as e:
             log.error('failed to load colors: {}', e)
 
