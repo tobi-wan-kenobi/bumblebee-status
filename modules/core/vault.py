@@ -20,11 +20,14 @@ Parameters:
 import os
 import time
 import threading
-import bumblebee.util
-import bumblebee.popup_v2
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+
+import core.module
+import core.widget
+import core.input
+import core.event
+
+import util.cli
+import util.popup
 
 def build_menu(parent, current_directory, callback):
     with os.scandir(current_directory) as it:
@@ -35,47 +38,46 @@ def build_menu(parent, current_directory, callback):
                 parent.add_menuitem(name, callback=lambda : callback(os.path.join(current_directory, name)))
 
             else:
-                submenu = bumblebee.popup_v2.PopupMenu(parent, leave=False)
+                submenu = util.popup.menu(parent, leave=False)
                 build_menu(submenu, os.path.join(current_directory, entry.name), callback)
                 parent.add_cascade(entry.name, submenu)
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.text)
-        )
-        self._duration = int(self.parameter('duration', 30))
-        self._offx = int(self.parameter('offx', 0))
-        self._offy = int(self.parameter('offy', 0))
-        self._path = os.path.expanduser(self.parameter('location', '~/.password-store/'))
-        self._reset()
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.text))
+
+        self.__duration = int(self.parameter('duration', 30))
+        self.__offx = int(self.parameter('offx', 0))
+        self.__offy = int(self.parameter('offy', 0))
+        self.__path = os.path.expanduser(self.parameter('location', '~/.password-store/'))
+        self.__reset()
+        core.input.register(self, button=core.input.LEFT_MOUSE,
            cmd=self.popup)
 
     def popup(self, widget):
-        menu = bumblebee.popup_v2.PopupMenu(leave=False)
+        menu = util.popup.menu(leave=False)
 
-        build_menu(menu, self._path, self._callback)
-        menu.show(widget, offset_x=self._offx, offset_y=self._offy)
+        build_menu(menu, self.__path, self.__callback)
+        menu.show(widget, offset_x=self.__offx, offset_y=self.__offy)
 
-    def _reset(self):
-        self._timer = None
-        self._text = str(self.parameter('text', '<click-for-password>'))
+    def __reset(self):
+        self.__timer = None
+        self.__text = str(self.parameter('text', '<click-for-password>'))
 
-    def _callback(self, secret_name):
-        secret_name = secret_name.replace(self._path, '') # remove common path
-        if self._timer:
-            self._timer.cancel()
-        # bumblebee.util.execute hangs for some reason
-        os.system('PASSWORD_STORE_CLIP_TIME={} pass -c {} > /dev/null 2>&1'.format(self._duration, secret_name))
-        self._timer = threading.Timer(self._duration, self._reset)
-        self._timer.start()
-        self._start = int(time.time())
-        self._text = secret_name
+    def __callback(self, secret_name):
+        secret_name = secret_name.replace(self.__path, '') # remove common path
+        if self.__timer:
+            self.__timer.cancel()
+        res = util.cli.execute('pass -c {}'.format(secret_name), wait=False,
+            env={ 'PASSWORD_STORE_CLIP_TIME': self.__duration })
+        self.__timer = threading.Timer(self.__duration, self.__reset)
+        self.__timer.start()
+        self.__start = int(time.time())
+        self.__text = secret_name
 
     def text(self, widget):
-        if self._timer:
-            return '{} ({}s)'.format(self._text, self._duration - (int(time.time()) - self._start))
-        return self._text
+        if self.__timer:
+            return '{} ({}s)'.format(self.__text, self.__duration - (int(time.time()) - self.__start))
+        return self.__text
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

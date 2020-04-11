@@ -3,11 +3,11 @@ import shlex
 import subprocess
 import logging
 
-def execute(cmd, wait=True, ignore_errors=False):
+def execute(cmd, wait=True, ignore_errors=False, env=None):
     args = shlex.split(cmd)
     logging.debug(cmd)
     try:
-        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        proc = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, env=env)
     except FileNotFoundError as e:
        raise RuntimeError('{} not found'.format(cmd))
 
