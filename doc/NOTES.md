@@ -20,6 +20,7 @@
 - scrolling decorator (incl. minwidth, alignment)
 - theme.exclude??
 - bumblebee-ctrl
+- default wheel handlers
 
 ## Improvements
 - generalize the battery/hbar/vbar concept
@@ -29,4 +30,3 @@
 
 ## TODO
 - themes: use colors to improve theme readability
-- brightness: read from CLI tools
