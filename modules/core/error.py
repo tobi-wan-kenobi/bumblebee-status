@@ -22,9 +22,9 @@ class Module(core.module.Module):
     def __set_error(self, error='n/a', state='critical'):
         self.__error = error
         self.__state = state
-        self.update()
 
     def state(self, widget):
         if self.__error: return [self.__state]
+        return []
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
