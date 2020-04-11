@@ -20,13 +20,10 @@ def load(module_name, config=core.config.Config([])):
         try:
             mod = importlib.import_module('modules.{}.{}'.format(namespace, module_short))
             return getattr(mod, 'Module')(config)
-        except ModuleNotFoundError as e:
-            log.fatal('failed to import {}: {}'.format(module_short, e))
         except ImportError as e:
             log.fatal('failed to import {}: {}'.format(module_short, e))
-            error = str(e)
-    if not error:
-        error = 'No such module'
+            if not error or module_short in error:
+                error = str(e)
     log.fatal('failed to import {}: {}'.format(module_name, error))
     return Error(config=config, module=module_name, error=error)
 
