@@ -193,6 +193,6 @@
       "off": { "prefix": "\uf24f" },
       "paused": { "prefix": "\uf210" },
       "on": { "prefix": "\uf488" }
-  }
-
+  },
+  "watson": { "prefix": "\uf2d1" }
 }
