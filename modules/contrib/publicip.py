@@ -5,7 +5,7 @@ Requires the following python packages:
 
 Parameters:
     * publicip.region: us-central (default), us-east, us-west, uk, de, pl, nl
-    * publicip.service: web address that returns plaintext ip address (ex. "http://l2.io/ip")
+    * publicip.service: web address that returns plaintext ip address (ex. 'http://l2.io/ip')
 """
 
 try:
@@ -21,16 +21,16 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.public_ip)
         )
-        self._avail_regions = {"us-east":"http://checkip.amazonaws.com",
-                               "us-central":"http://whatismyip.akamai.com",
-                               "us-west":"http://ipv4bot.whatismyipaddress.com",
-                               "pl":"http://ip.42.pl/raw",
-                               "de":"http://myexternalip.com/raw",
-                               "nl":"http://tnx.nl/ip",
-                               "uk":"http://ident.me"}
-        self._region = self.parameter("region", "us-central")
-        self._service = self.parameter("service", "")
-        self._ip = ""
+        self._avail_regions = {'us-east':'http://checkip.amazonaws.com',
+                               'us-central':'http://whatismyip.akamai.com',
+                               'us-west':'http://ipv4bot.whatismyipaddress.com',
+                               'pl':'http://ip.42.pl/raw',
+                               'de':'http://myexternalip.com/raw',
+                               'nl':'http://tnx.nl/ip',
+                               'uk':'http://ident.me'}
+        self._region = self.parameter('region', 'us-central')
+        self._service = self.parameter('service', '')
+        self._ip = ''
 
 
     def public_ip(self, widget):
@@ -44,4 +44,4 @@ class Module(bumblebee.engine.Module):
                 self.address = self._avail_regions[self._region]
             self._ip = get(self.address).text.rstrip()
         except Exception:
-            self._ip = "No Connection"
+            self._ip = 'No Connection'
