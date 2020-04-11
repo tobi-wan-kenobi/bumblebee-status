@@ -10,11 +10,7 @@
 - @parameter? (or was it @attribute?) - remove getter/setters
 - use __ for private
 
-# Features
-- new themeing? (and add a "version" for backwards compat?)
-
 ## Backwards-compatibility
-- charts (braille)
 - minimize modules
 - tkinter / popups
 - scrolling decorator (incl. minwidth, alignment)
@@ -23,7 +19,6 @@
 - default wheel handlers
 
 ## Improvements
-- generalize the battery/hbar/vbar concept
 - allow handlers to specify whether to update or not (e.g. scroll)
 - API documentation
 - github pages
