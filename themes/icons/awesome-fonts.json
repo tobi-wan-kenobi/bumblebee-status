@@ -260,5 +260,6 @@
       "work": { "prefix": "" },
       "break": { "prefix": "" }
   },
-  "hddtemp": { "prefix": "" }
+  "hddtemp": { "prefix": "" },
+  "watson": { "prefix": "" }
 }
