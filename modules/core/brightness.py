@@ -4,7 +4,6 @@
 
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
-    * brightness.device_path: The device path (defaults to /sys/class/backlight/intel_backlight), can contain wildcards (in this case, the first matching path will be used)
 
 """
 
@@ -16,51 +15,52 @@ import core.widget
 import core.input
 import core.decorators
 
+import util.cli
+
 class Module(core.module.Module):
-    @core.decorators.every(seconds=30) # takes 30s to pick up on "external" changes
+    @core.decorators.every(seconds=30)
     def __init__(self, config):
         super().__init__(config, core.widget.Widget(self.brightness))
 
-        self._brightness = 0
-        self._device_path = self.find_device(
-            self.parameter('device_path', '/sys/class/backlight/intel_backlight')
-        )
+        self.__brightness = 'n/a'
+        self.__readcmd = None
         step = self.parameter('step', 2)
 
         if shutil.which('light'):
+            self.__readcmd = self.__light
             self.register_cmd('light -A {}%'.format(step),
                 'light -U {}%'.format(step))
         elif shutil.which('brightnessctl'):
+            self.__readcmd = self.__brightnessctl
             self.register_cmd('brightnessctl s {}%+'.format(step),
                 'brightnessctl s {}%-'.format(step))
         else:
+            self.__readcmd = self.__xbacklight
             self.register_cmd('xbacklight +{}%'.format(step),
                 'xbacklight -{}%'.format(step))
-
-    def find_device(self, device_path):
-        res = glob.glob(device_path)
-        if len(res) == 0:
-            return device_path
-        return res[0]
 
     def register_cmd(self, up_cmd, down_cmd):
         core.input.register(self, button=core.input.WHEEL_UP, cmd=up_cmd)
         core.input.register(self, button=core.input.WHEEL_DOWN, cmd=down_cmd)
 
     def brightness(self, widget):
-        if isinstance(self._brightness, float):
-            return '{:3.0f}%'.format(self._brightness).strip()
-        else:
-            return 'n/a'
+        return self.__brightness
+
+    def __light(self):
+        return util.cli.execute('light').strip()
+
+    def __brightnessctl(self):
+        m = util.cli.execute('brightnessctl m').strip()
+        g = util.cli.execute('brightnessctl g').strip()
+        return float(g)/float(m)*100.0
+
+    def __xbacklight(self):
+        return util.cli.execute('xbacklight -get').strip()
 
     def update(self):
         try:
-            with open('{}/brightness'.format(self._device_path)) as f:
-                backlight = int(f.readline())
-            with open('{}/max_brightness'.format(self._device_path)) as f:
-                max_brightness = int(f.readline())
-                self._brightness = float(backlight * 100 / max_brightness)
+            self.__brightness = '{:3.0f}%'.format(float(self.__readcmd()))
         except:
-            return 'Error'
+            self.__brightness = 'n/a'
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
