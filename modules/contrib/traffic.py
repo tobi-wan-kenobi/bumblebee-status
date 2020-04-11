@@ -18,26 +18,28 @@ import time
 import psutil
 import netifaces
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
+import util.format
+import util.graph
+
+class Module(core.module.Module):
+    def __init__(self, config):
         widgets = []
-        super(Module, self).__init__(engine, config, widgets)
-        self._exclude = tuple(filter(len, self.parameter('exclude', 'lo,virbr,docker,vboxnet,veth').split(',')))
+        super().__init__(config, widgets)
+
+        self._exclude = tuple(filter(len, util.format.aslist(self.parameter('exclude', 'lo,virbr,docker,vboxnet,veth'))))
         self._status = ''
 
-        self._showname = bumblebee.util.asbool(self.parameter('showname', True))
+        self._showname = util.format.asbool(self.parameter('showname', True))
         self._format = self.parameter('format', '{:.2f}')
         self._prev = {}
         self._states = {}
         self._lastcheck = 0
         self._states['include'] = []
         self._states['exclude'] = []
-        for state in tuple(filter(len, self.parameter('states', '').split(','))):
+        for state in tuple(filter(len, util.format.aslist(self.parameter('states', '')))):
             if state[0] == '^':
                 self._states['exclude'].append(state[1:])
             else:
@@ -49,17 +51,17 @@ class Module(bumblebee.engine.Module):
         self._update_widgets(widgets)
 
     def state(self, widget):
-        if 'traffic.rx' in widget.name:
+        if 'traffic.rx' in widget.name():
             return 'rx'
-        if 'traffic.tx' in widget.name:
+        if 'traffic.tx' in widget.name():
             return 'tx'
         return self._status
 
-    def update(self, widgets):
-        self._update_widgets(widgets)
+    def update(self):
+        self._update_widgets(self.widgets())
 
     def create_widget(self, widgets, name, txt=None, attributes={}):
-        widget = bumblebee.output.Widget(name=name)
+        widget = core.widget.Widget(name=name, module=self)
         widget.full_text(txt)
         widgets.append(widget)
 
@@ -120,7 +122,7 @@ class Module(bumblebee.engine.Module):
             state = 'down'
             if len(self.get_addresses(interface)) > 0:
                 state = 'up'
-            elif bumblebee.util.asbool(self.parameter('hide_down', True)):
+            elif util.format.asbool(self.parameter('hide_down', True)):
                 continue
 
             if len(self._states['exclude']) > 0 and state in self._states['exclude']: continue
@@ -141,7 +143,7 @@ class Module(bumblebee.engine.Module):
                 widget = self.create_widget(widgets, name, attributes={'theme.minwidth': self.get_minwidth_str()})
                 prev = self._prev.get(name, 0)
                 bspeed = (int(data[direction]) - int(prev))/timediff
-                speed = bumblebee.util.bytefmt(bspeed, self._format)
+                speed = util.format.byte(bspeed, self._format)
                 txtspeed = '{0}/s'.format(speed)
                 if self._graphlen > 0:
                     # skip first value returned by psutil, because it is
@@ -152,7 +154,7 @@ class Module(bumblebee.engine.Module):
                     else:
                         self._graphdata[interface][direction] = self._graphdata[interface][direction][1:]
                         self._graphdata[interface][direction].append(bspeed)
-                    txtspeed = '{}{}'.format(bumblebee.output.bgraph(self._graphdata[interface][direction]), txtspeed)
+                    txtspeed = '{}{}'.format(util.graph.braille(self._graphdata[interface][direction]), txtspeed)
                 widget.full_text(txtspeed) 
                 self._prev[name] = data[direction]
 
