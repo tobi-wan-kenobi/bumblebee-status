@@ -6,7 +6,6 @@ Requires the following executable:
     * ping
 
 Parameters:
-    * ping.interval: Time in seconds between two RTT checks (defaults to 60)
     * ping.address : IP address to check
     * ping.timeout : Timeout for waiting for a reply (defaults to 5.0)
     * ping.probes  : Number of probes to send (defaults to 5)
@@ -18,14 +17,17 @@ import re
 import time
 import threading
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.event
+import core.decorators
+
+import util.cli
 
 def get_rtt(module, widget):
     try:
         widget.set('rtt-unreachable', False)
-        res = bumblebee.util.execute('ping -n -q -c {} -W {} {}'.format(
+        res = util.cli.execute('ping -n -q -c {} -W {} {}'.format(
             widget.get('rtt-probes'), widget.get('rtt-timeout'), widget.get('address')
         ))
 
@@ -45,22 +47,27 @@ def get_rtt(module, widget):
     except Exception as e:
         widget.set('rtt-unreachable', True)
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        widget = bumblebee.output.Widget(full_text=self.rtt)
-        super(Module, self).__init__(engine, config, widget)
+    if widget.get('pending'):
+        widget.set('pending', False)
+        core.event.trigger('update-modules', [ module.id ], redraw_only=True)
+
+class Module(core.module.Module):
+    @core.decorators.every(seconds=60)
+    def __init__(self, config):
+        widget = core.widget.Widget(self.rtt)
+        super().__init__(config, widget)
 
         widget.set('address', self.parameter('address', '8.8.8.8'))
-        widget.set('interval', self.parameter('interval', 60))
         widget.set('rtt-probes', self.parameter('probes', 5))
         widget.set('rtt-timeout', self.parameter('timeout', 5.0))
         widget.set('rtt-avg', 0.0)
         widget.set('rtt-unit', '')
         widget.set('packet-loss', 0)
-
-        self._next_check = 0
+        widget.set('pending', True)
 
     def rtt(self, widget):
+        if widget.get('pending') == True:
+            return 'pending'
         if widget.get('rtt-unreachable'):
             return '{}: unreachable'.format(widget.get('address'))
         return '{}: {:.1f}{} ({}%)'.format(
@@ -74,11 +81,8 @@ class Module(bumblebee.engine.Module):
         if widget.get('rtt-unreachable'): return ['critical']
         return self.threshold_state(widget.get('rtt-avg'), 1000.0, 2000.0)
 
-    def update(self, widgets):
-        if int(time.time()) < self._next_check:
-            return
-        thread = threading.Thread(target=get_rtt, args=(self, widgets[0],))
+    def update(self):
+        thread = threading.Thread(target=get_rtt, args=(self, self.widget(),))
         thread.start()
-        self._next_check = int(time.time()) + int(widgets[0].get('interval'))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
