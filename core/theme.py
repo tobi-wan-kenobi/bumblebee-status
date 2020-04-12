@@ -34,6 +34,7 @@ class Theme(object):
         self.__previous = {}
         self.__current = {}
         self.__keywords = {}
+        self.__value_idx = {}
         self.__data = raw_data if raw_data else self.load(name)
         for icons in self.__data.get('icons', []):
             util.algorithm.merge(self.__data, self.load(icons, 'icons'))
@@ -81,6 +82,9 @@ class Theme(object):
         self.__current.clear()
         self.__previous.clear()
 
+        for key, value in self.__value_idx.items():
+            self.__value_idx[key] = value + 1
+
     def __next_widget(self):
         self.__widget_count = self.__widget_count + 1
         self.__previous = dict(self.__current)
@@ -119,9 +123,9 @@ class Theme(object):
             value = self.__keywords.get(value, value)
 
         if isinstance(value, list):
-            key = '__{}-idx__'.format(key)
-            idx = widget.get(key, 0)
-            widget.set(key, (idx + 1) % len(value))
+            idx = self.__value_idx.get('{}::{}'.format(widget.id, key), 0) % len(value)
+            self.__value_idx['{}::{}'.format(widget.id, key)] = idx
+            widget.set(key, idx)
             value = value[idx]
         self.__current[key] = value
         return value

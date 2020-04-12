@@ -63,7 +63,7 @@ class theme(unittest.TestCase):
         core.event.trigger('next-widget')
         self.assertEqual(self.cycleTheme['cycle'][2]['fg'], theme.get('fg'))
         self.assertEqual(self.cycleTheme['cycle'][2]['bg'], theme.get('bg'))
-       
+
         with unittest.mock.patch('core.output.sys.stdout'):
             core.event.trigger('update')
             self.assertEqual(self.cycleTheme['cycle'][0]['fg'], theme.get('fg'))
@@ -108,6 +108,8 @@ class theme(unittest.TestCase):
 
         for i in range(0, len(expected)*3):
             self.assertEqual(expected[i%len(expected)], theme.get('fg', widget))
+            self.assertEqual(expected[i%len(expected)], theme.get('fg', widget)) # ensure multiple invocations are OK
+            core.event.trigger('update')
 
     def test_state(self):
         widget = core.widget.Widget()
