@@ -28,52 +28,44 @@ import core.decorators
 
 import util.cli
 
-def is_terminated():
-    for thread in threading.enumerate():
-        if thread.name == 'MainThread' and not thread.is_alive():
-            return True
-    return False
+def get_redshift_value(module):
+    widget = module.widget()
+    location = module.parameter('location', 'auto')
+    lat = module.parameter('lat', None)
+    lon = module.parameter('lon', None)
 
+    # Even if location method is set to manual, if we have no lat or lon,
+    # fall back to the geoclue2 method.
+    if location == 'manual' and (lat is None or lon is None):
+        location = 'geoclue2'
 
-def get_redshift_value(widget, location, lat, lon):
-    while True:
-        if is_terminated():
-            return
-        widget.get('condition').acquire()
-        while True:
-            try:
-                widget.get('condition').wait(1)
-            except RuntimeError:
-                continue
-            break
-        widget.get('condition').release()
+    command = ['redshift', '-p']
+    if location == 'manual':
+        command.extend(['-l', '{}:{}'.format(lat, lon)])
+    if location == 'geoclue2':
+        command.extend(['-l', 'geoclue2'])
 
-        command = ['redshift', '-p']
-        if location == 'manual':
-            command.extend(['-l', '{}:{}'.format(lat, lon)])
-        if location == 'geoclue2':
-            command.extend(['-l', 'geoclue2'])
-
-        try:
-            res = util.cli.execute(' '.join(command))
-        except Exception:
-            res = ''
-            widget.set('temp', 'n/a')
-            widget.set('transition', None)
-            widget.set('state', 'day')
-        for line in res.split('\n'):
-            line = line.lower()
-            if 'temperature' in line:
-                widget.set('temp', line.split(' ')[2])
-            if 'period' in line:
-                state = line.split(' ')[1]
-                if 'day' in state:
-                    widget.set('state', 'day')
-                elif 'night' in state:
-                    widget.set('state', 'night')
-                else:
-                    widget.set('state', 'transition')
-                    widget.set('transition', ' '.join(line.split(' ')[2:]))
+    try:
+        res = util.cli.execute(' '.join(command))
+    except Exception:
+        res = ''
+    widget.set('temp', 'n/a')
+    widget.set('transition', None)
+    widget.set('state', 'day')
+    for line in res.split('\n'):
+        line = line.lower()
+        if 'temperature' in line:
+            widget.set('temp', line.split(' ')[2])
+        if 'period' in line:
+            state = line.split(' ')[1]
+            if 'day' in state:
+                widget.set('state', 'day')
+            elif 'night' in state:
+                widget.set('state', 'night')
+            else:
+                widget.set('state', 'transition')
+                widget.set('transition', ' '.join(line.split(' ')[2:]))
+    core.event.trigger('update', [ widget.module().id ], redraw_only=True)
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=10)
@@ -81,53 +73,33 @@ class Module(core.module.Module):
         widget = core.widget.Widget(self.text)
         super().__init__(config, widget)
 
-        self._location = self.parameter('location', 'auto')
-        self._lat = self.parameter('lat', None)
-        self._lon = self.parameter('lon', None)
+        self.__thread = threading.Thread(target=get_redshift_value, args=(self,))
 
-        # Even if location method is set to manual, if we have no lat or lon,
-        # fall back to the geoclue2 method.
-        #
-        if self._location == 'manual' and (self._lat is None
-                                           or self._lon is None):
-            self._location == 'geoclue2'
-
-        if self._location == 'ipinfo':
+        if self.parameter('location', '') == 'ipinfo':
+            # override lon/lat with ipinfo
             try:
                 location_url = 'http://ipinfo.io/json'
                 location = requests.get(location_url).json()
-                self._lat, self._lon = location['loc'].split(',')
-                self._lat = str(float(self._lat))
-                self._lon = str(float(self._lon))
-                self._location = 'manual'
+                self.parameter('lat', location['loc'].split(',')[0])
+                self.parameter('lon', location['loc'].split(',')[1])
+                self.parameter('location', 'manual')
             except Exception:
                 # Fall back to geoclue2.
-                self._location = 'geoclue2'
+                self.parameter('location', 'geoclue2')
 
         self._text = ''
-        self._condition = threading.Condition()
-        widget.set('condition', self._condition)
-        self._thread = threading.Thread(target=get_redshift_value,
-            args=(widget, self._location,
-            self._lat, self._lon))
-        self._thread.start()
-        self._condition.acquire()
-        self._condition.notify()
-        self._condition.release()
 
     def text(self, widget):
-        return '{}'.format(self._text)
-
-    def update(self):
-        widget = self.widget()
-        self._condition.acquire()
-        self._condition.notify()
-        self._condition.release()
-        temp = widget.get('temp', 'n/a')
-        self._text = temp
+        val = widget.get('temp', 'n/a')
         transition = widget.get('transition', None)
         if transition:
-            self._text = '{} {}'.format(temp, transition)
+            val = '{} {}'.format(val, transition)
+        return val
+
+    def update(self):
+        if self.__thread.isAlive():
+            return
+        self.__thread.start()
 
     def state(self, widget):
         return widget.get('state', None)
