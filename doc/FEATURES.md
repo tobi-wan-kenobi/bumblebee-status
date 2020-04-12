@@ -4,3 +4,4 @@
 - scrolling decorator
 - theme.exclude
 - per module update interval -> nice string format
+- update via events
