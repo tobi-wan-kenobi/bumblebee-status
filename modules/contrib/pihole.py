@@ -6,39 +6,37 @@ Parameters:
     * pihole.pwhash      : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
 """
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
 import requests
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.pihole_status)
-        )
+import core.module
+import core.widget
+import core.input
 
-        buttons = {'LEFT_CLICK':bumblebee.input.LEFT_MOUSE}
+class Module(core.module.Module):
+    @core.decorators.every(minutes=1)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.pihole_status))
+
         self._pihole_address = self.parameter('address', '')
-
         self._pihole_pw_hash = self.parameter('pwhash', '')
         self._pihole_status = None
         self._ads_blocked_today = '-'
         self.update_pihole_status()
 
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-                                       cmd=self.toggle_pihole_status)
+        core.input.register(self, button=core.input.LEFT_MOUSE,
+            cmd=self.toggle_pihole_status)
 
     def pihole_status(self, widget):
         if self._pihole_status is None:
             return 'pi-hole unknown'
-        return 'pi-hole ' + ('up/' + self._ads_blocked_today if self._pihole_status else 'down')
+        return 'pi-hole {}'.format('up {} blocked'.format(self._ads_blocked_today) if self._pihole_status else 'down')
 
     def update_pihole_status(self):
         try:
             data = requests.get(self._pihole_address + '/admin/api.php?summary').json()
             self._pihole_status = True if data['status'] == 'enabled' else False
             self._ads_blocked_today = data['ads_blocked_today']
-        except:
+        except Exception as e:
             self._pihole_status = None
 
     def toggle_pihole_status(self, widget):
@@ -57,7 +55,7 @@ class Module(bumblebee.engine.Module):
                 pass
 
 
-    def update(self, widgets):
+    def update(self):
         self.update_pihole_status()
 
     def state(self, widget):
@@ -66,3 +64,5 @@ class Module(bumblebee.engine.Module):
         elif self._pihole_status:
             return ['enabled']
         return ['disabled', 'warning']
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
