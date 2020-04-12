@@ -6,18 +6,17 @@ Parameters:
     * spacer.text: Widget contents (defaults to empty string)
 """
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.decorators
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.text)
-        )
-        self._text = self.parameter("text", "")
+class Module(core.module.Module):
+    @core.decorators.every(minutes=60)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.text))
+        self.__text = self.parameter("text", "")
 
-    def text(self, widget):
-        return self._text
+    def text(self, _):
+        return self.__text
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
