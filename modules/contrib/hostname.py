@@ -2,23 +2,22 @@
 
 """Displays the system hostname."""
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import platform
 
+import core.module
+import core.widget
+import core.decorators
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.output)
-        )
-        self._hname = ""
+class Module(core.module.Module):
+    @core.decorators.every(minutes=60)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.output))
+        self.__hname = ''
 
     def output(self, _):
-        return self._hname+" "+u"\uf233"
+        return self.__hname + ' ' + u'\uf233'
 
-    def update(self, widgets):
-        with open('/proc/sys/kernel/hostname', 'r') as f:
-            self._hname = f.readline().split()[0]
+    def update(self):
+        self.__hname = platform.node()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
