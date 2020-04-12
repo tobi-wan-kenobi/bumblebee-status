@@ -32,7 +32,7 @@ def handle_input(output):
                     modules[event['name']] = True
             except ValueError:
                 pass
-        output.update(modules.keys())
+        core.event.trigger('update-modules', modules.keys())
         core.event.trigger('update')
 
     poll.unregister(sys.stdin.fileno())
