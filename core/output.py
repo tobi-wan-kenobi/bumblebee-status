@@ -105,6 +105,7 @@ class i3(object):
         self.__content = {}
         self.__theme = theme
         self.__config = config
+        core.event.register('update-modules', self.update)
         core.event.register('start', self.draw, 'start')
         core.event.register('update', self.draw, 'statusline')
         core.event.register('stop', self.draw, 'stop')
@@ -165,7 +166,7 @@ class i3(object):
         return blocks
 
     # TODO: only updates full text, not the state!?
-    def update(self, affected_modules=None):
+    def update(self, affected_modules=None, redraw_only=False):
         now = time.time()
         for module in self.__modules:
             if affected_modules and not module.id in affected_modules:
@@ -173,8 +174,9 @@ class i3(object):
             if not affected_modules and module.next_update:
                 if now < module.next_update:
                     continue
-            module.update_wrapper()
-            module.next_update = now + float(module.parameter('interval', self.__config.interval()))
+            if not redraw_only:
+                module.update_wrapper()
+                module.next_update = now + float(module.parameter('interval', self.__config.interval()))
             for widget in module.widgets():
                 self.__content[widget] = widget.full_text()
 
