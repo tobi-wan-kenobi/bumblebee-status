@@ -17,12 +17,12 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.pihole_status)
         )
 
-        buttons = {"LEFT_CLICK":bumblebee.input.LEFT_MOUSE}
-        self._pihole_address = self.parameter("address", "")
+        buttons = {'LEFT_CLICK':bumblebee.input.LEFT_MOUSE}
+        self._pihole_address = self.parameter('address', '')
 
-        self._pihole_pw_hash = self.parameter("pwhash", "")
+        self._pihole_pw_hash = self.parameter('pwhash', '')
         self._pihole_status = None
-        self._ads_blocked_today = "-"
+        self._ads_blocked_today = '-'
         self.update_pihole_status()
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
@@ -30,14 +30,14 @@ class Module(bumblebee.engine.Module):
 
     def pihole_status(self, widget):
         if self._pihole_status is None:
-            return "pi-hole unknown"
-        return "pi-hole " + ("up/" + self._ads_blocked_today if self._pihole_status else "down")
+            return 'pi-hole unknown'
+        return 'pi-hole ' + ('up/' + self._ads_blocked_today if self._pihole_status else 'down')
 
     def update_pihole_status(self):
         try:
-            data = requests.get(self._pihole_address + "/admin/api.php?summary").json()
-            self._pihole_status = True if data["status"] == "enabled" else False
-            self._ads_blocked_today = data["ads_blocked_today"]
+            data = requests.get(self._pihole_address + '/admin/api.php?summary').json()
+            self._pihole_status = True if data['status'] == 'enabled' else False
+            self._ads_blocked_today = data['ads_blocked_today']
         except:
             self._pihole_status = None
 
@@ -46,13 +46,13 @@ class Module(bumblebee.engine.Module):
             try:
                 req = None
                 if self._pihole_status:
-                    req = requests.get(self._pihole_address + "/admin/api.php?disable&auth=" + self._pihole_pw_hash)
+                    req = requests.get(self._pihole_address + '/admin/api.php?disable&auth=' + self._pihole_pw_hash)
                 else:
-                    req = requests.get(self._pihole_address + "/admin/api.php?enable&auth=" + self._pihole_pw_hash)
+                    req = requests.get(self._pihole_address + '/admin/api.php?enable&auth=' + self._pihole_pw_hash)
                 if req is not None:
                     if req.status_code == 200:
-                        status = req.json()["status"]
-                        self._pihole_status = False if status == "disabled" else True
+                        status = req.json()['status']
+                        self._pihole_status = False if status == 'disabled' else True
             except:
                 pass
 
@@ -64,5 +64,5 @@ class Module(bumblebee.engine.Module):
         if self._pihole_status is None:
             return []
         elif self._pihole_status:
-            return ["enabled"]
-        return ["disabled", "warning"]
+            return ['enabled']
+        return ['disabled', 'warning']
