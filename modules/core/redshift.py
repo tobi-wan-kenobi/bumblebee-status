@@ -13,13 +13,9 @@ Parameters:
     * redshift.lon : longitude if location is set to 'manual'
 """
 
+import re
 import threading
-import logging
-log = logging.getLogger(__name__)
-try:
-    import requests
-except ImportError:
-    log.warning('unable to import module "requests": Location via IP disabled')
+import requests
 
 import core.module
 import core.widget
@@ -64,7 +60,8 @@ def get_redshift_value(module):
                 widget.set('state', 'night')
             else:
                 widget.set('state', 'transition')
-                widget.set('transition', ' '.join(line.split(' ')[2:]))
+                match = re.search(r'(\d+)\.\d+% ([a-z]+)', line)
+                widget.set('transition', '({}% {})'.format(match.group(1), match.group(2)))
     core.event.trigger('update', [ widget.module().id ], redraw_only=True)
 
 class Module(core.module.Module):
@@ -73,7 +70,7 @@ class Module(core.module.Module):
         widget = core.widget.Widget(self.text)
         super().__init__(config, widget)
 
-        self.__thread = threading.Thread(target=get_redshift_value, args=(self,))
+        self.__thread = None
 
         if self.parameter('location', '') == 'ipinfo':
             # override lon/lat with ipinfo
@@ -97,8 +94,9 @@ class Module(core.module.Module):
         return val
 
     def update(self):
-        if self.__thread.isAlive():
+        if self.__thread is not None and self.__thread.isAlive():
             return
+        self.__thread = threading.Thread(target=get_redshift_value, args=(self,))
         self.__thread.start()
 
     def state(self, widget):
