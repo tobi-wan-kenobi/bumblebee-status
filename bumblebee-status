@@ -32,8 +32,8 @@ def handle_input(output):
                     modules[event['name']] = True
             except ValueError:
                 pass
-        core.event.trigger('update-modules', modules.keys())
-        core.event.trigger('update')
+        core.event.trigger('update', modules.keys())
+        core.event.trigger('draw')
 
     poll.unregister(sys.stdin.fileno())
 
@@ -58,8 +58,8 @@ def main():
     output.modules(modules)
     core.event.trigger('start')
     while True:
-        output.update()
         core.event.trigger('update')
+        core.event.trigger('draw')
         output.wait(config.interval())
     core.event.trigger('stop')
 

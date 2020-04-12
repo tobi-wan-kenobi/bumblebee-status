@@ -105,9 +105,9 @@ class i3(object):
         self.__content = {}
         self.__theme = theme
         self.__config = config
-        core.event.register('update-modules', self.update)
+        core.event.register('update', self.update)
         core.event.register('start', self.draw, 'start')
-        core.event.register('update', self.draw, 'statusline')
+        core.event.register('draw', self.draw, 'statusline')
         core.event.register('stop', self.draw, 'stop')
 
     def theme(self, new_theme=None):

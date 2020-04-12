@@ -43,7 +43,7 @@ class Theme(object):
         for colors in self.__data.get('colors', []):
             util.algorithm.merge(self.__keywords, self.load_keywords(colors))
 
-        core.event.register('update', self.__start)
+        core.event.register('draw', self.__start)
         core.event.register('next-widget', self.__next_widget)
 
     def keywords(self):
