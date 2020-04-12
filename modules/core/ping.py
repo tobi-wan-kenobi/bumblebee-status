@@ -47,9 +47,7 @@ def get_rtt(module, widget):
     except Exception as e:
         widget.set('rtt-unreachable', True)
 
-    if widget.get('pending'):
-        widget.set('pending', False)
-        core.event.trigger('update-modules', [ module.id ], redraw_only=True)
+    core.event.trigger('update', [ module.id ], redraw_only=True)
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=60)
@@ -63,11 +61,8 @@ class Module(core.module.Module):
         widget.set('rtt-avg', 0.0)
         widget.set('rtt-unit', '')
         widget.set('packet-loss', 0)
-        widget.set('pending', True)
 
     def rtt(self, widget):
-        if widget.get('pending') == True:
-            return 'pending'
         if widget.get('rtt-unreachable'):
             return '{}: unreachable'.format(widget.get('address'))
         return '{}: {:.1f}{} ({}%)'.format(
