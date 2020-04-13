@@ -4,48 +4,33 @@ Requires the following executable:
     * checkupdates (from pacman-contrib)
 
 """
+import core.module
+import core.widget
+import core.decorators
 
+import util.cli
 
-import subprocess
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-
-
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        widget = bumblebee.output.Widget(full_text=self.utilization)
-        super(Module, self).__init__(engine, config, widget)
-        self.packages = self.check_updates()
-
-    def check_updates(self):
-        p = subprocess.Popen(
-                'checkupdates', stdout=subprocess.PIPE, shell=True)
-
-        p_status = p.wait()
-
-        if p_status == 0:
-            (output, err) = p.communicate()
-
-            output = output.decode('utf-8')
-            packages = output.split('\n')
-            packages.pop()
-
-            return len(packages)
-        return 0
+class Module(core.module.Module):
+    @core.decorators.every(minutes=60)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.utilization))
+        self.__packages = None
 
     @property
-    def _format(self):
+    def __format(self):
         return self.parameter('format', 'Update Arch: {}')
 
     def utilization(self, widget):
-        return self._format.format(self.packages)
+        return self.__format.format(self.__packages)
 
     def hidden(self):
         return self.check_updates() == 0
 
-    def update(self, widgets):
-        self.packages = self.check_updates()
+    def update(self):
+        result = util.cli.execute('checkupdates')
+        self.__packages = len(result.split('\n')) - 1
 
     def state(self, widget):
-        return self.threshold_state(self.packages, 1, 100)
+        return self.threshold_state(self.__packages, 1, 100)
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
