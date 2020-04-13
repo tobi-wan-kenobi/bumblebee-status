@@ -33,10 +33,10 @@ class Module(bumblebee.engine.Module):
     def state(self, widget):
         state = []
         status = self.status(widget)
-        if status == "OK - 0":
-            state.append("warning")
-        elif  status in ["n/a", "Daemon off"]:
-            state.append("critical")
+        if status == 'OK - 0':
+            state.append('warning')
+        elif  status in ['n/a', 'Daemon off']:
+            state.append('critical')
         return state
 
     def status(self, widget):
@@ -44,7 +44,7 @@ class Module(bumblebee.engine.Module):
             cli = docker.DockerClient(base_url='unix://var/run/docker.sock')
             cli.ping()
         except ConnectionError:
-            return "Daemon off"
+            return 'Daemon off'
         except Exception:
-            return "n/a"
-        return "OK - {}".format(len(cli.containers.list(filters={'status': "running"})))
+            return 'n/a'
+        return 'OK - {}'.format(len(cli.containers.list(filters={'status': 'running'})))
