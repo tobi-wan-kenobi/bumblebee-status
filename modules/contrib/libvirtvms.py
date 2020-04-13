@@ -1,30 +1,28 @@
 """Displays count of running libvirt VMs.
 Required the following python packages:
         * libvirt
-        * sys
 """
+
 import sys
 import libvirt
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
 
+import core.module
+import core.widget
+import core.input
+import core.decorators
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.status)
-            )
-        self._status = self.status
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-            cmd="virt-manager")
+class Module(core.module.Module):
+    @core.decorators.every(seconds=10)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.status))
 
-    def update(self, widgets):
-        self._status = self.status
+        core.input.register(self, button=core.input.LEFT_MOUSE,
+            cmd='virt-manager')
 
     def status(self, _):
-        conn = None
         conn = libvirt.openReadOnly(None)
         if conn == None:
-            print ('Failed to open connection to the hypervisor')
-        return "VMs %s" % (conn.numOfDomains())
+            return 'Failed to open connection to the hypervisor'
+        return 'VMs %s' % (conn.numOfDomains())
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
