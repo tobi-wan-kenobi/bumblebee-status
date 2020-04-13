@@ -56,6 +56,7 @@ class Module(core.input.Object):
         try:
             self.update()
         except Exception as e:
+            self.set('interval', 1)
             module = Error(config=self.__config, module='error', error=str(e))
             self.__widgets = [module.widget()]
             self.update = module.update
