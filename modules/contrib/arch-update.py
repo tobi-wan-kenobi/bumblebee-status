@@ -20,7 +20,7 @@ class Module(bumblebee.engine.Module):
 
     def check_updates(self):
         p = subprocess.Popen(
-                "checkupdates", stdout=subprocess.PIPE, shell=True)
+                'checkupdates', stdout=subprocess.PIPE, shell=True)
 
         p_status = p.wait()
 
@@ -36,7 +36,7 @@ class Module(bumblebee.engine.Module):
 
     @property
     def _format(self):
-        return self.parameter("format", "Update Arch: {}")
+        return self.parameter('format', 'Update Arch: {}')
 
     def utilization(self, widget):
         return self._format.format(self.packages)
