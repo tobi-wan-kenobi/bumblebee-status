@@ -1,42 +1,45 @@
 """get volume level
 
+Parameters:
+    * amixer.device: Device to use, defaults to "Master,0"
 """
 import re
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.volume)
-        )
-        self._level = "0"
-        self._muted = True
-        device = self.parameter("device", "Master,0")
-        self._cmdString = "amixer get {}".format(device)
+import util.cli
+
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.volume))
+
+        self.__level = 'n/a'
+        self.__muted = True
+        device = self.parameter('device', 'Master,0')
+        self._cmdString = 'amixer get {}'.format(device)
 
     def volume(self, widget):
-        m = re.search(r'([\d]+)\%', self._level)
-        self._muted = True
+        if self.__level == 'n/a':
+            return self.__level
+        m = re.search(r'([\d]+)\%', self.__level)
+        self.__muted = True
         if m:
-            if m.group(1) != "0" and "[on]" in self._level:
-                self._muted = False
-            return "{}%".format(m.group(1))
+            if m.group(1) != '0' and '[on]' in self.__level:
+                self.__muted = False
+            return '{}%'.format(m.group(1))
         else:
-            return "0%"
+            return '0%'
 
-    def update(self, widgets):
-        level = ""
+    def update(self):
         try:
-            level = bumblebee.util.execute(self._cmdString)
+            self.__level = util.cli.execute('amixer get {}'.format(self.parameter('device', 'Master,0')))
         except Exception as e:
-            level = ""
-
-        self._level = level
+            self.__level = 'n/a'
 
     def state(self, widget):
-        if self._muted:
-            return ["warning", "muted"]
-        return ["unmuted"]
+        if self.__muted:
+            return ['warning', 'muted']
+        return ['unmuted']
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
