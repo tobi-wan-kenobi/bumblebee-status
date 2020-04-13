@@ -5,7 +5,7 @@
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 
-**Many, many thanks to all contributors! All of the really cool modules have been contributed by somebody :)**
+**Many, many thanks to all contributors! All of the really cool modules have been contributed by somebody else :)**
 
 ![List of modules](doc/MODULES.md)
 
@@ -15,10 +15,10 @@ bumblebee-status is a modular, theme-able status line generator for the [i3 wind
 
 Focus is on:
 * Ease of use
-* Support for easily adding custom themes
-* Support for easily adding custom modules
+* Support for easily adding [custom themes](doc/HOWTO_THEME.md)
+* Support for easily adding [custom modules](doc/HOWTO_MODULE.md)
 
-I hope you like it and I appreciate any kind of feedback: Bug reports, Feature requests, etc. :)
+I hope you like it and I appreciate any kind of feedback: Bug reports, feature requests, etc. :)
 
 Thanks a lot!
 
@@ -37,7 +37,7 @@ bar {
 ```
 
 # Documentation
-See [the wiki](https://github.com/tobi-wan-kenobi/bumblebee-status/wiki) for documentation.
+See [the docs](doc/) for documentation.
 
 See [FAQ](doc/FAQ.md) for FAQs.
 
@@ -118,51 +118,6 @@ bar {
 ```
 
 Restart i3wm and - that's it!
-
-## Events
-By default, the following events are handled:
-
-- Mouse-Wheel on any module moves to the next/previous i3 workspace
-- Left-click on the "disk" module opens the specified path in nautilus
-- Left-click on either "memory" or "cpu" opens gnome-system-monitor
-- Left-click on a "pulseaudio" (or pasource/pasink) module toggles the mute state
-- Right-click on a "pulseaudio" module opens pavucontrol
-- Mouse-Wheel up/down on a "pulseaudio" module raises/lowers the volume
-
-By default, the Mouse-Wheel wraps for the current output. You can disable this behavior by providing the parameter `engine.workspacewrap=false` (starting with version 1.4.5). Also, you can completely disable output switching by using `engine.workspacewheel=false`.
-
-You can provide your own handlers to any module by using the following "special" configuration parameters:
-
-- left-click
-- right-click
-- middle-click
-- wheel-up
-- wheel-down
-For example, to execute "pavucontrol" whenever you left-click on the nic module, you could write:
-
-`$ bumblebee-status -p nic.left-click="pavucontrol"`
-
-In the string, you can use the following format identifiers:
-- name
-- instance
-- button
-
-For example:
-
-`$ bumblebee-status -p disk.left-click="nautilus {instance}"`
-
-## Errors
-If errors occur, you should see them in the i3bar itself. If that does not work, or you need more information for troubleshooting, you can activate a debug log using the `-d` or `--debug` switch:
-
-```
-$ ./bumblebee-status -d -m <list of modules>
-```
-
-This will log to stderr, so unless you are running `bumblebee-status` interactively in the CLI, you'll need to redirect stderr to some file (i.e. `bumblebee-status <parameters> 2> error.log`).
-
-### Advanced Usage
-If you want to have a minimal bar that stays out of the way, you can use the `-a` or `--autohide` switch to specify a list of module names. All those modules will only be displayed when (and as long as) their state is either warning or critical (high CPU usage, low disk space, etc.). As long as the module is in a "normal" state and does not require attention, it will remain hidden.
-Note that this parameter is specified *in addition* to `-m` (i.e. to autohide the CPU module, you would use `bumblebee-status -m cpu memory traffic -a cpu`).
 
 # Examples
 

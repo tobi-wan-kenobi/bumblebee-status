@@ -114,4 +114,8 @@ interval using `-p <module>.interval=<value>`, however.
 ## TODOs
 - default update interval
 - scrolling
-- 
+- theme.minwidth
+- scrolling decorator
+- theme.exclude
+- per module update interval -> nice string format
+- update via events
