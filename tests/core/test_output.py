@@ -117,9 +117,11 @@ class i3(unittest.TestCase):
         self.assertEqual('test', self.someBlock.pangoize('test'))
         self.assertFalse('markup' in self.someBlock.dict())
 
-        self.assertEqual('<span attr="blub" x="y">test</span>',
-            self.someBlock.pangoize({ 'pango': { 'attr': 'blub', 'x': 'y', 'full_text': 'test' } })
-        )
+        pango = self.someBlock.pangoize({ 'pango': { 'attr': 'blub', 'x': 'y', 'full_text': 'test' } })
+        self.assertTrue('attr="blub"' in pango)
+        self.assertTrue('x="y"' in pango)
+        self.assertTrue('<span ' in pango)
+        self.assertTrue('>test</span>' in pango)
         self.assertEqual('pango', self.someBlock.dict()['markup'])
 
     def test_padding(self):
