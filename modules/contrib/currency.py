@@ -8,11 +8,11 @@ Requires the following python packages:
 
 Parameters:
     * currency.interval: Interval in minutes between updates, default is 1.
-    * currency.source: Source currency (ex. "GBP", "EUR"). Defaults to "auto", which infers the local one from IP address.
-    * currency.destination: Comma-separated list of destination currencies (defaults to "USD,EUR")
-    * currency.sourceformat: String format for source formatting; Defaults to "{}: {}" and has two variables,
+    * currency.source: Source currency (ex. 'GBP', 'EUR'). Defaults to 'auto', which infers the local one from IP address.
+    * currency.destination: Comma-separated list of destination currencies (defaults to 'USD,EUR')
+    * currency.sourceformat: String format for source formatting; Defaults to '{}: {}' and has two variables,
                              the base symbol and the rate list
-    * currency.destinationdelimiter: Delimiter used for separating individual rates (defaults to "|")
+    * currency.destinationdelimiter: Delimiter used for separating individual rates (defaults to '|')
 
 Note: source and destination names right now must correspond to the names used by the API of https://markets.ft.com
 """
@@ -32,13 +32,13 @@ import json
 import os
 
 SYMBOL = {
-    "GBP": u"£", "EUR": u"€", "USD": u"$", "JPY": u"¥", "KRW": u"₩"
+    'GBP': u'£', 'EUR': u'€', 'USD': u'$', 'JPY': u'¥', 'KRW': u'₩'
 }
-DEFAULT_DEST = "USD,EUR,auto"
-DEFAULT_SRC = "GBP"
+DEFAULT_DEST = 'USD,EUR,auto'
+DEFAULT_SRC = 'GBP'
 
-API_URL = "https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}"
-LOCATION_URL = "https://ipvigilante.com/"
+API_URL = 'https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}'
+LOCATION_URL = 'https://ipvigilante.com/'
 
 
 def get_local_country():
@@ -70,14 +70,14 @@ class Module(bumblebee.engine.Module):
         self.interval(1)
         self._nextcheck = 0
 
-        src = self.parameter("source", DEFAULT_SRC)
-        if src == "auto":
+        src = self.parameter('source', DEFAULT_SRC)
+        if src == 'auto':
             self._base = self.find_local_currency()
         else:
             self._base = src
 
         self._symbols = []
-        for d in self.parameter("destination", DEFAULT_DEST).split(","):
+        for d in self.parameter('destination', DEFAULT_DEST).split(','):
             if d == 'auto':
                 new = self.find_local_currency()
             else:
@@ -87,7 +87,7 @@ class Module(bumblebee.engine.Module):
 
     def price(self, widget):
         if len(self._data) == 0:
-            return "?"
+            return '?'
 
         rates = []
         for sym, rate in self._data:
@@ -96,10 +96,10 @@ class Module(bumblebee.engine.Module):
                 rates.append(format_currency(rate_float, sym))
             else:
                 rate = self.fmt_rate(rate)
-                rates.append(u"{}{}".format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
+                rates.append(u'{}{}'.format(rate, SYMBOL[sym] if sym in SYMBOL else sym))
 
-        basefmt = u"{}".format(self.parameter("sourceformat", "{}={}"))
-        ratefmt = u"{}".format(self.parameter("destinationdelimiter", "="))
+        basefmt = u'{}'.format(self.parameter('sourceformat', '{}={}'))
+        ratefmt = u'{}'.format(self.parameter('destinationdelimiter', '='))
 
         if format_currency:
             base_val = format_currency(1, self._base)
@@ -119,7 +119,7 @@ class Module(bumblebee.engine.Module):
                 pass
 
     def find_local_currency(self):
-        '''Use geolocation lookup to find local currency'''
+        """Use geolocation lookup to find local currency"""
         try:
             country = get_local_country()
             currency_map = load_country_to_currency()
@@ -132,7 +132,7 @@ class Module(bumblebee.engine.Module):
         if not 0.01 < float_rate < 100:
             ret = rate
         else:
-            ret = "%.3g" % float_rate
+            ret = '%.3g' % float_rate
 
         return ret
 
