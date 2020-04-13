@@ -16,7 +16,7 @@ import core.widget
 import core.decorators
 
 class Module(core.module.Module):
-    @core.decorators.every(seconds=1)
+    @core.decorators.every(seconds=5)
     def __init__(self, config):
         super().__init__(config, core.widget.Widget(self.keystate))
         self.__keystate = 'No YubiKey'
