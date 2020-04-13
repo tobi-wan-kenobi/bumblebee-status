@@ -1,5 +1,12 @@
 import util.format
 
+def never(init):
+    def call_init(obj, *args, **kwargs):
+        init(obj, *args, **kwargs)
+        if obj.parameter('interval') is None:
+            obj.set('interval', 'never')
+    return call_init
+
 def every(hours=0, minutes=0, seconds=0):
     def decorator_init(init):
         def call_init(obj, *args, **kwargs):

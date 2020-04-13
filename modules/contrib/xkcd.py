@@ -2,16 +2,17 @@
 
 """Opens a random xkcd comic in the browser."""
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
+import core.decorators
 
+class Module(core.module.Module):
+    @core.decorators.never
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget('xkcd'))
+        core.input.register(self, button=core.input.LEFT_MOUSE,
+            cmd="xdg-open https://c.xkcd.com/random/comic/"
+        )
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-                bumblebee.output.Widget(full_text="xkcd")
-        )
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-                cmd="xdg-open https://c.xkcd.com/random/comic/"
-        )
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -172,11 +172,14 @@ class i3(object):
             if affected_modules and not module.id in affected_modules:
                 continue
             if not affected_modules and module.next_update:
+                if module.parameter('interval', '') == 'never':
+                    continue
                 if now < module.next_update:
                     continue
             if not redraw_only:
                 module.update_wrapper()
-                module.next_update = now + float(module.parameter('interval', self.__config.interval()))
+                if module.parameter('interval', '')  != 'never':
+                    module.next_update = now + float(module.parameter('interval', self.__config.interval()))
             for widget in module.widgets():
                 self.__content[widget] = widget.full_text()
 
