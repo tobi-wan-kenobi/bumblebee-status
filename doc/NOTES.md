@@ -22,6 +22,7 @@
 - allow handlers to specify whether to update or not (e.g. scroll)
 - API documentation
 - github pages
+- central geolocation service? (currency, weather, rtt)
 
 ## TODO
 - themes: use colors to improve theme readability
