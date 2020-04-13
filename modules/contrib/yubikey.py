@@ -11,23 +11,25 @@ the corresponding serial number.
 
 import yubico
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.decorators
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-                                     bumblebee.output.Widget(full_text=self.keystate))
-        self._keystate = "No YubiKey"
+class Module(core.module.Module):
+    @core.decorators.every(seconds=1)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.keystate))
+        self.__keystate = 'No YubiKey'
 
     def keystate(self, widget):
-        return self._keystate
+        return self.__keystate
 
-    def update(self, widget):
+    def update(self):
         try:
-            self._keystate = "YubiKey: " + str(yubico.find_yubikey(debug=False).serial())
+            self.__keystate = "YubiKey: " + str(yubico.find_yubikey(debug=False).serial())
         except yubico.yubico_exception.YubicoError:
-            self._keystate = "No YubiKey"
+            self.__keystate = "No YubiKey"
+        except Exception:
+            self.__keystate = 'n/a'
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
