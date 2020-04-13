@@ -25,12 +25,12 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
                                      bumblebee.output.Widget(
                                          full_text=self.output))
-        self._pending_tasks_count = "0"
+        self._pending_tasks_count = '0'
 
     def update(self, widgets):
         """Return a string with the number of pending tasks from TaskWarrior."""
         try:
-            taskrc = self.parameter("taskrc", "~/.taskrc")
+            taskrc = self.parameter('taskrc', '~/.taskrc')
             w = TaskWarrior(config_filename=taskrc)
             pending_tasks = w.filter_tasks({'status': 'pending'})
             self._pending_tasks_count = str(len(pending_tasks))
@@ -39,4 +39,6 @@ class Module(bumblebee.engine.Module):
 
     def output(self, _):
         """Format the task counter to output in bumblebee."""
-        return "{}".format(self._pending_tasks_count)
+        return '{}'.format(self._pending_tasks_count)
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
