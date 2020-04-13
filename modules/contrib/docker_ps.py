@@ -7,44 +7,37 @@ Requires the following python packages:
 
 """
 
-try:
-    import docker
-except ImportError:
-    pass
+import docker
 
 from requests.exceptions import ConnectionError
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.decorators
 
-
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        widgets = bumblebee.output.Widget(full_text=self.status)
-        super(Module, self).__init__(engine, config, widgets)
-        self._status = self.status
-        self._state = self.state
-
-    def update(self, widgets):
-        self._status = self.status
-        self._state = self.state
+class Module(core.module.Module):
+    @core.decorators.every(seconds=5)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.docker_info))
+        self.__info = ''
 
     def state(self, widget):
         state = []
-        status = self.status(widget)
-        if status == 'OK - 0':
+        if self.__info == 'OK - 0':
             state.append('warning')
-        elif  status in ['n/a', 'Daemon off']:
+        elif  self.__info in ['n/a', 'daemon off']:
             state.append('critical')
         return state
 
-    def status(self, widget):
+    def docker_info(self, widget):
         try:
             cli = docker.DockerClient(base_url='unix://var/run/docker.sock')
             cli.ping()
         except ConnectionError:
-            return 'Daemon off'
+            self.__info = 'daemon off'
         except Exception:
-            return 'n/a'
-        return 'OK - {}'.format(len(cli.containers.list(filters={'status': 'running'})))
+            self.__info = 'n/a'
+        self.__info = 'OK - {}'.format(len(cli.containers.list(filters={'status': 'running'})))
+        return self.__info
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
