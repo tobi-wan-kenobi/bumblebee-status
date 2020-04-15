@@ -7,7 +7,7 @@ Requires the following python packages:
     * requests
 
 Parameters:
-    * weather.location: Set location, defaults to 'auto' for getting location from http://ipinfo.io
+    * weather.location: Set location, defaults to 'auto' for getting location automatically from a web service
                         If set to a comma-separated list, left-click and right-click can be used to rotate the locations.
                         Locations should be city names or city ids.
     * weather.unit: metric (default), kelvin, imperial
@@ -21,6 +21,7 @@ import core.widget
 import core.input
 
 import util.format
+import util.location
 
 import re
 
@@ -101,10 +102,7 @@ class Module(core.module.Module):
             weather_url = 'http://api.openweathermap.org/data/2.5/weather?appid={}'.format(self.__apikey)
             weather_url = '{}&units={}'.format(weather_url, self.__unit)
             if self.__location[self.__index] == 'auto':
-                # TODO: make that a general "provider"
-                location_url = 'http://ipinfo.io/json'
-                location = requests.get(location_url).json()
-                coord = location['loc'].split(',')
+                coord = util.location.coordinates()
                 weather_url = '{url}&lat={lat}&lon={lon}'.format(url=weather_url, lat=coord[0], lon=coord[1])
             elif self.__location[self.__index].isdigit():
                 weather_url = '{url}&id={id}'.format(url=weather_url, id=self.__location[self.__index])

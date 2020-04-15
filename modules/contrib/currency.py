@@ -30,6 +30,7 @@ import core.widget
 import core.decorators
 
 import util.format
+import util.location
 
 SYMBOL = {
     'GBP': u'£', 'EUR': u'€', 'USD': u'$', 'JPY': u'¥', 'KRW': u'₩'
@@ -38,12 +39,6 @@ DEFAULT_DEST = 'USD,EUR,auto'
 DEFAULT_SRC = 'GBP'
 
 API_URL = 'https://markets.ft.com/data/currencies/ajax/conversion?baseCurrency={}&comparison={}'
-LOCATION_URL = 'https://ipvigilante.com/'
-
-def get_local_country():
-    r = requests.get(LOCATION_URL)
-    location = r.json()
-    return location['data']['country_name']
 
 def load_country_to_currency():
     return [
@@ -1079,7 +1074,7 @@ class Module(core.module.Module):
     def find_local_currency(self):
         """Use geolocation lookup to find local currency"""
         try:
-            country = get_local_country()
+            country = util.location.country()
             currency_map = load_country_to_currency()
             return currency_map.get(country, DEFAULT_SRC)
         except:

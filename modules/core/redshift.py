@@ -7,7 +7,7 @@ Requires the following executable:
 
 Parameters:
     * redshift.location : location provider, either of 'auto' (default), 'geoclue2',
-        'ipinfo' (requires the requests package), or 'manual'
+        'ipinfo' or 'manual'
         'auto' uses whatever redshift is configured to do
     * redshift.lat : latitude if location is set to 'manual'
     * redshift.lon : longitude if location is set to 'manual'
@@ -15,7 +15,6 @@ Parameters:
 
 import re
 import threading
-import requests
 
 import core.module
 import core.widget
@@ -23,6 +22,7 @@ import core.input
 import core.decorators
 
 import util.cli
+import util.location
 
 def get_redshift_value(module):
     widget = module.widget()
@@ -75,14 +75,13 @@ class Module(core.module.Module):
         if self.parameter('location', '') == 'ipinfo':
             # override lon/lat with ipinfo
             try:
-                location_url = 'http://ipinfo.io/json'
-                location = requests.get(location_url).json()
-                self.parameter('lat', location['loc'].split(',')[0])
-                self.parameter('lon', location['loc'].split(',')[1])
-                self.parameter('location', 'manual')
+                location = util.location.coordinates()
+                self.set('lat', location[0])
+                self.set('lon', location[1])
+                self.set('location', 'manual')
             except Exception:
                 # Fall back to geoclue2.
-                self.parameter('location', 'geoclue2')
+                self.set('location', 'geoclue2')
 
         self._text = ''
 
