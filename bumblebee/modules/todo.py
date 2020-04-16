@@ -2,6 +2,9 @@
 
 """Displays the number of todo items from a text file
 
+Requires the following executable:
+    * xdg-open
+
 Parameters:
     * todo.file: File to read TODOs from (defaults to ~/Documents/todo.txt)
 """
