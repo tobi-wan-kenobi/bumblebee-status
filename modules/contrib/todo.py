@@ -10,6 +10,7 @@ import os.path
 
 import core.module
 import core.widget
+import core.input
 
 class Module(core.module.Module):
     def __init__(self, config):
@@ -17,7 +18,7 @@ class Module(core.module.Module):
 
         self.__doc = os.path.expanduser(self.parameter('file', '~/Documents/todo.txt'))
         self.__todos = self.count_items()
-
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd='xdg-open {}'.format(self.__doc))
 
     def output(self, widget):
        return str(self.__todos)
