@@ -2,6 +2,9 @@
 
 """Displays the number of todo items from a text file
 
+Requires the following executable:
+    * xdg-open
+
 Parameters:
     * todo.file: File to read TODOs from (defaults to ~/Documents/todo.txt)
 """
@@ -21,11 +24,12 @@ class Module(bumblebee.engine.Module):
         )
         self._doc = os.path.expanduser(self.parameter("file", "~/Documents/todo.txt"))
         self._todos = self.count_items()
+        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd="xdg-open {0}".format(self._doc))
 
 
     def output(self, widget):
-       self._todos = self.count_items()
-       return str(self._todos)
+        self._todos = self.count_items()
+        return str(self._todos)
 
 
     def state(self, widgets):
