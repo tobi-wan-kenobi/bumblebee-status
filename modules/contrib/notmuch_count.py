@@ -1,7 +1,7 @@
 # pylint: disable=C0111,R0903
 
 """Displays the result of a notmuch count query
-   default : unread emails which path do not contained "Trash" (notmuch count "tag:unread AND NOT path:/.*Trash.*/")
+   default : unread emails which path do not contained 'Trash' (notmuch count 'tag:unread AND NOT path:/.*Trash.*/')
 
 Parameters:
     * notmuch_count.query: notmuch count query to show result 
@@ -25,7 +25,7 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.output)
         )
-        self._notmuch_count_query = self.parameter("query", "tag:unread AND NOT path:/.*Trash.*/")
+        self._notmuch_count_query = self.parameter('query', 'tag:unread AND NOT path:/.*Trash.*/')
         self._notmuch_count = self.count_notmuch()
 
 
@@ -36,13 +36,13 @@ class Module(bumblebee.engine.Module):
 
     def state(self, widgets):
         if self._notmuch_count == 0:
-            return "empty"
-        return "items"
+            return 'empty'
+        return 'items'
 
 
     def count_notmuch(self):
         try:
-            notmuch_count_cmd = "notmuch count " + self._notmuch_count_query
+            notmuch_count_cmd = 'notmuch count ' + self._notmuch_count_query
             notmuch_count = int(bumblebee.util.execute(notmuch_count_cmd))
             return notmuch_count
         except Exception:
