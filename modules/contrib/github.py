@@ -28,9 +28,9 @@ class Module(bumblebee.engine.Module):
         self.interval_factor(60)
         self.interval(5)
         self._requests = requests.Session()
-        self._requests.headers.update({"Authorization":"token {}".format(self.parameter("token", ""))})
+        self._requests.headers.update({'Authorization':'token {}'.format(self.parameter('token', ''))})
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-            cmd="x-www-browser https://github.com/notifications")
+            cmd='x-www-browser https://github.com/notifications')
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.update)
 
     def github(self, _):
@@ -39,7 +39,7 @@ class Module(bumblebee.engine.Module):
     def update(self, _):
         try:
             self._count = 0
-            url = "https://api.github.com/notifications"
+            url = 'https://api.github.com/notifications'
             while True:
                 notifications = self._requests.get(url)
                 self._count += len(list(filter(lambda notification: notification['unread'], notifications.json())))
@@ -50,7 +50,7 @@ class Module(bumblebee.engine.Module):
                     break
 
         except Exception:
-            self._count = "n/a"
+            self._count = 'n/a'
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
