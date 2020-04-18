@@ -3,49 +3,44 @@
 """Displays the indicator status, for numlock, scrolllock and capslock 
 
 Parameters:
-    * indicator.include: Comma-separated list of interface prefixes to include (defaults to "numlock,capslock")
-    * indicator.signalstype: If you want the signali type color to be "critical" or "warning" (defaults to "warning")
+    * indicator.include: Comma-separated list of interface prefixes to include (defaults to 'numlock,capslock')
+    * indicator.signalstype: If you want the signali type color to be 'critical' or 'warning' (defaults to 'warning')
 """
 
+import core.module
+import core.widget
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import util.cli
+import util.format
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        widgets = []
-        self.status = False
-        super(Module,self).__init__(engine, config, widgets)
-        self._include = tuple(filter(len, self.parameter("include", "NumLock,CapsLock").split(",")))
-        self._signalType = self.parameter("signaltype") if not self.parameter("signaltype") is None else "warning"
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, [])
 
-    def update(self, widgets):
-        self._update_widgets(widgets)
+        self.__include = tuple(filter(len, util.format.aslist(self.parameter('include', 'NumLock,CapsLock'))))
+        self.__signalType = self.parameter('signaltype') if not self.parameter('signaltype') is None else 'warning'
+
+    def update(self):
+        status_line = '' 
+        for line in util.cli.execute('xset q', ignore_errors=True).replace(' ', '').split('\n'):
+            if 'capslock' in line.lower():
+                status_line = line  
+                break
+        for indicator in self.__include:
+            widget = self.widget(indicator)
+            if not widget:
+                widget = core.widget.Widget(name=indicator, module=self)
+                self.widgets().append(widget)
+
+            widget.set('status', True if '{}:on'.format(indicator.lower()) in status_line.lower() else False)
+            widget.full_text(indicator)
 
     def state(self, widget):
         states = []
-        if widget.status:
-            states.append(self._signalType)
-        elif not widget.status:
-            states.append("normal")
+        if widget.get('status', False):
+            states.append(self.__signalType)
+        else:
+            states.append('normal')
         return states
-
-    def _update_widgets(self, widgets):
-        status_line = "" 
-        for line in bumblebee.util.execute("xset q").replace(" ", "").split("\n"):
-            if "capslock" in line.lower():
-                status_line = line  
-                break
-            
-        for indicator in self._include:
-            widget = self.widget(indicator)
-            if not widget:
-                widget = bumblebee.output.Widget(name=indicator)
-                widgets.append(widget)
-
-            widget.status = True if indicator.lower()+":on" in status_line.lower() else False
-            widget.full_text(indicator)
-
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
