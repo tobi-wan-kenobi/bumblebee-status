@@ -10,39 +10,36 @@ Parameters:
     * github.interval: Interval in minutes between updates, default is 5.
 """
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import requests
 
-try:
-    import requests
-except ImportError:
-    pass
+import core.module
+import core.widget
+import core.decorators
+import core.input
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-                                     bumblebee.output.Widget(full_text=self.github)
-                                    )
-        self._count = 0
-        self.interval_factor(60)
-        self.interval(5)
-        self._requests = requests.Session()
-        self._requests.headers.update({'Authorization':'token {}'.format(self.parameter('token', ''))})
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+class Module(core.module.Module):
+    @core.decorators.every(minutes=5)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.github))
+
+        self.__count = 0
+        self.__requests = requests.Session()
+        self.__requests.headers.update({'Authorization':'token {}'.format(self.parameter('token', ''))})
+
+        core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd='x-www-browser https://github.com/notifications')
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.update)
+        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.update)
 
     def github(self, _):
-        return str(self._count)
+        return str(self.__count)
 
-    def update(self, _):
+    def update(self):
         try:
-            self._count = 0
+            self.__count = 0
             url = 'https://api.github.com/notifications'
             while True:
-                notifications = self._requests.get(url)
-                self._count += len(list(filter(lambda notification: notification['unread'], notifications.json())))
+                notifications = self.__requests.get(url)
+                self.__count += len(list(filter(lambda notification: notification['unread'], notifications.json())))
                 next_link = notifications.links.get('next')
                 if next_link is not None:
                     url = next_link.get('url')
@@ -50,7 +47,6 @@ class Module(bumblebee.engine.Module):
                     break
 
         except Exception:
-            self._count = 'n/a'
-
+            self.__count = 'n/a'
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
