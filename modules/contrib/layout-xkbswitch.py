@@ -4,37 +4,38 @@ Requires the following executable:
     * xkb-switch
 """
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.decorators
+import core.input
 
+import util.cli
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        widget = bumblebee.output.Widget(full_text=self.current_layout)
-        super(Module, self).__init__(engine, config, widget)
-        engine.input.register_callback(
+class Module(core.module.Module):
+    @core.decorators.every(seconds=60)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.current_layout))
+
+        core.input.register(
             self,
-            button=bumblebee.input.LEFT_MOUSE,
-            cmd=self._next_keymap)
-        self._current_layout = self._get_current_layout()
+            button=core.input.LEFT_MOUSE,
+            cmd=self.__next_keymap)
+        self.__current_layout = self.__get_current_layout()
 
-    def current_layout(self, __):
-        return self._current_layout
+    def current_layout(self, _):
+        return self.__current_layout
 
-    def _next_keymap(self, event):
+    def __next_keymap(self, event):
+        util.cli.execute('xkb-switch -n', ignore_errors=True)
+
+    def __get_current_layout(self):
         try:
-            bumblebee.util.execute("xkb-switch -n")
+            res = util.cli.execute('xkb-switch')
+            return res.split('\n')[0]
         except RuntimeError:
-            pass
+            return ['n/a']
 
-    def _get_current_layout(self):
-        try:
-            res = bumblebee.util.execute("xkb-switch")
-            return res.split("\n")[0]
-        except RuntimeError:
-            return ["n/a"]
+    def update(self):
+        self.__current_layout = self.__get_current_layout()
 
-    def update(self, __):
-        self._current_layout = self._get_current_layout()
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
