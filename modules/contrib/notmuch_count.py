@@ -13,39 +13,31 @@ Dependencies:
     notmuch (https://notmuchmail.org/)
 """
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
 import os
 
-class Module(bumblebee.engine.Module):
+import core.module
+import core.widget
 
+import util.cli
 
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.output)
-        )
-        self._notmuch_count_query = self.parameter('query', 'tag:unread AND NOT path:/.*Trash.*/')
-        self._notmuch_count = self.count_notmuch()
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.output))
 
+        self.__notmuch_count_query = self.parameter('query', 'tag:unread AND NOT path:/.*Trash.*/')
 
     def output(self, widget):
-       self._notmuch_count = self.count_notmuch()
-       return  str(self._notmuch_count)
-
+       return  self.__notmuch_count
 
     def state(self, widgets):
-        if self._notmuch_count == 0:
+        if self.__notmuch_count == 0:
             return 'empty'
         return 'items'
 
-
-    def count_notmuch(self):
+    def update(self):
         try:
-            notmuch_count_cmd = 'notmuch count ' + self._notmuch_count_query
-            notmuch_count = int(bumblebee.util.execute(notmuch_count_cmd))
-            return notmuch_count
+            self.__notmuch_count = util.cli.execute('notmuch count {}'.format(self.__notmuch_count_query)).strip()
         except Exception:
-            return -1
+            self.__notmuch_count = 'n/a'
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
