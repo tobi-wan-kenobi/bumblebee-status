@@ -14,7 +14,7 @@
 - minimize modules
 - tkinter / popups
 - scrolling decorator (incl. minwidth, alignment)
-- theme.exclude??
+- theme.exclude?? (battery)
 - bumblebee-ctrl
 - default wheel handlers
 

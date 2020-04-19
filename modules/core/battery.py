@@ -1,6 +1,6 @@
 # pylint: disable=C0111,R0903
 
-'''Displays battery status, remaining percentage and charging information.
+"""Displays battery status, remaining percentage and charging information.
 
 Parameters:
     * battery.device     : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)
@@ -9,7 +9,7 @@ Parameters:
     * battery.showdevice : If set to 'true', add the device name to the widget (defaults to False)
     * battery.decorate   : If set to 'false', hides additional icons (charging, etc.) (defaults to True)
     * battery.showpowerconsumption: If set to 'true', show current power consumption (defaults to False)
-'''
+"""
 
 import os
 import glob
