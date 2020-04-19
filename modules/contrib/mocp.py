@@ -33,26 +33,26 @@ from bumblebee.output import scrollable
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config,
-                                     bumblebee.output.Widget(name="mocp.main", full_text=self.description)
+                                     bumblebee.output.Widget(name='mocp.main', full_text=self.description)
                                      )
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-            cmd="mocp -G")
+            cmd='mocp -G')
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
-            cmd="mocp -t shuffle")
-        self._format = self.parameter("format", "%state %artist - %song | %ct/%tt")
+            cmd='mocp -t shuffle')
+        self._format = self.parameter('format', '%state %artist - %song | %ct/%tt')
         self._running = 0
 
     #@scrollable
     def description(self, widget):
-        return self._info if self._running == 1 else "Music On Console Player"
+        return self._info if self._running == 1 else 'Music On Console Player'
 
     def update(self, widgets):
         self._load_song()
 
     def _load_song(self):
         try:
-            self._info = bumblebee.util.execute("mocp -Q '" + self._format +  "'" ).strip()
+            self._info = bumblebee.util.execute('mocp -Q '' + self._format +  """ ).strip()
             self._running = 1
         except RuntimeError:
             self._running = 0
