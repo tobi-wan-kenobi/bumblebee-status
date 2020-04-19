@@ -22,23 +22,23 @@ import bumblebee.engine
 from requests.exceptions import RequestException
 def getfromkrak(coin, currency):
     abbrev = {
-        "Btc": ["xbt", "XXBTZ"],
-        "Eth": ["eth", "XETHZ"],
-        "Ltc": ["ltc", "XLTCZ"],
+        'Btc': ['xbt', 'XXBTZ'],
+        'Eth': ['eth', 'XETHZ'],
+        'Ltc': ['ltc', 'XLTCZ'],
     }
     data = abbrev.get(coin, None)
     if not data: return
-    epair = "{}{}".format(data[0], currency)
-    tickname = "{}{}".format(data[1], currency.upper())
+    epair = '{}{}'.format(data[0], currency)
+    tickname = '{}{}'.format(data[1], currency.upper())
     try:
         krakenget = requests.get('https://api.kraken.com/0/public/Ticker?pair='+epair).json()
     except (RequestException, Exception):
-        return "No connection"
+        return 'No connection'
     if not 'result' in krakenget:
-        return "No data"
+        return 'No data'
     kethusdask = float(krakenget['result'][tickname]['a'][0])
     kethusdbid = float(krakenget['result'][tickname]['b'][0])
-    return coin+": "+str((kethusdask+kethusdbid)/2)[0:6]
+    return coin+': '+str((kethusdask+kethusdbid)/2)[0:6]
 
 
 class Module(bumblebee.engine.Module):
@@ -46,15 +46,15 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.curprice)
         )
-        self._curprice = ""
+        self._curprice = ''
         self._nextcheck = 0
-        self._interval = int(self.parameter("interval", "120"))
-        self._getbtc = bumblebee.util.asbool(self.parameter("getbtc", True))
-        self._geteth = bumblebee.util.asbool(self.parameter("geteth", True))
-        self._getltc = bumblebee.util.asbool(self.parameter("getltc", True))
-        self._getcur = self.parameter("getcur", "usd")
+        self._interval = int(self.parameter('interval', '120'))
+        self._getbtc = bumblebee.util.asbool(self.parameter('getbtc', True))
+        self._geteth = bumblebee.util.asbool(self.parameter('geteth', True))
+        self._getltc = bumblebee.util.asbool(self.parameter('getltc', True))
+        self._getcur = self.parameter('getcur', 'usd')
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-            cmd="xdg-open https://cryptowat.ch/")
+            cmd='xdg-open https://cryptowat.ch/')
 
     def curprice(self, widget):
         return self._curprice
@@ -63,13 +63,13 @@ class Module(bumblebee.engine.Module):
         if self._nextcheck < int(time.time()):
             self._nextcheck = int(time.time()) + self._interval
             currency = self._getcur
-            btcprice, ethprice, ltcprice = "", "", ""
+            btcprice, ethprice, ltcprice = '', '', ''
             if self._getbtc:
                 btcprice = getfromkrak('Btc', currency)
             if self._geteth:
                 ethprice = getfromkrak('Eth', currency)
             if self._getltc:
                 ltcprice = getfromkrak('Ltc', currency)
-            self._curprice = btcprice+" "*(self._getbtc*self._geteth)+ethprice+" "*(self._getltc*max(self._getbtc, self._geteth))+ltcprice
+            self._curprice = btcprice+' '*(self._getbtc*self._geteth)+ethprice+' '*(self._getltc*max(self._getbtc, self._geteth))+ltcprice
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
