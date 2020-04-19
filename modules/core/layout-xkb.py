@@ -12,41 +12,36 @@ Parameters:
     * layout-xkb.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
 """
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-
-has_xkb = True
-try:
-    from xkbgroup import *
-except ImportError:
-    has_xkb = False
+from xkbgroup import *
 
 import logging
 log = logging.getLogger(__name__)
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.current_layout)
-        )
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-            cmd=self._next_keymap)
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
-            cmd=self._prev_keymap)
-        self._show_variant = bumblebee.util.asbool(self.parameter('show_variant', 'true'))
+import core.module
+import core.widget
+import core.input
 
-    def _next_keymap(self, event):
-        self._set_keymap(1)
+import util.format
 
-    def _prev_keymap(self, event):
-        self._set_keymap(-1)
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.current_layout))
 
-    def _set_keymap(self, rotation):
-        if not has_xkb: return
+        core.input.register(self, button=core.input.LEFT_MOUSE,
+            cmd=self.__next_keymap)
+        core.input.register(self, button=core.input.RIGHT_MOUSE,
+            cmd=self.__prev_keymap)
+        self.__show_variant = util.format.asbool(self.parameter('show_variant', True))
 
+    def __next_keymap(self, event):
+        self.__set_keymap(1)
+
+    def __prev_keymap(self, event):
+        self.__set_keymap(-1)
+
+    def __set_keymap(self, rotation):
         xkb = XKeyboard()
-        if xkb.groups_count < 2: return # nothing to doA
+        if xkb.groups_count < 2: return # nothing to do
         layouts = xkb.groups_symbols
         idx = layouts.index(xkb.group_symbol)
         xkb.group_symbol = str(layouts[(idx + rotation) % len(layouts)])
@@ -55,11 +50,12 @@ class Module(bumblebee.engine.Module):
         try:
             xkb = XKeyboard()
             log.debug('group num: {}'.format(xkb.group_num))
-            name = xkb.group_name if bumblebee.util.asbool(self.parameter('showname')) else xkb.group_symbol
-            if self._show_variant:
+            name = xkb.group_name if util.format.asbool(self.parameter('showname'), False) else xkb.group_symbol
+            if self.__show_variant:
                 return '{} ({})'.format(name, xkb.group_variant) if xkb.group_variant else name
             return name
-        except Exception:
+        except Exception as e:
+            print('got exception: {}'.format(e))
             return 'n/a'
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
