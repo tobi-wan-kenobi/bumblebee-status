@@ -3,12 +3,13 @@
 """Displays battery status, remaining percentage and charging information.
 
 Parameters:
-    * battery.device     : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)
-    * battery.warning    : Warning threshold in % of remaining charge (defaults to 20)
-    * battery.critical   : Critical threshold in % of remaining charge (defaults to 10)
-    * battery.showdevice : If set to 'true', add the device name to the widget (defaults to False)
-    * battery.decorate   : If set to 'false', hides additional icons (charging, etc.) (defaults to True)
+    * battery.device              : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)
+    * battery.warning             : Warning threshold in % of remaining charge (defaults to 20)
+    * battery.critical            : Critical threshold in % of remaining charge (defaults to 10)
+    * battery.showdevice          : If set to 'true', add the device name to the widget (defaults to False)
+    * battery.decorate            : If set to 'false', hides additional icons (charging, etc.) (defaults to True)
     * battery.showpowerconsumption: If set to 'true', show current power consumption (defaults to False)
+    * battery.compact-devices     : If set to 'true', compacts multiple batteries into a single entry (default to False)
 """
 
 import os
@@ -58,9 +59,27 @@ class BatteryManager(object):
 
         return capacity if capacity < 100 else 100
 
+    def capacity_all(self, batteries):
+        now = 0
+        full = 0
+        for battery in batteries:
+            try:
+                with open('/sys/class/power_supply/{}/energy_full'.format(battery)) as f:
+                    full += int(f.read())
+                with open('/sys/class/power_supply/{}/energy_now'.format(battery)) as f:
+                    now += int(f.read())
+            except IOError:
+                return 'n/a'
+        return int(float(now)/float(full)*100.0)
+
     def isac(self, battery):
         path = '/sys/class/power_supply/{}'.format(battery)
         return not os.path.exists(path)
+
+    def isac_any(self, batteries):
+        for battery in batteries:
+            if self.isac(battery): return True
+        return False
 
     def consumption(self, battery):
         consumption = self.read(battery, 'power_now', 'n/a')
@@ -70,6 +89,12 @@ class BatteryManager(object):
 
     def charge(self, battery):
         return self.read(battery, 'status', 'n/a')
+
+    def charge_any(self, batteries):
+        for battery in batteries:
+            if self.charge(battery) == 'Discharging':
+                return 'Discharging'
+        return 'Charged'
 
 class Module(core.module.Module):
     def __init__(self, config):
@@ -86,17 +111,25 @@ class Module(core.module.Module):
         core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd='gnome-power-statistics')
 
-        for battery in self._batteries:
-            log.debug('adding new widget for {}'.format(battery))
-            widget = core.widget.Widget(full_text=self.capacity, name=battery, module=self)
+        if util.format.asbool(self.parameter('compact-devices', False)):
+            widget = core.widget.Widget(full_text=self.capacity, name='all-batteries', module=self)
             widgets.append(widget)
+        else:
+            for battery in self._batteries:
+                log.debug('adding new widget for {}'.format(battery))
+                widget = core.widget.Widget(full_text=self.capacity, name=battery, module=self)
+                widgets.append(widget)
+        for w in self.widgets():
             if util.format.asbool(self.parameter('decorate', True)) == False:
                 widget.set('theme.exclude', 'suffix')
 
     def capacity(self, widget):
-        capacity = self.__manager.capacity(widget.name())
+        if widget.name() == 'all-batteries':
+            capacity = self.__manager.capacity_all(self._batteries)
+        else:
+            capacity = self.__manager.capacity(widget.name())
         widget.set('capacity', capacity)
-        widget.set('ac', self.__manager.isac(widget.name()))
+        widget.set('ac', self.__manager.isac_any(self._batteries))
         widget.set('theme.minwidth', '100%')
 
         # Read power conumption
@@ -132,7 +165,10 @@ class Module(core.module.Module):
         if widget.get('ac'):
             state.append('AC')
         else:
-            charge = self.__manager.charge(widget.name())
+            if widget.name() == 'all-batteries':
+                charge = self.__manager.charge_any(self._batteries)
+            else:
+                charge = self.__manager.charge(widget.name())
             if charge == 'Discharging':
                 state.append('discharging-{}'.format(min([10, 25, 50, 80, 100], key=lambda i: abs(i-capacity))))
             elif charge == 'Unknown':
