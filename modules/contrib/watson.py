@@ -21,26 +21,26 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
             bumblebee.output.Widget(full_text=self.text))
         self._tracking = False
-        self._project = ""
+        self._project = ''
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
                                         cmd=self.toggle)
 
     def toggle(self, widget):
-        self._project = "hit"
+        self._project = 'hit'
         if self._tracking:
-            bumblebee.util.execute("watson stop")
+            bumblebee.util.execute('watson stop')
         else:
-            bumblebee.util.execute("watson restart")
+            bumblebee.util.execute('watson restart')
         self._tracking = not self._tracking
 
     def text(self, widget):
         if self._tracking:
             return self._project
         else:
-            return "Paused"
+            return 'Paused'
 
     def update(self, widgets):
-        output = bumblebee.util.execute("watson status")
+        output = bumblebee.util.execute('watson status')
         if re.match('No project started', output):
             self._tracking = False
             return
@@ -51,7 +51,7 @@ class Module(bumblebee.engine.Module):
 
     #
     def state(self, widget):
-        return "on" if self._tracking else "off"
-    #     return [widget.get("status", None), widget.get("period", None)]
+        return 'on' if self._tracking else 'off'
+    #     return [widget.get('status', None), widget.get('period', None)]
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
