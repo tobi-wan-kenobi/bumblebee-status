@@ -14,12 +14,16 @@ Parameters:
 """
 
 import requests
-import time
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
 from requests.exceptions import RequestException
+import time
+
+import core.module
+import core.widget
+import core.input
+import core.decorators
+
+import util.format
+
 def getfromkrak(coin, currency):
     abbrev = {
         'Btc': ['xbt', 'XXBTZ'],
@@ -40,36 +44,31 @@ def getfromkrak(coin, currency):
     kethusdbid = float(krakenget['result'][tickname]['b'][0])
     return coin+': '+str((kethusdask+kethusdbid)/2)[0:6]
 
+class Module(core.module.Module):
+    @core.decorators.every(minutes=30)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.curprice))
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.curprice)
-        )
-        self._curprice = ''
-        self._nextcheck = 0
-        self._interval = int(self.parameter('interval', '120'))
-        self._getbtc = bumblebee.util.asbool(self.parameter('getbtc', True))
-        self._geteth = bumblebee.util.asbool(self.parameter('geteth', True))
-        self._getltc = bumblebee.util.asbool(self.parameter('getltc', True))
-        self._getcur = self.parameter('getcur', 'usd')
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+        self.__curprice = ''
+        self.__getbtc = util.format.asbool(self.parameter('getbtc', True))
+        self.__geteth = util.format.asbool(self.parameter('geteth', True))
+        self.__getltc = util.format.asbool(self.parameter('getltc', True))
+        self.__getcur = self.parameter('getcur', 'usd')
+        core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd='xdg-open https://cryptowat.ch/')
 
     def curprice(self, widget):
-        return self._curprice
+        return self.__curprice
 
-    def update(self, widgets):
-        if self._nextcheck < int(time.time()):
-            self._nextcheck = int(time.time()) + self._interval
-            currency = self._getcur
-            btcprice, ethprice, ltcprice = '', '', ''
-            if self._getbtc:
-                btcprice = getfromkrak('Btc', currency)
-            if self._geteth:
-                ethprice = getfromkrak('Eth', currency)
-            if self._getltc:
-                ltcprice = getfromkrak('Ltc', currency)
-            self._curprice = btcprice+' '*(self._getbtc*self._geteth)+ethprice+' '*(self._getltc*max(self._getbtc, self._geteth))+ltcprice
+    def update(self):
+        currency = self.__getcur
+        btcprice, ethprice, ltcprice = '', '', ''
+        if self.__getbtc:
+            btcprice = getfromkrak('Btc', currency)
+        if self.__geteth:
+            ethprice = getfromkrak('Eth', currency)
+        if self.__getltc:
+            ltcprice = getfromkrak('Ltc', currency)
+        self.__curprice = btcprice+' '*(self.__getbtc*self.__geteth)+ethprice+' '*(self.__getltc*max(self.__getbtc, self.__geteth))+ltcprice
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
