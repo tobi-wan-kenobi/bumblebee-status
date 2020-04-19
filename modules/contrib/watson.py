@@ -6,52 +6,51 @@ Requires the following executable:
     * watson
 """
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-import bumblebee.util
-import bumblebee.popup_v2
-
 import logging
 import re
 import functools
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.text))
-        self._tracking = False
-        self._project = ''
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-                                        cmd=self.toggle)
+import core.module
+import core.widget
+import core.input
+import core.decorators
+
+import util.cli
+
+class Module(core.module.Module):
+    @core.decorators.every(minutes=60)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.text))
+
+        self.__tracking = False
+        self.__project = ''
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.toggle)
 
     def toggle(self, widget):
-        self._project = 'hit'
-        if self._tracking:
-            bumblebee.util.execute('watson stop')
+        self.__project = 'hit'
+        if self.__tracking:
+            util.cli.execute('watson stop')
         else:
-            bumblebee.util.execute('watson restart')
-        self._tracking = not self._tracking
+            util.cli.execute('watson restart')
+        self.__tracking = not self.__tracking
 
     def text(self, widget):
-        if self._tracking:
-            return self._project
+        if self.__tracking:
+            return self.__project
         else:
             return 'Paused'
 
-    def update(self, widgets):
-        output = bumblebee.util.execute('watson status')
+    def update(self):
+        output = util.cli.execute('watson status')
         if re.match('No project started', output):
-            self._tracking = False
+            self.__tracking = False
             return
 
-        self._tracking = True
+        self.__tracking = True
         m = re.search(r'Project (.+) started', output)
-        self._project = m.group(1)
+        self.__project = m.group(1)
 
-    #
     def state(self, widget):
-        return 'on' if self._tracking else 'off'
-    #     return [widget.get('status', None), widget.get('period', None)]
+        return 'on' if self.__tracking else 'off'
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
