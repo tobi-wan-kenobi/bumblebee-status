@@ -38,13 +38,13 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.suntimes)
         )
         self.interval(3600)
-        self._lat = self.parameter("lat", None)
-        self._lon = self.parameter("lon", None)
+        self._lat = self.parameter('lat', None)
+        self._lon = self.parameter('lon', None)
         try:
             if not self._lat or not self._lon:
-                location_url = "http://ipinfo.io/json"
+                location_url = 'http://ipinfo.io/json'
                 location = requests.get(location_url).json()
-                self._lat, self._lon = location["loc"].split(",")
+                self._lat, self._lon = location['loc'].split(',')
             self._lat = float(self._lat)
             self._lon = float(self._lon)
         except Exception:
@@ -54,12 +54,12 @@ class Module(bumblebee.engine.Module):
     def suntimes(self, _):
         if self._sunset and self._sunrise:
             if self._isup:
-                return u"\u21A7{} \u21A5{}".format(
+                return u'\u21A7{} \u21A5{}'.format(
                     self._sunset.strftime('%H:%M'),
                     self._sunrise.strftime('%H:%M'))
-            return u"\u21A5{} \u21A7{}".format(self._sunrise.strftime('%H:%M'),
+            return u'\u21A5{} \u21A7{}'.format(self._sunrise.strftime('%H:%M'),
                                                self._sunset.strftime('%H:%M'))
-        return "?"
+        return '?'
 
     def _calculate_times(self):
         self._isup = False
@@ -77,13 +77,13 @@ class Module(bumblebee.engine.Module):
         try:
             self._sunrise = sun.get_local_sunrise_time()
         except SunTimeException:
-            self._sunrise = "no sunrise"
+            self._sunrise = 'no sunrise'
             order_matters = False
 
         try:
             self._sunset = sun.get_local_sunset_time()
         except SunTimeException:
-            self._sunset = "no sunset"
+            self._sunset = 'no sunset'
             order_matters = False
 
         if not order_matters:
@@ -96,15 +96,15 @@ class Module(bumblebee.engine.Module):
                 self._sunrise = sun.get_local_sunrise_time(tomorrow)
                 self._sunset = sun.get_local_sunset_time(tomorrow)
             except SunTimeException:
-                self._sunrise = "no sunrise"
-                self._sunset = "no sunset"
+                self._sunrise = 'no sunrise'
+                self._sunset = 'no sunset'
 
         elif now > self._sunrise:
             tomorrow = (now + datetime.timedelta(days=1)).date()
             try:
                 self._sunrise = sun.get_local_sunrise_time(tomorrow)
             except SunTimeException:
-                self._sunrise = "no sunrise"
+                self._sunrise = 'no sunrise'
                 return
             self._isup = True
 
