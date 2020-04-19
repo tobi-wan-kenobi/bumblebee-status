@@ -11,7 +11,7 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
-possible_orientations = ["normal", "left", "inverted", "right"]
+possible_orientations = ['normal', 'left', 'inverted', 'right']
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
@@ -21,14 +21,14 @@ class Module(bumblebee.engine.Module):
         self.update_widgets(widgets)
 
     def update_widgets(self, widgets):
-        for line in bumblebee.util.execute("xrandr -q").split("\n"):
-            if not " connected" in line:
+        for line in bumblebee.util.execute('xrandr -q').split('\n'):
+            if not ' connected' in line:
                 continue
-            display = line.split(" ", 2)[0]
+            display = line.split(' ', 2)[0]
 
-            orientation = "normal"
+            orientation = 'normal'
             for curr_orient in possible_orientations:
-                if((line.split(" ")).count(curr_orient) > 1):
+                if((line.split(' ')).count(curr_orient) > 1):
                     orientation = curr_orient
                     break
 
@@ -36,7 +36,7 @@ class Module(bumblebee.engine.Module):
             if not widget:
                 widget = bumblebee.output.Widget(full_text=display, name=display)
                 self._engine.input.register_callback(widget, button=bumblebee.input.LEFT_MOUSE, cmd=self._toggle)
-            widget.set("orientation", orientation)
+            widget.set('orientation', orientation)
             widgets.append(widget)
 
     def update(self, widgets):
@@ -44,18 +44,18 @@ class Module(bumblebee.engine.Module):
             self.update_widgets(widgets)
 
     def state(self, widget):
-        return widget.get("orientation", "normal")
+        return widget.get('orientation', 'normal')
 
     def _toggle(self, event):
-        widget = self.widget_by_id(event["instance"])
+        widget = self.widget_by_id(event['instance'])
 
         # compute new orientation based on current orientation
-        idx = possible_orientations.index(widget.get("orientation"))
+        idx = possible_orientations.index(widget.get('orientation'))
         idx = (idx + 1) % len(possible_orientations)
         new_orientation = possible_orientations[idx]
 
-        widget.set("orientation", new_orientation)
+        widget.set('orientation', new_orientation)
 
-        bumblebee.util.execute("xrandr --output {} --rotation {}".format(widget.name, new_orientation))
+        bumblebee.util.execute('xrandr --output {} --rotation {}'.format(widget.name, new_orientation))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
