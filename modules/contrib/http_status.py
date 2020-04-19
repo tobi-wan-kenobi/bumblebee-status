@@ -16,22 +16,22 @@ import bumblebee.output
 import bumblebee.engine
 
 class Module(bumblebee.engine.Module):
-    UNK = "UNK"
+    UNK = 'UNK'
 
     def __init__(self, engine, config):
         widget = bumblebee.output.Widget(full_text=self.output)
         super(Module, self).__init__(engine, config, widget)
 
-        self._label = self.parameter("label")
-        self._target = self.parameter("target")
-        self._expect = self.parameter("expect", "200")
+        self._label = self.parameter('label')
+        self._target = self.parameter('target')
+        self._expect = self.parameter('expect', '200')
         self._status = self.getStatus()
         self._output = self.getOutput()
 
     def labelize(self, s):
         if self._label is None:
             return s
-        return "{}: {}".format(self._label, s)
+        return '{}: {}'.format(self._label, s)
 
     def getStatus(self):
         try:
@@ -47,8 +47,8 @@ class Module(bumblebee.engine.Module):
         if self._status == self._expect:
             return self.labelize(self._status)
         else:
-            reason = " != {}".format(self._expect)
-            return self.labelize("{}{}".format(self._status, reason))
+            reason = ' != {}'.format(self._expect)
+            return self.labelize('{}{}'.format(self._status, reason))
 
     def output(self, widget):
         return self._output
@@ -59,9 +59,9 @@ class Module(bumblebee.engine.Module):
 
     def state(self, widget):
         if self._status == self.UNK:
-            return "warning"
+            return 'warning'
         if self._status != self._expect:
-            return "critical"
+            return 'critical'
         return self._output
 
 
