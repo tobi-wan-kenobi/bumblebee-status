@@ -34,7 +34,7 @@ class Module(bumblebee.engine.Module):
             cmd=self._next_keymap)
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
             cmd=self._prev_keymap)
-        self._show_variant = bumblebee.util.asbool(self.parameter("show_variant", "true"))
+        self._show_variant = bumblebee.util.asbool(self.parameter('show_variant', 'true'))
 
     def _next_keymap(self, event):
         self._set_keymap(1)
@@ -54,12 +54,12 @@ class Module(bumblebee.engine.Module):
     def current_layout(self, widget):
         try:
             xkb = XKeyboard()
-            log.debug("group num: {}".format(xkb.group_num))
-            name = xkb.group_name if bumblebee.util.asbool(self.parameter("showname")) else xkb.group_symbol
+            log.debug('group num: {}'.format(xkb.group_num))
+            name = xkb.group_name if bumblebee.util.asbool(self.parameter('showname')) else xkb.group_symbol
             if self._show_variant:
-                return "{} ({})".format(name, xkb.group_variant) if xkb.group_variant else name
+                return '{} ({})'.format(name, xkb.group_variant) if xkb.group_variant else name
             return name
         except Exception:
-            return "n/a"
+            return 'n/a'
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
