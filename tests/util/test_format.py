@@ -76,6 +76,8 @@ class format(unittest.TestCase):
         self.assertEqual('00:20m', duration(20, unit=True))
         self.assertEqual('00:20m', duration(20, compact=True, unit=True))
 
+        self.assertEqual('n/a', duration(-1))
+
     def test_seconds(self):
         self.assertEqual(10, seconds(10))
         self.assertEqual(10, seconds('10'))

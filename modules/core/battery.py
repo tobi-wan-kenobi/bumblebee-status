@@ -27,74 +27,92 @@ import core.input
 
 import util.format
 
+class BatteryManager(object):
+    def remaining(self):
+        try:
+            estimate = power.PowerManagement().get_time_remaining_estimate()
+            # do not show remaining if on AC
+            if estimate == power.common.TIME_REMAINING_UNLIMITED:
+                return None
+            return estimate*60 # return value in seconds
+        except Exception as e:
+            return -1
+        return -1
+
+    def read(self, battery, component, default=None):
+        path = '/sys/class/power_supply/{}'.format(battery)
+        if not os.path.exists(path):
+            return default
+        try:
+            with open('{}/{}'.format(path, component)) as f:
+                return f.read().strip()
+        except IOError:
+            return 'n/a'
+        return default
+
+
+    def capacity(self, battery):
+        capacity = self.read(battery, 'capacity', 100)
+        if capacity != 'n/a':
+            capacity = int(capacity)
+
+        return capacity if capacity < 100 else 100
+
+    def isac(self, battery):
+        path = '/sys/class/power_supply/{}'.format(battery)
+        return not os.path.exists(path)
+
+    def consumption(self, battery):
+        consumption = self.read(battery, 'power_now', 'n/a')
+        if consumption == 'n/a':
+            return 'n/a'
+        return '{}W'.format(int(consumption)/1000000)
+
+    def charge(self, battery):
+        return self.read(battery, 'status', 'n/a')
 
 class Module(core.module.Module):
     def __init__(self, config):
         widgets = []
         super().__init__(config, widgets)
 
+        self.__manager = BatteryManager()
+
         self._batteries = util.format.aslist(self.parameter('device', 'auto'))
         if self._batteries[0] == 'auto':
-            self._batteries = glob.glob('/sys/class/power_supply/BAT*')
-        else:
-            self._batteries = ['/sys/class/power_supply/{}'.format(b) for b in self._batteries]
+            self._batteries = [ os.path.basename(battery) for battery in glob.glob('/sys/class/power_supply/BAT*') ]
         if len(self._batteries) == 0:
             raise Exceptions('no batteries configured/found')
         core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd='gnome-power-statistics')
 
-        for path in self._batteries:
-            log.debug('adding new widget for {}'.format(path))
-            widget = core.widget.Widget(full_text=self.capacity, name=path, module=self)
+        for battery in self._batteries:
+            log.debug('adding new widget for {}'.format(battery))
+            widget = core.widget.Widget(full_text=self.capacity, name=battery, module=self)
             widgets.append(widget)
-            self.capacity(widget)
             if util.format.asbool(self.parameter('decorate', True)) == False:
                 widget.set('theme.exclude', 'suffix')
 
-    def remaining(self):
-        estimate = 0.0
-        try:
-            estimate = power.PowerManagement().get_time_remaining_estimate()
-            # do not show remaining if on AC
-            if estimate == power.common.TIME_REMAINING_UNLIMITED:
-                return None
-            if estimate == power.common.TIME_REMAINING_UNKNOWN:
-                return ''
-        except Exception:
-            return ''
-        return util.format.duration(estimate*60, compact=True, unit=True) # estimate is in minutes
-
     def capacity(self, widget):
-        widget.set('capacity', -1)
-        widget.set('ac', False)
-        if not os.path.exists(widget.name()):
-            widget.set('capacity', 100)
-            widget.set('ac', True)
-            return 'ac'
-        capacity = 100
-        try:
-            with open('{}/capacity'.format(widget.name())) as f:
-                capacity = int(f.read())
-        except IOError:
-            return 'n/a'
-
-        capacity = capacity if capacity < 100 else 100
+        capacity = self.__manager.capacity(widget.name())
         widget.set('capacity', capacity)
+        widget.set('ac', self.__manager.isac(widget.name()))
+        widget.set('theme.minwidth', '100%')
 
         # Read power conumption
         if util.format.asbool(self.parameter('showpowerconsumption', False)):
-            r=open(widget.name() + '/power_now', 'r')
-            output =  '{}% ({})'.format(capacity,str(int(r.read())/1000000) + 'W')
+            output = '{}% ({})'.format(capacity, self.__manager.consumption(widget.name()))
         else:
              output =  '{}%'.format(capacity)
 
-        widget.set('theme.minwidth', '100%')
         if util.format.asbool(self.parameter('showremaining', True))\
-                and self.getCharge(widget) == 'Discharging':
-            output = '{} {}'.format(output, self.remaining())
+                and self.__manager.charge(widget.name()) == 'Discharging':
+            remaining = self.__manager.remaining()
+            if remaining >= 0:
+                output = '{} {}'.format(output, util.format.duration(remaining, compact=True, unit=True))
 
         if util.format.asbool(self.parameter('showdevice', False)):
-            output = '{} ({})'.format(output, os.path.basename(widget.name))
+            output = '{} ({})'.format(output, widget.name())
 
         return output
        
@@ -114,7 +132,7 @@ class Module(core.module.Module):
         if widget.get('ac'):
             state.append('AC')
         else:
-            charge = self.getCharge(widget)
+            charge = self.__manager.charge(widget.name())
             if charge == 'Discharging':
                 state.append('discharging-{}'.format(min([10, 25, 50, 80, 100], key=lambda i: abs(i-capacity))))
             elif charge == 'Unknown':
@@ -125,14 +143,5 @@ class Module(core.module.Module):
                 else:
                     state.append('charging')
         return state
-
-    def getCharge(self, widget):
-        charge = ''
-        try:
-            with open('{}/status'.format(widget.name())) as f:
-                charge = f.read().strip()
-        except IOError:
-                pass
-        return charge
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

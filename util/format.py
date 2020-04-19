@@ -55,6 +55,8 @@ def seconds(duration):
 
 def duration(duration, compact=False, unit=False):
     duration = int(duration)
+    if duration < 0:
+        return 'n/a'
     minutes, seconds = divmod(duration, 60)
     hours, minutes = divmod(minutes, 60)
     suf = 'm'
