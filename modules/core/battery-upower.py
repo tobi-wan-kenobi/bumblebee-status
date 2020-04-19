@@ -11,13 +11,13 @@ Parameters:
 import dbus
 import logging
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-import bumblebee.util
+import core.module
+import core.widget
+import core.input
+
+import util.format
 
 class UPowerManager():
-
     def __init__(self):
         self.UPOWER_NAME = "org.freedesktop.UPower"
         self.UPOWER_PATH = "/org/freedesktop/UPower"
@@ -192,19 +192,19 @@ class UPowerManager():
         elif (state == 6):
             return "Pending discharge"
 
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.capacity))
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.capacity))
         try:
             self.power = UPowerManager()
             self.device = self.power.get_display_device()
         except Exception as e:
             logging.exception("unable to get battery display device: {}".format(str(e)))
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-                                       cmd="gnome-power-statistics")
+        core.input.register(self, button=core.input.LEFT_MOUSE,
+            cmd="gnome-power-statistics")
 
-        self._showremaining = bumblebee.util.asbool(
+        self._showremaining = util.format.asbool(
             self.parameter("showremaining", True))
 
     def capacity(self, widget):
@@ -229,7 +229,7 @@ class Module(bumblebee.engine.Module):
                 # state: 1 => charging, 2 => discharging, other => don't care
                 remain = int(interface.Get(
                     p.UPOWER_NAME+".Device", ["TimeToFull", "TimeToEmpty"][state-1]))
-                remain = bumblebee.util.durationfmt(remain, shorten=True, suffix=True)
+                remain = util.format.duration(remain, compact=True, unit=True)
                 output = "{} {}".format(output, remain)
             except IndexError:
                 pass
