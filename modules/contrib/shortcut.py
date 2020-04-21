@@ -18,32 +18,33 @@ Parameters:
 """
 
 import logging
-import bumblebee.engine
-import bumblebee.output
-import bumblebee.input
 
 LINK = 'https://github.com/tobi-wan-kenobi/bumblebee-status/wiki'
 LABEL = 'Click me'
 
-class Module(bumblebee.engine.Module):
-    """ Shortcut module."""
+import core.module
+import core.widget
+import core.input
+import core.decorators
 
-    def __init__(self, engine, config):
-        widgets = []
-        self._engine = engine
-        super(Module, self).__init__(engine, config, widgets)
+class Module(core.module.Module):
+    @core.decorators.every(minutes=60)
+    def __init__(self, config):
+        super().__init__(config, [])
 
-        self._labels = self.parameter('labels', '{}'.format(LABEL))
-        self._cmds = self.parameter('cmds', 'firefox {}'.format(LINK))
-        self._delim = self.parameter('delim', ';')
+        self.__labels = self.parameter('labels', '{}'.format(LABEL))
+        self.__cmds = self.parameter('cmds', 'firefox {}'.format(LINK))
+        self.__delim = self.parameter('delim', ';')
 
-        self.update_widgets(widgets)
+        self.update_widgets()
 
-    def update_widgets(self, widgets):
+    def update_widgets(self):
         """ Creates a set of widget per user define shortcut."""
 
-        cmds = self._cmds.split(self._delim)
-        labels = self._labels.split(self._delim)
+        widgets = self.widgets()
+
+        cmds = self.__cmds.split(self.__delim)
+        labels = self.__labels.split(self.__delim)
 
         # to be on the safe side create as many widgets as there are data (cmds or labels)
         num_shortcuts = min(len(cmds), len(labels))
@@ -58,13 +59,9 @@ class Module(bumblebee.engine.Module):
             cmd = cmds[idx]
             label = labels[idx]
 
-            widget = bumblebee.output.Widget(full_text=label)
-            self._engine.input.register_callback(widget, button=bumblebee.input.LEFT_MOUSE, cmd=cmd)
+            widget = core.widget.Widget(full_text=label)
+            core.input.register(widget, button=core.input.LEFT_MOUSE, cmd=cmd)
 
             widgets.append(widget)
-
-    def update(self, widgets):
-        if len(widgets) <= 0:
-            self.update_widgets(widgets)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
