@@ -25,36 +25,33 @@ Requires the following executable:
 
 """
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.query)
-        )
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-            cmd=self._chooseNvidia)
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
-            cmd=self._chooseIntel)
+import util.cli
+
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.query))
+
+        core.input.register(self, button=core.input.LEFT_MOUSE,
+            cmd=self.__chooseNvidia)
+        core.input.register(self, button=core.input.RIGHT_MOUSE,
+            cmd=self.__chooseIntel)
 
         self.nvidiastring = self.parameter('nvidiastring', 'nv')
         self.intelstring = self.parameter('intelstring', 'it')
 
-    def _chooseNvidia(self, event):
-        bumblebee.util.execute('sudo prime-select nvidia')
+    def __chooseNvidia(self, event):
+        util.cli.execute('sudo prime-select nvidia')
 
-    def _chooseIntel(self, event):
-        bumblebee.util.execute('sudo prime-select intel')
-
-    def _prev_keymap(self, event):
-        self._set_keymap(-1)
+    def __chooseIntel(self, event):
+        util.cli.execute('sudo prime-select intel')
 
     def query(self, widget):
         try:
-            res = bumblebee.util.execute('prime-select query')
+            res = util.cli.execute('prime-select query')
         except RuntimeError:
             return 'n/a'
 
