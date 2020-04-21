@@ -9,7 +9,7 @@ a demiliter (; semicolon by default).
 For example in order to create two shortcuts labeled A and B with commands
 cmdA and cmdB you could do:
 
- ./bumblebee-status -m shortcut -p shortcut.cmd="ls;ps" shortcut.label="A;B"
+ ./bumblebee-status -m shortcut -p shortcut.cmd='ls;ps' shortcut.label='A;B'
 
 Parameters:
     * shortcut.cmds  : List of commands to execute
@@ -22,8 +22,8 @@ import bumblebee.engine
 import bumblebee.output
 import bumblebee.input
 
-LINK = "https://github.com/tobi-wan-kenobi/bumblebee-status/wiki"
-LABEL = "Click me"
+LINK = 'https://github.com/tobi-wan-kenobi/bumblebee-status/wiki'
+LABEL = 'Click me'
 
 class Module(bumblebee.engine.Module):
     """ Shortcut module."""
@@ -33,9 +33,9 @@ class Module(bumblebee.engine.Module):
         self._engine = engine
         super(Module, self).__init__(engine, config, widgets)
 
-        self._labels = self.parameter("labels", "{}".format(LABEL))
-        self._cmds = self.parameter("cmds", "firefox {}".format(LINK))
-        self._delim = self.parameter("delim", ";")
+        self._labels = self.parameter('labels', '{}'.format(LABEL))
+        self._cmds = self.parameter('cmds', 'firefox {}'.format(LINK))
+        self._delim = self.parameter('delim', ';')
 
         self.update_widgets(widgets)
 
@@ -50,9 +50,9 @@ class Module(bumblebee.engine.Module):
 
         # report possible problem as a warning
         if len(cmds) is not len(labels):
-            logging.warning("shortcut: the number of commands does not match "\
-                            "the number of provided labels.")
-            logging.warning("cmds : %s, labels : %s", cmds, labels)
+            logging.warning('shortcut: the number of commands does not match '\
+                            'the number of provided labels.')
+            logging.warning('cmds : %s, labels : %s', cmds, labels)
 
         for idx in range(0, num_shortcuts):
             cmd = cmds[idx]
