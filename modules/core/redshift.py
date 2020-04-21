@@ -46,7 +46,7 @@ def get_redshift_value(module):
     except Exception:
         res = ''
     widget.set('temp', 'n/a')
-    widget.set('transition', None)
+    widget.set('transition', '')
     widget.set('state', 'day')
     for line in res.split('\n'):
         line = line.lower()
@@ -87,7 +87,7 @@ class Module(core.module.Module):
 
     def text(self, widget):
         val = widget.get('temp', 'n/a')
-        transition = widget.get('transition', None)
+        transition = widget.get('transition', '')
         if transition:
             val = '{} {}'.format(val, transition)
         return val
