@@ -14,6 +14,8 @@ import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
 
+import bumblebee.util
+
 try:
     import requests
 except ImportError:
@@ -28,9 +30,13 @@ class Module(bumblebee.engine.Module):
         self.interval_factor(60)
         self.interval(5)
         self._requests = requests.Session()
+
+        cmd = "xdg-open"
+        if not bumblebee.util.which(cmd):
+            cmd = "x-www-browser"
         self._requests.headers.update({"Authorization":"token {}".format(self.parameter("token", ""))})
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-            cmd="x-www-browser https://github.com/notifications")
+            cmd="{} https://github.com/notifications".format(cmd))
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.update)
 
     def github(self, _):
