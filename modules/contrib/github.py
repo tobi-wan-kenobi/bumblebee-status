@@ -10,6 +10,7 @@ Parameters:
     * github.interval: Interval in minutes between updates, default is 5.
 """
 
+import shutil
 import requests
 
 import core.module
@@ -26,8 +27,13 @@ class Module(core.module.Module):
         self.__requests = requests.Session()
         self.__requests.headers.update({'Authorization':'token {}'.format(self.parameter('token', ''))})
 
+        cmd = 'xdg-open'
+        if not shutil.which(cmd):
+            cmd = 'x-www-browser'
+
+
         core.input.register(self, button=core.input.LEFT_MOUSE,
-            cmd='x-www-browser https://github.com/notifications')
+            cmd='{} https://github.com/notifications'.format(cmd))
         core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.update)
 
     def github(self, _):
