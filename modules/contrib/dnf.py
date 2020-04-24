@@ -12,23 +12,21 @@ Parameters:
 
 import threading
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.event
+import core.module
+import core.widget
+import core.decorators
+
+import util.cli
 
 def get_dnf_info(widget):
-    try:
-        res = bumblebee.util.execute('dnf updateinfo')
-    except RuntimeError:
-        pass
+    res = util.cli.execute('dnf updateinfo', ignore_errors=True)
 
     security = 0
     bugfixes = 0
     enhancements = 0
     other = 0
     for line in res.split('\n'):
-
         if not line.startswith(' '): continue
         elif 'ecurity' in line:
             for s in line.split():
@@ -48,12 +46,12 @@ def get_dnf_info(widget):
     widget.set('enhancements', enhancements)
     widget.set('other', other)
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        widget = bumblebee.output.Widget(full_text=self.updates)
-        super(Module, self).__init__(engine, config, widget)
-        self.interval_factor(60)
-        self.interval(30)
+    core.event.trigger('update', [ widget.module().id ], redraw_only=True)
+
+class Module(core.module.Module):
+    @core.decorators.every(minutes=30)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.updates))
 
     def updates(self, widget):
         result = []
@@ -61,8 +59,8 @@ class Module(bumblebee.engine.Module):
             result.append(str(widget.get(t, 0)))
         return '/'.join(result)
 
-    def update(self, widgets):
-        thread = threading.Thread(target=get_dnf_info, args=(widgets[0],))
+    def update(self):
+        thread = threading.Thread(target=get_dnf_info, args=(self.widget(),))
         thread.start()
 
     def state(self, widget):
