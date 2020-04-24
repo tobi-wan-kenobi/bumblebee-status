@@ -1,0 +1,77 @@
+# pylint: disable=C0111,R0903
+
+"""Displays the current song being played
+Requires the following library:
+    * python-dbus
+Parameters:
+    * deezer.format:   Format string (defaults to "{artist} - {title}")
+                        Available values are: {album}, {title}, {artist}, {trackNumber}, {playbackStatus}
+    * deezer.previous: Change binding for previous song (default is left click)
+    * deezer.next:     Change binding for next song (default is right click)
+    * deezer.pause:    Change binding for toggling pause (default is middle click)
+    Available options for deezer.previous, deezer.next and deezer.pause are:
+        LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
+"""
+
+import bumblebee.input
+import bumblebee.output
+import bumblebee.engine
+
+from bumblebee.output import scrollable
+
+try:
+    import dbus
+except ImportError:
+    pass
+
+
+class Module(bumblebee.engine.Module):
+    def __init__(self, engine, config):
+        super(Module, self).__init__(engine, config,
+                                     bumblebee.output.Widget(full_text=self.deezer)
+                                     )
+        buttons = {"LEFT_CLICK":bumblebee.input.LEFT_MOUSE,
+                   "RIGHT_CLICK":bumblebee.input.RIGHT_MOUSE,
+                   "MIDDLE_CLICK":bumblebee.input.MIDDLE_MOUSE,
+                   "SCROLL_UP":bumblebee.input.WHEEL_UP,
+                   "SCROLL_DOWN":bumblebee.input.WHEEL_DOWN,
+                   }
+        
+        self._song = ""
+        self._format = self.parameter("format", "{artist} - {title}")
+        prev_button = self.parameter("previous", "LEFT_CLICK")
+        next_button = self.parameter("next", "RIGHT_CLICK")
+        pause_button = self.parameter("pause", "MIDDLE_CLICK")
+
+        cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.deezer \
+                /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
+        engine.input.register_callback(self, button=buttons[prev_button],
+            cmd=cmd + "Previous")
+        engine.input.register_callback(self, button=buttons[next_button],
+            cmd=cmd + "Next")
+        engine.input.register_callback(self, button=buttons[pause_button],
+            cmd=cmd + "PlayPause")
+
+##    @scrollable
+    def deezer(self, widget):
+        return str(self._song)
+
+    def hidden(self):
+        return str(self._song) == ""
+
+    def update(self, widgets):
+        try:
+            bus = dbus.SessionBus()
+            deezer = bus.get_object("org.mpris.MediaPlayer2.deezer", "/org/mpris/MediaPlayer2")
+            deezer_iface = dbus.Interface(deezer, 'org.freedesktop.DBus.Properties')
+            props = deezer_iface.Get('org.mpris.MediaPlayer2.Player', 'Metadata')
+            playback_status = str(deezer_iface.Get('org.mpris.MediaPlayer2.Player', 'PlaybackStatus'))
+            self._song = self._format.format(album=str(props.get('xesam:album')),
+                                             title=str(props.get('xesam:title')),
+                                             artist=','.join(props.get('xesam:artist')),
+                                             trackNumber=str(props.get('xesam:trackNumber')),
+                                             playbackStatus=u"\u25B6" if playback_status=="Playing" else u"\u258D\u258D" if playback_status=="Paused" else "",)
+        except Exception:
+            self._song = ""
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
