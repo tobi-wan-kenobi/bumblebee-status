@@ -13,28 +13,21 @@ Parameters:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 """
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import dbus
 
-from bumblebee.output import scrollable
+import core.module
+import core.widget
+import core.input
 
-try:
-    import dbus
-except ImportError:
-    pass
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.deezer))
 
-
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-                                     bumblebee.output.Widget(full_text=self.deezer)
-                                     )
-        buttons = {'LEFT_CLICK':bumblebee.input.LEFT_MOUSE,
-                   'RIGHT_CLICK':bumblebee.input.RIGHT_MOUSE,
-                   'MIDDLE_CLICK':bumblebee.input.MIDDLE_MOUSE,
-                   'SCROLL_UP':bumblebee.input.WHEEL_UP,
-                   'SCROLL_DOWN':bumblebee.input.WHEEL_DOWN,
+        buttons = {'LEFT_CLICK':core.input.LEFT_MOUSE,
+                   'RIGHT_CLICK':core.input.RIGHT_MOUSE,
+                   'MIDDLE_CLICK':core.input.MIDDLE_MOUSE,
+                   'SCROLL_UP':core.input.WHEEL_UP,
+                   'SCROLL_DOWN':core.input.WHEEL_DOWN,
                    }
         
         self._song = ''
@@ -45,21 +38,20 @@ class Module(bumblebee.engine.Module):
 
         cmd = 'dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.deezer \
                 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.'
-        engine.input.register_callback(self, button=buttons[prev_button],
+        core.input.register(self, button=buttons[prev_button],
             cmd=cmd + 'Previous')
-        engine.input.register_callback(self, button=buttons[next_button],
+        core.input.register(self, button=buttons[next_button],
             cmd=cmd + 'Next')
-        engine.input.register_callback(self, button=buttons[pause_button],
+        core.input.register(self, button=buttons[pause_button],
             cmd=cmd + 'PlayPause')
 
-##    @scrollable
     def deezer(self, widget):
         return str(self._song)
 
     def hidden(self):
         return str(self._song) == ''
 
-    def update(self, widgets):
+    def update(self):
         try:
             bus = dbus.SessionBus()
             deezer = bus.get_object('org.mpris.MediaPlayer2.deezer', '/org/mpris/MediaPlayer2')
