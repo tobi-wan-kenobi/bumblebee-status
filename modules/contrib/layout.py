@@ -6,25 +6,25 @@ Requires the following executable:
     * setxkbmap
 """
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.current_layout)
-        )
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
-            cmd=self._next_keymap)
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
-            cmd=self._prev_keymap)
+import util.cli
 
-    def _next_keymap(self, event):
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.current_layout))
+
+        core.input.register(self, button=core.input.LEFT_MOUSE,
+            cmd=self.__next_keymap)
+        core.input.register(self, button=core.input.RIGHT_MOUSE,
+            cmd=self.__prev_keymap)
+
+    def __next_keymap(self, event):
         self._set_keymap(1)
 
-    def _prev_keymap(self, event):
+    def __prev_keymap(self, event):
         self._set_keymap(-1)
 
     def _set_keymap(self, rotation):
@@ -39,14 +39,11 @@ class Module(bumblebee.engine.Module):
             layout_list.append(tmp[0])
             variant_list.append(tmp[1] if len(tmp) > 1 else '')
 
-        try:
-            bumblebee.util.execute('setxkbmap -layout {} -variant {}'.format(','.join(layout_list), ','.join(variant_list)))
-        except RuntimeError:
-            pass
+        util.cli.execute('setxkbmap -layout {} -variant {}'.format(','.join(layout_list), ','.join(variant_list)), ignore_errors=True)
 
     def get_layouts(self):
         try:
-            res = bumblebee.util.execute('setxkbmap -query')
+            res = util.cli.execute('setxkbmap -query')
         except RuntimeError:
             return ['n/a']
         layouts = []
