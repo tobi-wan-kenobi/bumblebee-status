@@ -35,35 +35,35 @@ class Module(bumblebee.engine.Module):
         layout_list = []
         variant_list = []
         for l in layouts:
-            tmp = l.split(":")
+            tmp = l.split(':')
             layout_list.append(tmp[0])
-            variant_list.append(tmp[1] if len(tmp) > 1 else "")
+            variant_list.append(tmp[1] if len(tmp) > 1 else '')
 
         try:
-            bumblebee.util.execute("setxkbmap -layout {} -variant {}".format(",".join(layout_list), ",".join(variant_list)))
+            bumblebee.util.execute('setxkbmap -layout {} -variant {}'.format(','.join(layout_list), ','.join(variant_list)))
         except RuntimeError:
             pass
 
     def get_layouts(self):
         try:
-            res = bumblebee.util.execute("setxkbmap -query")
+            res = bumblebee.util.execute('setxkbmap -query')
         except RuntimeError:
-            return ["n/a"]
+            return ['n/a']
         layouts = []
         variants = []
-        for line in res.split("\n"):
+        for line in res.split('\n'):
             if not line: continue
-            if "layout" in line:
-                layouts = line.split(":")[1].strip().split(",")
-            if "variant" in line:
-                variants = line.split(":")[1].strip().split(",")
+            if 'layout' in line:
+                layouts = line.split(':')[1].strip().split(',')
+            if 'variant' in line:
+                variants = line.split(':')[1].strip().split(',')
 
         result = []
         for idx, layout in enumerate(layouts):
             if len(variants) > idx and variants[idx]:
-                layout = "{}:{}".format(layout, variants[idx])
+                layout = '{}:{}'.format(layout, variants[idx])
             result.append(layout)
-        return result if len(result) > 0 else ["n/a"]
+        return result if len(result) > 0 else ['n/a']
 
     def current_layout(self, widget):
         layouts = self.get_layouts()
