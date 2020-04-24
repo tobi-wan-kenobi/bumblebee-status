@@ -9,23 +9,22 @@ Parameters:
 Requires nvidia-smi
 """
 
-import subprocess
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.utilization))
-        self._utilization = 'Not found: 0 0/0'
+import util.cli
+
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.utilization))
+
+        self.__utilization = 'Not found: 0 0/0'
 
     def utilization(self, widget):
-        return self._utilization
+        return self.__utilization
 
-    def update(self, widgets):
-        sp = subprocess.Popen(['nvidia-smi', '-q'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        out_str = sp.communicate()
-        out_list = out_str[0].decode('utf-8').split('\n')
+    def update(self):
+        sp = util.cli.execute('nvidia-smi -q', ignore_errors=True)
 
         title = ''
         usedMem = ''
@@ -35,7 +34,7 @@ class Module(bumblebee.engine.Module):
         clockMem = ''
         clockGpu = ''
         fanspeed = ''
-        for item in out_list:
+        for item in sp.split('\n'):
             try:
                 key, val = item.split(':')
                 key, val = key.strip(), val.strip()
@@ -60,7 +59,7 @@ class Module(bumblebee.engine.Module):
                 title = item.strip()
 
         str_format = self.parameter('format', '{name}: {temp}°C {mem_used}/{mem_total} MiB')
-        self._utilization = str_format.format(
+        self.__utilization = str_format.format(
                 name = name,
                 temp = temp,
                 mem_used = usedMem,
@@ -69,3 +68,5 @@ class Module(bumblebee.engine.Module):
                 clock_mem = clockMem,
                 fanspeed = fanspeed,
             )
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
