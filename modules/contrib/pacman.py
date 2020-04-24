@@ -3,7 +3,7 @@
 """Displays update information per repository for pacman.
 
 Parameters:
-    * pacman.sum: If you prefere displaying updates with a single digit (defaults to "False")
+    * pacman.sum: If you prefere displaying updates with a single digit (defaults to 'False')
 
 Requires the following executables:
     * fakeroot
@@ -20,13 +20,13 @@ import bumblebee.engine
 
 #list of repositories.
 #the last one should always be other
-repos = ["core", "extra", "community", "multilib", "testing", "other"]
+repos = ['core', 'extra', 'community', 'multilib', 'testing', 'other']
 
 def get_pacman_info(widget, path):
     try:
-        cmd = "{}/../../bin/pacman-updates".format(path)
+        cmd = '{}/../../bin/pacman-updates'.format(path)
         if not os.path.exists(cmd):
-            cmd = "/usr/share/bumblebee-status/bin/pacman-update"
+            cmd = '/usr/share/bumblebee-status/bin/pacman-update'
         result = bumblebee.util.execute(cmd)
     except:
         pass
@@ -34,9 +34,9 @@ def get_pacman_info(widget, path):
     count = len(repos)*[0]
 
     for line in result.splitlines():
-        if line.startswith(("http", "rsync")):
+        if line.startswith(('http', 'rsync')):
             for i in range(len(repos)-1):
-                if "/" + repos[i] + "/" in line:
+                if '/' + repos[i] + '/' in line:
                     count[i] += 1
                     break
             else:
@@ -54,7 +54,7 @@ class Module(bumblebee.engine.Module):
         self._count = 0
 
     def updates(self, widget):
-        if bumblebee.util.asbool(self.parameter("sum")):
+        if bumblebee.util.asbool(self.parameter('sum')):
             return str(sum(map(lambda x: widget.get(x, 0), repos)))
         return '/'.join(map(lambda x: str(widget.get(x, 0)), repos))
 
@@ -72,7 +72,7 @@ class Module(bumblebee.engine.Module):
         weightedCount = sum(map(lambda x: (len(repos)-x[0]) * widget.get(x[1], 0), enumerate(repos)))
 
         if weightedCount < 10:
-            return "good"
+            return 'good'
 
         return self.threshold_state(weightedCount, 100, 150)
 
