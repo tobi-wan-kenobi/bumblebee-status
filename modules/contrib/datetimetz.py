@@ -28,11 +28,11 @@ import bumblebee.output
 import bumblebee.engine
 
 def default_format(module):
-    default = "%x %X %Z"
-    if module == "datetz":
-        default = "%x %Z"
-    if module == "timetz":
-        default = "%X %Z"
+    default = '%x %X %Z'
+    if module == 'datetz':
+        default = '%x %Z'
+    if module == 'timetz':
+        default = '%X %Z'
     return default
 
 class Module(bumblebee.engine.Module):
@@ -41,14 +41,14 @@ class Module(bumblebee.engine.Module):
             bumblebee.output.Widget(full_text=self.get_time))
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self.next_tz)
         engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self.prev_tz)
-        self._fmt = self.parameter("format", default_format(self.name))
-        default_timezone = ""
+        self._fmt = self.parameter('format', default_format(self.name))
+        default_timezone = ''
         try:
             default_timezone = tzlocal.get_localzone().zone
         except Exception as e:
             logging.error('unable to get default timezone: {}'.format(str(e)))
         try:
-            self._timezones = self.parameter("timezone", default_timezone).split(",")
+            self._timezones = self.parameter('timezone', default_timezone).split(',')
         except:
             self._timezones = [default_timezone]
         self._current_tz = 0
@@ -56,9 +56,9 @@ class Module(bumblebee.engine.Module):
         l = locale.getdefaultlocale()
         if not l or l == (None, None):
             l = ('en_US', 'UTF-8')
-        lcl = self.parameter("locale", ".".join(l))
+        lcl = self.parameter('locale', '.'.join(l))
         try:
-            locale.setlocale(locale.LC_TIME, lcl.split("."))
+            locale.setlocale(locale.LC_TIME, lcl.split('.'))
         except Exception:
             locale.setlocale(locale.LC_TIME, ('en_US', 'UTF-8'))
 
@@ -68,13 +68,13 @@ class Module(bumblebee.engine.Module):
                 tz = pytz.timezone(self._timezones[self._current_tz].strip())
                 retval = datetime.datetime.now(tz=tzlocal.get_localzone()).astimezone(tz).strftime(self._fmt)
             except pytz.exceptions.UnknownTimeZoneError:
-                retval = "[Unknown timezone: {}]".format(self._timezones[self._current_tz].strip())
+                retval = '[Unknown timezone: {}]'.format(self._timezones[self._current_tz].strip())
         except Exception as e:
             logging.error('unable to get time: {}'.format(str(e)))
-            retval = "[n/a]"
+            retval = '[n/a]'
 
         enc = locale.getpreferredencoding()
-        if hasattr(retval, "decode"):
+        if hasattr(retval, 'decode'):
             return retval.decode(enc)
         return retval
 
