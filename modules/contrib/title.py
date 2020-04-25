@@ -7,7 +7,7 @@ Requirements:
 
 Parameters:
     * title.max : Maximum character length for title before truncating. Defaults to 64.
-    * title.placeholder : Placeholder text to be placed if title was truncated. Defaults to "...".
+    * title.placeholder : Placeholder text to be placed if title was truncated. Defaults to '...'.
     * title.scroll : Boolean flag for scrolling title. Defaults to False
 """
 
@@ -25,7 +25,7 @@ import bumblebee.engine
 
 from bumblebee.output import scrollable
 
-_no_title = "n/a"
+_no_title = 'n/a'
 
 class Module(bumblebee.engine.Module):
     """Window title module."""
@@ -37,9 +37,9 @@ class Module(bumblebee.engine.Module):
         )
 
         # parsing of parameters
-        self._scroll = bumblebee.util.asbool(self.parameter("scroll", False))
-        self._max = int(self.parameter("max", 64))
-        self._placeholder = self.parameter("placeholder", "...")
+        self._scroll = bumblebee.util.asbool(self.parameter('scroll', False))
+        self._max = int(self.parameter('max', 64))
+        self._placeholder = self.parameter('placeholder', '...')
 
         # set output of the module
         self.widgets(bumblebee.output.Widget(full_text=
@@ -49,7 +49,7 @@ class Module(bumblebee.engine.Module):
         try:
             self._i3 = i3ipc.Connection()
             # event is called both on focus change and title change
-            self._i3.on("window", lambda _p_i3, _p_e: self._pollTitle())
+            self._i3.on('window', lambda _p_i3, _p_e: self._pollTitle())
             # begin listening for events
             threading.Thread(target=self._i3.main).start()
         except:
@@ -78,7 +78,7 @@ class Module(bumblebee.engine.Module):
             # cut the text if it is too long
             if len(self._full_title) > self._max:
                 self._title = self._full_title[0:self._max - len(self._placeholder)]
-                self._title = "{}{}".format(self._title, self._placeholder)
+                self._title = '{}{}'.format(self._title, self._placeholder)
             else:
                 self._title = self._full_title
 
