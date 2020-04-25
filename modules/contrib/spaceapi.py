@@ -17,13 +17,13 @@ Parameters:
 
 Format Strings:
     * Format strings are indicated by double %%
-    * They represent a leaf in the JSON tree, layers seperated by "."
-    * Boolean values can be overwritten by appending "%true%false"
+    * They represent a leaf in the JSON tree, layers seperated by '.'
+    * Boolean values can be overwritten by appending '%true%false'
       in the format string
-    * Example: to reference "open" in "{"state":{"open": true}}"
-               you would write "%%state.open%%", if you also want
-               to say "Open/Closed" depending on the boolean you
-               would write "%%state.open%Open%Closed%%"
+    * Example: to reference 'open' in '{'state':{'open': true}}'
+               you would write '%%state.open%%', if you also want
+               to say 'Open/Closed' depending on the boolean you
+               would write '%%state.open%Open%Closed%%'
 """
 
 import bumblebee.input
@@ -43,14 +43,14 @@ def formatStringBuilder(s, json):
         s -> format string
         json -> the spaceapi response object
     """
-    identifiers = re.findall("%%.*?%%", s)
+    identifiers = re.findall('%%.*?%%', s)
     for i in identifiers:
         ic = i[2:-2]  # Discard %%
-        j = ic.split("%")
+        j = ic.split('%')
 
         # Only neither of, or both true AND false may be overwritten
         if len(j) != 3 and len(j) != 1:
-            return "INVALID FORMAT STRING"
+            return 'INVALID FORMAT STRING'
 
         if len(j) == 1:  # no overwrite
             s = s.replace(i, json[j[0]])
@@ -77,21 +77,21 @@ class Module(bumblebee.engine.Module):
         self._threadingCount = 0
 
         # The URL representing the api endpoint
-        self._url = self.parameter("url", default="http://club.entropia.de/spaceapi")
+        self._url = self.parameter('url', default='http://club.entropia.de/spaceapi')
         self._format = self.parameter(
-            "format", default=u" %%space%%: %%state.open%Open%Closed%%"
+            'format', default=u' %%space%%: %%state.open%Open%Closed%%'
         )
 
     def state(self, widget):
         try:
             if self._error is not None:
-                return ["critical"]
-            elif self._data["state.open"]:
-                return ["warning"]
+                return ['critical']
+            elif self._data['state.open']:
+                return ['warning']
             else:
                 return []
         except KeyError:
-            return ["critical"]
+            return ['critical']
 
     def update(self, widgets):
         if self._threadingCount == 0:
@@ -109,7 +109,7 @@ class Module(bumblebee.engine.Module):
             try:
                 text = formatStringBuilder(self._format, self._data)
             except KeyError:
-                text = "KeyError"
+                text = 'KeyError'
         return text
 
     def get_api_async(self):
@@ -120,19 +120,19 @@ class Module(bumblebee.engine.Module):
                 self._data = self.__flatten(json.loads(request.text))
                 self._error = None
         except requests.exceptions.Timeout:
-            self._error = "Timeout"
+            self._error = 'Timeout'
         except requests.exceptions.HTTPError:
-            self._error = "HTTP Error"
+            self._error = 'HTTP Error'
         except ValueError:
-            self._error = "Not a JSON response"
+            self._error = 'Not a JSON response'
 
     # left_mouse_button handler
     def __forceReload(self, event):
         self._threadingCount += 300
-        self._error = "RELOADING"
+        self._error = 'RELOADING'
 
-    # Flattens the JSON structure recursively, e.g. ["space"]["open"]
-    # becomes ["space.open"]
+    # Flattens the JSON structure recursively, e.g. ['space']['open']
+    # becomes ['space.open']
     def __flatten(self, json):
         out = {}
         for key in json:
@@ -140,7 +140,7 @@ class Module(bumblebee.engine.Module):
             if type(value) is dict:
                 flattened_key = self.__flatten(value)
                 for fk in flattened_key:
-                    out[key + "." + fk] = flattened_key[fk]
+                    out[key + '.' + fk] = flattened_key[fk]
             else:
                 out[key] = value
         return out
