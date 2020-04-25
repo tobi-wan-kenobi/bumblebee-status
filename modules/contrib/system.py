@@ -37,7 +37,7 @@ except ImportError:
         import tkinter as tk
         from tkinter import messagebox as tkmessagebox
     except ImportError:
-        logging.warning("failed to import tkinter - bumblebee popups won't work!")
+        logging.warning('failed to import tkinter - bumblebee popups won't work!')
 
 
 class Module(bumblebee.engine.Module):
@@ -47,7 +47,7 @@ class Module(bumblebee.engine.Module):
         )
 
         self._confirm = True
-        if self.parameter("confirm", "true") == "false":
+        if self.parameter('confirm', 'true') == 'false':
             self._confirm = False
 
         engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
@@ -57,7 +57,7 @@ class Module(bumblebee.engine.Module):
         pass 
 
     def text(self, widget):
-        return ""
+        return ''
 
     def _on_command(self, header, text, command):
         do_it = True
@@ -75,22 +75,22 @@ class Module(bumblebee.engine.Module):
 
     def popup(self, widget):
         menu = bumblebee.popup_v2.PopupMenu()
-        reboot_cmd = self.parameter("reboot", "reboot")
-        shutdown_cmd = self.parameter("shutdown", "shutdown -h now")
-        logout_cmd = self.parameter("logout", "i3exit logout")
-        switch_user_cmd = self.parameter("switch_user", "i3exit switch_user")
-        lock_cmd = self.parameter("lock", "i3exit lock")
-        suspend_cmd = self.parameter("suspend", "i3exit suspend")
-        hibernate_cmd = self.parameter("hibernate", "i3exit hibernate")
+        reboot_cmd = self.parameter('reboot', 'reboot')
+        shutdown_cmd = self.parameter('shutdown', 'shutdown -h now')
+        logout_cmd = self.parameter('logout', 'i3exit logout')
+        switch_user_cmd = self.parameter('switch_user', 'i3exit switch_user')
+        lock_cmd = self.parameter('lock', 'i3exit lock')
+        suspend_cmd = self.parameter('suspend', 'i3exit suspend')
+        hibernate_cmd = self.parameter('hibernate', 'i3exit hibernate')
 
-        menu.add_menuitem("shutdown", callback=functools.partial(self._on_command, "Shutdown", "Shutdown?", shutdown_cmd))
-        menu.add_menuitem("reboot", callback=functools.partial(self._on_command, "Reboot", "Reboot?", reboot_cmd))
-        menu.add_menuitem("log out", callback=functools.partial(self._on_command, "Log out", "Log out?",  "i3exit logout"))
+        menu.add_menuitem('shutdown', callback=functools.partial(self._on_command, 'Shutdown', 'Shutdown?', shutdown_cmd))
+        menu.add_menuitem('reboot', callback=functools.partial(self._on_command, 'Reboot', 'Reboot?', reboot_cmd))
+        menu.add_menuitem('log out', callback=functools.partial(self._on_command, 'Log out', 'Log out?',  'i3exit logout'))
         # don't ask for these
-        menu.add_menuitem("switch user", callback=functools.partial(bumblebee.util.execute, switch_user_cmd))
-        menu.add_menuitem("lock", callback=functools.partial(bumblebee.util.execute, lock_cmd))
-        menu.add_menuitem("suspend", callback=functools.partial(bumblebee.util.execute, suspend_cmd))
-        menu.add_menuitem("hibernate", callback=functools.partial(bumblebee.util.execute, hibernate_cmd))
+        menu.add_menuitem('switch user', callback=functools.partial(bumblebee.util.execute, switch_user_cmd))
+        menu.add_menuitem('lock', callback=functools.partial(bumblebee.util.execute, lock_cmd))
+        menu.add_menuitem('suspend', callback=functools.partial(bumblebee.util.execute, suspend_cmd))
+        menu.add_menuitem('hibernate', callback=functools.partial(bumblebee.util.execute, hibernate_cmd))
 
         menu.show(widget)
 
