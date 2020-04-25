@@ -18,68 +18,60 @@ try:
 except ImportError:
     pass
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+no_title = 'n/a'
 
-from bumblebee.output import scrollable
+import core.module
+import core.widget
+import core.decorators
 
-_no_title = 'n/a'
+import util.format
 
-class Module(bumblebee.engine.Module):
-    """Window title module."""
-
-    def __init__(self, engine, config):
-        super(Module, self).__init__(
-            engine,
-            config
-        )
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, [])
 
         # parsing of parameters
-        self._scroll = bumblebee.util.asbool(self.parameter('scroll', False))
-        self._max = int(self.parameter('max', 64))
-        self._placeholder = self.parameter('placeholder', '...')
+        self.__scroll = util.format.asbool(self.parameter('scroll', False))
+        self.__max = int(self.parameter('max', 64))
+        self.__placeholder = self.parameter('placeholder', '...')
+        self.__title = ''
 
         # set output of the module
-        self.widgets(bumblebee.output.Widget(full_text=
-            self._scrolling_focused_title if self._scroll else self._focused_title))
+        self.widgets([core.widget.Widget(full_text=
+            self.__scrolling_focused_title if self.__scroll else self.__focused_title)])
 
         # create a connection with i3ipc
-        try:
-            self._i3 = i3ipc.Connection()
-            # event is called both on focus change and title change
-            self._i3.on('window', lambda _p_i3, _p_e: self._pollTitle())
-            # begin listening for events
-            threading.Thread(target=self._i3.main).start()
-        except:
-            pass
+        self.__i3 = i3ipc.Connection()
+        # event is called both on focus change and title change
+        self.__i3.on('window', lambda __p_i3, __p_e: self.__pollTitle())
+        # begin listening for events
+        threading.Thread(target=self.__i3.main).start()
 
         # initialize the first title
-        self._pollTitle()
+        self.__pollTitle()
 
-    def _focused_title(self, widget):
-        return self._title
+    def __focused_title(self, widget):
+        return self.__title
 
-    @scrollable
-    def _scrolling_focused_title(self, widget):
-        return self._full_title
+    @core.decorators.scrollable
+    def __scrolling_focused_title(self, widget):
+        return self.__full_title
 
-    def _pollTitle(self):
+    def __pollTitle(self):
         """Updating current title."""
         try:
-            self._full_title = self._i3.get_tree().find_focused().name
+            self.__full_title = self.__i3.get_tree().find_focused().name
         except:
-            self._full_title = _no_title
-        if self._full_title is None:
-            self._full_title = _no_title
+            self.__full_title = no_title
+        if self.__full_title is None:
+            self.__full_title = no_title
 
-        if not self._scroll:
+        if not self.__scroll:
             # cut the text if it is too long
-            if len(self._full_title) > self._max:
-                self._title = self._full_title[0:self._max - len(self._placeholder)]
-                self._title = '{}{}'.format(self._title, self._placeholder)
+            if len(self.__full_title) > self.__max:
+                self.__title = self.__full_title[0:self.__max - len(self.__placeholder)]
+                self.__title = '{}{}'.format(self.__title, self.__placeholder)
             else:
-                self._title = self._full_title
+                self.__title = self.__full_title
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
