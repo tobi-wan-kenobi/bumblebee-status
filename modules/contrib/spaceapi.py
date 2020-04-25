@@ -26,15 +26,15 @@ Format Strings:
                would write '%%state.open%Open%Closed%%'
 """
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-
 import requests
 import threading
 import re
 import json
 
+import core.module
+import core.widget
+import core.input
+import core.decorators
 
 def formatStringBuilder(s, json):
     """
@@ -61,75 +61,73 @@ def formatStringBuilder(s, json):
     return s
 
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(
-            engine, config, bumblebee.output.Widget(full_text=self.getState)
+class Module(core.module.Module):
+    @core.decorators.every(minutes=15)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.getState))
+
+        core.input.register(
+            self, button=core.input.LEFT_MOUSE, cmd=self.__forceReload
         )
 
-        engine.input.register_callback(
-            self, button=bumblebee.input.LEFT_MOUSE, cmd=self.__forceReload
-        )
-
-        self._data = {}
-        self._error = None
-
-        self._threadingCount = 0
+        self.__data = {}
+        self.__error = None
+        self.__thread = None
 
         # The URL representing the api endpoint
-        self._url = self.parameter('url', default='http://club.entropia.de/spaceapi')
+        self.__url = self.parameter('url', default='http://club.entropia.de/spaceapi')
         self._format = self.parameter(
             'format', default=u' %%space%%: %%state.open%Open%Closed%%'
         )
 
     def state(self, widget):
         try:
-            if self._error is not None:
+            if self.__error is not None:
                 return ['critical']
-            elif self._data['state.open']:
+            elif self.__data['state.open']:
                 return ['warning']
             else:
                 return []
         except KeyError:
             return ['critical']
 
-    def update(self, widgets):
-        if self._threadingCount == 0:
-            thread = threading.Thread(target=self.get_api_async, args=())
-            thread.start()
-        self._threadingCount = (
-            0 if self._threadingCount > 300 else self._threadingCount + 1
-        )
+    def update(self):
+        if not self.__thread or self.__thread.is_alive() == False:
+            self.__thread = threading.Thread(target=self.get_api_async, args=())
+            self.__thread.start()
 
     def getState(self, widget):
         text = self._format
-        if self._error is not None:
-            text = self._error
+        if self.__error is not None:
+            text = self.__error
         else:
             try:
-                text = formatStringBuilder(self._format, self._data)
+                text = formatStringBuilder(self._format, self.__data)
             except KeyError:
                 text = 'KeyError'
         return text
 
     def get_api_async(self):
         try:
-            with requests.get(self._url, timeout=10) as request:
+            with requests.get(self.__url, timeout=10) as request:
                 # Can't implement error handling for python2.7 if I use
                 # request.json() as it uses simplejson in newer versions
-                self._data = self.__flatten(json.loads(request.text))
-                self._error = None
+                self.__data = self.__flatten(json.loads(request.text))
+                self.__error = None
         except requests.exceptions.Timeout:
-            self._error = 'Timeout'
+            self.__error = 'Timeout'
         except requests.exceptions.HTTPError:
-            self._error = 'HTTP Error'
+            self.__error = 'HTTP Error'
         except ValueError:
-            self._error = 'Not a JSON response'
+            self.__error = 'Not a JSON response'
+        core.event.trigger('update', [ self.id ], redraw_only=True)
 
     # left_mouse_button handler
     def __forceReload(self, event):
-        self._threadingCount += 300
-        self._error = 'RELOADING'
+        if self.__thread:
+            self.__thread.raise_exception()
+        self.__error = 'RELOADING'
+        core.event.trigger('update', [ self.id ], redraw_only=True)
 
     # Flattens the JSON structure recursively, e.g. ['space']['open']
     # becomes ['space.open']
