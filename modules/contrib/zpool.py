@@ -27,45 +27,30 @@ Be aware of security implications of doing this!
 import time
 import logging
 from pkg_resources import parse_version
-import bumblebee.engine
-from bumblebee.util import execute, bytefmt, asbool
 
 log = logging.getLogger(__name__)
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        widgets = []
-        super(Module, self).__init__(engine, config, widgets)
+import core.module
+import core.widget
+
+import util.cli
+import util.format
+
+class Module(core.module.Module):
+    def __init__(self, config):
+        super().__init__(config, [])
 
         self._includelist = set(filter(lambda x: len(x) > 0,
-                                       self.parameter('list', default='').split(',')))
+                                       util.format.aslist(self.parameter('list', default=''))))
         self._format = self.parameter('format', default='{name} {shortstatus} {used}/{size} ' +
                                                         '({percentfree}%)')
-        self._usesudo = asbool(self.parameter('sudo', default=False))
-        self._showio = asbool(self.parameter('showio', default=True))
+        self._usesudo = util.format.asbool(self.parameter('sudo', default=False))
+        self._showio = util.format.asbool(self.parameter('showio', default=True))
         self._ioformat = self.parameter('ioformat', default='{band}')
         self._warnfree = int(self.parameter('warnfree', default=10))
 
-        self._update_widgets(widgets)
-
-    def update(self, widgets):
-        self._update_widgets(widgets)
-
-    def state(self, widget):
-        if widget.name.endswith('__read'):
-            return 'poolread'
-        elif widget.name.endswith('__write'):
-            return 'poolwrite'
-
-        state = widget.get('state')
-        if state == 'FAULTED':
-            return [state, 'critical']
-        elif state == 'DEGRADED' or widget.get('percentfree') < self._warnfree:
-            return [state, 'warning']
-
-        return state
-
-    def _update_widgets(self, widgets):
+    def update(self):
+        widgets = self.widgets()
         zfs_version_path = '/sys/module/zfs/version'
         # zpool list -H: List all zpools, use script mode (no headers and tabs as separators).
         try:
@@ -76,7 +61,7 @@ class Module(bumblebee.engine.Module):
             zfs_version = '0.0.0'
             logging.error('ZFS version information not found at {}, check the module is loaded.'.format(zfs_version_path))
 
-        raw_zpools = execute(('sudo ' if self._usesudo else '') + 'zpool list -H').split('\n')
+        raw_zpools = util.cli.execute(('sudo ' if self._usesudo else '') + 'zpool list -H').split('\n')
 
         for widget in widgets:
             widget.set('visited', False)
@@ -114,7 +99,7 @@ class Module(bumblebee.engine.Module):
 
             widget = self.widget(name)
             if not widget:
-                widget = bumblebee.output.Widget(name=name)
+                widget = core.widget.Widget(name=name)
                 widget.set('last_iostat', [0, 0, 0, 0])
                 widget.set('last_timestamp', 0)
                 widgets.append(widget)
@@ -152,21 +137,36 @@ class Module(bumblebee.engine.Module):
                 widget_w = self.widget(wname)
                 widget_r = self.widget(rname)
                 if not widget_w or not widget_r:
-                    widget_r = bumblebee.output.Widget(name=rname)
-                    widget_w = bumblebee.output.Widget(name=wname)
+                    widget_r = core.widget.Widget(name=rname)
+                    widget_w = core.widget.Widget(name=wname)
                     widgets.extend([widget_r, widget_w])
                 for w in [widget_r, widget_w]:
                     w.set('theme.minwidth', self._ioformat.format(ops=9999,
-                                                                  band=bytefmt(999.99*(1024**2))))
+                                                                  band=util.format.bytefmt(999.99*(1024**2))))
                     w.set('visited', True)
                 widget_w.full_text(self._ioformat.format(ops=round(writes),
-                                                         band=bytefmt(nwritten)))
+                                                         band=util.format.bytefmt(nwritten)))
                 widget_r.full_text(self._ioformat.format(ops=round(reads),
-                                                         band=bytefmt(nread)))
+                                                         band=util.format.bytefmt(nread)))
 
         for widget in widgets:
             if widget.get('visited') is False:
                 widgets.remove(widget)
+        self.widgets(widgets)
+
+    def state(self, widget):
+        if widget.name.endswith('__read'):
+            return 'poolread'
+        elif widget.name.endswith('__write'):
+            return 'poolwrite'
+
+        state = widget.get('state')
+        if state == 'FAULTED':
+            return [state, 'critical']
+        elif state == 'DEGRADED' or widget.get('percentfree') < self._warnfree:
+            return [state, 'warning']
+
+        return state
 
     @staticmethod
     def _shortstatus(status):
@@ -185,3 +185,5 @@ class Module(bumblebee.engine.Module):
             return shortstate[status]
         except KeyError:
             return ''
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
