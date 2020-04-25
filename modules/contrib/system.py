@@ -22,46 +22,39 @@ Parameters:
 """
 
 import logging
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-import bumblebee.popup_v2
 import functools
 
 try:
-    import Tkinter as tk
-    import tkMessageBox as tkmessagebox
+    import tkinter as tk
+    from tkinter import messagebox as tkmessagebox
 except ImportError:
-    # python 3
-    try:
-        import tkinter as tk
-        from tkinter import messagebox as tkmessagebox
-    except ImportError:
-        logging.warning('failed to import tkinter - bumblebee popups won't work!')
+    logging.warning('failed to import tkinter - bumblebee popups won\'t work!')
 
+import core.module
+import core.widget
+import core.input
+import core.decorators
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.text)
-        )
+import util.cli
+import util.popup
+import util.format
 
-        self._confirm = True
-        if self.parameter('confirm', 'true') == 'false':
-            self._confirm = False
+class Module(core.module.Module):
+    @core.decorators.every(minutes=60)
+    def __init__(self, config):
+        super().__init__(config, core.widget.Widget(self.text))
 
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+        self.__confirm = util.format.asbool(self.parameter('confirm', True))
+
+        core.input.register(self, button=core.input.LEFT_MOUSE,
                                        cmd=self.popup)
-
-    def update(self, widgets):
-        pass 
 
     def text(self, widget):
         return ''
 
-    def _on_command(self, header, text, command):
+    def __on_command(self, header, text, command):
         do_it = True
-        if self._confirm:
+        if self.__confirm:
             root = tk.Tk()
             root.withdraw()
             root.focus_set()
@@ -70,11 +63,11 @@ class Module(bumblebee.engine.Module):
             root.destroy()
 		
         if do_it:
-            bumblebee.util.execute(command) 
+            util.cli.execute(command) 
 
 
     def popup(self, widget):
-        menu = bumblebee.popup_v2.PopupMenu()
+        menu = util.popup.menu()
         reboot_cmd = self.parameter('reboot', 'reboot')
         shutdown_cmd = self.parameter('shutdown', 'shutdown -h now')
         logout_cmd = self.parameter('logout', 'i3exit logout')
@@ -83,16 +76,15 @@ class Module(bumblebee.engine.Module):
         suspend_cmd = self.parameter('suspend', 'i3exit suspend')
         hibernate_cmd = self.parameter('hibernate', 'i3exit hibernate')
 
-        menu.add_menuitem('shutdown', callback=functools.partial(self._on_command, 'Shutdown', 'Shutdown?', shutdown_cmd))
-        menu.add_menuitem('reboot', callback=functools.partial(self._on_command, 'Reboot', 'Reboot?', reboot_cmd))
-        menu.add_menuitem('log out', callback=functools.partial(self._on_command, 'Log out', 'Log out?',  'i3exit logout'))
+        menu.add_menuitem('shutdown', callback=functools.partial(self.__on_command, 'Shutdown', 'Shutdown?', shutdown_cmd))
+        menu.add_menuitem('reboot', callback=functools.partial(self.__on_command, 'Reboot', 'Reboot?', reboot_cmd))
+        menu.add_menuitem('log out', callback=functools.partial(self.__on_command, 'Log out', 'Log out?',  'i3exit logout'))
         # don't ask for these
-        menu.add_menuitem('switch user', callback=functools.partial(bumblebee.util.execute, switch_user_cmd))
-        menu.add_menuitem('lock', callback=functools.partial(bumblebee.util.execute, lock_cmd))
-        menu.add_menuitem('suspend', callback=functools.partial(bumblebee.util.execute, suspend_cmd))
-        menu.add_menuitem('hibernate', callback=functools.partial(bumblebee.util.execute, hibernate_cmd))
+        menu.add_menuitem('switch user', callback=functools.partial(util.cli.execute, switch_user_cmd))
+        menu.add_menuitem('lock', callback=functools.partial(util.cli.execute, lock_cmd))
+        menu.add_menuitem('suspend', callback=functools.partial(util.cli.execute, suspend_cmd))
+        menu.add_menuitem('hibernate', callback=functools.partial(util.cli.execute, hibernate_cmd))
 
-        menu.show(widget)
+        menu.show(widget, 0, 0)
 
-    def state(self, widget):
-        return []
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
