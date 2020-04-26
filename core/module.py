@@ -38,6 +38,8 @@ class Module(core.input.Object):
         self.alias = self.__config.get('__alias__', None)
         self.next_update = None
 
+        self.theme = theme
+
     def parameter(self, key, default=None):
         value = default
 

@@ -54,8 +54,7 @@ def main():
     input_thread.start()
 
     for module in config.modules():
-        modules.append(core.module.load(module, config))
-        modules[-1].theme = theme # TODO: make this nice (ctor)
+        modules.append(core.module.load(module, config, theme))
     output.modules(modules)
     core.event.trigger('start')
     while True:
@@ -65,7 +64,6 @@ def main():
     core.event.trigger('stop')
 
 if __name__ == "__main__":
-    main()
     try:
         main()
     except Exception as e:
