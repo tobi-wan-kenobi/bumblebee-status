@@ -150,6 +150,8 @@ class i3(object):
         blk = block(self.__theme, module, widget)
         blk.set('min_width', widget.get('theme.minwidth'))
         blk.set('full_text', self.__content[widget])
+        if widget.get('pango', False):
+            blk.set('markup', 'pango')
         if self.__config.debug():
             blk.set('__state', ', '.join(module.state(widget)))
         return blk

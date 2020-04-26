@@ -49,6 +49,9 @@ class Theme(object):
     def keywords(self):
         return self.__keywords
 
+    def color(self, name, default=None):
+        return self.keywords().get(name, default)
+
     def load(self, name, subdir=''):
         if isinstance(name, dict): return name # support plain data
         for path in PATHS:

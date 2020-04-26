@@ -25,3 +25,5 @@
 
 ## TODO
 - themes: use colors to improve theme readability
+- themes: add theme to module c'tor (cpu2)
+- convert some stuff to simple attributes to reduce LOCs

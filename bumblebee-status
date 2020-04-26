@@ -55,6 +55,7 @@ def main():
 
     for module in config.modules():
         modules.append(core.module.load(module, config))
+        modules[-1].theme = theme # TODO: make this nice (ctor)
     output.modules(modules)
     core.event.trigger('start')
     while True:
