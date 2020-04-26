@@ -12,17 +12,19 @@ Parameters:
 
 import os
 
-import bumblebee.util
-import bumblebee.output
-import bumblebee.engine
+import shutil
 
-from shutil import which
-from subprocess import Popen, PIPE
+import core.module
+import core.widget
+import core.decorators
 
+import util.cli
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config, None)
+class Module(core.module.Module):
+    @core.decorators.every(minutes=5)
+    def __init__(self, config):
+        super().__init__(config, [])
+
         self.devices = self.list_devices()
         self.display = self.parameter('display', 'combined')
         self.drives = self.parameter('drives', 'sda')
@@ -31,7 +33,7 @@ class Module(bumblebee.engine.Module):
     def create_widgets(self):
         widgets = []
         if self.display == 'combined':
-            widget = bumblebee.output.Widget()
+            widget = core.widget.Widget()
             widget.set('device', 'combined')
             widget.set('assessment', self.combined())
             self.output(widget)
@@ -40,15 +42,15 @@ class Module(bumblebee.engine.Module):
             for device in self.devices:
                 if self.display == 'singles' and device not in self.drives:
                     continue
-                widget = bumblebee.output.Widget()
+                widget = core.widget.Widget()
                 widget.set('device', device)
                 widget.set('assessment', self.smart(device))
                 self.output(widget)
                 widgets.append(widget)
         return widgets
 
-    def update(self, widgets):
-        for widget in widgets:
+    def update(self):
+        for widget in self.widgets():
             device = widget.get('device')
             if device == 'combined':
                 widget.set('assessment', self.combined())
@@ -89,16 +91,14 @@ class Module(bumblebee.engine.Module):
                 return devices
 
     def smart(self, disk_name):
-        SMARTCTL_PATH = which('smartctl')
+        smartctl = shutil.which('smartctl')
         assessment = None
-        cmd = Popen(
-            ['sudo', SMARTCTL_PATH, '--health', os.path.join('/dev/', disk_name)],
-            stdout=PIPE,
-            stderr=PIPE,
-        )
-        _stdout, _stderr = [i.decode('utf8') for i in cmd.communicate()]
-        _stdout = _stdout.split('\n')
-        line = _stdout[4]
+
+        output = util.cli.execute('sudo {} --health {}'.format(
+            smartctl, os.path.join('/dev/', disk_name)
+        ))
+        output = output.split('\n')
+        line = output[4]
         if 'SMART' in line:
             if any([i in line for i in ['PASSED', 'OK']]):
                 assessment = 'OK'
@@ -106,14 +106,13 @@ class Module(bumblebee.engine.Module):
                 assessment = 'Fail'
 
         if assessment == 'OK':
-            cmd = Popen(
-                ['sudo', SMARTCTL_PATH, '-A', os.path.join('/dev/', disk_name)],
-                stdout=PIPE,
-                stderr=PIPE,
-            )
-            _stdout, _stderr = [i.decode('utf8') for i in cmd.communicate()]
-            _stdout = _stdout.split('\n')
-            for line in _stdout:
+            output = util.cli.execute('sudo {} -A {}'.format(
+                smartctl, os.path.join('/dev/', disk_name)
+            ))
+            output = output.split('\n')
+            for line in output:
                 if 'Pre-fail' in line:
                     assessment = 'Pre-fail'
         return assessment
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
