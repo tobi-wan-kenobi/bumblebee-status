@@ -12,14 +12,14 @@ except Exception as e:
 
 log = logging.getLogger(__name__)
 
-def load(module_name, config=core.config.Config([])):
+def load(module_name, config=core.config.Config([]), theme=None):
     error = None
     module_short, alias = (module_name.split(':') + [module_name])[0:2]
     config.set('__alias__', alias)
     for namespace in [ 'core', 'contrib' ]:
         try:
             mod = importlib.import_module('modules.{}.{}'.format(namespace, module_short))
-            return getattr(mod, 'Module')(config)
+            return getattr(mod, 'Module')(config, theme)
         except ImportError as e:
             log.fatal('failed to import {}: {}'.format(module_short, e))
             if not error or module_short in error:
@@ -28,7 +28,7 @@ def load(module_name, config=core.config.Config([])):
     return Error(config=config, module=module_name, error=error)
 
 class Module(core.input.Object):
-    def __init__(self, config=core.config.Config([]), widgets=[]):
+    def __init__(self, config=core.config.Config([]), theme=None, widgets=[]):
         super().__init__()
         self.__config = config
         self.__widgets = widgets if isinstance(widgets, list) else [ widgets ]
@@ -90,8 +90,8 @@ class Module(core.input.Object):
         return None
 
 class Error(Module):
-    def __init__(self, module, error, config=core.config.Config([])):
-        super().__init__(config, core.widget.Widget(self.full_text))
+    def __init__(self, module, error, config=core.config.Config([]), theme=None):
+        super().__init__(config, theme, core.widget.Widget(self.full_text))
         self.__module = module
         self.__error = error
 

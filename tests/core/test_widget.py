@@ -6,8 +6,8 @@ import core.module
 import core.config
 
 class TestModule(core.module.Module):
-    def __init__(self, widgets, config=core.config.Config([])):
-        super().__init__(config, widgets)
+    def __init__(self, widgets, config=core.config.Config([]), theme=None):
+        super().__init__(config, theme, widgets)
         self.states = []
 
     def update(self):

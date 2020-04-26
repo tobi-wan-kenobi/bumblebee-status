@@ -6,7 +6,7 @@ import modules.core.kernel
 class kernel(unittest.TestCase):
     def setUp(self):
         self.someKernel = 'this-is-my-kernel'
-        self.module = modules.core.kernel.Module(config=core.config.Config([]))
+        self.module = modules.core.kernel.Module(config=core.config.Config([]), theme=None)
 
     def test_full_text(self):
         with unittest.mock.patch('modules.core.kernel.platform') as platform:

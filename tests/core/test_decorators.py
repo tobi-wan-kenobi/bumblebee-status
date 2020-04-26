@@ -6,9 +6,9 @@ import core.module
 import core.config
 
 class TestModule(core.module.Module):
-    def __init__(self, config=None):
+    def __init__(self, config=None, theme=None):
         config = core.config.Config([])
-        super().__init__(config, core.widget.Widget(self.get))
+        super().__init__(config, theme, core.widget.Widget(self.get))
         self.text = ''
 
     @core.decorators.scrollable
