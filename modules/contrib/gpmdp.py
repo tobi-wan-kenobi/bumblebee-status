@@ -13,13 +13,13 @@ import core.input
 import util.cli
 
 class Module(core.module.Module):
-    def __init__(self, config):
+    def __init__(self, config, theme):
         widgets = [
             core.widget.Widget(name='gpmdp.prev'),
             core.widget.Widget(name='gpmdp.main', full_text=self.description),
             core.widget.Widget(name='gpmdp.next'),
         ]
-        super().__init__(config, widgets)
+        super().__init__(config, theme, widgets)
 
         core.input.register(widgets[0], button=core.input.LEFT_MOUSE,
             cmd='playerctl previous')

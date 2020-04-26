@@ -16,8 +16,8 @@ import core.widget
 import core.input
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.full_text))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.full_text))
 
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd='calendar')
         self._fmt = self.parameter('format', self.default_format())

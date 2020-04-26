@@ -36,8 +36,8 @@ def default_format(module):
     return default
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.get_time))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.get_time))
 
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.next_tz)
         core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.prev_tz)

@@ -24,9 +24,9 @@ import util.format
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=10)
-    def __init__(self, config):
+    def __init__(self, config, theme):
         widgets = []
-        super().__init__(config, widgets)
+        super().__init__(config, theme, widgets)
         self._exclude = tuple(filter(len, self.parameter('exclude', 'lo,virbr,docker,vboxnet,veth,br').split(',')))
         self._include = self.parameter('include', '').split(',')
 

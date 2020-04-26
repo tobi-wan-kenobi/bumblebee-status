@@ -22,8 +22,8 @@ import core.input
 import core.decorators
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.spotify))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.spotify))
 
         buttons = {'LEFT_CLICK':core.input.LEFT_MOUSE,
                    'RIGHT_CLICK':core.input.RIGHT_MOUSE,

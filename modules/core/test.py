@@ -7,7 +7,7 @@ import core.widget
 import core.module
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget('test'))
+    def __init__(self, config, theme):
+        super().__init__(config=config, theme=theme, widgets=core.widget.Widget('test'))
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

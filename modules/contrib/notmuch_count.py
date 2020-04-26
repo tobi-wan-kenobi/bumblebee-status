@@ -21,8 +21,8 @@ import core.widget
 import util.cli
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.output))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.output))
 
         self.__notmuch_count_query = self.parameter('query', 'tag:unread AND NOT path:/.*Trash.*/')
 

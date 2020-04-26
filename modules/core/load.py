@@ -14,8 +14,8 @@ import core.module
 import core.input
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.load))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.load))
         self._load = [0, 0, 0]
         try:
             self._cpus = multiprocessing.cpu_count()

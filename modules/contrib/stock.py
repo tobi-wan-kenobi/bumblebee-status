@@ -24,8 +24,8 @@ import util.format
 
 class Module(core.module.Module):
     @core.decorators.every(hours=1)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.value))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.value))
 
         self.__symbols = self.parameter('symbols', '')
         self.__change = util.format.asbool(self.parameter('change', True))

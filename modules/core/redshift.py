@@ -66,9 +66,8 @@ def get_redshift_value(module):
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=10)
-    def __init__(self, config):
-        widget = core.widget.Widget(self.text)
-        super().__init__(config, widget)
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.text))
 
         self.__thread = None
 

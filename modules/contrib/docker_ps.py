@@ -17,8 +17,8 @@ import core.decorators
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=5)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.docker_info))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.docker_info))
         self.__info = ''
 
     def state(self, widget):

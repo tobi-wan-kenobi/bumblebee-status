@@ -51,9 +51,10 @@ def get_rtt(module, widget):
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=60)
-    def __init__(self, config):
-        widget = core.widget.Widget(self.rtt)
-        super().__init__(config, widget)
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.rtt))
+
+        widget = self.widget()
 
         widget.set('address', self.parameter('address', '8.8.8.8'))
         widget.set('rtt-probes', self.parameter('probes', 5))

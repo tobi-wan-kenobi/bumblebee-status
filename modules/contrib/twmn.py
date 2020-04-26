@@ -11,8 +11,8 @@ import util.cli
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=60)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(''))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(''))
 
         self.__paused = False
         # Make sure that twmn is currently not paused

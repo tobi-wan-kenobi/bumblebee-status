@@ -46,8 +46,8 @@ def getfromkrak(coin, currency):
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=30)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.curprice))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.curprice))
 
         self.__curprice = ''
         self.__getbtc = util.format.asbool(self.parameter('getbtc', True))

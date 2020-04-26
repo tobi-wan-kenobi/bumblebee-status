@@ -30,8 +30,8 @@ from requests.exceptions import RequestException
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=15)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.output))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.output))
 
         self.__temperature = 0
         self.__apikey = self.parameter('apikey', 'af7bfe22287c652d032a3064ffa44088')

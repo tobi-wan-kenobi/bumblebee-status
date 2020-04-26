@@ -41,8 +41,8 @@ import util.format
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=60)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.text))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.text))
 
         self.__confirm = util.format.asbool(self.parameter('confirm', True))
 

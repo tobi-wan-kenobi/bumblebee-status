@@ -15,8 +15,8 @@ import core.widget
 import core.input
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.utilization))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.utilization))
         self.widget().set('theme.minwidth', self._format.format(100.0-10e-20))
         self._utilization = psutil.cpu_percent(percpu=False)
         core.input.register(self, button=core.input.LEFT_MOUSE,

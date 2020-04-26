@@ -27,8 +27,8 @@ import core.decorators
 import util.format
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, [])
+    def __init__(self, config, theme):
+        super().__init__(config, theme, [])
 
         # parsing of parameters
         self.__scroll = util.format.asbool(self.parameter('scroll', False))

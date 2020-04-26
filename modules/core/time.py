@@ -12,8 +12,8 @@ from .datetime import Module
 
 class Module(Module):
     @core.decorators.every(seconds=59) # ensures one update per minute
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config, theme):
+        super().__init__(config, theme)
 
     def default_format(self):
         return '%X'

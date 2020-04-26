@@ -97,9 +97,9 @@ class BatteryManager(object):
         return 'Charged'
 
 class Module(core.module.Module):
-    def __init__(self, config):
+    def __init__(self, config, theme):
         widgets = []
-        super().__init__(config, widgets)
+        super().__init__(config, theme, widgets)
 
         self.__manager = BatteryManager()
 

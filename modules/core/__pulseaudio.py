@@ -30,8 +30,8 @@ import util.graph
 import util.format
 
 class Module(core.module.Module):
-    def __init__(self, config, channel):
-        super().__init__(config, core.widget.Widget(self.volume))
+    def __init__(self, config, theme, channel):
+        super().__init__(config, theme, core.widget.Widget(self.volume))
 
         if util.format.asbool(self.parameter('autostart', False)):
             util.cli.execute('pulseaudio --start', ignore_errors=True)

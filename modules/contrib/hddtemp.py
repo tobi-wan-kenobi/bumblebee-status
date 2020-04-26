@@ -17,8 +17,8 @@ RECORD_SIZE = 5
 SEPARATOR = '|'
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.hddtemps))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.hddtemps))
         self.__hddtemps = self.__get_hddtemps()
 
     def hddtemps(self, _):

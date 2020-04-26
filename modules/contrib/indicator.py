@@ -14,8 +14,8 @@ import util.cli
 import util.format
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, [])
+    def __init__(self, config, theme):
+        super().__init__(config, theme, [])
 
         self.__include = tuple(filter(len, util.format.aslist(self.parameter('include', 'NumLock,CapsLock'))))
         self.__signalType = self.parameter('signaltype') if not self.parameter('signaltype') is None else 'warning'

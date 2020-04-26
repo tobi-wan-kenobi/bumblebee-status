@@ -23,8 +23,8 @@ import util.cli
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=10)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(''))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(''))
 
         self.__active = False
         self.__xid = None

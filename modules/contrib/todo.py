@@ -13,8 +13,8 @@ import core.widget
 import core.input
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.output))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.output))
 
         self.__doc = os.path.expanduser(self.parameter('file', '~/Documents/todo.txt'))
         self.__todos = self.count_items()

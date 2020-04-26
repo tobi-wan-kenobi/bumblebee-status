@@ -25,8 +25,8 @@ import util.location
 
 class Module(core.module.Module):
     @core.decorators.every(hours=1)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.suntimes))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.suntimes))
 
         lat = self.parameter('lat', None)
         lon = self.parameter('lon', None)

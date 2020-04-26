@@ -25,9 +25,9 @@ import util.format
 import util.graph
 
 class Module(core.module.Module):
-    def __init__(self, config):
+    def __init__(self, config, theme):
         widgets = []
-        super().__init__(config, widgets)
+        super().__init__(config, theme, widgets)
 
         self._exclude = tuple(filter(len, util.format.aslist(self.parameter('exclude', 'lo,virbr,docker,vboxnet,veth'))))
         self._status = ''

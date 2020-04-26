@@ -9,8 +9,8 @@ import core.widget
 import core.event
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.full_text))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.full_text))
         self.__error = ''
         self.__state = 'critical'
 

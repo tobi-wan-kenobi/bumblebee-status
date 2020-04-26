@@ -22,8 +22,8 @@ import util.cli
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=5)
-    def __init__(self, config):
-        super().__init__(config, [])
+    def __init__(self, config, theme):
+        super().__init__(config, theme, [])
 
         self.devices = self.list_devices()
         self.display = self.parameter('display', 'combined')

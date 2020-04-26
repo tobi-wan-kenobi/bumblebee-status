@@ -20,8 +20,8 @@ import core.input
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=5)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.github))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.github))
 
         self.__count = 0
         self.__requests = requests.Session()

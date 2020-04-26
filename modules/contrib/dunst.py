@@ -9,8 +9,8 @@ import core.input
 import util.cli
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(''))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(''))
         self._paused = False
         # Make sure that dunst is currently not paused
         util.cli.execute('killall -s SIGUSR2 dunst', ignore_errors=True)

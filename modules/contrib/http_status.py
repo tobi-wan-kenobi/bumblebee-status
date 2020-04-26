@@ -20,8 +20,8 @@ class Module(core.module.Module):
     UNK = 'UNK'
 
     @core.decorators.every(seconds=30)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.output))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.output))
 
         self.__label = self.parameter('label')
         self.__target = self.parameter('target')

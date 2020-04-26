@@ -34,8 +34,8 @@ import util.format
 import util.cli
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.get_output))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.get_output))
 
         self.__command = self.parameter('command', 'echo "no command configured"')
         self.__async = util.format.asbool(self.parameter('async'))

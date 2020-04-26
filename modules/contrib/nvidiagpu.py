@@ -15,8 +15,8 @@ import core.widget
 import util.cli
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.utilization))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.utilization))
 
         self.__utilization = 'Not found: 0 0/0'
 

@@ -27,8 +27,8 @@ import util.cli
 import util.format
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, [])
+    def __init__(self, config, theme):
+        super().__init__(config, theme, [])
 
         self.__chip = self.parameter('chip', '')
         self.__data = {}

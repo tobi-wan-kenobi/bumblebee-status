@@ -63,8 +63,8 @@ def formatStringBuilder(s, json):
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=15)
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.getState))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.getState))
 
         core.input.register(
             self, button=core.input.LEFT_MOUSE, cmd=self.__forceReload

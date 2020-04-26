@@ -43,8 +43,8 @@ import util.graph
 import util.format
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, [])
+    def __init__(self, config, theme):
+        super().__init__(config, theme, [])
 
         self.__layout = self.parameter('layout', 'cpu2.maxfreq cpu2.cpuload cpu2.coresload cpu2.temp cpu2.fanspeed')
         self.__widget_names = self.__layout.split()

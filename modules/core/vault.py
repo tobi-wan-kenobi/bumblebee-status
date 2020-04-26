@@ -43,8 +43,8 @@ def build_menu(parent, current_directory, callback):
                 parent.add_cascade(entry.name, submenu)
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.text))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.text))
 
         self.__duration = int(self.parameter('duration', 30))
         self.__offx = int(self.parameter('offx', 0))

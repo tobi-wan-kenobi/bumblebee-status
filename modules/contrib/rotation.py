@@ -15,8 +15,8 @@ import util.cli
 possible_orientations = ['normal', 'left', 'inverted', 'right']
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, [])
+    def __init__(self, config, theme):
+        super().__init__(config, theme, [])
 
     def update(self):
         widgets = self.widgets()

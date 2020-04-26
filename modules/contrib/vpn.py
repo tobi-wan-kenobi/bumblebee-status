@@ -26,8 +26,8 @@ import util.cli
 import util.popup
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.vpn_status))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.vpn_status))
 
         self.__connected_vpn_profile = None
         self.__selected_vpn_profile = None

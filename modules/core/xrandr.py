@@ -35,9 +35,9 @@ except:
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=5) # takes up to 5s to detect a new screen
-    def __init__(self, config):
+    def __init__(self, config, theme):
         widgets = []
-        super().__init__(config, widgets)
+        super().__init__(config, theme, widgets)
 
         self._autoupdate = util.format.asbool(self.parameter('autoupdate', True))
         self._needs_update = True

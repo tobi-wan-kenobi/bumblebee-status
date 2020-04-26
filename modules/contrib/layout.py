@@ -13,8 +13,8 @@ import core.input
 import util.cli
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.current_layout))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.current_layout))
 
         core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd=self.__next_keymap)

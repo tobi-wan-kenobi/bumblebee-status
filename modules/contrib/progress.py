@@ -22,8 +22,8 @@ import util.format
 import re
 
 class Module(core.module.Module):
-    def __init__(self, config):
-        super().__init__(config, core.widget.Widget(self.get_progress_text))
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.get_progress_text))
         self.__active = False
 
     def get_progress_text(self, widget):
