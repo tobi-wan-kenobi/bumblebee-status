@@ -13,14 +13,22 @@ import subprocess
 import bumblebee.input
 import bumblebee.output
 import bumblebee.engine
+import bumblebee.util
 
 class Module(bumblebee.engine.Module):
     def __init__(self, engine, config):
         super(Module, self).__init__(engine, config, bumblebee.output.Widget(full_text=self.utilization))
-        self._utilization = "Not found: 0 0/0"
+        self._utilization = "not found: 0°C 0/0 MiB"
 
     def utilization(self, widget):
         return self._utilization
+
+    def hidden(self):
+        hide = bumblebee.util.asbool(self.parameter("hide", False))
+
+        if hide and self._utilization == "not found: 0°C 0/0 MiB":
+            return True
+        return False
 
     def update(self, widgets):
         sp = subprocess.Popen(['nvidia-smi', '-q'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
