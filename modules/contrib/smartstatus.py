@@ -6,8 +6,8 @@
 """Displays HDD smart status of different drives or all drives
 
 Parameters:
-    * smartstatus.display: how to display (defaults to "combined", other choices: "seperate" or "singles")
-    * smartstauts.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to "sda", example:"sda,sdc")
+    * smartstatus.display: how to display (defaults to 'combined', other choices: 'seperate' or 'singles')
+    * smartstauts.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
 """
 
 import os
@@ -38,7 +38,7 @@ class Module(bumblebee.engine.Module):
             widgets.append(widget)
         else:
             for device in self.devices:
-                if self.display == "singles" and device not in self.drives:
+                if self.display == 'singles' and device not in self.drives:
                     continue
                 widget = bumblebee.output.Widget()
                 widget.set('device', device)
@@ -60,7 +60,7 @@ class Module(bumblebee.engine.Module):
     def output(self, widget):
         device = widget.get('device')
         assessment = widget.get('assessment')
-        widget.full_text("{}: {}".format(device, assessment))
+        widget.full_text('{}: {}'.format(device, assessment))
 
     def state(self, widget):
         states = []
@@ -83,7 +83,7 @@ class Module(bumblebee.engine.Module):
     def list_devices(self):
         for (root, folders, files) in os.walk('/dev'):
             if root == '/dev':
-                devices = {"".join(filter(lambda i: i.isdigit() == False, file)) for file in files if 'sd' in file}
+                devices = {''.join(filter(lambda i: i.isdigit() == False, file)) for file in files if 'sd' in file}
                 nvme = {file for file in files if('nvme0n' in file and 'p' not in file)}
                 devices.update(nvme)
                 return devices
@@ -114,6 +114,6 @@ class Module(bumblebee.engine.Module):
             _stdout, _stderr = [i.decode('utf8') for i in cmd.communicate()]
             _stdout = _stdout.split('\n')
             for line in _stdout:
-                if "Pre-fail" in line:
-                    assessment = "Pre-fail"
+                if 'Pre-fail' in line:
+                    assessment = 'Pre-fail'
         return assessment
