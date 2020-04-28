@@ -153,7 +153,10 @@ class i3(object):
         if widget.get('pango', False):
             blk.set('markup', 'pango')
         if self.__config.debug():
-            blk.set('__state', ', '.join(module.state(widget)))
+            state = module.state(widget)
+            if isinstance(state, list):
+                state = ', '.join(state)
+            blk.set('__state', state)
         return blk
 
     def blocks(self, module):

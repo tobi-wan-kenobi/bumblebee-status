@@ -24,17 +24,17 @@ from collections import defaultdict
 import os
 import string
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
+import core.decorators
 
-from bumblebee.output import scrollable
+import util.cli
+import util.format
 
-
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config, [])
+class Module(core.module.Module):
+    def __init__(self, config, theme):
+        super().__init__(config, theme, [])
 
         self._layout = self.parameter('layout', 'cmus.prev cmus.main cmus.next cmus.shuffle cmus.repeat')
         self._fmt = self.parameter('format', '{artist} - {title} {position}/{duration}')
@@ -49,7 +49,7 @@ class Module(bumblebee.engine.Module):
         widget_list = []
         widget_map = {}
         for widget_name in self._layout.split():
-            widget = bumblebee.output.Widget(name=widget_name)
+            widget = core.widget.Widget(name=widget_name)
             widget_list.append(widget)
             self._cmd = 'cmus-remote'
             if self._server is not None:
@@ -58,32 +58,32 @@ class Module(bumblebee.engine.Module):
                     self._cmd = '{cmd} --passwd {passwd}'.format(cmd=self._cmd, passwd=self._passwd)
 
             if widget_name == 'cmus.prev':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': '{cmd} -r'.format(cmd=self._cmd)}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': '{cmd} -r'.format(cmd=self._cmd)}
             elif widget_name == 'cmus.main':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': '{cmd} -u'.format(cmd=self._cmd)}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': '{cmd} -u'.format(cmd=self._cmd)}
                 widget.full_text(self.description)
             elif widget_name == 'cmus.next':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': '{cmd} -n'.format(cmd=self._cmd)}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': '{cmd} -n'.format(cmd=self._cmd)}
             elif widget_name == 'cmus.shuffle':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': '{cmd} -S'.format(cmd=self._cmd)}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': '{cmd} -S'.format(cmd=self._cmd)}
             elif widget_name == 'cmus.repeat':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': '{cmd} -R'.format(cmd=self._cmd)}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': '{cmd} -R'.format(cmd=self._cmd)}
             else:
                 raise KeyError('The cmus module does not support a {widget_name!r} widget'.format(widget_name=widget_name))
         self.widgets(widget_list)
 
         # Register input callbacks
         for widget, callback_options in widget_map.items():
-            engine.input.register_callback(widget, **callback_options)
+            core.input.register(widget, **callback_options)
 
     def hidden(self):
         return self._status is None
 
-    @scrollable
+    @core.decorators.scrollable
     def description(self, widget):
         return string.Formatter().vformat(self._fmt, (), self._tags)
 
-    def update(self, widgets):
+    def update(self):
         self._load_song()
 
     def state(self, widget):
@@ -111,7 +111,7 @@ class Module(bumblebee.engine.Module):
         if name == 'tag':
             self._tags.update({key: value})
         if name in ['duration', 'position']:
-            self._tags.update({name: bumblebee.util.durationfmt(int(key))})
+            self._tags.update({name: util.format.duration(int(key))})
         if name == 'set' and key == 'repeat':
             self._repeat = value == 'true'
         if name == 'set' and key == 'shuffle':
@@ -120,7 +120,7 @@ class Module(bumblebee.engine.Module):
     def _load_song(self):
         info = ''
         try:
-            info = bumblebee.util.execute('{cmd} -Q'.format(cmd=self._cmd))
+            info = util.cli.execute('{cmd} -Q'.format(cmd=self._cmd))
         except RuntimeError:
             self._status = None
 
