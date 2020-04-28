@@ -162,6 +162,8 @@ class i3(object):
             if widget.module() and self.__config.autohide(widget.module().name()):
                 if not any(state in widget.state() for state in [ 'warning', 'critical']):
                     continue
+                if module.hidden():
+                    continue
             blocks.extend(self.__separator_block(module, widget))
             blocks.append(self.__content_block(module, widget))
             core.event.trigger('next-widget')

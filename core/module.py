@@ -40,6 +40,9 @@ class Module(core.input.Object):
 
         self.theme = theme
 
+    def hidden(self):
+        return False
+
     def parameter(self, key, default=None):
         value = default
 
