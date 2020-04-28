@@ -13,6 +13,7 @@ import core.module
 import core.widget
 
 import util.cli
+import util.format
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
@@ -22,6 +23,11 @@ class Module(core.module.Module):
 
     def utilization(self, widget):
         return self.__utilization
+
+    def hidden(self):
+        if "not found" in self._utilization.startswith("not found"):
+            return True
+        return False
 
     def update(self):
         sp = util.cli.execute('nvidia-smi -q', ignore_errors=True)
