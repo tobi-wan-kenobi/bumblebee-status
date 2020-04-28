@@ -26,7 +26,7 @@ class Module(bumblebee.engine.Module):
     def hidden(self):
         hide = bumblebee.util.asbool(self.parameter("hide", False))
 
-        if hide and self._utilization == "not found: 0°C 0/0 MiB":
+        if hide and "not found" in self._utilization.startswith("not found"):
             return True
         return False
 
