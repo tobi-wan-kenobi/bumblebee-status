@@ -11,18 +11,17 @@
 - use __ for private
 
 ## Backwards-compatibility
-- minimize modules
-- tkinter / popups
 - scrolling decorator (incl. minwidth, alignment)
-- theme.exclude?? (battery)
 - bumblebee-ctrl
 - default wheel handlers
 
 ## Improvements
-- allow handlers to specify whether to update or not (e.g. scroll)
 - API documentation
 - github pages
 
 ## TODO
 - themes: use colors to improve theme readability
 - convert some stuff to simple attributes to reduce LOCs
+- bumblebee-ctrl
+- theme.exclude (battery)
+- help output
