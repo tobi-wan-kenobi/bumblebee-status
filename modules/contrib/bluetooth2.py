@@ -12,38 +12,33 @@ import re
 import subprocess
 import dbus
 import dbus.mainloop.glib
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-import bumblebee.util
-import bumblebee.popup
 import logging
 
+import core.module
+import core.widget
+import core.input
 
-class Module(bumblebee.engine.Module):
-    """Bluetooth module."""
+import util.cli
 
-    def __init__(self, engine, config):
-        """Initialize."""
-        super(Module, self).__init__(engine, config,
-                                     bumblebee.output.Widget(
-                                         full_text=self.status))
+class Module(core.module.Module):
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.status))
 
         self.manager = self.parameter('manager', 'blueman-manager')
         self._status = 'Off'
         dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
         self._bus = dbus.SystemBus()
 
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+        core.input.register(self, button=core.input.LEFT_MOUSE,
                                        cmd=self.manager)
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE,
+        core.input.register(self, button=core.input.RIGHT_MOUSE,
                                            cmd=self._toggle)
 
     def status(self, widget):
         """Get status."""
         return self._status
 
-    def update(self, widgets):
+    def update(self):
         """Update current state."""
         state = len(subprocess.run(['bluetoothctl', 'list'], stdout=subprocess.PIPE).stdout)
         if state > 0:
@@ -56,10 +51,6 @@ class Module(bumblebee.engine.Module):
                 self._status = 'No Adapter Found'
         return
 
-    def manager(self, widget):
-        """Launch manager."""
-        bumblebee.util.execute(self.manager)
-
     def _toggle(self, widget=None):
         """Toggle bluetooth state."""
         if 'On' in self._status:
@@ -70,7 +61,7 @@ class Module(bumblebee.engine.Module):
         cmd = 'dbus-send --system --print-reply --dest=org.blueman.Mechanism /org/blueman/mechanism org.blueman.Mechanism.SetRfkillState boolean:%s' % state 
 
         logging.debug('bt: toggling bluetooth')
-        bumblebee.util.execute(cmd)
+        core.util.execute(cmd)
 
     def state(self, widget):
         """Get current state."""
@@ -102,3 +93,5 @@ class Module(bumblebee.engine.Module):
                 ):
                     devices += 1
         return devices
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
