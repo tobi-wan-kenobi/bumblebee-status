@@ -13,49 +13,46 @@ Parameters:
 
 import os
 import re
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-import bumblebee.util
-import bumblebee.popup
 import logging
 
+import core.module
+import core.widget
+import core.input
 
-class Module(bumblebee.engine.Module):
-    """Bluetooth module."""
+import util.cli
+import util.format
+import util.popup
 
-    def __init__(self, engine, config):
-        """Initialize."""
-        super(Module, self).__init__(engine, config,
-                                     bumblebee.output.Widget(
-                                         full_text=self.status))
+class Module(core.module.Module):
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.status))
 
         device = self.parameter('device', 'hci0')
         self.manager = self.parameter('manager', 'blueman-manager')
         self._path = '/sys/class/bluetooth/{}'.format(device)
         self._status = 'Off'
 
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE,
+        core.input.register(self, button=core.input.LEFT_MOUSE,
                                        cmd=self.manager)
 
         # determine whether to use pop-up menu or simply toggle the device on/off
-        right_click_popup = bumblebee.util.asbool(
+        right_click_popup = util.format.asbool(
             self.parameter('right_click_popup', True))
 
         if right_click_popup:
-            engine.input.register_callback(self,
-                                           button=bumblebee.input.RIGHT_MOUSE,
+            core.input.register(self,
+                                           button=core.input.RIGHT_MOUSE,
                                            cmd=self.popup)
         else:
-            engine.input.register_callback(self,
-                                           button=bumblebee.input.RIGHT_MOUSE,
+            core.input.register(self,
+                                           button=core.input.RIGHT_MOUSE,
                                            cmd=self._toggle)
 
     def status(self, widget):
         """Get status."""
         return self._status
 
-    def update(self, widgets):
+    def update(self):
         """Update current state."""
         if not os.path.exists(self._path):
             self._status = '?'
@@ -80,13 +77,9 @@ class Module(bumblebee.engine.Module):
         except IOError:
             self._status = '?'
 
-    def manager(self, widget):
-        """Launch manager."""
-        bumblebee.util.execute(self.manager)
-
     def popup(self, widget):
         """Show a popup menu."""
-        menu = bumblebee.popup.PopupMenu()
+        menu = util.popup.PopupMenu()
         if self._status == 'On':
             menu.add_menuitem('Disable Bluetooth')
         elif self._status == 'Off':
@@ -115,7 +108,7 @@ class Module(bumblebee.engine.Module):
               ' boolean:{}'.format(dst, dst_path, state)
 
         logging.debug('bt: toggling bluetooth')
-        bumblebee.util.execute(cmd)
+        util.cli.execute(cmd)
 
     def state(self, widget):
         """Get current state."""
@@ -129,3 +122,5 @@ class Module(bumblebee.engine.Module):
             state = ['OFF']
 
         return state
+
+# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
