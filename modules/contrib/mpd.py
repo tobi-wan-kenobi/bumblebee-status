@@ -45,16 +45,16 @@ from collections import defaultdict
 import string
 import os
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
+import core.decorators
 
-from bumblebee.output import scrollable
+import util.cli
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config, [])
+class Module(core.module.Module):
+    def __init__(self, config, theme):
+        super().__init__(config, theme, [])
 
         self._layout = self.parameter('layout', 'mpd.prev mpd.main mpd.next mpd.shuffle mpd.repeat')
 
@@ -73,36 +73,36 @@ class Module(bumblebee.engine.Module):
         widget_list = []
         widget_map = {}
         for widget_name in self._layout.split():
-            widget = bumblebee.output.Widget(name=widget_name)
+            widget = core.widget.Widget(name=widget_name, module=self)
             widget_list.append(widget)
 
             if widget_name == 'mpd.prev':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': 'mpc prev' + self._hostcmd}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': 'mpc prev' + self._hostcmd}
             elif widget_name == 'mpd.main':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': 'mpc toggle' + self._hostcmd}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': 'mpc toggle' + self._hostcmd}
                 widget.full_text(self.description)
             elif widget_name == 'mpd.next':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': 'mpc next' + self._hostcmd}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': 'mpc next' + self._hostcmd}
             elif widget_name == 'mpd.shuffle':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': 'mpc random' + self._hostcmd}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': 'mpc random' + self._hostcmd}
             elif widget_name == 'mpd.repeat':
-                widget_map[widget] = {'button': bumblebee.input.LEFT_MOUSE, 'cmd': 'mpc repeat' + self._hostcmd}
+                widget_map[widget] = {'button': core.input.LEFT_MOUSE, 'cmd': 'mpc repeat' + self._hostcmd}
             else:
                 raise KeyError('The mpd module does not support a {widget_name!r} widget'.format(widget_name=widget_name))
         self.widgets(widget_list)
 
         # Register input callbacks
         for widget, callback_options in widget_map.items():
-            engine.input.register_callback(widget, **callback_options)
+            core.input.register(widget, **callback_options)
 
     def hidden(self):
         return self._status is None
 
-    @scrollable
+    @core.decorators.scrollable
     def description(self, widget):
         return string.Formatter().vformat(self._fmt, (), self._tags)
 
-    def update(self, widgets):
+    def update(self):
         self._load_song()
 
     def state(self, widget):
@@ -118,30 +118,28 @@ class Module(bumblebee.engine.Module):
 
     def _load_song(self):
         info = ''
-        try:
-            tags = ['name',
-                    'artist',
-                    'album',
-                    'albumartist',
-                    'comment',
-                    'composer',
-                    'date',
-                    'originaldate',
-                    'disc',
-                    'genre',
-                    'performer',
-                    'title',
-                    'track',
-                    'time',
-                    'file',
-                    'id',
-                    'prio',
-                    'mtime',
-                    'mdate']
-            joinedtags = '\n'.join(['tag {0} %{0}%'.format(tag) for tag in tags])
-            info = bumblebee.util.execute('mpc -f ' + """ + joinedtags + """ + self._hostcmd)
-        except RuntimeError:
-            pass
+        tags = ['name',
+                'artist',
+                'album',
+                'albumartist',
+                'comment',
+                'composer',
+                'date',
+                'originaldate',
+                'disc',
+                'genre',
+                'performer',
+                'title',
+                'track',
+                'time',
+                'file',
+                'id',
+                'prio',
+                'mtime',
+                'mdate']
+        joinedtags = '\n'.join(['tag {0} %{0}%'.format(tag) for tag in tags])
+        info = util.cli.execute('mpc -f "{}"{}'.format(joinedtags, self._hostcmd), ignore_errors=True)
+
         self._tags = defaultdict(lambda: '')
         self._status = None
         for line in info.split('\n'):

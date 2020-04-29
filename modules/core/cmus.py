@@ -49,7 +49,7 @@ class Module(core.module.Module):
         widget_list = []
         widget_map = {}
         for widget_name in self._layout.split():
-            widget = core.widget.Widget(name=widget_name)
+            widget = core.widget.Widget(name=widget_name, module=self)
             widget_list.append(widget)
             self._cmd = 'cmus-remote'
             if self._server is not None:
