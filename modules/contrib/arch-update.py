@@ -14,7 +14,7 @@ class Module(core.module.Module):
     @core.decorators.every(minutes=60)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.utilization))
-        self.__packages = None
+        self.__packages = 0
 
     @property
     def __format(self):
@@ -24,7 +24,7 @@ class Module(core.module.Module):
         return self.__format.format(self.__packages)
 
     def hidden(self):
-        return self.check_updates() == 0
+        return self.__packages == 0
 
     def update(self):
         result = util.cli.execute('checkupdates')
