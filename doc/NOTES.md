@@ -26,3 +26,5 @@
 - theme.exclude (battery)
 - help output
 - configuration files
+- custom fields __ in output for dwm bridge
+- default separators
