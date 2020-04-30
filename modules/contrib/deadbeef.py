@@ -34,46 +34,45 @@ Parameters:
 """
 import sys
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import subprocess
+import logging
 
-from bumblebee.output import scrollable
+import core.module
+import core.widget
+import core.input
+import core.decorators
 
-try:
-    import subprocess
-except ImportError:
-    pass
+import util.cli
+import util.format
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-                                     bumblebee.output.Widget(full_text=self.deadbeef)
-                                     )
-        buttons = {'LEFT_CLICK': bumblebee.input.LEFT_MOUSE,
-                   'RIGHT_CLICK': bumblebee.input.RIGHT_MOUSE,
-                   'MIDDLE_CLICK': bumblebee.input.MIDDLE_MOUSE,
-                   'SCROLL_UP': bumblebee.input.WHEEL_UP,
-                   'SCROLL_DOWN': bumblebee.input.WHEEL_DOWN,
+class Module(core.module.Module):
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.deadbeef))
+
+        buttons = {'LEFT_CLICK': core.input.LEFT_MOUSE,
+                   'RIGHT_CLICK': core.input.RIGHT_MOUSE,
+                   'MIDDLE_CLICK': core.input.MIDDLE_MOUSE,
+                   'SCROLL_UP': core.input.WHEEL_UP,
+                   'SCROLL_DOWN': core.input.WHEEL_DOWN,
                    }
         
         self._song = ''
         self._format = self.parameter('format', '{artist} - {title}')
         self._tf_format = self.parameter('tf_format', '')
-        self._show_tf_when_stopped = bool(self.parameter('tf_format_if_stopped', ''))
+        self._show_tf_when_stopped = util.format.asbool(self.parameter('tf_format_if_stopped', False))
         prev_button = self.parameter('previous', 'LEFT_CLICK')
         next_button = self.parameter('next', 'RIGHT_CLICK')
         pause_button = self.parameter('pause', 'MIDDLE_CLICK')
 
-        self.now_playing = ['deadbeef', '--nowplaying', '%a;%t;%b;%l;%n;%y;%c;%r;%e']
-        self.now_playing_tf = ['deadbeef', '--nowplaying-tf', '']
+        self.now_playing = 'deadbeef --nowplaying %a;%t;%b;%l;%n;%y;%c;%r;%e'
+        self.now_playing_tf = 'deadbeef --nowplaying-tf '
         cmd = 'deadbeef '
 
-        engine.input.register_callback(self, button=buttons[prev_button],
+        core.input.register(self, button=buttons[prev_button],
                                        cmd=cmd + '--prev')
-        engine.input.register_callback(self, button=buttons[next_button],
+        core.input.register(self, button=buttons[next_button],
                                        cmd=cmd + '--next')
-        engine.input.register_callback(self, button=buttons[pause_button],
+        core.input.register(self, button=buttons[pause_button],
                                        cmd=cmd + '--play-pause')
 
         # modify the tf_format if we don't want it to show on stop
@@ -83,35 +82,36 @@ class Module(bumblebee.engine.Module):
         if self._tf_format and not self._show_tf_when_stopped:
             self._tf_format = '$if($or(%isplaying%,%ispaused%),{query})'.format(query=self._tf_format)
 
-    @scrollable
+    @core.decorators.scrollable
     def deadbeef(self, widget):
         return self.string_song
 
     def hidden(self):
         return self.string_song == ''
 
-    def update(self, widgets):
+    def update(self):
+        widgets = self.widgets()
         try:
             if self._tf_format == '': # no tf format set, use the old style
                 return self.update_standard(widgets)
             return self.update_tf(widgets)
-        except Exception:
+        except Exception as e:
+            logging.exception(e)
             self._song = 'error'
 
     def update_tf(self, widgets):
         ## ensure that deadbeef is actually running
         ## easiest way to do this is to check --nowplaying for
         ##  the string 'nothing'
-        if read_process(self.now_playing) == 'nothing':
+        if util.cli.execute(self.now_playing) == 'nothing':
             self._song = ''
             return
         ## perform the actual query -- these can be much more sophisticated
-        self.now_playing_tf[-1] = self._tf_format
-        data = read_process(self.now_playing_tf)
+        data = util.cli.execute(self.now_playing_tf + self._tf_format)
         self._song = data
 
     def update_standard(self, widgets):
-        data = read_process(self.now_playing)
+        data = util.cli.execute(self.now_playing)
         if data == 'nothing':
             self._song = ''
         else:
@@ -135,9 +135,5 @@ Returns the current song as a string, either as a unicode() (Python <
         if sys.version_info.major < 3:
             return unicode(self._song)
         return str(self._song)
-
-def read_process(command):
-    proc = subprocess.Popen(command, stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-    return proc.stdout.read()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
