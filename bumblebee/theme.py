@@ -176,6 +176,9 @@ class Theme(object):
         """Return the SBW"""
         return self._get(widget, "separator-block-width", None)
 
+    def default_separators(self, widget):
+        return self._get(widget, "default-separators", False)
+
     def _load_wal_colors(self):
         walfile = os.path.expanduser("~/.cache/wal/colors.json")
         result = {}

@@ -459,7 +459,7 @@ class WidgetDrawer(object):
             "color": self._theme.fg(widget),
             "background": self._theme.bg(widget),
             "separator_block_width": self._theme.separator_block_width(widget),
-            "separator": True if separator is None else False,
+            "separator": self._theme.default_separators(widget),
             "min_width": None,
 #            "min_width": width + "A"*(len(self._prefix) + len(self._suffix)) if width else None,
             "align": self._theme.align(widget),
