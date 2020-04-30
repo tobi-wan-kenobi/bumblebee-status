@@ -33,7 +33,7 @@ class Module(core.input.Object):
         self.__config = config
         self.__widgets = widgets if isinstance(widgets, list) else [ widgets ]
         for widget in self.__widgets:
-            widget.module(self)
+            widget.module = self
         self.__name = None
         self.alias = self.__config.get('__alias__', None)
         self.next_update = None

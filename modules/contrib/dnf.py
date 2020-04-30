@@ -46,7 +46,7 @@ def get_dnf_info(widget):
     widget.set('enhancements', enhancements)
     widget.set('other', other)
 
-    core.event.trigger('update', [ widget.module().id ], redraw_only=True)
+    core.event.trigger('update', [ widget.module.id ], redraw_only=True)
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=30)

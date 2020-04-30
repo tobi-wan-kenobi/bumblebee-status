@@ -43,7 +43,7 @@ def get_pacman_info(widget, path):
 
     for i in range(len(repos)):
         widget.set(repos[i], count[i])
-    core.event.trigger('update', [ widget.module().id ], redraw_only=True)
+    core.event.trigger('update', [ widget.module.id ], redraw_only=True)
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=30)

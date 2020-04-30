@@ -66,19 +66,17 @@ class Module(core.module.Module):
 
             widget = self.widget(display)
             if not widget:
-                widget = core.widget.Widget(full_text=display, name=display)
+                widget = core.widget.Widget(full_text=display, name=display, module=self)
                 core.input.register(widget, button=1, cmd=self._toggle)
                 core.input.register(widget, button=3, cmd=self._toggle)
             new_widgets.append(widget)
-            widget.module(self)
             widget.set('state', 'on' if m else 'off')
             widget.set('pos', int(m.group(1)) if m else sys.maxsize)
 
         self.widgets(new_widgets)
 
         if self._autoupdate == False:
-            widget = core.widget.Widget(full_text='')
-            widget.module(self)
+            widget = core.widget.Widget(full_text='', module=self)
             widget.set('state', 'refresh')
             core.input.register(widget, button=1, cmd=self._refresh)
             self.widgets().append(widget)

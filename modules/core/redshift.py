@@ -62,7 +62,7 @@ def get_redshift_value(module):
                 widget.set('state', 'transition')
                 match = re.search(r'(\d+)\.\d+% ([a-z]+)', line)
                 widget.set('transition', '({}% {})'.format(match.group(1), match.group(2)))
-    core.event.trigger('update', [ widget.module().id ], redraw_only=True)
+    core.event.trigger('update', [ widget.module.id ], redraw_only=True)
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=10)
