@@ -25,3 +25,4 @@
 - bumblebee-ctrl
 - theme.exclude (battery)
 - help output
+- configuration files

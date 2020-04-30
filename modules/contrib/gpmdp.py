@@ -38,9 +38,9 @@ class Module(core.module.Module):
         self.__load_song()
 
     def state(self, widget):
-        if widget.name() == 'gpmdp.prev':
+        if widget.name == 'gpmdp.prev':
             return 'prev'
-        if widget.name() == 'gpmdp.next':
+        if widget.name == 'gpmdp.next':
             return 'next'
         return self.__status
 

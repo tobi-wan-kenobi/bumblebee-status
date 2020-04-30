@@ -124,28 +124,28 @@ class Module(core.module.Module):
                 widget.set('theme.exclude', 'suffix')
 
     def capacity(self, widget):
-        if widget.name() == 'all-batteries':
+        if widget.name == 'all-batteries':
             capacity = self.__manager.capacity_all(self._batteries)
         else:
-            capacity = self.__manager.capacity(widget.name())
+            capacity = self.__manager.capacity(widget.name)
         widget.set('capacity', capacity)
         widget.set('ac', self.__manager.isac_any(self._batteries))
         widget.set('theme.minwidth', '100%')
 
         # Read power conumption
         if util.format.asbool(self.parameter('showpowerconsumption', False)):
-            output = '{}% ({})'.format(capacity, self.__manager.consumption(widget.name()))
+            output = '{}% ({})'.format(capacity, self.__manager.consumption(widget.name))
         else:
              output =  '{}%'.format(capacity)
 
         if util.format.asbool(self.parameter('showremaining', True))\
-                and self.__manager.charge(widget.name()) == 'Discharging':
+                and self.__manager.charge(widget.name) == 'Discharging':
             remaining = self.__manager.remaining()
             if remaining >= 0:
                 output = '{} {}'.format(output, util.format.duration(remaining, compact=True, unit=True))
 
         if util.format.asbool(self.parameter('showdevice', False)):
-            output = '{} ({})'.format(output, widget.name())
+            output = '{} ({})'.format(output, widget.name)
 
         return output
        
@@ -165,10 +165,10 @@ class Module(core.module.Module):
         if widget.get('ac'):
             state.append('AC')
         else:
-            if widget.name() == 'all-batteries':
+            if widget.name == 'all-batteries':
                 charge = self.__manager.charge_any(self._batteries)
             else:
-                charge = self.__manager.charge(widget.name())
+                charge = self.__manager.charge(widget.name)
             if charge == 'Discharging':
                 state.append('discharging-{}'.format(min([10, 25, 50, 80, 100], key=lambda i: abs(i-capacity))))
             elif charge == 'Unknown':

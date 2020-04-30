@@ -81,7 +81,7 @@ class Module(core.input.Object):
         if not name: return self.widgets()[0]
 
         for w in self.widgets():
-            if w.name() == name: return w
+            if w.name == name: return w
         return None
 
     def state(self, widget):

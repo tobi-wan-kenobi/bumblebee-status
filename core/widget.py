@@ -7,10 +7,7 @@ class Widget(util.store.Store, core.input.Object):
         super(Widget, self).__init__()
         self.__full_text = full_text
         self.__module = module
-        self.__name = name
-
-    def name(self):
-        return self.__name
+        self.name = name
 
     def full_text(self, value=None):
         if value:

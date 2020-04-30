@@ -97,8 +97,8 @@ class module(unittest.TestCase):
         cfg = core.config.Config([])
         module = TestModule(config=cfg, widgets=[self.someWidget, self.anotherWidget])
 
-        self.assertEqual(self.someWidget, module.widget(self.someWidget.name()))
-        self.assertEqual(self.anotherWidget, module.widget(self.anotherWidget.name()))
+        self.assertEqual(self.someWidget, module.widget(self.someWidget.name))
+        self.assertEqual(self.anotherWidget, module.widget(self.anotherWidget.name))
         self.assertEqual(None, module.widget(self.unusedWidgetName))
         self.assertEqual(self.someWidget, module.widget())
 

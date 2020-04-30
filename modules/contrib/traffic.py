@@ -51,9 +51,9 @@ class Module(core.module.Module):
         self._update_widgets(widgets)
 
     def state(self, widget):
-        if 'traffic.rx' in widget.name():
+        if 'traffic.rx' in widget.name:
             return 'rx'
-        if 'traffic.tx' in widget.name():
+        if 'traffic.tx' in widget.name:
             return 'tx'
         return self._status
 
