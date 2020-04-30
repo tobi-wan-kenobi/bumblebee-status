@@ -5,6 +5,8 @@ import time
 import core.theme
 import core.event
 
+import util.format
+
 def dump_json(obj):
     return obj.dict()
 
@@ -186,7 +188,7 @@ class i3(object):
             if not redraw_only:
                 module.update_wrapper()
                 if module.parameter('interval', '')  != 'never':
-                    module.next_update = now + float(module.parameter('interval', self.__config.interval()))
+                    module.next_update = now + util.format.seconds(module.parameter('interval', self.__config.interval()))
             for widget in module.widgets():
                 self.__content[widget] = widget.full_text()
 
