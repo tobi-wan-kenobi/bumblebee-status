@@ -24,7 +24,7 @@ class Config(util.store.Store):
             help='Specify the name of an iconset to use (overrides theme default)')
         parser.add_argument('-a', '--autohide', nargs='+', default=[],
             help='Specify a list of modules to hide when not in warning/error state')
-        parser.add_argument('--debug', action='store_true',
+        parser.add_argument('-d', '--debug', action='store_true',
             help='Add debug fields to i3 output')
         self.__args = parser.parse_args(args)
 
