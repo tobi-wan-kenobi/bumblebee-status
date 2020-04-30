@@ -8,7 +8,7 @@ down returns to the previous song.
 Requires the following library:
     * subprocess
 Parameters:
-    * deadbeef.format:    Format string (defaults to "{artist} - {title}")
+    * deadbeef.format:    Format string (defaults to '{artist} - {title}')
                           Available values are: {artist}, {title}, {album}, {length},
                                                 {trackno}, {year}, {comment},
                                                 {copyright}, {time}
@@ -50,60 +50,60 @@ class Module(bumblebee.engine.Module):
         super(Module, self).__init__(engine, config,
                                      bumblebee.output.Widget(full_text=self.deadbeef)
                                      )
-        buttons = {"LEFT_CLICK": bumblebee.input.LEFT_MOUSE,
-                   "RIGHT_CLICK": bumblebee.input.RIGHT_MOUSE,
-                   "MIDDLE_CLICK": bumblebee.input.MIDDLE_MOUSE,
-                   "SCROLL_UP": bumblebee.input.WHEEL_UP,
-                   "SCROLL_DOWN": bumblebee.input.WHEEL_DOWN,
+        buttons = {'LEFT_CLICK': bumblebee.input.LEFT_MOUSE,
+                   'RIGHT_CLICK': bumblebee.input.RIGHT_MOUSE,
+                   'MIDDLE_CLICK': bumblebee.input.MIDDLE_MOUSE,
+                   'SCROLL_UP': bumblebee.input.WHEEL_UP,
+                   'SCROLL_DOWN': bumblebee.input.WHEEL_DOWN,
                    }
         
-        self._song = ""
-        self._format = self.parameter("format", "{artist} - {title}")
-        self._tf_format = self.parameter("tf_format", "")
-        self._show_tf_when_stopped = bool(self.parameter("tf_format_if_stopped", ""))
-        prev_button = self.parameter("previous", "LEFT_CLICK")
-        next_button = self.parameter("next", "RIGHT_CLICK")
-        pause_button = self.parameter("pause", "MIDDLE_CLICK")
+        self._song = ''
+        self._format = self.parameter('format', '{artist} - {title}')
+        self._tf_format = self.parameter('tf_format', '')
+        self._show_tf_when_stopped = bool(self.parameter('tf_format_if_stopped', ''))
+        prev_button = self.parameter('previous', 'LEFT_CLICK')
+        next_button = self.parameter('next', 'RIGHT_CLICK')
+        pause_button = self.parameter('pause', 'MIDDLE_CLICK')
 
-        self.now_playing = ["deadbeef", "--nowplaying", "%a;%t;%b;%l;%n;%y;%c;%r;%e"]
-        self.now_playing_tf = ["deadbeef", "--nowplaying-tf", ""]
-        cmd = "deadbeef "
+        self.now_playing = ['deadbeef', '--nowplaying', '%a;%t;%b;%l;%n;%y;%c;%r;%e']
+        self.now_playing_tf = ['deadbeef', '--nowplaying-tf', '']
+        cmd = 'deadbeef '
 
         engine.input.register_callback(self, button=buttons[prev_button],
-                                       cmd=cmd + "--prev")
+                                       cmd=cmd + '--prev')
         engine.input.register_callback(self, button=buttons[next_button],
-                                       cmd=cmd + "--next")
+                                       cmd=cmd + '--next')
         engine.input.register_callback(self, button=buttons[pause_button],
-                                       cmd=cmd + "--play-pause")
+                                       cmd=cmd + '--play-pause')
 
         # modify the tf_format if we don't want it to show on stop
         # this adds conditions to the query itself, rather than
         # polling to see if deadbeef is running
         # doing this reduces the number of calls we have to make
         if self._tf_format and not self._show_tf_when_stopped:
-            self._tf_format = "$if($or(%isplaying%,%ispaused%),{query})".format(query=self._tf_format)
+            self._tf_format = '$if($or(%isplaying%,%ispaused%),{query})'.format(query=self._tf_format)
 
     @scrollable
     def deadbeef(self, widget):
         return self.string_song
 
     def hidden(self):
-        return self.string_song == ""
+        return self.string_song == ''
 
     def update(self, widgets):
         try:
-            if self._tf_format == "": # no tf format set, use the old style
+            if self._tf_format == '': # no tf format set, use the old style
                 return self.update_standard(widgets)
             return self.update_tf(widgets)
         except Exception:
-            self._song = "error"
+            self._song = 'error'
 
     def update_tf(self, widgets):
         ## ensure that deadbeef is actually running
         ## easiest way to do this is to check --nowplaying for
-        ##  the string "nothing"
-        if read_process(self.now_playing) == "nothing":
-            self._song = ""
+        ##  the string 'nothing'
+        if read_process(self.now_playing) == 'nothing':
+            self._song = ''
             return
         ## perform the actual query -- these can be much more sophisticated
         self.now_playing_tf[-1] = self._tf_format
@@ -112,10 +112,10 @@ class Module(bumblebee.engine.Module):
 
     def update_standard(self, widgets):
         data = read_process(self.now_playing)
-        if data == "nothing":
-            self._song = ""
+        if data == 'nothing':
+            self._song = ''
         else:
-            data = data.split(";")
+            data = data.split(';')
             self._song = self._format.format(artist=data[0],
                                              title=data[1],
                                              album=data[2],
