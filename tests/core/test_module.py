@@ -66,8 +66,8 @@ class module(unittest.TestCase):
 
     def test_module_Name(self):
         module = TestModule()
-        self.assertEqual('test_module', module.name(), 'module has wrong name')
-        self.assertEqual('test_module', module.module_name(), 'module has wrong name')
+        self.assertEqual('test_module', module.name, 'module has wrong name')
+        self.assertEqual('test_module', module.module_name, 'module has wrong name')
 
     def testvalid_parameter(self):
         cfg = core.config.Config(shlex.split('-p test_module.foo=5'))

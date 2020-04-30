@@ -34,7 +34,9 @@ class Module(core.input.Object):
         self.__widgets = widgets if isinstance(widgets, list) else [ widgets ]
         for widget in self.__widgets:
             widget.module = self
-        self.__name = None
+
+        self.module_name = self.__module__.split('.')[-1]
+        self.name = self.module_name
         self.alias = self.__config.get('__alias__', None)
         self.next_update = None
 
@@ -46,13 +48,13 @@ class Module(core.input.Object):
     def parameter(self, key, default=None):
         value = default
 
-        for prefix in [ self.name(), self.module_name(), self.alias ]:
+        for prefix in [ self.name, self.module_name, self.alias ]:
             value = self.__config.get('{}.{}'.format(prefix, key), value)
         # TODO retrieve from config file
         return value
 
     def set(self, key, value):
-        self.__config.set('{}.{}'.format(self.name(), key), value)
+        self.__config.set('{}.{}'.format(self.name, key), value)
 
     def update(self):
         pass
@@ -65,12 +67,6 @@ class Module(core.input.Object):
             module = Error(config=self.__config, module='error', error=str(e))
             self.__widgets = [module.widget()]
             self.update = module.update
-
-    def name(self):
-        return self.__name if self.__name else self.module_name()
-
-    def module_name(self):
-        return self.__module__.split('.')[-1]
 
     def widgets(self, widgets=None):
         if widgets:

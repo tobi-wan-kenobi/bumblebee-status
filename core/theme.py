@@ -115,7 +115,7 @@ class Theme(object):
         value = merge_replace(value, self.__data.get(key, value), key)
 
         if widget.module:
-            value = merge_replace(value, self.get(widget.module.name(), None, {}).get(key, value), key)
+            value = merge_replace(value, self.get(widget.module.name, None, {}).get(key, value), key)
 
         if not key in widget.state():
             for state in widget.state():
