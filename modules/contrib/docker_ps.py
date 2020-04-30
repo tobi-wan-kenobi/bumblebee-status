@@ -33,11 +33,11 @@ class Module(core.module.Module):
         try:
             cli = docker.DockerClient(base_url='unix://var/run/docker.sock')
             cli.ping()
+            self.__info = 'OK - {}'.format(len(cli.containers.list(filters={'status': 'running'})))
         except ConnectionError:
             self.__info = 'daemon off'
         except Exception:
             self.__info = 'n/a'
-        self.__info = 'OK - {}'.format(len(cli.containers.list(filters={'status': 'running'})))
         return self.__info
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
