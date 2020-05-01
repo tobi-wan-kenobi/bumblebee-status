@@ -66,7 +66,7 @@ class Module(core.module.Module):
         exclude_chip_field = tuple(filter(len, util.format.aslist(self.parameter('chip_field_exclude', ''))))
 
         if util.format.asbool(self.parameter('showcpu', True)):
-            widget = core.widget.Widget(full_text=self.__cpu)
+            widget = core.widget.Widget(full_text=self.__cpu, module=self)
             widget.set('type', 'cpu')
             widgets.append(widget)
 
@@ -88,7 +88,7 @@ class Module(core.module.Module):
 
             for package in self.__data[adapter]:
                 if util.format.asbool(self.parameter('showname', False)):
-                    widget = core.widget.Widget(full_text=package)
+                    widget = core.widget.Widget(full_text=package, module=self)
                     widget.set('data', self.__data[adapter][package])
                     widget.set('package', package)
                     widget.set('field', '')
@@ -115,7 +115,7 @@ class Module(core.module.Module):
                     except:
                         pass
 
-                    widget = core.widget.Widget()
+                    widget = core.widget.Widget(module=self)
                     widget.set('package', package)
                     widget.set('field', field)
                     widget.set('adapter', adapter)
