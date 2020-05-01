@@ -3,6 +3,7 @@ import io
 import json
 import logging
 import copy
+import glob
 
 import core.event
 import util.algorithm
@@ -15,6 +16,17 @@ PATHS=[
     os.path.join(THEME_BASE_DIR, '../themes'),
     os.path.expanduser('~/.config/bumblebee-status/themes'),
 ]
+
+def themes():
+    themes_dict = {}
+
+    for path in PATHS:
+        for filename in glob.iglob('{}/*.json'.format(path)):
+            if 'test' not in filename:
+                themes_dict[os.path.basename(filename).replace('.json', '')] = 1
+    result = list(themes_dict.keys())
+    result.sort()
+    return result
 
 def merge_replace(value, new_value, key):
     if not isinstance(value, dict):

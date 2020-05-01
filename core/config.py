@@ -1,14 +1,99 @@
+import os
+try:
+    import ast
+except ImportError:
+    log.warning('--list modules will not work (module "ast" not found)')
+import sys
+import glob
+import textwrap
 import argparse
 import logging
 
+import core.theme
+
 import util.store
 import util.format
+
+import modules.core
+import modules.contrib
 
 log = logging.getLogger(__name__)
 
 MODULE_HELP = 'Specify a space-separated list of modules to load. The order of the list determines their order in the i3bar (from left to right). Use <module>:<alias> to provide an alias in case you want to load the same module multiple times, but specify different parameters.'
 PARAMETER_HELP = 'Provide configuration parameters in the form of <module>.<key>=<value>'
 THEME_HELP = 'Specify the theme to use for drawing modules'
+
+def all_modules():
+    """Return a list of available modules"""
+    result = {}
+
+    for path in [ modules.core.__file__, modules.contrib.__file__ ]:
+        path = os.path.dirname(path)
+        for mod in glob.iglob('{}/*.py'.format(path)):
+            result[os.path.basename(mod).replace('.py', '')] = 1
+    
+    res = list(result.keys())
+    res.sort()
+    return res
+
+class print_usage(argparse.Action):
+    def __init__(self, option_strings, dest, nargs=None, **kwargs):
+        argparse.Action.__init__(self, option_strings, dest, nargs, **kwargs)
+        self._indent = ' '*2
+
+    def __call__(self, parser, namespace, value, option_string=None):
+        if value == 'modules':
+            self._args = namespace
+            self._format = 'plain'
+            self.print_modules()
+        elif value == 'modules-markdown':
+            self._args = namespace
+            self._format = 'markdown'
+            self.print_modules()
+        elif value == 'themes':
+            self.print_themes()
+        sys.exit(0)
+
+    def print_themes(self):
+        print(', '.join(core.theme.themes()))
+
+    def print_modules(self):
+        if self._format == 'markdown':
+            print('# Table of modules')
+            print('|Name |Description |')
+            print('|-----|------------|')
+
+        for m in all_modules():
+            try:
+                basepath = os.path.abspath(os.path.join(os.path.dirname(os.path.realpath(__file__)), '..'))
+                filename = os.path.join(basepath, 'modules', 'core', '{}.py'.format(m))
+                if not os.path.exists(filename):
+                    filename = os.path.join(basepath, 'modules', 'contrib', '{}.py'.format(m))
+                if not os.path.exists(filename):
+                    log.warning('module {} not found'.format(m))
+                    continue
+
+                doc = None
+                with open(filename) as f:
+                    tree = ast.parse(f.read())
+                    doc = ast.get_docstring(tree)
+
+                if not doc:
+                    log.warning('failed to find docstring for {}'.format(m))
+                    continue
+                if self._format == 'markdown':
+                    doc = doc.replace('<', '\<')
+                    doc = doc.replace('>', '\>')
+                    doc = doc.replace('\n', '<br>')
+                    print('|{} |{} |'.format(m, doc))
+                else:
+                    print(textwrap.fill('{}:'.format(m), 80,
+                            initial_indent=self._indent*2, subsequent_indent=self._indent*2))
+                    for line in doc.split('\n'):
+                        print(textwrap.fill(line, 80,
+                            initial_indent=self._indent*3, subsequent_indent=self._indent*6))
+            except Exception as e:
+                log.warning(e)
 
 class Config(util.store.Store):
     def __init__(self, args):
@@ -28,6 +113,8 @@ class Config(util.store.Store):
             help='Add debug fields to i3 output')
         parser.add_argument('-f', '--logfile', help='destination for the debug log file, if -d|--debug is specified; defaults to stderr')
         parser.add_argument('-r', '--right-to-left', action='store_true', help='Draw widgets from right to left, rather than left to right (which is the default)')
+        parser.add_argument('-l', '--list', choices=['modules', 'themes', 'modules-markdown'], help='Display a list of available themes or available modules, along with their parameters',
+            action=print_usage)
 
         self.__args = parser.parse_args(args)
 
