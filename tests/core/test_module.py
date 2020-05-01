@@ -36,7 +36,7 @@ class module(unittest.TestCase):
             module = core.module.load(module_name=self.validModuleName, config=config)
             module.widget().full_text()
             self.assertEqual('Error', module.__class__.__name__, 'an invalid module must be a core.module.Error')
-            self.assertEqual(module.widget().get('_raw'), 'test: some-error')
+            self.assertEqual(module.widget().full_text(), 'test: some-error')
 
     def test_loadvalid_module(self):
         module = core.module.load(module_name=self.validModuleName)

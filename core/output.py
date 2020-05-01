@@ -12,7 +12,10 @@ def dump_json(obj):
 
 def assign(src, dst, key, src_key=None, default=None):
     if not src_key:
-        src_key = key.replace('_', '-') # automagically replace - with _
+        if key.startswith('_'):
+            src_key = key
+        else:
+            src_key = key.replace('_', '-') # automagically replace _ with -
 
     for k in src_key if isinstance(src_key, list) else [src_key]:
         if k in src:
@@ -80,7 +83,8 @@ class block(object):
 
         for k in [
             'name', 'instance', 'separator_block_width', 'border', 'border_top',
-            'border_bottom', 'border_left', 'border_right', 'markup'
+            'border_bottom', 'border_left', 'border_right', 'markup',
+            '_raw', '_suffix', '_prefix'
         ]:
             assign(self.__attributes, result, k)
 
@@ -93,13 +97,12 @@ class block(object):
 
     def __format(self, text):
         if text is None: return None
-        prefix = self.pangoize(self.__attributes.get('prefix'))
-        suffix = self.pangoize(self.__attributes.get('suffix'))
-        return '{}{}{}'.format(
-            self.__pad(prefix),
-            text,
-            self.__pad(suffix)
-        )
+        prefix = self.__pad(self.pangoize(self.__attributes.get('prefix')))
+        suffix = self.__pad(self.pangoize(self.__attributes.get('suffix')))
+        self.set('_prefix', prefix)
+        self.set('_suffix', suffix)
+        self.set('_raw', text)
+        return '{}{}{}'.format(prefix, text, suffix)
 
 class i3(object):
     def __init__(self, theme=core.theme.Theme(), config=core.config.Config([])):

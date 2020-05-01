@@ -19,7 +19,6 @@ def every(hours=0, minutes=0, seconds=0):
 def scrollable(func):
     def wrapper(module, widget):
         text = func(module, widget)
-        widget.set('_raw', text)
         if not text:
             return text
         width = widget.get('theme.width', util.format.asint(module.parameter('width', 30)))

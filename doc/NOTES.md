@@ -26,7 +26,4 @@
 - theme.exclude (battery)
 - help output
 - configuration files
-- custom fields __ in output for dwm bridge
-- default separators
-- make a create_widget call in module
-- do not scroll errors?
+- use add_widget() instead of core.widget.Widget()

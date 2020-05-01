@@ -101,11 +101,6 @@ class Error(Module):
         self.__module = module
         self.__error = error
 
-        self.set('scrolling.bounce', False)
-        self.set('scrolling.speed', 2)
-        self.set('width', 15)
-
-    @core.decorators.scrollable
     def full_text(self, widget):
         return '{}: {}'.format(self.__module, self.__error)
 
