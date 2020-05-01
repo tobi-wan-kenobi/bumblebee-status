@@ -26,6 +26,7 @@ class Config(util.store.Store):
             help='Specify a list of modules to hide when not in warning/error state')
         parser.add_argument('-d', '--debug', action='store_true',
             help='Add debug fields to i3 output')
+        parser.add_argument('-f', '--logfile', help='destination for the debug log file, if -d|--debug is specified; defaults to stderr')
         self.__args = parser.parse_args(args)
 
         parameters = [ item for sub in self.__args.parameters for item in sub ]
@@ -44,6 +45,9 @@ class Config(util.store.Store):
 
     def debug(self):
         return self.__args.debug
+
+    def logfile(self):
+        return self.__args.logfile
 
     def theme(self):
         return self.__args.theme

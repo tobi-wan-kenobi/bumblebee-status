@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+import os
 import sys
 import json
 import select
@@ -38,13 +39,22 @@ def handle_input(output):
     poll.unregister(sys.stdin.fileno())
 
 def main():
-    logging.basicConfig(
-        level=logging.DEBUG,
-        format="[%(asctime)s] %(module)-16s %(levelname)-8s %(message)s",
-        stream=sys.stderr
-    )
-
     config = core.config.Config(sys.argv[1:])
+
+    level = logging.DEBUG if config.debug() else logging.ERROR
+    if config.logfile():
+        logging.basicConfig(
+            level=level,
+            format="[%(asctime)s] %(module)-16s %(levelname)-8s %(message)s",
+            filename=os.path.abspath(os.path.expanduser(config.logfile()))
+        )
+    else:
+        logging.basicConfig(
+            level=level,
+            format="[%(asctime)s] %(module)-16s %(levelname)-8s %(message)s",
+            stream=sys.stderr
+        )
+
     theme = core.theme.Theme(config.theme(), config.iconset())
     output = core.output.i3(theme, config)
     modules = []
@@ -52,6 +62,9 @@ def main():
     input_thread = threading.Thread(target=handle_input, args=(output,))
     input_thread.daemon = True
     input_thread.start()
+
+    if config.debug():
+        modules.append(core.module.load('debug', config, theme))
 
     for module in config.modules():
         modules.append(core.module.load(module, config, theme))
