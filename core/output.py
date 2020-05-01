@@ -84,7 +84,7 @@ class block(object):
         for k in [
             'name', 'instance', 'separator_block_width', 'border', 'border_top',
             'border_bottom', 'border_left', 'border_right', 'markup',
-            '_raw', '_suffix', '_prefix'
+            '_raw', '_suffix', '_prefix', 'min_width'
         ]:
             assign(self.__attributes, result, k)
 
@@ -153,7 +153,12 @@ class i3(object):
 
     def __content_block(self, module, widget):
         blk = block(self.__theme, module, widget)
-        blk.set('min_width', widget.get('theme.minwidth'))
+        minwidth = widget.theme('minwidth')
+        if minwidth is not None:
+            try:
+                blk.set('min-width', '-'*int(minwidth))
+            except:
+                blk.set('min-width', minwidth)
         blk.set('full_text', self.__content[widget])
         if widget.get('pango', False):
             blk.set('markup', 'pango')
