@@ -24,7 +24,7 @@ class Module(core.module.Module):
         return self.__format.format(self.__packages)
 
     def hidden(self):
-        return self.check_updates() == 0
+        return self.update() == 0
 
     def update(self):
         result = util.cli.execute('checkupdates')
