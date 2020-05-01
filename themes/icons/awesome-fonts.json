@@ -20,6 +20,7 @@
     "fan": { "prefix": "" }
   },
   "disk": { "prefix": "" },
+  "smartstatus": { "prefix": "" },  
   "dnf": { "prefix": "" },
   "apt": { "prefix": "" },
   "pacman": { "prefix": "" },
@@ -89,6 +90,11 @@
     "ON": { "prefix": "" },
     "OFF": { "prefix": "" },
     "?": { "prefix": "" }
+  },
+  "bluetooth2": {
+    "ON": { "prefix": "" },
+    "warning": { "prefix": "" },
+    "critical": { "prefix": "" }
   },
   "battery-upower": {
     "charged": { "prefix": "", "suffix": "" },

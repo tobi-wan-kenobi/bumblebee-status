@@ -1,0 +1,60 @@
+{
+    "icons": [ "awesome-fonts" ],
+    "defaults": {
+        "separator-block-width": 0,
+        "separator": "",
+        "warning": {
+          "fg": "#282A36",
+			    "bg": "#E5C07B"
+		    },
+    		"critical": {
+    			"fg": "#282A36",
+    			"bg": "#FF5555"
+    		},
+        "fg": "#EFEFEF",
+        "bg": "#161821"
+    },
+    "dnf": {
+        "good": {
+            "fg": "#0f1117",
+            "bg": "#b4be82"
+        }
+    },
+    "apt": {
+        "good": {
+            "fg": "#0f1117",
+            "bg": "#b4be82"
+        }
+    },
+    "pacman": {
+        "good": {
+            "fg": "#0f1117",
+            "bg": "#b4be82"
+        }
+    },
+    "battery": {
+        "charged": {
+            "fg": "#b4be82",
+            "bg": "#161821"
+        },
+        "charging": {
+            "fg": "#89b8c2",
+            "bg": "#161821"
+        }
+    },
+    "pomodoro": {
+        "paused": {
+            "fg": "#0f1117",
+            "bg": "#e2a478"
+        },
+        "work": {
+            "fg": "#1d2021",
+            "bg": "#b8bb26"
+        },
+        "break": {
+            "fg": "#89b8c2",
+            "bg": "#161821"
+        }
+    }
+
+}
