@@ -26,6 +26,7 @@ class TestI3BarOutput(unittest.TestCase):
         self.theme.bg.return_value = "#ababab"
         self.theme.align.return_value = None
         self.theme.minwidth.return_value = ""
+        self.theme.default_separators.return_value = False
 
         self.config = mock.Mock()
         self.config.markup.return_value = ""
