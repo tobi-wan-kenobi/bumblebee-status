@@ -68,6 +68,10 @@ def main():
 
     for module in config.modules():
         modules.append(core.module.load(module, config, theme))
+
+    if config.reverse():
+        modules.reverse()
+
     output.modules(modules)
     core.event.trigger('start')
     while True:

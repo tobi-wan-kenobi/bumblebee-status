@@ -27,6 +27,8 @@ class Config(util.store.Store):
         parser.add_argument('-d', '--debug', action='store_true',
             help='Add debug fields to i3 output')
         parser.add_argument('-f', '--logfile', help='destination for the debug log file, if -d|--debug is specified; defaults to stderr')
+        parser.add_argument('-r', '--right-to-left', action='store_true', help='Draw widgets from right to left, rather than left to right (which is the default)')
+
         self.__args = parser.parse_args(args)
 
         parameters = [ item for sub in self.__args.parameters for item in sub ]
@@ -45,6 +47,9 @@ class Config(util.store.Store):
 
     def debug(self):
         return self.__args.debug
+
+    def reverse(self):
+        return self.__args.right_to_left
 
     def logfile(self):
         return self.__args.logfile
