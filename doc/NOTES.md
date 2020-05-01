@@ -29,3 +29,4 @@
 - custom fields __ in output for dwm bridge
 - default separators
 - make a create_widget call in module
+- do not scroll errors?

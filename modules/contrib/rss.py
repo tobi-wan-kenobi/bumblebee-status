@@ -11,11 +11,7 @@ Parameters:
     * rss.length : Maximum length of the module, default is 60
 """
 
-try:
-    import feedparser
-    DEPENDENCIES_OK = True
-except ImportError:
-    DEPENDENCIES_OK = False
+import feedparser
 
 import webbrowser
 import time
@@ -26,28 +22,25 @@ import random
 import re
 import json
 
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
-
+import core.module
+import core.widget
+import core.input
 
 # pylint: disable=too-many-instance-attributes
-class Module(bumblebee.engine.Module):
+class Module(core.module.Module):
     REFRESH_DELAY = 600
     SCROLL_SPEED = 3
     LAYOUT_STYLES_ITEMS = [[1,1,1],[3,3,2],[2,3,3],[3,2,3]]
-    HISTORY_FILENAME = ".config/i3/rss.hist"
+    HISTORY_FILENAME = '.config/i3/rss.hist'
 
-    def __init__(self, engine, config):
-        super(Module, self).__init__(engine, config,
-            bumblebee.output.Widget(full_text=self.ticker_update if DEPENDENCIES_OK else self._show_error)
-        )
-        # Use BBC newsfeed as demo:
-        self._feeds = self.parameter('feeds', 'https://www.espn.com/espn/rss/news').split(" ")
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.ticker_update))
+
+        self._feeds = self.parameter('feeds', 'https://www.espn.com/espn/rss/news').split(' ')
         self._feeds_to_update = []
-        self._response = ""
+        self._response = ''
 
-        self._max_title_length = int(self.parameter("length", 60))
+        self._max_title_length = int(self.parameter('length', 60))
 
         self._items = []
         self._current_item = None
@@ -63,15 +56,15 @@ class Module(bumblebee.engine.Module):
         self._last_refresh = 0
         self._last_update = 0
 
-        engine.input.register_callback(self, button=bumblebee.input.LEFT_MOUSE, cmd=self._open)
-        engine.input.register_callback(self, button=bumblebee.input.RIGHT_MOUSE, cmd=self._create_newspaper)
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self._open)
+        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self._create_newspaper)
 
         self._history = {'ticker': {}, 'newspaper': {}}
         self._load_history()
 
     def _load_history(self):
         if os.path.isfile(self.HISTORY_FILENAME):
-            self._history = json.loads(open(self.HISTORY_FILENAME, "r").read())
+            self._history = json.loads(open(self.HISTORY_FILENAME, 'r').read())
 
     def _update_history(self, group):
         sources = set([i['source'] for i in self._items])
@@ -80,7 +73,7 @@ class Module(bumblebee.engine.Module):
     def _save_history(self):
         if not os.path.exists(os.path.dirname(self.HISTORY_FILENAME)):
             os.makedirs(os.path.dirname(self.HISTORY_FILENAME))
-        open(self.HISTORY_FILENAME, "w").write(json.dumps(self._history))
+        open(self.HISTORY_FILENAME, 'w').write(json.dumps(self._history))
 
     def _check_history(self, items, group):
         for i in items:
@@ -99,7 +92,7 @@ class Module(bumblebee.engine.Module):
             except Exception:
                 pass
         if not image:
-            match = re.search(r'<img[^>]*src\s*=["\']*([^\s^>^"^\']*)["\']*', entry['summary'])
+            match = re.search(r"<img[^>]*src\s*=['\']*([^\s^>^'^\']*)['\']*", entry['summary'])
             if match:
                 image = match.group(1)
         return image if image else ''
@@ -175,9 +168,6 @@ class Module(bumblebee.engine.Module):
             # Increase scroll position
             self._ticker_offset += self.SCROLL_SPEED
 
-    def _show_error(self, _):
-        return "Please install feedparser first"
-
     def ticker_update(self, _):
         # Only update the ticker once a second
         now = time.time()
@@ -190,7 +180,7 @@ class Module(bumblebee.engine.Module):
 
         # If no items were retrieved, return an empty string
         if not self._current_item:
-            return " "*self._max_title_length
+            return ' '*self._max_title_length
 
         # Prepare a substring of the item title
         self._response = self._current_item['title'][self._ticker_offset:self._ticker_offset+self._max_title_length]
@@ -210,15 +200,12 @@ class Module(bumblebee.engine.Module):
 
         return self._response
 
-    def update(self, widgets):
-        pass
-
     def state(self, _):
         return self._state
 
     def _create_news_element(self, item, overlay_title):
         try:
-            timestr = "" if item['published'] == 0 else str(time.ctime(item['published']))
+            timestr = '' if item['published'] == 0 else str(time.ctime(item['published']))
         except Exception as exc:
             logging.error(str(exc))
             raise e
@@ -246,7 +233,7 @@ class Module(bumblebee.engine.Module):
         return section
 
     def _create_newspaper(self, _):
-        content = ""
+        content = ''
         newspaper_items = self._items[:]
         self._check_history(newspaper_items, 'newspaper')
 
@@ -255,8 +242,8 @@ class Module(bumblebee.engine.Module):
 
         while newspaper_items:
             content += self._create_news_section(newspaper_items)
-        open(self._newspaper_filename, "w").write(HTML_TEMPLATE.replace("[[CONTENT]]", content))
-        webbrowser.open("file://"+self._newspaper_filename)
+        open(self._newspaper_filename, 'w').write(HTML_TEMPLATE.replace('[[CONTENT]]', content))
+        webbrowser.open('file://'+self._newspaper_filename)
         self._update_history('newspaper')
         self._save_history()
 
