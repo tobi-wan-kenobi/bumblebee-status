@@ -71,7 +71,7 @@ class Module(core.module.Module):
 
     def __on_vpndisconnect(self):
         try:
-            util.lci.execute('nmcli c down \'{vpn}\''
+            util.cli.execute('nmcli c down \'{vpn}\''
                                    .format(vpn=self.__connected_vpn_profile))
             self.__connected_vpn_profile = None
         except Exception as e:
