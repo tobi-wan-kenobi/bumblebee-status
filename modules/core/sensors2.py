@@ -34,7 +34,7 @@ class Module(core.module.Module):
         self.__data = {}
         self.__update()
 
-        self.widgets(self.__create_widgets())
+        self.__create_widgets()
 
     def update(self):
         self.__update()
@@ -54,7 +54,6 @@ class Module(core.module.Module):
         return [widget_type]
 
     def __create_widgets(self):
-        widgets = []
         show_temp = util.format.asbool(self.parameter('showtemp', True))
         show_fan = util.format.asbool(self.parameter('showfan', True))
         show_other = util.format.asbool(self.parameter('showother', False))
@@ -66,9 +65,8 @@ class Module(core.module.Module):
         exclude_chip_field = tuple(filter(len, util.format.aslist(self.parameter('chip_field_exclude', ''))))
 
         if util.format.asbool(self.parameter('showcpu', True)):
-            widget = core.widget.Widget(full_text=self.__cpu, module=self)
+            widget = self.add_widget(full_text=self.__cpu)
             widget.set('type', 'cpu')
-            widgets.append(widget)
 
         for adapter in self.__data:
             if include_chip or exclude_chip:
@@ -88,12 +86,11 @@ class Module(core.module.Module):
 
             for package in self.__data[adapter]:
                 if util.format.asbool(self.parameter('showname', False)):
-                    widget = core.widget.Widget(full_text=package, module=self)
+                    widget = self.add_widget(full_text=package)
                     widget.set('data', self.__data[adapter][package])
                     widget.set('package', package)
                     widget.set('field', '')
                     widget.set('adapter', adapter)
-                    widgets.append(widget)
                 for field in self.__data[adapter][package]:
 
                     if include_field or exclude_field:
@@ -115,23 +112,23 @@ class Module(core.module.Module):
                     except:
                         pass
 
-                    widget = core.widget.Widget(module=self)
-                    widget.set('package', package)
-                    widget.set('field', field)
-                    widget.set('adapter', adapter)
+                    widget = None
                     if 'temp' in field and show_temp:
                         # seems to be a temperature
+                        widget = self.add_widget()
                         widget.set('type', 'temp')
-                        widgets.append(widget)
                     if 'fan' in field and show_fan:
                         # seems to be a fan
+                        widget = self.add_widget()
                         widget.set('type', 'fan')
-                        widgets.append(widget)
                     elif show_other:
                         # everything else
+                        widget = self.add_widget()
                         widget.set('type', 'other')
-                        widgets.append(widget)
-        return widgets
+                    if widget:
+                        widget.set('package', package)
+                        widget.set('field', field)
+                        widget.set('adapter', adapter)
 
     def __update_widget(self, widget):
         if widget.get('field', '') == '':

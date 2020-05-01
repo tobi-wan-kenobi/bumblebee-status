@@ -73,6 +73,11 @@ class Module(core.input.Object):
             self.__widgets = widgets
         return self.__widgets
 
+    def add_widget(self, full_text='', name=None):
+        widget = core.widget.Widget(full_text=full_text, name=name, module=self)
+        self.widgets().append(widget)
+        return widget
+
     def widget(self, name=None):
         if not name: return self.widgets()[0]
 
