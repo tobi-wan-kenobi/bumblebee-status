@@ -33,7 +33,7 @@ class Module(core.module.Module):
     def create_widgets(self):
         widgets = []
         if self.display == 'combined':
-            widget = core.widget.Widget()
+            widget = core.widget.Widget(module=self)
             widget.set('device', 'combined')
             widget.set('assessment', self.combined())
             self.output(widget)
@@ -42,7 +42,7 @@ class Module(core.module.Module):
             for device in self.devices:
                 if self.display == 'singles' and device not in self.drives:
                     continue
-                widget = core.widget.Widget()
+                widget = core.widget.Widget(module=self)
                 widget.set('device', device)
                 widget.set('assessment', self.smart(device))
                 self.output(widget)
