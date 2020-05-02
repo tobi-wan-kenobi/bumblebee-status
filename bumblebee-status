@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import socket
 import select
 import logging
 import threading
@@ -13,30 +14,53 @@ import core.module
 import core.input
 import core.event
 
+class CommandSocket(object):
+    def __init__(self):
+        self.__name = '/tmp/.bumblebee-status.{}'.format(os.getpid())
+        self.__socket = None
+
+    def __enter__(self):
+        self.__socket = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+        self.__socket.bind(self.__name)
+        self.__socket.listen(5)
+        return self.__socket
+
+    def __exit__(self, type, value, traceback):
+        self.__socket.close()
+        os.unlink(self.__name)
+
 def handle_input(output):
-    poll = select.poll()
-    poll.register(sys.stdin.fileno(), select.POLLIN)
+    with CommandSocket() as cmdsocket:
+        poll = select.poll()
+        poll.register(sys.stdin.fileno(), select.POLLIN)
+        poll.register(cmdsocket, select.POLLIN)
 
-    while True:
-        events = poll.poll()
+        while True:
+            events = poll.poll()
 
-        modules = {}
-        for fileno, event in events:
-            line = '['
-            while line.startswith('['):
-                line = sys.stdin.readline().strip(',').strip()
-            logging.info('input event: {}'.format(line))
-            try:
-                event = json.loads(line)
-                core.input.trigger(event)
-                if 'name' in event:
-                    modules[event['name']] = True
-            except ValueError:
-                pass
-        core.event.trigger('update', modules.keys())
-        core.event.trigger('draw')
+            modules = {}
+            for fileno, event in events:
+                if fileno == cmdsocket.fileno():
+                    tmp, _ = cmdsocket.accept()
+                    line = tmp.recv(4096).decode()
+                    tmp.close()
+                    logging.debug('socket event  {}'.format(line))
+                else:
+                    line = '['
+                    while line.startswith('['):
+                        line = sys.stdin.readline().strip(',').strip()
+                    logging.info('input event: {}'.format(line))
+                try:
+                    event = json.loads(line)
+                    core.input.trigger(event)
+                    if 'name' in event:
+                        modules[event['name']] = True
+                except ValueError:
+                    pass
+            core.event.trigger('update', modules.keys())
+            core.event.trigger('draw')
 
-    poll.unregister(sys.stdin.fileno())
+        poll.unregister(sys.stdin.fileno())
 
 def main():
     config = core.config.Config(sys.argv[1:])
