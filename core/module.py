@@ -1,3 +1,4 @@
+import os
 import importlib
 import logging
 
@@ -19,11 +20,10 @@ def load(module_name, config=core.config.Config([]), theme=None):
     for namespace in [ 'core', 'contrib' ]:
         try:
             mod = importlib.import_module('modules.{}.{}'.format(namespace, module_short))
+            log.debug('importing {} from {}.{}'.format(module_short, namespace, module_short))
             return getattr(mod, 'Module')(config, theme)
         except ImportError as e:
-            log.fatal('failed to import {}: {}'.format(module_short, e))
-            if not error or module_short in error:
-                error = str(e)
+                error = e
     log.fatal('failed to import {}: {}'.format(module_name, error))
     return Error(config=config, module=module_name, error=error)
 
