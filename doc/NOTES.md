@@ -11,8 +11,7 @@
 - use __ for private
 
 ## Backwards-compatibility
-- scrolling decorator (incl. minwidth, alignment)
-- bumblebee-ctrl
+- alignment parameter
 - default wheel handlers
 
 ## Improvements
@@ -22,8 +21,6 @@
 ## TODO
 - themes: use colors to improve theme readability
 - convert some stuff to simple attributes to reduce LOCs
-- bumblebee-ctrl
 - theme.exclude (battery)
-- help output
 - configuration files
 - use add_widget() instead of core.widget.Widget()
