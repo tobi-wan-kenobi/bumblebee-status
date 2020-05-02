@@ -32,15 +32,17 @@ class Module(core.input.Object):
         super().__init__()
         self.__config = config
         self.__widgets = widgets if isinstance(widgets, list) else [ widgets ]
-        for widget in self.__widgets:
-            widget.module = self
 
         self.module_name = self.__module__.split('.')[-1]
         self.name = self.module_name
         self.alias = self.__config.get('__alias__', None)
+        self.id = self.alias if self.alias else self.name
         self.next_update = None
 
         self.theme = theme
+
+        for widget in self.__widgets:
+            widget.module = self
 
     def hidden(self):
         return False
