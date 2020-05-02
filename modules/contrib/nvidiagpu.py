@@ -25,9 +25,7 @@ class Module(core.module.Module):
         return self.__utilization
 
     def hidden(self):
-        if "not found" in self._utilization.startswith("not found"):
-            return True
-        return False
+        return self.__utilization.startswith("not found")
 
     def update(self):
         sp = util.cli.execute('nvidia-smi -q', ignore_errors=True)
