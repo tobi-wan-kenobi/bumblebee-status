@@ -1,8 +1,5 @@
 import os
-try:
-    import ast
-except ImportError:
-    log.warning('--list modules will not work (module "ast" not found)')
+import ast
 
 from configparser import RawConfigParser
 
