@@ -266,5 +266,8 @@
       "work": { "prefix": "" },
       "break": { "prefix": "" }
   },
-  "hddtemp": { "prefix": "" }
+  "hddtemp": { "prefix": "" },
+  "octoprint": {
+    "prefix": " "
+  }
 }
