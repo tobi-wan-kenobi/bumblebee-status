@@ -57,7 +57,7 @@ class WebcamImagesWorker(threading.Thread):
         self.__running = False
 
 class Module(core.module.Module):
-    @core.decorators.every(minutes=1)
+    @core.decorators.every(seconds=5)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.octoprint_status))
 
