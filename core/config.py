@@ -3,6 +3,9 @@ try:
     import ast
 except ImportError:
     log.warning('--list modules will not work (module "ast" not found)')
+
+from configparser import RawConfigParser
+
 import sys
 import glob
 import textwrap
@@ -118,6 +121,10 @@ class Config(util.store.Store):
 
         self.__args = parser.parse_args(args)
 
+        for cfg in [ '~/.bumblebee-status.conf', '~/.config/bumblebee-status.conf', '~/.config/bumblebee-status/config' ]:
+            cfg = os.path.expanduser(cfg)
+            self.load_config(cfg)
+
         parameters = [ item for sub in self.__args.parameters for item in sub ]
         for param in parameters:
             if not '=' in param:
@@ -125,6 +132,16 @@ class Config(util.store.Store):
                 continue
             key, value = param.split('=', 1)
             self.set(key, value)
+
+    def load_config(self, filename):
+        if os.path.exists(filename):
+            log.info('loading {}'.format(filename))
+            tmp = RawConfigParser()
+            tmp.read(filename)
+
+            if tmp.has_section('module-parameters'):
+                for key, value in tmp.items('module-parameters'):
+                    self.set(key, value)
 
     def modules(self):
         return [item for sub in self.__args.modules for item in sub]
