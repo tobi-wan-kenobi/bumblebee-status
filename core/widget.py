@@ -11,6 +11,21 @@ class Widget(util.store.Store, core.input.Object):
         self.module = module
         self.name = name
 
+    @property
+    def module(self):
+        return self.__module
+
+    @module.setter
+    def module(self, module):
+        self.__module = module
+
+        if self.index() < 0: return
+
+        if module:
+            custom_ids = util.format.aslist(module.parameter('id'))
+            if len(custom_ids) > self.index():
+                self.id = custom_ids[self.index()]
+
     def index(self):
         if not self.module: return 0
 
