@@ -70,4 +70,22 @@ class widget(unittest.TestCase):
         module.states = ['a', 'b']
         self.assertEqual(['state1', 'state2', 'a', 'b'], self.someWidget.state())
 
+    def test_multiple_widget_themes(self):
+        widget1 = core.widget.Widget(full_text='a')
+        widget2 = core.widget.Widget(full_text='b')
+        widget3 = core.widget.Widget(full_text='c')
+
+        module = TestModule(widgets=[widget1, widget2, widget3])
+        module.set('theme.test', '1,2,3')
+        module.set('theme.test2', 'x')
+
+        self.assertEqual('1', widget1.theme('test'))
+        self.assertEqual('2', widget2.theme('test'))
+        self.assertEqual('3', widget3.theme('test'))
+
+        self.assertEqual('x', widget1.theme('test2'))
+        self.assertEqual(None, widget2.theme('test2'))
+        self.assertEqual(None, widget3.theme('test2'))
+
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

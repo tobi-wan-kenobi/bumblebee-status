@@ -22,3 +22,4 @@
 - convert some stuff to simple attributes to reduce LOCs
 - theme.exclude (battery)
 - use add_widget() instead of core.widget.Widget()
+- use widget index for bumblebee-ctl as alternative (??)
