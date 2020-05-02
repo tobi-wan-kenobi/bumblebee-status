@@ -12,10 +12,14 @@ def clear():
     __callbacks.clear()
 
 def trigger(event, *args, **kwargs):
-    for callback in __callbacks.get(event, []):
+    cb = __callbacks.get(event, [])
+    if len(cb) == 0: return False
+
+    for callback in cb:
         if len(args) + len(kwargs) == 0:
             callback()
         else:
             callback(*args, **kwargs)
+    return True
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

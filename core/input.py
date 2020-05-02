@@ -34,7 +34,7 @@ def __execute(cmd):
         logging.error('failed to invoke callback: {}'.format(e))
 
 def register(obj, button=None, cmd=None):
-    event_id = __event_id(obj.id, button)
+    event_id = __event_id(obj.id if obj is not None else '', button)
     logging.debug('registering callback {}'.format(event_id))
     if callable(cmd):
         core.event.register(event_id, cmd)
@@ -43,8 +43,13 @@ def register(obj, button=None, cmd=None):
 
 def trigger(event):
     if not 'button' in event: return
+
+    triggered = False
     for field in ['instance', 'name']:
         if not field in event: continue
-        core.event.trigger(__event_id(event[field], event['button']), event)
+        if core.event.trigger(__event_id(event[field], event['button']), event):
+            triggered = True
+    if not triggered:
+        core.event.trigger(__event_id('', event['button']), event)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
