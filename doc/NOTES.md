@@ -23,3 +23,6 @@
 - theme.exclude (battery)
 - use add_widget() instead of core.widget.Widget()
 - use widget index for bumblebee-ctl as alternative (??)
+
+# documentation
+Add info about error widget and events for error logging
