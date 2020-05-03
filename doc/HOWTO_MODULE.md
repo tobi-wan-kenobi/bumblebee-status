@@ -10,6 +10,7 @@ Adding a new module to `bumblebee-status` is straight-forward:
 - See below for how to actually write the module
 - Test (run `bumblebee-status` in the CLI)
 - Make sure your changes don't break anything: `./coverage.sh`
+- If you want to do me favour, run your module through `black -t py34` before submitting
 
 ## Pull requests
 The project **gladly** accepts PRs for bugfixes, new functionality, new
@@ -55,6 +56,14 @@ Otherwise, you have a number of ways to handle widgets:
   of widgets, and those will comprise the widgets (in ordered fashion)
 - During runtime, you can set a new list of widgets by using the `self.widgets(<new list>)`
   method of the module
+
+## Adding widgets at runtime
+If you want to add widgets during runtime, please use the `add_widget()` method of the module:
+
+```
+def do_something(self):
+	self.add_widget(full_text="my sample text", name="<optional name>")
+```
 
 TODO: expand on this
 
