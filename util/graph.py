@@ -1,7 +1,9 @@
-MAX_PERCENTS = 100.
+MAX_PERCENTS = 100.0
+
 
 class Bar(object):
     """superclass"""
+
     bars = None
 
     def __init__(self, value):
@@ -12,17 +14,19 @@ class Bar(object):
         """
         self.value = value
 
+
 class HBar(Bar):
     """horizontal bar (1 char)"""
+
     bars = [
-        u"\u2581",
-        u"\u2582",
-        u"\u2583",
-        u"\u2584",
-        u"\u2585",
-        u"\u2586",
-        u"\u2587",
-        u"\u2588"
+        "\u2581",
+        "\u2582",
+        "\u2583",
+        "\u2584",
+        "\u2585",
+        "\u2586",
+        "\u2587",
+        "\u2588",
     ]
 
     def __init__(self, value):
@@ -47,6 +51,7 @@ class HBar(Bar):
                 return self.bars[i]
         return self.bars[-1]
 
+
 def hbar(value):
     """wrapper function"""
     return HBar(value).get_char()
@@ -54,15 +59,16 @@ def hbar(value):
 
 class VBar(Bar):
     """vertical bar (can be more than 1 char)"""
+
     bars = [
-        u"\u258f",
-        u"\u258e",
-        u"\u258d",
-        u"\u258c",
-        u"\u258b",
-        u"\u258a",
-        u"\u2589",
-        u"\u2588"
+        "\u258f",
+        "\u258e",
+        "\u258d",
+        "\u258c",
+        "\u258b",
+        "\u258a",
+        "\u2589",
+        "\u2588",
     ]
 
     def __init__(self, value, width=1):
@@ -108,38 +114,41 @@ def vbar(value, width):
     """wrapper function"""
     return VBar(value, width).get_chars()
 
+
 class BrailleGraph(object):
     """
         graph using Braille chars
         scaled to passed values
     """
+
     chars = {
-        (0, 0): u" ",
-        (1, 0): u"\u2840",
-        (2, 0): u"\u2844",
-        (3, 0): u"\u2846",
-        (4, 0): u"\u2847",
-        (0, 1): u"\u2880",
-        (0, 2): u"\u28a0",
-        (0, 3): u"\u28b0",
-        (0, 4): u"\u28b8",
-        (1, 1): u"\u28c0",
-        (2, 1): u"\u28c4",
-        (3, 1): u"\u28c6",
-        (4, 1): u"\u28c7",
-        (1, 2): u"\u28e0",
-        (2, 2): u"\u28e4",
-        (3, 2): u"\u28e6",
-        (4, 2): u"\u28e7",
-        (1, 3): u"\u28f0",
-        (2, 3): u"\u28f4",
-        (3, 3): u"\u28f6",
-        (4, 3): u"\u28f7",
-        (1, 4): u"\u28f8",
-        (2, 4): u"\u28fc",
-        (3, 4): u"\u28fe",
-        (4, 4): u"\u28ff"
+        (0, 0): " ",
+        (1, 0): "\u2840",
+        (2, 0): "\u2844",
+        (3, 0): "\u2846",
+        (4, 0): "\u2847",
+        (0, 1): "\u2880",
+        (0, 2): "\u28a0",
+        (0, 3): "\u28b0",
+        (0, 4): "\u28b8",
+        (1, 1): "\u28c0",
+        (2, 1): "\u28c4",
+        (3, 1): "\u28c6",
+        (4, 1): "\u28c7",
+        (1, 2): "\u28e0",
+        (2, 2): "\u28e4",
+        (3, 2): "\u28e6",
+        (4, 2): "\u28e7",
+        (1, 3): "\u28f0",
+        (2, 3): "\u28f4",
+        (3, 3): "\u28f6",
+        (4, 3): "\u28f7",
+        (1, 4): "\u28f8",
+        (2, 4): "\u28fc",
+        (3, 4): "\u28fe",
+        (4, 4): "\u28ff",
     }
+
     def __init__(self, values):
         """
             Args:
@@ -152,8 +161,7 @@ class BrailleGraph(object):
         if len(self.values) % 2 == 1:
             self.values.append(0)
         self.steps = self.get_steps()
-        self.parts = [tuple(self.steps[i:i+2])
-                      for i in range(len(self.steps))[::2]]
+        self.parts = [tuple(self.steps[i : i + 2]) for i in range(len(self.steps))[::2]]
 
     @staticmethod
     def get_height(value, unit):
@@ -166,7 +174,7 @@ class BrailleGraph(object):
 
                 unit (number): unit
         """
-        if value < unit / 10.:
+        if value < unit / 10.0:
             return 0
         elif value <= unit:
             return 1
@@ -184,7 +192,7 @@ class BrailleGraph(object):
             Return: list
         """
         maxval = max(self.values)
-        unit = maxval / 4.
+        unit = maxval / 4.0
         if unit == 0:
             return [0] * len(self.values)
         stepslist = []
@@ -203,8 +211,10 @@ class BrailleGraph(object):
             chars.append(BrailleGraph.chars[part])
         return "".join(chars)
 
+
 def braille(values):
     """wrapper function"""
     return BrailleGraph(values).get_chars()
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

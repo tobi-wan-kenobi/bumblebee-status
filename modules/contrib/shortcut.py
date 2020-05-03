@@ -19,22 +19,23 @@ Parameters:
 
 import logging
 
-LINK = 'https://github.com/tobi-wan-kenobi/bumblebee-status/wiki'
-LABEL = 'Click me'
+LINK = "https://github.com/tobi-wan-kenobi/bumblebee-status/wiki"
+LABEL = "Click me"
 
 import core.module
 import core.widget
 import core.input
 import core.decorators
 
+
 class Module(core.module.Module):
     @core.decorators.every(minutes=60)
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
 
-        self.__labels = self.parameter('labels', '{}'.format(LABEL))
-        self.__cmds = self.parameter('cmds', 'firefox {}'.format(LINK))
-        self.__delim = self.parameter('delim', ';')
+        self.__labels = self.parameter("labels", "{}".format(LABEL))
+        self.__cmds = self.parameter("cmds", "firefox {}".format(LINK))
+        self.__delim = self.parameter("delim", ";")
 
         self.update_widgets()
 
@@ -51,9 +52,11 @@ class Module(core.module.Module):
 
         # report possible problem as a warning
         if len(cmds) is not len(labels):
-            logging.warning('shortcut: the number of commands does not match '\
-                            'the number of provided labels.')
-            logging.warning('cmds : %s, labels : %s', cmds, labels)
+            logging.warning(
+                "shortcut: the number of commands does not match "
+                "the number of provided labels."
+            )
+            logging.warning("cmds : %s, labels : %s", cmds, labels)
 
         for idx in range(0, num_shortcuts):
             cmd = cmds[idx]
@@ -63,5 +66,6 @@ class Module(core.module.Module):
             core.input.register(widget, button=core.input.LEFT_MOUSE, cmd=cmd)
 
             widgets.append(widget)
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

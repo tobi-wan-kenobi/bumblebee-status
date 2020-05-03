@@ -26,11 +26,12 @@ import core.widget
 import util.cli
 import util.format
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
 
-        self.__chip = self.parameter('chip', '')
+        self.__chip = self.parameter("chip", "")
         self.__data = {}
         self.__update()
 
@@ -42,31 +43,45 @@ class Module(core.module.Module):
             self.__update_widget(widget)
 
     def state(self, widget):
-        widget_type = widget.get('type', '')
+        widget_type = widget.get("type", "")
         try:
-            data = self.__data[widget.get('adapter')][widget.get('package')][widget.get('field')]
-            if 'crit' in data and float(data['input']) > float(data['crit']):
-                return ['critical', widget_type]
-            if 'max' in data and float(data['input']) > float(data['max']):
-                return ['warning', widget_type]
+            data = self.__data[widget.get("adapter")][widget.get("package")][
+                widget.get("field")
+            ]
+            if "crit" in data and float(data["input"]) > float(data["crit"]):
+                return ["critical", widget_type]
+            if "max" in data and float(data["input"]) > float(data["max"]):
+                return ["warning", widget_type]
         except:
             pass
         return [widget_type]
 
     def __create_widgets(self):
-        show_temp = util.format.asbool(self.parameter('showtemp', True))
-        show_fan = util.format.asbool(self.parameter('showfan', True))
-        show_other = util.format.asbool(self.parameter('showother', False))
-        include_chip = tuple(filter(len, util.format.aslist(self.parameter('chip_include', ''))))
-        exclude_chip = tuple(filter(len, util.format.aslist(self.parameter('chip_exclude', ''))))
-        include_field = tuple(filter(len, util.format.aslist(self.parameter('field_include', ''))))
-        exclude_field = tuple(filter(len, util.format.aslist(self.parameter('field_exclude', ''))))
-        include_chip_field = tuple(filter(len, util.format.aslist(self.parameter('chip_field_include', ''))))
-        exclude_chip_field = tuple(filter(len, util.format.aslist(self.parameter('chip_field_exclude', ''))))
+        show_temp = util.format.asbool(self.parameter("showtemp", True))
+        show_fan = util.format.asbool(self.parameter("showfan", True))
+        show_other = util.format.asbool(self.parameter("showother", False))
+        include_chip = tuple(
+            filter(len, util.format.aslist(self.parameter("chip_include", "")))
+        )
+        exclude_chip = tuple(
+            filter(len, util.format.aslist(self.parameter("chip_exclude", "")))
+        )
+        include_field = tuple(
+            filter(len, util.format.aslist(self.parameter("field_include", "")))
+        )
+        exclude_field = tuple(
+            filter(len, util.format.aslist(self.parameter("field_exclude", "")))
+        )
+        include_chip_field = tuple(
+            filter(len, util.format.aslist(self.parameter("chip_field_include", "")))
+        )
+        exclude_chip_field = tuple(
+            filter(len, util.format.aslist(self.parameter("chip_field_exclude", "")))
+        )
 
-        if util.format.asbool(self.parameter('showcpu', True)):
+        if util.format.asbool(self.parameter("showcpu", True)):
             widget = self.add_widget(full_text=self.__cpu)
-            widget.set('type', 'cpu')
+            widget.set("type", "cpu")
 
         for adapter in self.__data:
             if include_chip or exclude_chip:
@@ -79,23 +94,27 @@ class Module(core.module.Module):
 
             if include_chip_field:
                 try:
-                    if all([i.split('.')[0] not in adapter for i in include_chip_field]):
+                    if all(
+                        [i.split(".")[0] not in adapter for i in include_chip_field]
+                    ):
                         continue
                 except:
                     pass
 
             for package in self.__data[adapter]:
-                if util.format.asbool(self.parameter('showname', False)):
+                if util.format.asbool(self.parameter("showname", False)):
                     widget = self.add_widget(full_text=package)
-                    widget.set('data', self.__data[adapter][package])
-                    widget.set('package', package)
-                    widget.set('field', '')
-                    widget.set('adapter', adapter)
+                    widget.set("data", self.__data[adapter][package])
+                    widget.set("package", package)
+                    widget.set("field", "")
+                    widget.set("adapter", adapter)
                 for field in self.__data[adapter][package]:
 
                     if include_field or exclude_field:
                         if include_field:
-                            if all([included not in field for included in include_field]):
+                            if all(
+                                [included not in field for included in include_field]
+                            ):
                                 continue
                         else:
                             if any([excluded in field for excluded in exclude_field]):
@@ -104,62 +123,79 @@ class Module(core.module.Module):
                     try:
                         if include_chip_field or exclude_chip_field:
                             if include_chip_field:
-                                if all([i.split('.')[1] not in field for i in include_chip_field if i.split('.')[0] in adapter]):
+                                if all(
+                                    [
+                                        i.split(".")[1] not in field
+                                        for i in include_chip_field
+                                        if i.split(".")[0] in adapter
+                                    ]
+                                ):
                                     continue
                             else:
-                                if any([i.split('.')[1] in field for i in exclude_chip_field if i.split('.')[0] in adapter]):
+                                if any(
+                                    [
+                                        i.split(".")[1] in field
+                                        for i in exclude_chip_field
+                                        if i.split(".")[0] in adapter
+                                    ]
+                                ):
                                     continue
                     except:
                         pass
 
                     widget = None
-                    if 'temp' in field and show_temp:
+                    if "temp" in field and show_temp:
                         # seems to be a temperature
                         widget = self.add_widget()
-                        widget.set('type', 'temp')
-                    if 'fan' in field and show_fan:
+                        widget.set("type", "temp")
+                    if "fan" in field and show_fan:
                         # seems to be a fan
                         widget = self.add_widget()
-                        widget.set('type', 'fan')
+                        widget.set("type", "fan")
                     elif show_other:
                         # everything else
                         widget = self.add_widget()
-                        widget.set('type', 'other')
+                        widget.set("type", "other")
                     if widget:
-                        widget.set('package', package)
-                        widget.set('field', field)
-                        widget.set('adapter', adapter)
+                        widget.set("package", package)
+                        widget.set("field", field)
+                        widget.set("adapter", adapter)
 
     def __update_widget(self, widget):
-        if widget.get('field', '') == '':
-            return # nothing to do
-        data = self.__data[widget.get('adapter')][widget.get('package')][widget.get('field')]
-        if 'temp' in widget.get('field'):
-            widget.full_text(u'{:0.01f}°C'.format(data['input']))
-        elif 'fan' in widget.get('field'):
-            widget.full_text(u'{:0.0f}RPM'.format(data['input']))
+        if widget.get("field", "") == "":
+            return  # nothing to do
+        data = self.__data[widget.get("adapter")][widget.get("package")][
+            widget.get("field")
+        ]
+        if "temp" in widget.get("field"):
+            widget.full_text("{:0.01f}°C".format(data["input"]))
+        elif "fan" in widget.get("field"):
+            widget.full_text("{:0.0f}RPM".format(data["input"]))
         else:
-            widget.full_text(u'{:0.0f}'.format(data['input']))
+            widget.full_text("{:0.0f}".format(data["input"]))
 
     def __update(self):
-        output = util.cli.execute('sensors -u {}'.format(self.__chip), ignore_errors=True)
+        output = util.cli.execute(
+            "sensors -u {}".format(self.__chip), ignore_errors=True
+        )
         self.__data = self.__parse(output)
 
     def __parse(self, data):
         output = {}
-        package = ''
+        package = ""
         adapter = None
         chip = None
-        for line in data.split('\n'):
-            if 'Adapter' in line:
+        for line in data.split("\n"):
+            if "Adapter" in line:
                 # new adapter
-                line = line.replace('Adapter: ', '')
-                output[chip + ' ' + line] = {}
-                adapter = chip + ' ' + line
-            chip = line #default - line before adapter is always the chip
-            if not adapter: continue
-            key, value = (line.split(':') + ['', ''])[:2]
-            if not line.startswith(' '):
+                line = line.replace("Adapter: ", "")
+                output[chip + " " + line] = {}
+                adapter = chip + " " + line
+            chip = line  # default - line before adapter is always the chip
+            if not adapter:
+                continue
+            key, value = (line.split(":") + ["", ""])[:2]
+            if not line.startswith(" "):
                 # assume this starts a new package
                 if package in output[adapter] and output[adapter][package] == {}:
                     del output[adapter][package]
@@ -168,9 +204,9 @@ class Module(core.module.Module):
             else:
                 # feature for this chip
                 try:
-                    name, variant = (key.strip().split('_', 1) + ['',''])[:2]
+                    name, variant = (key.strip().split("_", 1) + ["", ""])[:2]
                     if not name in output[adapter][package]:
-                        output[adapter][package][name] = { }
+                        output[adapter][package][name] = {}
                     if variant:
                         output[adapter][package][name][variant] = {}
                     output[adapter][package][name][variant] = float(value)
@@ -181,23 +217,26 @@ class Module(core.module.Module):
     def __cpu(self, _):
         mhz = None
         try:
-            output = open('/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq').read()
-            mhz = int(float(output)/1000.0)
+            output = open(
+                "/sys/devices/system/cpu/cpufreq/policy0/scaling_cur_freq"
+            ).read()
+            mhz = int(float(output) / 1000.0)
         except:
-            output = open('/proc/cpuinfo').read()
-            m = re.search(r'cpu MHz\s+:\s+(\d+)', output)
+            output = open("/proc/cpuinfo").read()
+            m = re.search(r"cpu MHz\s+:\s+(\d+)", output)
             if m:
                 mhz = int(m.group(1))
             else:
-                m = re.search(r'BogoMIPS\s+:\s+(\d+)', output)
+                m = re.search(r"BogoMIPS\s+:\s+(\d+)", output)
                 if m:
-                    return '{} BogoMIPS'.format(int(m.group(1)))
+                    return "{} BogoMIPS".format(int(m.group(1)))
         if not mhz:
-            return 'n/a'
+            return "n/a"
 
         if mhz < 1000:
-            return '{} MHz'.format(mhz)
+            return "{} MHz".format(mhz)
         else:
-            return '{:0.01f} GHz'.format(float(mhz)/1000.0)
+            return "{:0.01f} GHz".format(float(mhz) / 1000.0)
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

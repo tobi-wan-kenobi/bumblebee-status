@@ -10,6 +10,7 @@ except ImportError:
 
 import functools
 
+
 class menu(object):
     def __init__(self, parent=None, leave=True):
         if not parent:
@@ -42,13 +43,16 @@ class menu(object):
         self._menu.add_cascade(label=menuitem, menu=submenu.menu())
 
     def add_menuitem(self, menuitem, callback):
-        self._menu.add_command(label=menuitem, command=functools.partial(self._on_click, callback))
+        self._menu.add_command(
+            label=menuitem, command=functools.partial(self._on_click, callback)
+        )
 
     def show(self, event, offset_x=0, offset_y=0):
         try:
-            self._menu.tk_popup(event['x'] + offset_x, event['y'] + offset_y)
+            self._menu.tk_popup(event["x"] + offset_x, event["y"] + offset_y)
         finally:
             self._menu.grab_release()
         self._root.mainloop()
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

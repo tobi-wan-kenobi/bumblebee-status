@@ -10,6 +10,7 @@ import core.decorators
 
 import util.cli
 
+
 class Module(core.module.Module):
     @core.decorators.every(minutes=60)
     def __init__(self, config, theme):
@@ -18,7 +19,7 @@ class Module(core.module.Module):
 
     @property
     def __format(self):
-        return self.parameter('format', 'Update Arch: {}')
+        return self.parameter("format", "Update Arch: {}")
 
     def utilization(self, widget):
         return self.__format.format(self.__packages)
@@ -27,10 +28,11 @@ class Module(core.module.Module):
         return self.__packages == 0
 
     def update(self):
-        result = util.cli.execute('checkupdates')
-        self.__packages = len(result.split('\n')) - 1
+        result = util.cli.execute("checkupdates")
+        self.__packages = len(result.split("\n")) - 1
 
     def state(self, widget):
         return self.threshold_state(self.__packages, 1, 100)
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

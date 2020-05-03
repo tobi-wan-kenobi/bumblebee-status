@@ -12,14 +12,13 @@ import core.input
 
 import util.cli
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.current_layout))
 
-        core.input.register(self, button=core.input.LEFT_MOUSE,
-            cmd=self.__next_keymap)
-        core.input.register(self, button=core.input.RIGHT_MOUSE,
-            cmd=self.__prev_keymap)
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.__next_keymap)
+        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.__prev_keymap)
 
     def __next_keymap(self, event):
         self._set_keymap(1)
@@ -29,41 +28,49 @@ class Module(core.module.Module):
 
     def _set_keymap(self, rotation):
         layouts = self.get_layouts()
-        if len(layouts) == 1: return # nothing to do
+        if len(layouts) == 1:
+            return  # nothing to do
         layouts = layouts[rotation:] + layouts[:rotation]
 
         layout_list = []
         variant_list = []
         for l in layouts:
-            tmp = l.split(':')
+            tmp = l.split(":")
             layout_list.append(tmp[0])
-            variant_list.append(tmp[1] if len(tmp) > 1 else '')
+            variant_list.append(tmp[1] if len(tmp) > 1 else "")
 
-        util.cli.execute('setxkbmap -layout {} -variant {}'.format(','.join(layout_list), ','.join(variant_list)), ignore_errors=True)
+        util.cli.execute(
+            "setxkbmap -layout {} -variant {}".format(
+                ",".join(layout_list), ",".join(variant_list)
+            ),
+            ignore_errors=True,
+        )
 
     def get_layouts(self):
         try:
-            res = util.cli.execute('setxkbmap -query')
+            res = util.cli.execute("setxkbmap -query")
         except RuntimeError:
-            return ['n/a']
+            return ["n/a"]
         layouts = []
         variants = []
-        for line in res.split('\n'):
-            if not line: continue
-            if 'layout' in line:
-                layouts = line.split(':')[1].strip().split(',')
-            if 'variant' in line:
-                variants = line.split(':')[1].strip().split(',')
+        for line in res.split("\n"):
+            if not line:
+                continue
+            if "layout" in line:
+                layouts = line.split(":")[1].strip().split(",")
+            if "variant" in line:
+                variants = line.split(":")[1].strip().split(",")
 
         result = []
         for idx, layout in enumerate(layouts):
             if len(variants) > idx and variants[idx]:
-                layout = '{}:{}'.format(layout, variants[idx])
+                layout = "{}:{}".format(layout, variants[idx])
             result.append(layout)
-        return result if len(result) > 0 else ['n/a']
+        return result if len(result) > 0 else ["n/a"]
 
     def current_layout(self, widget):
         layouts = self.get_layouts()
         return layouts[0]
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

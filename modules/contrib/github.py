@@ -18,6 +18,7 @@ import core.widget
 import core.decorators
 import core.input
 
+
 class Module(core.module.Module):
     @core.decorators.every(minutes=5)
     def __init__(self, config, theme):
@@ -25,15 +26,19 @@ class Module(core.module.Module):
 
         self.__count = 0
         self.__requests = requests.Session()
-        self.__requests.headers.update({'Authorization':'token {}'.format(self.parameter('token', ''))})
+        self.__requests.headers.update(
+            {"Authorization": "token {}".format(self.parameter("token", ""))}
+        )
 
-        cmd = 'xdg-open'
+        cmd = "xdg-open"
         if not shutil.which(cmd):
-            cmd = 'x-www-browser'
+            cmd = "x-www-browser"
 
-
-        core.input.register(self, button=core.input.LEFT_MOUSE,
-            cmd='{} https://github.com/notifications'.format(cmd))
+        core.input.register(
+            self,
+            button=core.input.LEFT_MOUSE,
+            cmd="{} https://github.com/notifications".format(cmd),
+        )
         core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.update)
 
     def github(self, _):
@@ -42,17 +47,25 @@ class Module(core.module.Module):
     def update(self):
         try:
             self.__count = 0
-            url = 'https://api.github.com/notifications'
+            url = "https://api.github.com/notifications"
             while True:
                 notifications = self.__requests.get(url)
-                self.__count += len(list(filter(lambda notification: notification['unread'], notifications.json())))
-                next_link = notifications.links.get('next')
+                self.__count += len(
+                    list(
+                        filter(
+                            lambda notification: notification["unread"],
+                            notifications.json(),
+                        )
+                    )
+                )
+                next_link = notifications.links.get("next")
                 if next_link is not None:
-                    url = next_link.get('url')
+                    url = next_link.get("url")
                 else:
                     break
 
         except Exception:
-            self.__count = 'n/a'
+            self.__count = "n/a"
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

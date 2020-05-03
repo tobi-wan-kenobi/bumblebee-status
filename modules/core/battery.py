@@ -15,6 +15,7 @@ Parameters:
 import os
 import glob
 import logging
+
 log = logging.getLogger(__name__)
 
 try:
@@ -28,6 +29,7 @@ import core.input
 
 import util.format
 
+
 class BatteryManager(object):
     def remaining(self):
         try:
@@ -35,26 +37,25 @@ class BatteryManager(object):
             # do not show remaining if on AC
             if estimate == power.common.TIME_REMAINING_UNLIMITED:
                 return None
-            return estimate*60 # return value in seconds
+            return estimate * 60  # return value in seconds
         except Exception as e:
             return -1
         return -1
 
     def read(self, battery, component, default=None):
-        path = '/sys/class/power_supply/{}'.format(battery)
+        path = "/sys/class/power_supply/{}".format(battery)
         if not os.path.exists(path):
             return default
         try:
-            with open('{}/{}'.format(path, component)) as f:
+            with open("{}/{}".format(path, component)) as f:
                 return f.read().strip()
         except IOError:
-            return 'n/a'
+            return "n/a"
         return default
 
-
     def capacity(self, battery):
-        capacity = self.read(battery, 'capacity', 100)
-        if capacity != 'n/a':
+        capacity = self.read(battery, "capacity", 100)
+        if capacity != "n/a":
             capacity = int(capacity)
 
         return capacity if capacity < 100 else 100
@@ -64,37 +65,41 @@ class BatteryManager(object):
         full = 0
         for battery in batteries:
             try:
-                with open('/sys/class/power_supply/{}/energy_full'.format(battery)) as f:
+                with open(
+                    "/sys/class/power_supply/{}/energy_full".format(battery)
+                ) as f:
                     full += int(f.read())
-                with open('/sys/class/power_supply/{}/energy_now'.format(battery)) as f:
+                with open("/sys/class/power_supply/{}/energy_now".format(battery)) as f:
                     now += int(f.read())
             except IOError:
-                return 'n/a'
-        return int(float(now)/float(full)*100.0)
+                return "n/a"
+        return int(float(now) / float(full) * 100.0)
 
     def isac(self, battery):
-        path = '/sys/class/power_supply/{}'.format(battery)
+        path = "/sys/class/power_supply/{}".format(battery)
         return not os.path.exists(path)
 
     def isac_any(self, batteries):
         for battery in batteries:
-            if self.isac(battery): return True
+            if self.isac(battery):
+                return True
         return False
 
     def consumption(self, battery):
-        consumption = self.read(battery, 'power_now', 'n/a')
-        if consumption == 'n/a':
-            return 'n/a'
-        return '{}W'.format(int(consumption)/1000000)
+        consumption = self.read(battery, "power_now", "n/a")
+        if consumption == "n/a":
+            return "n/a"
+        return "{}W".format(int(consumption) / 1000000)
 
     def charge(self, battery):
-        return self.read(battery, 'status', 'n/a')
+        return self.read(battery, "status", "n/a")
 
     def charge_any(self, batteries):
         for battery in batteries:
-            if self.charge(battery) == 'Discharging':
-                return 'Discharging'
-        return 'Charged'
+            if self.charge(battery) == "Discharging":
+                return "Discharging"
+        return "Charged"
+
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
@@ -103,81 +108,104 @@ class Module(core.module.Module):
 
         self.__manager = BatteryManager()
 
-        self._batteries = util.format.aslist(self.parameter('device', 'auto'))
-        if self._batteries[0] == 'auto':
-            self._batteries = [ os.path.basename(battery) for battery in glob.glob('/sys/class/power_supply/BAT*') ]
+        self._batteries = util.format.aslist(self.parameter("device", "auto"))
+        if self._batteries[0] == "auto":
+            self._batteries = [
+                os.path.basename(battery)
+                for battery in glob.glob("/sys/class/power_supply/BAT*")
+            ]
         if len(self._batteries) == 0:
-            raise Exceptions('no batteries configured/found')
-        core.input.register(self, button=core.input.LEFT_MOUSE,
-            cmd='gnome-power-statistics')
+            raise Exceptions("no batteries configured/found")
+        core.input.register(
+            self, button=core.input.LEFT_MOUSE, cmd="gnome-power-statistics"
+        )
 
-        if util.format.asbool(self.parameter('compact-devices', False)):
-            widget = core.widget.Widget(full_text=self.capacity, name='all-batteries', module=self)
+        if util.format.asbool(self.parameter("compact-devices", False)):
+            widget = core.widget.Widget(
+                full_text=self.capacity, name="all-batteries", module=self
+            )
             widgets.append(widget)
         else:
             for battery in self._batteries:
-                log.debug('adding new widget for {}'.format(battery))
-                widget = core.widget.Widget(full_text=self.capacity, name=battery, module=self)
+                log.debug("adding new widget for {}".format(battery))
+                widget = core.widget.Widget(
+                    full_text=self.capacity, name=battery, module=self
+                )
                 widgets.append(widget)
         for w in self.widgets():
-            if util.format.asbool(self.parameter('decorate', True)) == False:
-                widget.set('theme.exclude', 'suffix')
+            if util.format.asbool(self.parameter("decorate", True)) == False:
+                widget.set("theme.exclude", "suffix")
 
     def capacity(self, widget):
-        if widget.name == 'all-batteries':
+        if widget.name == "all-batteries":
             capacity = self.__manager.capacity_all(self._batteries)
         else:
             capacity = self.__manager.capacity(widget.name)
-        widget.set('capacity', capacity)
-        widget.set('ac', self.__manager.isac_any(self._batteries))
-        widget.set('theme.minwidth', '100%')
+        widget.set("capacity", capacity)
+        widget.set("ac", self.__manager.isac_any(self._batteries))
+        widget.set("theme.minwidth", "100%")
 
         # Read power conumption
-        if util.format.asbool(self.parameter('showpowerconsumption', False)):
-            output = '{}% ({})'.format(capacity, self.__manager.consumption(widget.name))
+        if util.format.asbool(self.parameter("showpowerconsumption", False)):
+            output = "{}% ({})".format(
+                capacity, self.__manager.consumption(widget.name)
+            )
         else:
-             output =  '{}%'.format(capacity)
+            output = "{}%".format(capacity)
 
-        if util.format.asbool(self.parameter('showremaining', True))\
-                and self.__manager.charge(widget.name) == 'Discharging':
+        if (
+            util.format.asbool(self.parameter("showremaining", True))
+            and self.__manager.charge(widget.name) == "Discharging"
+        ):
             remaining = self.__manager.remaining()
             if remaining >= 0:
-                output = '{} {}'.format(output, util.format.duration(remaining, compact=True, unit=True))
+                output = "{} {}".format(
+                    output, util.format.duration(remaining, compact=True, unit=True)
+                )
 
-        if util.format.asbool(self.parameter('showdevice', False)):
-            output = '{} ({})'.format(output, widget.name)
+        if util.format.asbool(self.parameter("showdevice", False)):
+            output = "{} ({})".format(output, widget.name)
 
         return output
-       
+
     def state(self, widget):
         state = []
-        capacity = widget.get('capacity')
+        capacity = widget.get("capacity")
 
         if capacity < 0:
-            log.debug('battery state: {}'.format(state))
-            return ['critical', 'unknown']
+            log.debug("battery state: {}".format(state))
+            return ["critical", "unknown"]
 
-        if capacity < int(self.parameter('critical', 10)):
-            state.append('critical')
-        elif capacity < int(self.parameter('warning', 20)):
-            state.append('warning')
+        if capacity < int(self.parameter("critical", 10)):
+            state.append("critical")
+        elif capacity < int(self.parameter("warning", 20)):
+            state.append("warning")
 
-        if widget.get('ac'):
-            state.append('AC')
+        if widget.get("ac"):
+            state.append("AC")
         else:
-            if widget.name == 'all-batteries':
+            if widget.name == "all-batteries":
                 charge = self.__manager.charge_any(self._batteries)
             else:
                 charge = self.__manager.charge(widget.name)
-            if charge == 'Discharging':
-                state.append('discharging-{}'.format(min([10, 25, 50, 80, 100], key=lambda i: abs(i-capacity))))
-            elif charge == 'Unknown':
-                state.append('unknown-{}'.format(min([10, 25, 50, 80, 100], key=lambda i: abs(i-capacity))))
+            if charge == "Discharging":
+                state.append(
+                    "discharging-{}".format(
+                        min([10, 25, 50, 80, 100], key=lambda i: abs(i - capacity))
+                    )
+                )
+            elif charge == "Unknown":
+                state.append(
+                    "unknown-{}".format(
+                        min([10, 25, 50, 80, 100], key=lambda i: abs(i - capacity))
+                    )
+                )
             else:
                 if capacity > 95:
-                    state.append('charged')
+                    state.append("charged")
                 else:
-                    state.append('charging')
+                    state.append("charging")
         return state
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

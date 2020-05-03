@@ -4,8 +4,9 @@ import core.decorators
 import util.store
 import util.format
 
+
 class Widget(util.store.Store, core.input.Object):
-    def __init__(self, full_text='', name=None, module=None):
+    def __init__(self, full_text="", name=None, module=None):
         super(Widget, self).__init__()
         self.__full_text = full_text
         self.module = module
@@ -19,25 +20,27 @@ class Widget(util.store.Store, core.input.Object):
     def module(self, module):
         self.__module = module
 
-        if self.index() < 0: return
+        if self.index() < 0:
+            return
 
         if module:
-            custom_ids = util.format.aslist(module.parameter('id'))
+            custom_ids = util.format.aslist(module.parameter("id"))
             if len(custom_ids) > self.index():
                 self.id = custom_ids[self.index()]
 
     def index(self):
-        if not self.module: return 0
+        if not self.module:
+            return 0
 
         idx = 0
         for w in self.module.widgets():
             if w.id == self.id:
                 return idx
             idx = idx + 1
-        return -1 # not found
+        return -1  # not found
 
     def theme(self, attribute):
-        attr = 'theme.{}'.format(attribute)
+        attr = "theme.{}".format(attribute)
         if self.module:
             param = util.format.aslist(self.module.parameter(attr))
             if param and len(param) > self.index():
@@ -54,12 +57,13 @@ class Widget(util.store.Store, core.input.Object):
 
     def state(self):
         rv = []
-        if self.get('state', None):
-            tmp = self.get('state')
+        if self.get("state", None):
+            tmp = self.get("state")
             rv = tmp[:] if isinstance(tmp, list) else [tmp]
         if self.module:
             tmp = self.module.state(self)
             rv.extend(tmp if isinstance(tmp, list) else [tmp])
         return rv
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

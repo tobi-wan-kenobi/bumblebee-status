@@ -1,6 +1,6 @@
 # pylint: disable=C0111,R0903
 
-'''Shows a widget for each connected screen and allows the user to enable/disable screens.
+"""Shows a widget for each connected screen and allows the user to enable/disable screens.
 
 Parameters:
     * xrandr.overwrite_i3config: If set to 'true', this module assembles a new i3 config
@@ -14,7 +14,7 @@ Requires the following python module:
 
 Requires the following executable:
     * xrandr
-'''
+"""
 
 import os
 import re
@@ -33,17 +33,18 @@ try:
 except:
     pass
 
+
 class Module(core.module.Module):
-    @core.decorators.every(seconds=5) # takes up to 5s to detect a new screen
+    @core.decorators.every(seconds=5)  # takes up to 5s to detect a new screen
     def __init__(self, config, theme):
         widgets = []
         super().__init__(config, theme, widgets)
 
-        self._autoupdate = util.format.asbool(self.parameter('autoupdate', True))
+        self._autoupdate = util.format.asbool(self.parameter("autoupdate", True))
         self._needs_update = True
 
         try:
-            i3.Subscription(self._output_update, 'output')
+            i3.Subscription(self._output_update, "output")
         except:
             pass
 
@@ -58,31 +59,33 @@ class Module(core.module.Module):
 
         self._needs_update = False
 
-        for line in util.cli.execute('xrandr -q').split('\n'):
-            if not ' connected' in line:
+        for line in util.cli.execute("xrandr -q").split("\n"):
+            if not " connected" in line:
                 continue
-            display = line.split(' ', 2)[0]
-            m = re.search(r'\d+x\d+\+(\d+)\+\d+', line)
+            display = line.split(" ", 2)[0]
+            m = re.search(r"\d+x\d+\+(\d+)\+\d+", line)
 
             widget = self.widget(display)
             if not widget:
-                widget = core.widget.Widget(full_text=display, name=display, module=self)
+                widget = core.widget.Widget(
+                    full_text=display, name=display, module=self
+                )
                 core.input.register(widget, button=1, cmd=self._toggle)
                 core.input.register(widget, button=3, cmd=self._toggle)
             new_widgets.append(widget)
-            widget.set('state', 'on' if m else 'off')
-            widget.set('pos', int(m.group(1)) if m else sys.maxsize)
+            widget.set("state", "on" if m else "off")
+            widget.set("pos", int(m.group(1)) if m else sys.maxsize)
 
         self.widgets(new_widgets)
 
         if self._autoupdate == False:
-            widget = core.widget.Widget(full_text='', module=self)
-            widget.set('state', 'refresh')
+            widget = core.widget.Widget(full_text="", module=self)
+            widget.set("state", "refresh")
             core.input.register(widget, button=1, cmd=self._refresh)
             self.widgets().append(widget)
 
     def state(self, widget):
-        return widget.get('state', 'off')
+        return widget.get("state", "off")
 
     def _refresh(self, event):
         self._needs_update = True
@@ -91,26 +94,50 @@ class Module(core.module.Module):
         self._refresh(self, event)
         path = os.path.dirname(os.path.abspath(__file__))
 
-        if util.format.asbool(self.parameter('overwrite_i3config', False)) == True:
-            toggle_cmd = '{}/../../bin/toggle-display.sh'.format(path)
+        if util.format.asbool(self.parameter("overwrite_i3config", False)) == True:
+            toggle_cmd = "{}/../../bin/toggle-display.sh".format(path)
         else:
-            toggle_cmd = 'xrandr'
+            toggle_cmd = "xrandr"
 
-        widget = self.widget_by_id(event['instance'])
+        widget = self.widget_by_id(event["instance"])
 
-        if widget.get('state') == 'on':
-            util.cli.execute('{} --output {} --off'.format(toggle_cmd, widget.name))
+        if widget.get("state") == "on":
+            util.cli.execute("{} --output {} --off".format(toggle_cmd, widget.name))
         else:
-            first_neighbor = next((widget for widget in self.widgets() if widget.get('state') == 'on'), None)
-            last_neighbor = next((widget for widget in reversed(self.widgets()) if widget.get('state') == 'on'), None)
+            first_neighbor = next(
+                (widget for widget in self.widgets() if widget.get("state") == "on"),
+                None,
+            )
+            last_neighbor = next(
+                (
+                    widget
+                    for widget in reversed(self.widgets())
+                    if widget.get("state") == "on"
+                ),
+                None,
+            )
 
-            neighbor = first_neighbor if event['button'] == core.input.LEFT_MOUSE else last_neighbor
+            neighbor = (
+                first_neighbor
+                if event["button"] == core.input.LEFT_MOUSE
+                else last_neighbor
+            )
 
             if neighbor is None:
-                util.cli.execute('{} --output {} --auto'.format(toggle_cmd, widget.name))
+                util.cli.execute(
+                    "{} --output {} --auto".format(toggle_cmd, widget.name)
+                )
             else:
-                util.cli.execute('{} --output {} --auto --{}-of {}'.format(toggle_cmd, widget.name,
-                    'left' if event.get('button') == core.input.LEFT_MOUSE else 'right',
-                    neighbor.name))
+                util.cli.execute(
+                    "{} --output {} --auto --{}-of {}".format(
+                        toggle_cmd,
+                        widget.name,
+                        "left"
+                        if event.get("button") == core.input.LEFT_MOUSE
+                        else "right",
+                        neighbor.name,
+                    )
+                )
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

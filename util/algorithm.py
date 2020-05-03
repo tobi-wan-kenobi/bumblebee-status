@@ -20,4 +20,5 @@ def merge(target, *args):
                 target[key] = copy.deepcopy(value)
     return target
 
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

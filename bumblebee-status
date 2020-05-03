@@ -14,9 +14,10 @@ import core.module
 import core.input
 import core.event
 
+
 class CommandSocket(object):
     def __init__(self):
-        self.__name = '/tmp/.bumblebee-status.{}'.format(os.getpid())
+        self.__name = "/tmp/.bumblebee-status.{}".format(os.getpid())
         self.__socket = None
 
     def __enter__(self):
@@ -28,6 +29,7 @@ class CommandSocket(object):
     def __exit__(self, type, value, traceback):
         self.__socket.close()
         os.unlink(self.__name)
+
 
 def handle_input(output):
     with CommandSocket() as cmdsocket:
@@ -44,23 +46,24 @@ def handle_input(output):
                     tmp, _ = cmdsocket.accept()
                     line = tmp.recv(4096).decode()
                     tmp.close()
-                    logging.debug('socket event  {}'.format(line))
+                    logging.debug("socket event  {}".format(line))
                 else:
-                    line = '['
-                    while line.startswith('['):
-                        line = sys.stdin.readline().strip(',').strip()
-                    logging.info('input event: {}'.format(line))
+                    line = "["
+                    while line.startswith("["):
+                        line = sys.stdin.readline().strip(",").strip()
+                    logging.info("input event: {}".format(line))
                 try:
                     event = json.loads(line)
                     core.input.trigger(event)
-                    if 'name' in event:
-                        modules[event['name']] = True
+                    if "name" in event:
+                        modules[event["name"]] = True
                 except ValueError:
                     pass
-            core.event.trigger('update', modules.keys())
-            core.event.trigger('draw')
+            core.event.trigger("update", modules.keys())
+            core.event.trigger("draw")
 
         poll.unregister(sys.stdin.fileno())
+
 
 def main():
     config = core.config.Config(sys.argv[1:])
@@ -70,28 +73,28 @@ def main():
         logging.basicConfig(
             level=level,
             format="[%(asctime)s] %(module)-16s %(levelname)-8s %(message)s",
-            filename=os.path.abspath(os.path.expanduser(config.logfile()))
+            filename=os.path.abspath(os.path.expanduser(config.logfile())),
         )
     else:
         logging.basicConfig(
             level=level,
             format="[%(asctime)s] %(module)-16s %(levelname)-8s %(message)s",
-            stream=sys.stderr
+            stream=sys.stderr,
         )
 
     theme = core.theme.Theme(config.theme(), config.iconset())
     output = core.output.i3(theme, config)
     modules = []
 
-    core.input.register(None, core.input.WHEEL_UP, 'i3-msg workspace prev_on_output')
-    core.input.register(None, core.input.WHEEL_DOWN, 'i3-msg workspace next_on_output')
+    core.input.register(None, core.input.WHEEL_UP, "i3-msg workspace prev_on_output")
+    core.input.register(None, core.input.WHEEL_DOWN, "i3-msg workspace next_on_output")
 
     input_thread = threading.Thread(target=handle_input, args=(output,))
     input_thread.daemon = True
     input_thread.start()
 
     if config.debug():
-        modules.append(core.module.load('debug', config, theme))
+        modules.append(core.module.load("debug", config, theme))
 
     for module in config.modules():
         modules.append(core.module.load(module, config, theme))
@@ -100,12 +103,13 @@ def main():
         modules.reverse()
 
     output.modules(modules)
-    core.event.trigger('start')
+    core.event.trigger("start")
     while True:
-        core.event.trigger('update')
-        core.event.trigger('draw')
+        core.event.trigger("update")
+        core.event.trigger("draw")
         output.wait(config.interval())
-    core.event.trigger('stop')
+    core.event.trigger("stop")
+
 
 if __name__ == "__main__":
     main()
@@ -113,9 +117,9 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         output = core.output.i3()
-        output.modules(core.module.Error(module='main', error=e))
-        output.draw('start')
+        output.modules(core.module.Error(module="main", error=e))
+        output.draw("start")
         output.update()
-        output.draw('statusline')
+        output.draw("statusline")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -45,66 +45,71 @@ import core.decorators
 import util.cli
 import util.format
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.deadbeef))
 
-        buttons = {'LEFT_CLICK': core.input.LEFT_MOUSE,
-                   'RIGHT_CLICK': core.input.RIGHT_MOUSE,
-                   'MIDDLE_CLICK': core.input.MIDDLE_MOUSE,
-                   'SCROLL_UP': core.input.WHEEL_UP,
-                   'SCROLL_DOWN': core.input.WHEEL_DOWN,
-                   }
-        
-        self._song = ''
-        self._format = self.parameter('format', '{artist} - {title}')
-        self._tf_format = self.parameter('tf_format', '')
-        self._show_tf_when_stopped = util.format.asbool(self.parameter('tf_format_if_stopped', False))
-        prev_button = self.parameter('previous', 'LEFT_CLICK')
-        next_button = self.parameter('next', 'RIGHT_CLICK')
-        pause_button = self.parameter('pause', 'MIDDLE_CLICK')
+        buttons = {
+            "LEFT_CLICK": core.input.LEFT_MOUSE,
+            "RIGHT_CLICK": core.input.RIGHT_MOUSE,
+            "MIDDLE_CLICK": core.input.MIDDLE_MOUSE,
+            "SCROLL_UP": core.input.WHEEL_UP,
+            "SCROLL_DOWN": core.input.WHEEL_DOWN,
+        }
 
-        self.now_playing = 'deadbeef --nowplaying %a;%t;%b;%l;%n;%y;%c;%r;%e'
-        self.now_playing_tf = 'deadbeef --nowplaying-tf '
-        cmd = 'deadbeef '
+        self._song = ""
+        self._format = self.parameter("format", "{artist} - {title}")
+        self._tf_format = self.parameter("tf_format", "")
+        self._show_tf_when_stopped = util.format.asbool(
+            self.parameter("tf_format_if_stopped", False)
+        )
+        prev_button = self.parameter("previous", "LEFT_CLICK")
+        next_button = self.parameter("next", "RIGHT_CLICK")
+        pause_button = self.parameter("pause", "MIDDLE_CLICK")
 
-        core.input.register(self, button=buttons[prev_button],
-                                       cmd=cmd + '--prev')
-        core.input.register(self, button=buttons[next_button],
-                                       cmd=cmd + '--next')
-        core.input.register(self, button=buttons[pause_button],
-                                       cmd=cmd + '--play-pause')
+        self.now_playing = "deadbeef --nowplaying %a;%t;%b;%l;%n;%y;%c;%r;%e"
+        self.now_playing_tf = "deadbeef --nowplaying-tf "
+        cmd = "deadbeef "
+
+        core.input.register(self, button=buttons[prev_button], cmd=cmd + "--prev")
+        core.input.register(self, button=buttons[next_button], cmd=cmd + "--next")
+        core.input.register(
+            self, button=buttons[pause_button], cmd=cmd + "--play-pause"
+        )
 
         # modify the tf_format if we don't want it to show on stop
         # this adds conditions to the query itself, rather than
         # polling to see if deadbeef is running
         # doing this reduces the number of calls we have to make
         if self._tf_format and not self._show_tf_when_stopped:
-            self._tf_format = '$if($or(%isplaying%,%ispaused%),{query})'.format(query=self._tf_format)
+            self._tf_format = "$if($or(%isplaying%,%ispaused%),{query})".format(
+                query=self._tf_format
+            )
 
     @core.decorators.scrollable
     def deadbeef(self, widget):
         return self.string_song
 
     def hidden(self):
-        return self.string_song == ''
+        return self.string_song == ""
 
     def update(self):
         widgets = self.widgets()
         try:
-            if self._tf_format == '': # no tf format set, use the old style
+            if self._tf_format == "":  # no tf format set, use the old style
                 return self.update_standard(widgets)
             return self.update_tf(widgets)
         except Exception as e:
             logging.exception(e)
-            self._song = 'error'
+            self._song = "error"
 
     def update_tf(self, widgets):
         ## ensure that deadbeef is actually running
         ## easiest way to do this is to check --nowplaying for
         ##  the string 'nothing'
-        if util.cli.execute(self.now_playing) == 'nothing':
-            self._song = ''
+        if util.cli.execute(self.now_playing) == "nothing":
+            self._song = ""
             return
         ## perform the actual query -- these can be much more sophisticated
         data = util.cli.execute(self.now_playing_tf + self._tf_format)
@@ -112,19 +117,21 @@ class Module(core.module.Module):
 
     def update_standard(self, widgets):
         data = util.cli.execute(self.now_playing)
-        if data == 'nothing':
-            self._song = ''
+        if data == "nothing":
+            self._song = ""
         else:
-            data = data.split(';')
-            self._song = self._format.format(artist=data[0],
-                                             title=data[1],
-                                             album=data[2],
-                                             length=data[3],
-                                             trackno=data[4],
-                                             year=data[5],
-                                             comment=data[6],
-                                             copyright=data[7],
-                                             time=data[8])
+            data = data.split(";")
+            self._song = self._format.format(
+                artist=data[0],
+                title=data[1],
+                album=data[2],
+                length=data[3],
+                trackno=data[4],
+                year=data[5],
+                comment=data[6],
+                copyright=data[7],
+                time=data[8],
+            )
 
     @property
     def string_song(self):
@@ -135,5 +142,6 @@ Returns the current song as a string, either as a unicode() (Python <
         if sys.version_info.major < 3:
             return unicode(self._song)
         return str(self._song)
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

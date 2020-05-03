@@ -13,24 +13,33 @@ import core.widget
 
 import util.format
 
-WIDGET_NAME = 'network_traffic'
+WIDGET_NAME = "network_traffic"
+
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
         widgets = [
-            core.widget.Widget(module=self, name='{0}.rx'.format(WIDGET_NAME), full_text=self.download_rate),
-            core.widget.Widget(module=self, name='{0}.tx'.format(WIDGET_NAME), full_text=self.upload_rate)
+            core.widget.Widget(
+                module=self,
+                name="{0}.rx".format(WIDGET_NAME),
+                full_text=self.download_rate,
+            ),
+            core.widget.Widget(
+                module=self,
+                name="{0}.tx".format(WIDGET_NAME),
+                full_text=self.upload_rate,
+            ),
         ]
         super().__init__(config, theme, widgets)
 
-        self.widgets()[0].set('theme.minwidth', '0000000KiB/s')
-        self.widgets()[1].set('theme.minwidth', '0000000KiB/s')
+        self.widgets()[0].set("theme.minwidth", "0000000KiB/s")
+        self.widgets()[1].set("theme.minwidth", "0000000KiB/s")
 
         try:
             self._bandwidth = BandwidthInfo()
 
-            self._rate_recv = '?'
-            self._rate_sent = '?'
+            self._rate_recv = "?"
+            self._rate_sent = "?"
             self._bytes_recv = self._bandwidth.bytes_recv()
             self._bytes_sent = self._bandwidth.bytes_sent()
         except Exception:
@@ -40,10 +49,10 @@ class Module(core.module.Module):
     def state(self, widget):
         """Return the widget state"""
 
-        if widget.name == '{}.rx'.format(WIDGET_NAME):
-            return 'rx'
-        elif widget.name == '{}.tx'.format(WIDGET_NAME):
-            return 'tx'
+        if widget.name == "{}.rx".format(WIDGET_NAME):
+            return "rx"
+        elif widget.name == "{}.tx".format(WIDGET_NAME):
+            return "tx"
 
         return None
 
@@ -52,8 +61,8 @@ class Module(core.module.Module):
             bytes_recv = self._bandwidth.bytes_recv()
             bytes_sent = self._bandwidth.bytes_sent()
 
-            self._rate_recv = (bytes_recv - self._bytes_recv)
-            self._rate_sent = (bytes_sent - self._bytes_sent)
+            self._rate_recv = bytes_recv - self._bytes_recv
+            self._rate_sent = bytes_sent - self._bytes_sent
 
             self._bytes_recv, self._bytes_sent = bytes_recv, bytes_sent
         except Exception:
@@ -61,10 +70,11 @@ class Module(core.module.Module):
             pass
 
     def download_rate(self, _):
-        return '{}/s'.format(util.format.byte(self._rate_recv))
+        return "{}/s".format(util.format.byte(self._rate_recv))
 
     def upload_rate(self, _):
-        return '{}/s'.format(util.format.byte(self._rate_sent))
+        return "{}/s".format(util.format.byte(self._rate_sent))
+
 
 class BandwidthInfo(object):
     """Get received/sent bytes from network adapter"""
@@ -85,10 +95,10 @@ class BandwidthInfo(object):
     @classmethod
     def default_network_adapter(cls):
         """Return default active network adapter"""
-        gateway = netifaces.gateways()['default']
+        gateway = netifaces.gateways()["default"]
 
         if not gateway:
-            raise 'No default gateway found'
+            raise "No default gateway found"
 
         return gateway[netifaces.AF_INET][1]
 
@@ -96,5 +106,6 @@ class BandwidthInfo(object):
     def io_counters(cls):
         """Return IO counters"""
         return psutil.net_io_counters(pernic=True)
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

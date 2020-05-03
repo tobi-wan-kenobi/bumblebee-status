@@ -7,35 +7,41 @@ import core.widget
 import core.decorators
 
 try:
-    error = ModuleNotFoundError('')
+    error = ModuleNotFoundError("")
 except Exception as e:
     ModuleNotFoundError = Exception
 
 log = logging.getLogger(__name__)
 
+
 def load(module_name, config=core.config.Config([]), theme=None):
     error = None
-    module_short, alias = (module_name.split(':') + [module_name])[0:2]
-    config.set('__alias__', alias)
-    for namespace in [ 'core', 'contrib' ]:
+    module_short, alias = (module_name.split(":") + [module_name])[0:2]
+    config.set("__alias__", alias)
+    for namespace in ["core", "contrib"]:
         try:
-            mod = importlib.import_module('modules.{}.{}'.format(namespace, module_short))
-            log.debug('importing {} from {}.{}'.format(module_short, namespace, module_short))
-            return getattr(mod, 'Module')(config, theme)
+            mod = importlib.import_module(
+                "modules.{}.{}".format(namespace, module_short)
+            )
+            log.debug(
+                "importing {} from {}.{}".format(module_short, namespace, module_short)
+            )
+            return getattr(mod, "Module")(config, theme)
         except ImportError as e:
-                error = e
-    log.fatal('failed to import {}: {}'.format(module_name, error))
+            error = e
+    log.fatal("failed to import {}: {}".format(module_name, error))
     return Error(config=config, module=module_name, error=error)
+
 
 class Module(core.input.Object):
     def __init__(self, config=core.config.Config([]), theme=None, widgets=[]):
         super().__init__()
         self.__config = config
-        self.__widgets = widgets if isinstance(widgets, list) else [ widgets ]
+        self.__widgets = widgets if isinstance(widgets, list) else [widgets]
 
-        self.module_name = self.__module__.split('.')[-1]
+        self.module_name = self.__module__.split(".")[-1]
         self.name = self.module_name
-        self.alias = self.__config.get('__alias__', None)
+        self.alias = self.__config.get("__alias__", None)
         self.id = self.alias if self.alias else self.name
         self.next_update = None
 
@@ -50,13 +56,13 @@ class Module(core.input.Object):
     def parameter(self, key, default=None):
         value = default
 
-        for prefix in [ self.name, self.module_name, self.alias ]:
-            value = self.__config.get('{}.{}'.format(prefix, key), value)
+        for prefix in [self.name, self.module_name, self.alias]:
+            value = self.__config.get("{}.{}".format(prefix, key), value)
         # TODO retrieve from config file
         return value
 
     def set(self, key, value):
-        self.__config.set('{}.{}'.format(self.name, key), value)
+        self.__config.set("{}.{}".format(self.name, key), value)
 
     def update(self):
         pass
@@ -65,8 +71,8 @@ class Module(core.input.Object):
         try:
             self.update()
         except Exception as e:
-            self.set('interval', 1)
-            module = Error(config=self.__config, module='error', error=str(e))
+            self.set("interval", 1)
+            module = Error(config=self.__config, module="error", error=str(e))
             self.__widgets = [module.widget()]
             self.update = module.update
 
@@ -75,27 +81,30 @@ class Module(core.input.Object):
             self.__widgets = widgets
         return self.__widgets
 
-    def add_widget(self, full_text='', name=None):
+    def add_widget(self, full_text="", name=None):
         widget = core.widget.Widget(full_text=full_text, name=name, module=self)
         self.widgets().append(widget)
         return widget
 
     def widget(self, name=None):
-        if not name: return self.widgets()[0]
+        if not name:
+            return self.widgets()[0]
 
         for w in self.widgets():
-            if w.name == name: return w
+            if w.name == name:
+                return w
         return None
 
     def state(self, widget):
         return []
 
     def threshold_state(self, value, warn, crit):
-        if value > float(self.parameter('critical', crit)):
-            return 'critical'
-        if value > float(self.parameter('warning', warn)):
-            return 'warning'
+        if value > float(self.parameter("critical", crit)):
+            return "critical"
+        if value > float(self.parameter("warning", warn)):
+            return "warning"
         return None
+
 
 class Error(Module):
     def __init__(self, module, error, config=core.config.Config([]), theme=None):
@@ -104,9 +113,10 @@ class Error(Module):
         self.__error = error
 
     def full_text(self, widget):
-        return '{}: {}'.format(self.__module, self.__error)
+        return "{}: {}".format(self.__module, self.__error)
 
     def state(self, widget):
-        return ['critical']
+        return ["critical"]
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -2,12 +2,13 @@ import unittest
 
 from util.algorithm import *
 
+
 class algorithm(unittest.TestCase):
     def setUp(self):
-        self.someData = {'a': 100, 'b': 200, 'c': [1,2,3]}
-        self.differentData = {'x': 20, 'y': 'bla', 'z': ['a','b']}
-        self.moreData = {'n': 100}
-        self.overlapData = {'a': 200, 'c': [1,2,4]}
+        self.someData = {"a": 100, "b": 200, "c": [1, 2, 3]}
+        self.differentData = {"x": 20, "y": "bla", "z": ["a", "b"]}
+        self.moreData = {"n": 100}
+        self.overlapData = {"a": 200, "c": [1, 2, 4]}
 
     def test_merge_with_empty(self):
         self.assertEqual(self.someData, merge(self.someData, {}))
@@ -36,5 +37,6 @@ class algorithm(unittest.TestCase):
                 self.assertEqual(result[k], self.someData[k])
         for k in self.overlapData:
             self.assertEqual(result[k], self.overlapData[k])
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

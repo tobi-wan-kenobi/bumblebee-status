@@ -33,15 +33,16 @@ import core.input
 import util.format
 import util.cli
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.get_output))
 
-        self.__command = self.parameter('command', 'echo "no command configured"')
-        self.__async = util.format.asbool(self.parameter('async'))
+        self.__command = self.parameter("command", 'echo "no command configured"')
+        self.__async = util.format.asbool(self.parameter("async"))
 
         if self.__async:
-            self.__output = 'please wait...'
+            self.__output = "please wait..."
             self.__current_thread = threading.Thread()
 
         # LMB and RMB will update output regardless of timer
@@ -66,13 +67,16 @@ class Module(core.module.Module):
 
         # spawn new thread to execute command and pass callback method to get output from it
         self.__current_thread = threading.Thread(
-            target=lambda obj, cmd: obj.set_output(util.cli.execute(cmd, ignore_errors=True)),
-            args=(self, self.__command)
+            target=lambda obj, cmd: obj.set_output(
+                util.cli.execute(cmd, ignore_errors=True)
+            ),
+            args=(self, self.__command),
         )
         self.__current_thread.start()
 
     def state(self, _):
-        if self.__output == 'no command configured':
-            return 'warning'
+        if self.__output == "no command configured":
+            return "warning"
+
 
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4

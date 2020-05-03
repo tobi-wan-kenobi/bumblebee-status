@@ -36,6 +36,7 @@ import core.widget
 import core.input
 import core.decorators
 
+
 def formatStringBuilder(s, json):
     """
     Parses Format Strings
@@ -43,14 +44,14 @@ def formatStringBuilder(s, json):
         s -> format string
         json -> the spaceapi response object
     """
-    identifiers = re.findall('%%.*?%%', s)
+    identifiers = re.findall("%%.*?%%", s)
     for i in identifiers:
         ic = i[2:-2]  # Discard %%
-        j = ic.split('%')
+        j = ic.split("%")
 
         # Only neither of, or both true AND false may be overwritten
         if len(j) != 3 and len(j) != 1:
-            return 'INVALID FORMAT STRING'
+            return "INVALID FORMAT STRING"
 
         if len(j) == 1:  # no overwrite
             s = s.replace(i, json[j[0]])
@@ -66,30 +67,28 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.getState))
 
-        core.input.register(
-            self, button=core.input.LEFT_MOUSE, cmd=self.__forceReload
-        )
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.__forceReload)
 
         self.__data = {}
         self.__error = None
         self.__thread = None
 
         # The URL representing the api endpoint
-        self.__url = self.parameter('url', default='http://club.entropia.de/spaceapi')
+        self.__url = self.parameter("url", default="http://club.entropia.de/spaceapi")
         self._format = self.parameter(
-            'format', default=u' %%space%%: %%state.open%Open%Closed%%'
+            "format", default=" %%space%%: %%state.open%Open%Closed%%"
         )
 
     def state(self, widget):
         try:
             if self.__error is not None:
-                return ['critical']
-            elif self.__data['state.open']:
-                return ['warning']
+                return ["critical"]
+            elif self.__data["state.open"]:
+                return ["warning"]
             else:
                 return []
         except KeyError:
-            return ['critical']
+            return ["critical"]
 
     def update(self):
         if not self.__thread or self.__thread.is_alive() == False:
@@ -104,7 +103,7 @@ class Module(core.module.Module):
             try:
                 text = formatStringBuilder(self._format, self.__data)
             except KeyError:
-                text = 'KeyError'
+                text = "KeyError"
         return text
 
     def get_api_async(self):
@@ -115,19 +114,19 @@ class Module(core.module.Module):
                 self.__data = self.__flatten(json.loads(request.text))
                 self.__error = None
         except requests.exceptions.Timeout:
-            self.__error = 'Timeout'
+            self.__error = "Timeout"
         except requests.exceptions.HTTPError:
-            self.__error = 'HTTP Error'
+            self.__error = "HTTP Error"
         except ValueError:
-            self.__error = 'Not a JSON response'
-        core.event.trigger('update', [ self.id ], redraw_only=True)
+            self.__error = "Not a JSON response"
+        core.event.trigger("update", [self.id], redraw_only=True)
 
     # left_mouse_button handler
     def __forceReload(self, event):
         if self.__thread:
             self.__thread.raise_exception()
-        self.__error = 'RELOADING'
-        core.event.trigger('update', [ self.id ], redraw_only=True)
+        self.__error = "RELOADING"
+        core.event.trigger("update", [self.id], redraw_only=True)
 
     # Flattens the JSON structure recursively, e.g. ['space']['open']
     # becomes ['space.open']
@@ -138,7 +137,7 @@ class Module(core.module.Module):
             if type(value) is dict:
                 flattened_key = self.__flatten(value)
                 for fk in flattened_key:
-                    out[key + '.' + fk] = flattened_key[fk]
+                    out[key + "." + fk] = flattened_key[fk]
             else:
                 out[key] = value
         return out

@@ -16,21 +16,22 @@ import core.module
 import core.widget
 import core.decorators
 
+
 class Module(core.module.Module):
-    UNK = 'UNK'
+    UNK = "UNK"
 
     @core.decorators.every(seconds=30)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.output))
 
-        self.__label = self.parameter('label')
-        self.__target = self.parameter('target')
-        self.__expect = self.parameter('expect', '200')
+        self.__label = self.parameter("label")
+        self.__target = self.parameter("target")
+        self.__expect = self.parameter("expect", "200")
 
     def labelize(self, s):
         if self.__label is None:
             return s
-        return '{}: {}'.format(self.__label, s)
+        return "{}: {}".format(self.__label, s)
 
     def getStatus(self):
         try:
@@ -46,8 +47,8 @@ class Module(core.module.Module):
         if self.__status == self.__expect:
             return self.labelize(self.__status)
         else:
-            reason = ' != {}'.format(self.__expect)
-            return self.labelize('{}{}'.format(self.__status, reason))
+            reason = " != {}".format(self.__expect)
+            return self.labelize("{}{}".format(self.__status, reason))
 
     def output(self, widget):
         return self.__output
@@ -58,9 +59,10 @@ class Module(core.module.Module):
 
     def state(self, widget):
         if self.__status == self.UNK:
-            return 'warning'
+            return "warning"
         if self.__status != self.__expect:
-            return 'critical'
+            return "critical"
         return self.__output
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

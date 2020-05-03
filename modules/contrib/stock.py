@@ -22,39 +22,44 @@ import core.decorators
 
 import util.format
 
+
 class Module(core.module.Module):
     @core.decorators.every(hours=1)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.value))
 
-        self.__symbols = self.parameter('symbols', '')
-        self.__change = util.format.asbool(self.parameter('change', True))
+        self.__symbols = self.parameter("symbols", "")
+        self.__change = util.format.asbool(self.parameter("change", True))
         self.__value = None
 
     def value(self, widget):
         results = []
         if not self.__value:
-            return 'n/a'
+            return "n/a"
         data = json.loads(self.__value)
 
-        for symbol in data['quoteResponse']['result']:
-            valkey = 'regularMarketChange' if self.__change else 'regularMarketPrice'
-            sym = symbol.get('symbol', 'n/a')
-            currency = symbol.get('currency', 'USD')
-            val = 'n/a' if not valkey in symbol else '{:.2f}'.format(symbol[valkey])
-            results.append('{} {} {}'.format(sym, val, currency))
-        return u' '.join(results)
+        for symbol in data["quoteResponse"]["result"]:
+            valkey = "regularMarketChange" if self.__change else "regularMarketPrice"
+            sym = symbol.get("symbol", "n/a")
+            currency = symbol.get("currency", "USD")
+            val = "n/a" if not valkey in symbol else "{:.2f}".format(symbol[valkey])
+            results.append("{} {} {}".format(sym, val, currency))
+        return " ".join(results)
 
     def fetch(self):
         if self.__symbols:
-            url = 'https://query1.finance.yahoo.com/v7/finance/quote?symbols='
-            url += self.__symbols + '&fields=regularMarketPrice,currency,regularMarketChange'
+            url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols="
+            url += (
+                self.__symbols
+                + "&fields=regularMarketPrice,currency,regularMarketChange"
+            )
             return urllib.request.urlopen(url).read().strip()
         else:
-            logging.error('unable to retrieve stock exchange rate')
+            logging.error("unable to retrieve stock exchange rate")
             return None
 
     def update(self):
         self.__value = self.fetch()
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

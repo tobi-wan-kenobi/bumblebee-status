@@ -21,6 +21,7 @@ import util.format
 
 import re
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.get_progress_text))
@@ -28,33 +29,31 @@ class Module(core.module.Module):
 
     def get_progress_text(self, widget):
         if self.update_progress_info(widget):
-            width = util.format.asint(self.parameter('barwidth', 8))
-            count = round((width * widget.get('per')) / 100)
-            filledchar = self.parameter('barfilledchar', '#')
-            emptychar = self.parameter('baremptychar', '-')
+            width = util.format.asint(self.parameter("barwidth", 8))
+            count = round((width * widget.get("per")) / 100)
+            filledchar = self.parameter("barfilledchar", "#")
+            emptychar = self.parameter("baremptychar", "-")
 
-            bar = '[{}{}]'.format(
-                filledchar * count,
-                emptychar * (width - count)
-            )
+            bar = "[{}{}]".format(filledchar * count, emptychar * (width - count))
 
-            str_format = self.parameter('format', '{bar} {cmd} {arg}')
+            str_format = self.parameter("format", "{bar} {cmd} {arg}")
             return str_format.format(
-                bar = bar,
-                pid = widget.get('pid'),
-                cmd = widget.get('cmd'),
-                arg = widget.get('arg'),
-                percentage = widget.get('per'),
-                quantity = widget.get('qty'),
-                speed = widget.get('spd'),
-                time = widget.get('tim')
+                bar=bar,
+                pid=widget.get("pid"),
+                cmd=widget.get("cmd"),
+                arg=widget.get("arg"),
+                percentage=widget.get("per"),
+                quantity=widget.get("qty"),
+                speed=widget.get("spd"),
+                time=widget.get("tim"),
             )
         else:
-            return self.parameter('placeholder', 'n/a')
+            return self.parameter("placeholder", "n/a")
 
     def update_progress_info(self, widget):
         """Update widget's informations about the copy"""
-        if not self.__active: return
+        if not self.__active:
+            return
 
         # These regex extracts following groups:
         #  1. pid
@@ -64,39 +63,44 @@ class Module(core.module.Module):
         #  5. quantity (.. unit / .. unit formated)
         #  6. speed
         #  7. time remaining
-        extract_nospeed = re.compile('\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\)\n.*')
-        extract_wtspeed = re.compile('\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\) (\d*\.\d .*) remaining (\d*:\d*:\d*)\n.*')
+        extract_nospeed = re.compile(
+            "\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\)\n.*"
+        )
+        extract_wtspeed = re.compile(
+            "\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\) (\d*\.\d .*) remaining (\d*:\d*:\d*)\n.*"
+        )
 
         try:
-            raw = util.cli.execute('progress -qW 0.1')
+            raw = util.cli.execute("progress -qW 0.1")
             result = extract_wtspeed.match(raw)
 
             if not result:
                 # Abord speed measures
-                raw = util.cli.execute('progress -q')
+                raw = util.cli.execute("progress -q")
                 result = extract_nospeed.match(raw)
 
-                widget.set('spd', '???.? B/s')
-                widget.set('tim', '??:??:??')
+                widget.set("spd", "???.? B/s")
+                widget.set("tim", "??:??:??")
             else:
-                widget.set('spd', result.group(6))
-                widget.set('tim', result.group(7))
+                widget.set("spd", result.group(6))
+                widget.set("tim", result.group(7))
 
-            widget.set('pid', int(result.group(1)))
-            widget.set('cmd', result.group(2))
-            widget.set('arg', result.group(3))
-            widget.set('per', float(result.group(4)))
-            widget.set('qty', result.group(5))
+            widget.set("pid", int(result.group(1)))
+            widget.set("cmd", result.group(2))
+            widget.set("arg", result.group(3))
+            widget.set("per", float(result.group(4)))
+            widget.set("qty", result.group(5))
             return True
         except Exception:
             return False
 
     def update(self):
-        self.__active = bool(util.cli.execute('progress -q'))
+        self.__active = bool(util.cli.execute("progress -q"))
 
     def state(self, widget):
         if self.__active:
-            return 'copying'
-        return 'pending'
+            return "copying"
+        return "pending"
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

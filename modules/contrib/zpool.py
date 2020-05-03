@@ -36,46 +36,81 @@ import core.widget
 import util.cli
 import util.format
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
 
-        self._includelist = set(filter(lambda x: len(x) > 0,
-                                       util.format.aslist(self.parameter('list', default=''))))
-        self._format = self.parameter('format', default='{name} {shortstatus} {used}/{size} ' +
-                                                        '({percentfree}%)')
-        self._usesudo = util.format.asbool(self.parameter('sudo', default=False))
-        self._showio = util.format.asbool(self.parameter('showio', default=True))
-        self._ioformat = self.parameter('ioformat', default='{band}')
-        self._warnfree = int(self.parameter('warnfree', default=10))
+        self._includelist = set(
+            filter(
+                lambda x: len(x) > 0,
+                util.format.aslist(self.parameter("list", default="")),
+            )
+        )
+        self._format = self.parameter(
+            "format", default="{name} {shortstatus} {used}/{size} " + "({percentfree}%)"
+        )
+        self._usesudo = util.format.asbool(self.parameter("sudo", default=False))
+        self._showio = util.format.asbool(self.parameter("showio", default=True))
+        self._ioformat = self.parameter("ioformat", default="{band}")
+        self._warnfree = int(self.parameter("warnfree", default=10))
 
     def update(self):
         widgets = self.widgets()
-        zfs_version_path = '/sys/module/zfs/version'
+        zfs_version_path = "/sys/module/zfs/version"
         # zpool list -H: List all zpools, use script mode (no headers and tabs as separators).
         try:
-            with open(zfs_version_path, 'r') as zfs_mod_version:
-                zfs_version = zfs_mod_version.readline().rstrip().split('-')[0]
+            with open(zfs_version_path, "r") as zfs_mod_version:
+                zfs_version = zfs_mod_version.readline().rstrip().split("-")[0]
         except IOError:
             # ZFS isn't installed or the module isn't loaded, stub the version
-            zfs_version = '0.0.0'
-            logging.error('ZFS version information not found at {}, check the module is loaded.'.format(zfs_version_path))
+            zfs_version = "0.0.0"
+            logging.error(
+                "ZFS version information not found at {}, check the module is loaded.".format(
+                    zfs_version_path
+                )
+            )
 
-        raw_zpools = util.cli.execute(('sudo ' if self._usesudo else '') + 'zpool list -H').split('\n')
+        raw_zpools = util.cli.execute(
+            ("sudo " if self._usesudo else "") + "zpool list -H"
+        ).split("\n")
 
         for widget in widgets:
-            widget.set('visited', False)
+            widget.set("visited", False)
 
         for raw_zpool in raw_zpools:
             try:
                 # Ignored fields (assigned to _) are 'expandsz' and 'altroot', also 'ckpoint' in ZFS 0.8.0+
-                if parse_version(zfs_version) < parse_version('0.8.0'):
-                    name, size, alloc, free, _, frag, cap, dedup, health, _ = raw_zpool.split('\t')
+                if parse_version(zfs_version) < parse_version("0.8.0"):
+                    (
+                        name,
+                        size,
+                        alloc,
+                        free,
+                        _,
+                        frag,
+                        cap,
+                        dedup,
+                        health,
+                        _,
+                    ) = raw_zpool.split("\t")
                 else:
-                    name, size, alloc, free, _, _, frag, cap, dedup, health, _ = raw_zpool.split('\t')
-                cap = cap.rstrip('%')
-                percentuse=int(cap)
-                percentfree=100-percentuse
+                    (
+                        name,
+                        size,
+                        alloc,
+                        free,
+                        _,
+                        _,
+                        frag,
+                        cap,
+                        dedup,
+                        health,
+                        _,
+                    ) = raw_zpool.split("\t")
+                cap = cap.rstrip("%")
+                percentuse = int(cap)
+                percentfree = 100 - percentuse
                 # There is a command, zpool iostat, which is however blocking and was therefore
                 # causing issues.
                 # Instead, we read file `/proc/spl/kstat/zfs/<poolname>/io` which contains
@@ -83,7 +118,7 @@ class Module(core.module.Module):
                 # (and timestamp) during each widget update, and during the next widget update we
                 # use them to compute delta of transferred bytes, and using the last and current
                 # timestamp the rate at which they have been transferred.
-                with open('/proc/spl/kstat/zfs/{}/io'.format(name), 'r') as f:
+                with open("/proc/spl/kstat/zfs/{}/io".format(name), "r") as f:
                     # Third row provides data we need, we are interested in the first 4 values.
                     # More info about this file can be found here:
                     # https://github.com/zfsonlinux/zfs/blob/master/lib/libspl/include/sys/kstat.h#L580
@@ -100,12 +135,12 @@ class Module(core.module.Module):
             widget = self.widget(name)
             if not widget:
                 widget = core.widget.Widget(name=name)
-                widget.set('last_iostat', [0, 0, 0, 0])
-                widget.set('last_timestamp', 0)
+                widget.set("last_iostat", [0, 0, 0, 0])
+                widget.set("last_timestamp", 0)
                 widgets.append(widget)
 
-            delta_iostat = [b - a for a, b in zip(iostat, widget.get('last_iostat'))]
-            widget.set('last_iostat', iostat)
+            delta_iostat = [b - a for a, b in zip(iostat, widget.get("last_iostat"))]
+            widget.set("last_iostat", iostat)
 
             # From docs:
             #   > Note that even though the time is always returned as a floating point number, not
@@ -114,8 +149,8 @@ class Module(core.module.Module):
             # Also, during one update cycle the reported I/O may be garbage if the system time
             # was changed.
             timestamp = time.time()
-            delta_timestamp = widget.get('last_timestamp') - timestamp
-            widget.set('last_timestamp', time.time())
+            delta_timestamp = widget.get("last_timestamp") - timestamp
+            widget.set("last_timestamp", time.time())
 
             # abs is there because sometimes the result is -0
             rate_iostat = [abs(x / delta_timestamp) for x in delta_iostat]
@@ -123,17 +158,26 @@ class Module(core.module.Module):
 
             # theme.minwidth is not set since these values are not expected to change
             # rapidly
-            widget.full_text(self._format.format(name=name, used=alloc, left=free, size=size,
-                                                 percentfree=percentfree, percentuse=percentuse,
-                                                 status=health,
-                                                 shortstatus=self._shortstatus(health),
-                                                 fragpercent=frag, deduppercent=dedup))
-            widget.set('state', health)
-            widget.set('percentfree', percentfree)
-            widget.set('visited', True)
+            widget.full_text(
+                self._format.format(
+                    name=name,
+                    used=alloc,
+                    left=free,
+                    size=size,
+                    percentfree=percentfree,
+                    percentuse=percentuse,
+                    status=health,
+                    shortstatus=self._shortstatus(health),
+                    fragpercent=frag,
+                    deduppercent=dedup,
+                )
+            )
+            widget.set("state", health)
+            widget.set("percentfree", percentfree)
+            widget.set("visited", True)
 
             if self._showio:
-                wname, rname = [name + x for x in ['__write', '__read']]
+                wname, rname = [name + x for x in ["__write", "__read"]]
                 widget_w = self.widget(wname)
                 widget_r = self.widget(rname)
                 if not widget_w or not widget_r:
@@ -141,30 +185,40 @@ class Module(core.module.Module):
                     widget_w = core.widget.Widget(name=wname)
                     widgets.extend([widget_r, widget_w])
                 for w in [widget_r, widget_w]:
-                    w.set('theme.minwidth', self._ioformat.format(ops=9999,
-                                                                  band=util.format.bytefmt(999.99*(1024**2))))
-                    w.set('visited', True)
-                widget_w.full_text(self._ioformat.format(ops=round(writes),
-                                                         band=util.format.bytefmt(nwritten)))
-                widget_r.full_text(self._ioformat.format(ops=round(reads),
-                                                         band=util.format.bytefmt(nread)))
+                    w.set(
+                        "theme.minwidth",
+                        self._ioformat.format(
+                            ops=9999, band=util.format.bytefmt(999.99 * (1024 ** 2))
+                        ),
+                    )
+                    w.set("visited", True)
+                widget_w.full_text(
+                    self._ioformat.format(
+                        ops=round(writes), band=util.format.bytefmt(nwritten)
+                    )
+                )
+                widget_r.full_text(
+                    self._ioformat.format(
+                        ops=round(reads), band=util.format.bytefmt(nread)
+                    )
+                )
 
         for widget in widgets:
-            if widget.get('visited') is False:
+            if widget.get("visited") is False:
                 widgets.remove(widget)
         self.widgets(widgets)
 
     def state(self, widget):
-        if widget.name.endswith('__read'):
-            return 'poolread'
-        elif widget.name.endswith('__write'):
-            return 'poolwrite'
+        if widget.name.endswith("__read"):
+            return "poolread"
+        elif widget.name.endswith("__write"):
+            return "poolwrite"
 
-        state = widget.get('state')
-        if state == 'FAULTED':
-            return [state, 'critical']
-        elif state == 'DEGRADED' or widget.get('percentfree') < self._warnfree:
-            return [state, 'warning']
+        state = widget.get("state")
+        if state == "FAULTED":
+            return [state, "critical"]
+        elif state == "DEGRADED" or widget.get("percentfree") < self._warnfree:
+            return [state, "warning"]
 
         return state
 
@@ -177,13 +231,14 @@ class Module(core.module.Module):
         # configuration.  A faulted pool has corrupted metadata, or one or more faulted devices, and
         # insufficient replicas to continue functioning.
         shortstate = {
-            'DEGRADED': 'DEG',
-            'FAULTED': 'FLT',
-            'ONLINE': 'ONL',
+            "DEGRADED": "DEG",
+            "FAULTED": "FLT",
+            "ONLINE": "ONL",
         }
         try:
             return shortstate[status]
         except KeyError:
-            return ''
+            return ""
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

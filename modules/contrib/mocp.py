@@ -29,17 +29,18 @@ import core.input
 
 import util.cli
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.description))
 
-        core.input.register(self, button=core.input.LEFT_MOUSE, cmd='mocp -G')
-        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd='mocp -t shuffle')
-        self.__format = self.parameter('format', '%state %artist - %song | %ct/%tt')
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd="mocp -G")
+        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd="mocp -t shuffle")
+        self.__format = self.parameter("format", "%state %artist - %song | %ct/%tt")
         self.__running = False
 
     def description(self, widget):
-        return self.__info if self.__running == True else 'Music On Console Player'
+        return self.__info if self.__running == True else "Music On Console Player"
 
     def update(self):
         self.__load_song()
@@ -50,5 +51,6 @@ class Module(core.module.Module):
             self.__running = True
         except RuntimeError:
             self.__running = False
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

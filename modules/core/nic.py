@@ -1,4 +1,4 @@
-#pylint: disable=C0111,R0903
+# pylint: disable=C0111,R0903
 
 """Displays the name, IP address(es) and status of each available network interface.
 
@@ -22,22 +22,30 @@ import core.decorators
 import util.cli
 import util.format
 
+
 class Module(core.module.Module):
     @core.decorators.every(seconds=10)
     def __init__(self, config, theme):
         widgets = []
         super().__init__(config, theme, widgets)
-        self._exclude = tuple(filter(len, self.parameter('exclude', 'lo,virbr,docker,vboxnet,veth,br').split(',')))
-        self._include = self.parameter('include', '').split(',')
+        self._exclude = tuple(
+            filter(
+                len,
+                self.parameter("exclude", "lo,virbr,docker,vboxnet,veth,br").split(","),
+            )
+        )
+        self._include = self.parameter("include", "").split(",")
 
-        self._states = { 'include': [], 'exclude': []  }
-        for state in tuple(filter(len, util.format.aslist(self.parameter('states', '')))):
-            if state[0] == '^':
-                self._states['exclude'].append(state[1:])
+        self._states = {"include": [], "exclude": []}
+        for state in tuple(
+            filter(len, util.format.aslist(self.parameter("states", "")))
+        ):
+            if state[0] == "^":
+                self._states["exclude"].append(state[1:])
             else:
-                self._states['include'].append(state)
-        self._format = self.parameter('format','{intf} {state} {ip} {ssid}');
-        self.iwgetid = shutil.which('iwgetid')
+                self._states["include"].append(state)
+        self._format = self.parameter("format", "{intf} {state} {ip} {ssid}")
+        self.iwgetid = shutil.which("iwgetid")
         self._update_widgets(widgets)
 
     def update(self):
@@ -46,71 +54,91 @@ class Module(core.module.Module):
     def state(self, widget):
         states = []
 
-        if widget.get('state') == 'down':
-            states.append('critical')
-        elif widget.get('state') != 'up':
-            states.append('warning')
+        if widget.get("state") == "down":
+            states.append("critical")
+        elif widget.get("state") != "up":
+            states.append("warning")
 
-        intf = widget.get('intf')
-        iftype = 'wireless' if self._iswlan(intf) else 'wired'
-        iftype = 'tunnel' if self._istunnel(intf) else iftype
+        intf = widget.get("intf")
+        iftype = "wireless" if self._iswlan(intf) else "wired"
+        iftype = "tunnel" if self._istunnel(intf) else iftype
 
-        states.append('{}-{}'.format(iftype, widget.get('state')))
+        states.append("{}-{}".format(iftype, widget.get("state")))
 
         return states
 
     def _iswlan(self, intf):
         # wifi, wlan, wlp, seems to work for me
-        if intf.startswith('w'): return True
+        if intf.startswith("w"):
+            return True
         return False
 
     def _istunnel(self, intf):
-        return intf.startswith('tun') or intf.startswith('wg')
+        return intf.startswith("tun") or intf.startswith("wg")
 
     def get_addresses(self, intf):
         retval = []
         try:
             for ip in netifaces.ifaddresses(intf).get(netifaces.AF_INET, []):
-                if ip.get('addr', '') != '':
-                    retval.append(ip.get('addr'))
+                if ip.get("addr", "") != "":
+                    retval.append(ip.get("addr"))
         except Exception:
             return []
         return retval
 
     def _update_widgets(self, widgets):
-        interfaces = [i for i in netifaces.interfaces() if not i.startswith(self._exclude)]
+        interfaces = [
+            i for i in netifaces.interfaces() if not i.startswith(self._exclude)
+        ]
         interfaces.extend([i for i in netifaces.interfaces() if i in self._include])
 
         for widget in widgets:
-            widget.set('visited', False)
+            widget.set("visited", False)
 
         for intf in interfaces:
             addr = []
-            state = 'down'
+            state = "down"
             for ip in self.get_addresses(intf):
                 addr.append(ip)
-                state = 'up'
+                state = "up"
 
-            if len(self._states['exclude']) > 0 and state in self._states['exclude']: continue
-            if len(self._states['include']) > 0 and state not in self._states['include']: continue
+            if len(self._states["exclude"]) > 0 and state in self._states["exclude"]:
+                continue
+            if (
+                len(self._states["include"]) > 0
+                and state not in self._states["include"]
+            ):
+                continue
 
             widget = self.widget(intf)
             if not widget:
                 widget = core.widget.Widget(name=intf, module=self)
                 widgets.append(widget)
             # join/split is used to get rid of multiple whitespaces (in case SSID is not available, for instance
-            widget.full_text(' '.join(self._format.format(ip=', '.join(addr),intf=intf,state=state,ssid=self.get_ssid(intf)).split()))
-            widget.set('intf', intf)
-            widget.set('state', state)
-            widget.set('visited', True)
+            widget.full_text(
+                " ".join(
+                    self._format.format(
+                        ip=", ".join(addr),
+                        intf=intf,
+                        state=state,
+                        ssid=self.get_ssid(intf),
+                    ).split()
+                )
+            )
+            widget.set("intf", intf)
+            widget.set("state", state)
+            widget.set("visited", True)
 
         for widget in widgets:
-            if widget.get('visited') is False:
+            if widget.get("visited") is False:
                 widgets.remove(widget)
 
     def get_ssid(self, intf):
         if self._iswlan(intf) and self.iwgetid:
-            return util.cli.execute('{} -r {}'.format(self.iwgetid, intf), ignore_errors=True)
-        return ''
+            return util.cli.execute(
+                "{} -r {}".format(self.iwgetid, intf), ignore_errors=True
+            )
+        return ""
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

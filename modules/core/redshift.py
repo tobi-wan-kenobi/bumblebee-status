@@ -24,45 +24,49 @@ import core.decorators
 import util.cli
 import util.location
 
+
 def get_redshift_value(module):
     widget = module.widget()
-    location = module.parameter('location', 'auto')
-    lat = module.parameter('lat', None)
-    lon = module.parameter('lon', None)
+    location = module.parameter("location", "auto")
+    lat = module.parameter("lat", None)
+    lon = module.parameter("lon", None)
 
     # Even if location method is set to manual, if we have no lat or lon,
     # fall back to the geoclue2 method.
-    if location == 'manual' and (lat is None or lon is None):
-        location = 'geoclue2'
+    if location == "manual" and (lat is None or lon is None):
+        location = "geoclue2"
 
-    command = ['redshift', '-p']
-    if location == 'manual':
-        command.extend(['-l', '{}:{}'.format(lat, lon)])
-    if location == 'geoclue2':
-        command.extend(['-l', 'geoclue2'])
+    command = ["redshift", "-p"]
+    if location == "manual":
+        command.extend(["-l", "{}:{}".format(lat, lon)])
+    if location == "geoclue2":
+        command.extend(["-l", "geoclue2"])
 
     try:
-        res = util.cli.execute(' '.join(command))
+        res = util.cli.execute(" ".join(command))
     except Exception:
-        res = ''
-    widget.set('temp', 'n/a')
-    widget.set('transition', '')
-    widget.set('state', 'day')
-    for line in res.split('\n'):
+        res = ""
+    widget.set("temp", "n/a")
+    widget.set("transition", "")
+    widget.set("state", "day")
+    for line in res.split("\n"):
         line = line.lower()
-        if 'temperature' in line:
-            widget.set('temp', line.split(' ')[2])
-        if 'period' in line:
-            state = line.split(' ')[1]
-            if 'day' in state:
-                widget.set('state', 'day')
-            elif 'night' in state:
-                widget.set('state', 'night')
+        if "temperature" in line:
+            widget.set("temp", line.split(" ")[2])
+        if "period" in line:
+            state = line.split(" ")[1]
+            if "day" in state:
+                widget.set("state", "day")
+            elif "night" in state:
+                widget.set("state", "night")
             else:
-                widget.set('state', 'transition')
-                match = re.search(r'(\d+)\.\d+% ([a-z]+)', line)
-                widget.set('transition', '({}% {})'.format(match.group(1), match.group(2)))
-    core.event.trigger('update', [ widget.module.id ], redraw_only=True)
+                widget.set("state", "transition")
+                match = re.search(r"(\d+)\.\d+% ([a-z]+)", line)
+                widget.set(
+                    "transition", "({}% {})".format(match.group(1), match.group(2))
+                )
+    core.event.trigger("update", [widget.module.id], redraw_only=True)
+
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=10)
@@ -71,24 +75,24 @@ class Module(core.module.Module):
 
         self.__thread = None
 
-        if self.parameter('location', '') == 'ipinfo':
+        if self.parameter("location", "") == "ipinfo":
             # override lon/lat with ipinfo
             try:
                 location = util.location.coordinates()
-                self.set('lat', location[0])
-                self.set('lon', location[1])
-                self.set('location', 'manual')
+                self.set("lat", location[0])
+                self.set("lon", location[1])
+                self.set("location", "manual")
             except Exception:
                 # Fall back to geoclue2.
-                self.set('location', 'geoclue2')
+                self.set("location", "geoclue2")
 
-        self._text = ''
+        self._text = ""
 
     def text(self, widget):
-        val = widget.get('temp', 'n/a')
-        transition = widget.get('transition', '')
+        val = widget.get("temp", "n/a")
+        transition = widget.get("transition", "")
         if transition:
-            val = '{} {}'.format(val, transition)
+            val = "{} {}".format(val, transition)
         return val
 
     def update(self):
@@ -98,6 +102,7 @@ class Module(core.module.Module):
         self.__thread.start()
 
     def state(self, widget):
-        return widget.get('state', None)
+        return widget.get("state", None)
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

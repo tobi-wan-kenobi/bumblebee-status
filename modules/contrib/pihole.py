@@ -12,30 +12,36 @@ import core.module
 import core.widget
 import core.input
 
+
 class Module(core.module.Module):
     @core.decorators.every(minutes=1)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.pihole_status))
 
-        self._pihole_address = self.parameter('address', '')
-        self._pihole_pw_hash = self.parameter('pwhash', '')
+        self._pihole_address = self.parameter("address", "")
+        self._pihole_pw_hash = self.parameter("pwhash", "")
         self._pihole_status = None
-        self._ads_blocked_today = '-'
+        self._ads_blocked_today = "-"
         self.update_pihole_status()
 
-        core.input.register(self, button=core.input.LEFT_MOUSE,
-            cmd=self.toggle_pihole_status)
+        core.input.register(
+            self, button=core.input.LEFT_MOUSE, cmd=self.toggle_pihole_status
+        )
 
     def pihole_status(self, widget):
         if self._pihole_status is None:
-            return 'pi-hole unknown'
-        return 'pi-hole {}'.format('up {} blocked'.format(self._ads_blocked_today) if self._pihole_status else 'down')
+            return "pi-hole unknown"
+        return "pi-hole {}".format(
+            "up {} blocked".format(self._ads_blocked_today)
+            if self._pihole_status
+            else "down"
+        )
 
     def update_pihole_status(self):
         try:
-            data = requests.get(self._pihole_address + '/admin/api.php?summary').json()
-            self._pihole_status = True if data['status'] == 'enabled' else False
-            self._ads_blocked_today = data['ads_blocked_today']
+            data = requests.get(self._pihole_address + "/admin/api.php?summary").json()
+            self._pihole_status = True if data["status"] == "enabled" else False
+            self._ads_blocked_today = data["ads_blocked_today"]
         except Exception as e:
             self._pihole_status = None
 
@@ -44,16 +50,23 @@ class Module(core.module.Module):
             try:
                 req = None
                 if self._pihole_status:
-                    req = requests.get(self._pihole_address + '/admin/api.php?disable&auth=' + self._pihole_pw_hash)
+                    req = requests.get(
+                        self._pihole_address
+                        + "/admin/api.php?disable&auth="
+                        + self._pihole_pw_hash
+                    )
                 else:
-                    req = requests.get(self._pihole_address + '/admin/api.php?enable&auth=' + self._pihole_pw_hash)
+                    req = requests.get(
+                        self._pihole_address
+                        + "/admin/api.php?enable&auth="
+                        + self._pihole_pw_hash
+                    )
                 if req is not None:
                     if req.status_code == 200:
-                        status = req.json()['status']
-                        self._pihole_status = False if status == 'disabled' else True
+                        status = req.json()["status"]
+                        self._pihole_status = False if status == "disabled" else True
             except:
                 pass
-
 
     def update(self):
         self.update_pihole_status()
@@ -62,7 +75,8 @@ class Module(core.module.Module):
         if self._pihole_status is None:
             return []
         elif self._pihole_status:
-            return ['enabled']
-        return ['disabled', 'warning']
+            return ["enabled"]
+        return ["disabled", "warning"]
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

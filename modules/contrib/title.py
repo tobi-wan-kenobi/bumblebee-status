@@ -18,7 +18,7 @@ try:
 except ImportError:
     pass
 
-no_title = 'n/a'
+no_title = "n/a"
 
 import core.module
 import core.widget
@@ -26,24 +26,32 @@ import core.decorators
 
 import util.format
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
 
         # parsing of parameters
-        self.__scroll = util.format.asbool(self.parameter('scroll', False))
-        self.__max = int(self.parameter('max', 64))
-        self.__placeholder = self.parameter('placeholder', '...')
-        self.__title = ''
+        self.__scroll = util.format.asbool(self.parameter("scroll", False))
+        self.__max = int(self.parameter("max", 64))
+        self.__placeholder = self.parameter("placeholder", "...")
+        self.__title = ""
 
         # set output of the module
-        self.widgets([core.widget.Widget(full_text=
-            self.__scrolling_focused_title if self.__scroll else self.__focused_title)])
+        self.widgets(
+            [
+                core.widget.Widget(
+                    full_text=self.__scrolling_focused_title
+                    if self.__scroll
+                    else self.__focused_title
+                )
+            ]
+        )
 
         # create a connection with i3ipc
         self.__i3 = i3ipc.Connection()
         # event is called both on focus change and title change
-        self.__i3.on('window', lambda __p_i3, __p_e: self.__pollTitle())
+        self.__i3.on("window", lambda __p_i3, __p_e: self.__pollTitle())
         # begin listening for events
         threading.Thread(target=self.__i3.main).start()
 
@@ -69,9 +77,12 @@ class Module(core.module.Module):
         if not self.__scroll:
             # cut the text if it is too long
             if len(self.__full_title) > self.__max:
-                self.__title = self.__full_title[0:self.__max - len(self.__placeholder)]
-                self.__title = '{}{}'.format(self.__title, self.__placeholder)
+                self.__title = self.__full_title[
+                    0 : self.__max - len(self.__placeholder)
+                ]
+                self.__title = "{}{}".format(self.__title, self.__placeholder)
             else:
                 self.__title = self.__full_title
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

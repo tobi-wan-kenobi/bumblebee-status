@@ -12,7 +12,7 @@ Parameters:
 """
 
 
-# TODO: 
+# TODO:
 # - support multiple backends by abstracting the menu structure into a tree
 # - build the menu and the actions based on that abstracted tree
 #
@@ -29,30 +29,39 @@ import core.event
 import util.cli
 import util.popup
 
+
 def build_menu(parent, current_directory, callback):
     with os.scandir(current_directory) as it:
         for entry in it:
-            if entry.name.startswith('.'): continue
+            if entry.name.startswith("."):
+                continue
             if entry.is_file():
-                name = entry.name[:entry.name.rfind('.')]
-                parent.add_menuitem(name, callback=lambda : callback(os.path.join(current_directory, name)))
+                name = entry.name[: entry.name.rfind(".")]
+                parent.add_menuitem(
+                    name,
+                    callback=lambda: callback(os.path.join(current_directory, name)),
+                )
 
             else:
                 submenu = util.popup.menu(parent, leave=False)
-                build_menu(submenu, os.path.join(current_directory, entry.name), callback)
+                build_menu(
+                    submenu, os.path.join(current_directory, entry.name), callback
+                )
                 parent.add_cascade(entry.name, submenu)
+
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.text))
 
-        self.__duration = int(self.parameter('duration', 30))
-        self.__offx = int(self.parameter('offx', 0))
-        self.__offy = int(self.parameter('offy', 0))
-        self.__path = os.path.expanduser(self.parameter('location', '~/.password-store/'))
+        self.__duration = int(self.parameter("duration", 30))
+        self.__offx = int(self.parameter("offx", 0))
+        self.__offy = int(self.parameter("offy", 0))
+        self.__path = os.path.expanduser(
+            self.parameter("location", "~/.password-store/")
+        )
         self.__reset()
-        core.input.register(self, button=core.input.LEFT_MOUSE,
-           cmd=self.popup)
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.popup)
 
     def popup(self, widget):
         menu = util.popup.menu(leave=False)
@@ -62,14 +71,17 @@ class Module(core.module.Module):
 
     def __reset(self):
         self.__timer = None
-        self.__text = str(self.parameter('text', '<click-for-password>'))
+        self.__text = str(self.parameter("text", "<click-for-password>"))
 
     def __callback(self, secret_name):
-        secret_name = secret_name.replace(self.__path, '') # remove common path
+        secret_name = secret_name.replace(self.__path, "")  # remove common path
         if self.__timer:
             self.__timer.cancel()
-        res = util.cli.execute('pass -c {}'.format(secret_name), wait=False,
-            env={ 'PASSWORD_STORE_CLIP_TIME': self.__duration })
+        res = util.cli.execute(
+            "pass -c {}".format(secret_name),
+            wait=False,
+            env={"PASSWORD_STORE_CLIP_TIME": self.__duration},
+        )
         self.__timer = threading.Timer(self.__duration, self.__reset)
         self.__timer.start()
         self.__start = int(time.time())
@@ -77,7 +89,10 @@ class Module(core.module.Module):
 
     def text(self, widget):
         if self.__timer:
-            return '{} ({}s)'.format(self.__text, self.__duration - (int(time.time()) - self.__start))
+            return "{} ({}s)".format(
+                self.__text, self.__duration - (int(time.time()) - self.__start)
+            )
         return self.__text
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

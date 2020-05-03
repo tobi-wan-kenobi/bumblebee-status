@@ -8,6 +8,7 @@ import core.module
 import core.widget
 import core.decorators
 
+
 class Module(core.module.Module):
     @core.decorators.every(minutes=60)
     def __init__(self, config, theme):
@@ -15,5 +16,6 @@ class Module(core.module.Module):
 
     def full_text(self, widgets):
         return platform.release()
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

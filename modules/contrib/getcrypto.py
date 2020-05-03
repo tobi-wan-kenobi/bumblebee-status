@@ -24,51 +24,64 @@ import core.decorators
 
 import util.format
 
+
 def getfromkrak(coin, currency):
     abbrev = {
-        'Btc': ['xbt', 'XXBTZ'],
-        'Eth': ['eth', 'XETHZ'],
-        'Ltc': ['ltc', 'XLTCZ'],
+        "Btc": ["xbt", "XXBTZ"],
+        "Eth": ["eth", "XETHZ"],
+        "Ltc": ["ltc", "XLTCZ"],
     }
     data = abbrev.get(coin, None)
-    if not data: return
-    epair = '{}{}'.format(data[0], currency)
-    tickname = '{}{}'.format(data[1], currency.upper())
+    if not data:
+        return
+    epair = "{}{}".format(data[0], currency)
+    tickname = "{}{}".format(data[1], currency.upper())
     try:
-        krakenget = requests.get('https://api.kraken.com/0/public/Ticker?pair='+epair).json()
+        krakenget = requests.get(
+            "https://api.kraken.com/0/public/Ticker?pair=" + epair
+        ).json()
     except (RequestException, Exception):
-        return 'No connection'
-    if not 'result' in krakenget:
-        return 'No data'
-    kethusdask = float(krakenget['result'][tickname]['a'][0])
-    kethusdbid = float(krakenget['result'][tickname]['b'][0])
-    return coin+': '+str((kethusdask+kethusdbid)/2)[0:6]
+        return "No connection"
+    if not "result" in krakenget:
+        return "No data"
+    kethusdask = float(krakenget["result"][tickname]["a"][0])
+    kethusdbid = float(krakenget["result"][tickname]["b"][0])
+    return coin + ": " + str((kethusdask + kethusdbid) / 2)[0:6]
+
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=30)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.curprice))
 
-        self.__curprice = ''
-        self.__getbtc = util.format.asbool(self.parameter('getbtc', True))
-        self.__geteth = util.format.asbool(self.parameter('geteth', True))
-        self.__getltc = util.format.asbool(self.parameter('getltc', True))
-        self.__getcur = self.parameter('getcur', 'usd')
-        core.input.register(self, button=core.input.LEFT_MOUSE,
-            cmd='xdg-open https://cryptowat.ch/')
+        self.__curprice = ""
+        self.__getbtc = util.format.asbool(self.parameter("getbtc", True))
+        self.__geteth = util.format.asbool(self.parameter("geteth", True))
+        self.__getltc = util.format.asbool(self.parameter("getltc", True))
+        self.__getcur = self.parameter("getcur", "usd")
+        core.input.register(
+            self, button=core.input.LEFT_MOUSE, cmd="xdg-open https://cryptowat.ch/"
+        )
 
     def curprice(self, widget):
         return self.__curprice
 
     def update(self):
         currency = self.__getcur
-        btcprice, ethprice, ltcprice = '', '', ''
+        btcprice, ethprice, ltcprice = "", "", ""
         if self.__getbtc:
-            btcprice = getfromkrak('Btc', currency)
+            btcprice = getfromkrak("Btc", currency)
         if self.__geteth:
-            ethprice = getfromkrak('Eth', currency)
+            ethprice = getfromkrak("Eth", currency)
         if self.__getltc:
-            ltcprice = getfromkrak('Ltc', currency)
-        self.__curprice = btcprice+' '*(self.__getbtc*self.__geteth)+ethprice+' '*(self.__getltc*max(self.__getbtc, self.__geteth))+ltcprice
+            ltcprice = getfromkrak("Ltc", currency)
+        self.__curprice = (
+            btcprice
+            + " " * (self.__getbtc * self.__geteth)
+            + ethprice
+            + " " * (self.__getltc * max(self.__getbtc, self.__geteth))
+            + ltcprice
+        )
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

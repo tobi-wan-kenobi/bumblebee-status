@@ -31,36 +31,37 @@ import core.input
 
 import util.cli
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.query))
 
-        core.input.register(self, button=core.input.LEFT_MOUSE,
-            cmd=self.__chooseNvidia)
-        core.input.register(self, button=core.input.RIGHT_MOUSE,
-            cmd=self.__chooseIntel)
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.__chooseNvidia)
+        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.__chooseIntel)
 
-        self.nvidiastring = self.parameter('nvidiastring', 'nv')
-        self.intelstring = self.parameter('intelstring', 'it')
+        self.nvidiastring = self.parameter("nvidiastring", "nv")
+        self.intelstring = self.parameter("intelstring", "it")
 
     def __chooseNvidia(self, event):
-        util.cli.execute('sudo prime-select nvidia')
+        util.cli.execute("sudo prime-select nvidia")
 
     def __chooseIntel(self, event):
-        util.cli.execute('sudo prime-select intel')
+        util.cli.execute("sudo prime-select intel")
 
     def query(self, widget):
         try:
-            res = util.cli.execute('prime-select query')
+            res = util.cli.execute("prime-select query")
         except RuntimeError:
-            return 'n/a'
+            return "n/a"
 
-        for line in res.split('\n'):
-            if not line: continue
-            if 'nvidia' in line:
+        for line in res.split("\n"):
+            if not line:
+                continue
+            if "nvidia" in line:
                 return self.nvidiastring
-            if 'intel' in line:
+            if "intel" in line:
                 return self.intelstring
-        return 'n/a'
+        return "n/a"
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

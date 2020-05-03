@@ -20,22 +20,23 @@ import core.decorators
 import util.cli
 import util.format
 
-#list of repositories.
-#the last one should always be other
-repos = ['core', 'extra', 'community', 'multilib', 'testing', 'other']
+# list of repositories.
+# the last one should always be other
+repos = ["core", "extra", "community", "multilib", "testing", "other"]
+
 
 def get_pacman_info(widget, path):
-    cmd = '{}/../../bin/pacman-updates'.format(path)
+    cmd = "{}/../../bin/pacman-updates".format(path)
     if not os.path.exists(cmd):
-        cmd = '/usr/share/bumblebee-status/bin/pacman-update'
+        cmd = "/usr/share/bumblebee-status/bin/pacman-update"
     result = util.cli.execute(cmd, ignore_errors=True)
 
-    count = len(repos)*[0]
+    count = len(repos) * [0]
 
     for line in result.splitlines():
-        if line.startswith(('http', 'rsync')):
-            for i in range(len(repos)-1):
-                if '/' + repos[i] + '/' in line:
+        if line.startswith(("http", "rsync")):
+            for i in range(len(repos) - 1):
+                if "/" + repos[i] + "/" in line:
                     count[i] += 1
                     break
             else:
@@ -43,7 +44,8 @@ def get_pacman_info(widget, path):
 
     for i in range(len(repos)):
         widget.set(repos[i], count[i])
-    core.event.trigger('update', [ widget.module.id ], redraw_only=True)
+    core.event.trigger("update", [widget.module.id], redraw_only=True)
+
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=30)
@@ -51,9 +53,9 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.updates))
 
     def updates(self, widget):
-        if util.format.asbool(self.parameter('sum')):
+        if util.format.asbool(self.parameter("sum")):
             return str(sum(map(lambda x: widget.get(x, 0), repos)))
-        return '/'.join(map(lambda x: str(widget.get(x, 0)), repos))
+        return "/".join(map(lambda x: str(widget.get(x, 0)), repos))
 
     def update(self):
         path = os.path.dirname(os.path.abspath(__file__))
@@ -61,11 +63,14 @@ class Module(core.module.Module):
         thread.start()
 
     def state(self, widget):
-        weightedCount = sum(map(lambda x: (len(repos)-x[0]) * widget.get(x[1], 0), enumerate(repos)))
+        weightedCount = sum(
+            map(lambda x: (len(repos) - x[0]) * widget.get(x[1], 0), enumerate(repos))
+        )
 
         if weightedCount < 10:
-            return 'good'
+            return "good"
 
         return self.threshold_state(weightedCount, 100, 150)
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

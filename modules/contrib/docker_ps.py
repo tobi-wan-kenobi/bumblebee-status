@@ -15,29 +15,33 @@ import core.module
 import core.widget
 import core.decorators
 
+
 class Module(core.module.Module):
     @core.decorators.every(seconds=5)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.docker_info))
-        self.__info = ''
+        self.__info = ""
 
     def state(self, widget):
         state = []
-        if self.__info == 'OK - 0':
-            state.append('warning')
-        elif  self.__info in ['n/a', 'daemon off']:
-            state.append('critical')
+        if self.__info == "OK - 0":
+            state.append("warning")
+        elif self.__info in ["n/a", "daemon off"]:
+            state.append("critical")
         return state
 
     def docker_info(self, widget):
         try:
-            cli = docker.DockerClient(base_url='unix://var/run/docker.sock')
+            cli = docker.DockerClient(base_url="unix://var/run/docker.sock")
             cli.ping()
-            self.__info = 'OK - {}'.format(len(cli.containers.list(filters={'status': 'running'})))
+            self.__info = "OK - {}".format(
+                len(cli.containers.list(filters={"status": "running"}))
+            )
         except ConnectionError:
-            self.__info = 'daemon off'
+            self.__info = "daemon off"
         except Exception:
-            self.__info = 'n/a'
+            self.__info = "n/a"
         return self.__info
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
