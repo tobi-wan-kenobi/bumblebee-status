@@ -3,6 +3,7 @@
 import os
 import sys
 import json
+import time
 import socket
 import select
 import logging
@@ -67,7 +68,6 @@ def handle_input(output):
 
 def main():
     config = core.config.Config(sys.argv[1:])
-
     level = logging.DEBUG if config.debug() else logging.ERROR
     if config.logfile():
         logging.basicConfig(
@@ -112,14 +112,15 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
     try:
         main()
     except Exception as e:
-        output = core.output.i3()
-        output.modules(core.module.Error(module="main", error=e))
-        output.draw("start")
-        output.update()
-        output.draw("statusline")
+        # really basic errors -> make sure these are shown in the status bar by minimal config
+        sys.stdout.write("{\"version\":1}\n[\n")
+        while True:
+            sys.stdout.write(json.dumps([{ "full_text": " {} ".format(e), "background": "#ff0000", "color": "#ffffff", "name": "error", "instance": "the-only-one" }]))
+            sys.stdout.write(",\n")
+            sys.stdout.flush()
+            time.sleep(5)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
