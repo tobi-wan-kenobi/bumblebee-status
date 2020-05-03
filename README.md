@@ -5,20 +5,20 @@
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 
-**Many, many thanks to all contributors! All of the really cool modules have been contributed by somebody else :)**
+**Many, many thanks to all contributors! I am still amazed by and deeply grateful for how many PRs this project gets.**
 
 ![List of modules](doc/LIST-OF-MODULES.md)
 
-![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
+![Solarized Powerline](screenshots/themes/powerline-solarized.png)
 
 bumblebee-status is a modular, theme-able status line generator for the [i3 window manager](https://i3wm.org/).
 
 Focus is on:
-* Ease of use
-* Support for easily adding [custom themes](doc/development/WRITING-A-THEME.md)
-* Support for easily adding [custom modules](doc/development/WRITING-A-MODULE.md)
+* ease of use, sane defaults (no mandatory configuration file)
+* [custom themes](doc/development/WRITING-A-THEME.md)
+* [custom modules](doc/development/WRITING-A-MODULE.md)
 
-I hope you like it and I appreciate any kind of feedback: Bug reports, feature requests, etc. :)
+I hope you like it and I appreciate any kind of feedback: bug reports, feature requests, etc. :)
 
 Thanks a lot!
 
@@ -37,9 +37,9 @@ bar {
 ```
 
 # Documentation
-See [the docs](doc/) for documentation.
+See [the docs](doc/) for detailed documentation.
 
-See [FAQ](doc/FAQ.md) for FAQs.
+See [FAQ](doc/FAQ.md) for. well, FAQs.
 
 Other resources:
 
@@ -86,22 +86,6 @@ $ ./bumblebee-status -l themes
 $ ./bumblebee-status -l modules
 ```
 
-Any parameter you can specify with `-p <name>=<value>`, you can alternatively specify in `~/.bumblebee-status.conf` or `~/.config/bumblebee-status.conf`. This parameters act as a **fallback**, so values specified with `-p` have priority.
-
-Configuration files have a format like this:
-```
-$ cat ~/.bumblebee-status.conf
-[module-parameters]
-<key> = <value>
-```
-
-For example:
-```
-$ cat ~/.bumblebee-status.conf
-[module-parameters]
-github.token=abcdefabcdef12345
-```
-
 To change the update interval, use:
 ```
 $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
@@ -110,6 +94,12 @@ $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
 The update interval can also be changed on a per-module basis, like this:
 ```
 $ ./bumblebee-status -m cpu memory -p cpu.interval=5s memory.interval=1m
+```
+
+All modules can be given "aliases" using `<module name>:<alias>`, by which they can be parametrized, for example:
+
+```
+$ ./bumblebee-status -m disk:root disk:home -p root.path=/ home.path=/home
 ```
 
 As a simple example, this is what my i3 configuration looks like:
