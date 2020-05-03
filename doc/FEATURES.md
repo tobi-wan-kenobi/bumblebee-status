@@ -52,7 +52,7 @@ If errors occur, you should see them in the i3bar itself. If that does not work,
 $ ./bumblebee-status -d -m <list of modules>
 ```
 
-This will log to stderr, so unless you are running `bumblebee-status` interactively in the CLI, you'll need to redirect stderr to some file (i.e. `bumblebee-status <parameters> 2> error.log`). Alternatively, you can specify a logfile location using `-f` or `--logfile`. Note that putting `bumblebee-status` into debug mode will show an indicator in the bar to make sure you don't forget to clean up the log file occasionally.
+This will log to stderr, so unless you are running `bumblebee-status` interactively in the CLI, you'll need to specify a logfile using `-f` or `--logfile`. Note that putting `bumblebee-status` into debug mode will show an indicator in the bar to make sure you don't forget to clean up the log file occasionally.
 
 ## Automatically hiding modules
 If you want to have a minimal bar that stays out of the way, you can use the `-a` or `--autohide` switch to specify a list of module names. All those modules will only be displayed when (and as long as) their state is either warning or critical (high CPU usage, low disk space, etc.). As long as the module is in a "normal" state and does not require attention, it will remain hidden.
@@ -68,6 +68,22 @@ An example:
 $ bumblebee-status -m sensors2 -p sensors2.theme.minwidth=10,10,10,10 sensors2.theme.align=center,center,left,right
 ```
 
+## Configuration files
+Any parameter that can be specified using `-p <name>=<value>` on the commandline, can alternatively be specified in one of the following configuration files:
+- ~/.bumblebee-status.conf
+- ~/.config/bumblebee-status.conf
+- ~/.config/bumblebee-status/config
 
-## Configuration file
-TODO
+These parameters act as **fallback**, so values specified on the commandline take precedence.
+
+Configuration files have the following format:
+```
+[module-parameters]
+<key> = <value>
+```
+
+For example:
+```
+[module-parameters]
+github.token=abcdefabcdef12345
+```
