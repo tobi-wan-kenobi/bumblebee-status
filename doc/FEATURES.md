@@ -52,9 +52,22 @@ If errors occur, you should see them in the i3bar itself. If that does not work,
 $ ./bumblebee-status -d -m <list of modules>
 ```
 
-This will log to stderr, so unless you are running `bumblebee-status` interactively in the CLI, you'll need to redirect stderr to some file (i.e. `bumblebee-status <parameters> 2> error.log`).
+This will log to stderr, so unless you are running `bumblebee-status` interactively in the CLI, you'll need to redirect stderr to some file (i.e. `bumblebee-status <parameters> 2> error.log`). Alternatively, you can specify a logfile location using `-f` or `--logfile`. Note that putting `bumblebee-status` into debug mode will show an indicator in the bar to make sure you don't forget to clean up the log file occasionally.
 
 ## Automatically hiding modules
 If you want to have a minimal bar that stays out of the way, you can use the `-a` or `--autohide` switch to specify a list of module names. All those modules will only be displayed when (and as long as) their state is either warning or critical (high CPU usage, low disk space, etc.). As long as the module is in a "normal" state and does not require attention, it will remain hidden.
 Note that this parameter is specified *in addition* to `-m` (i.e. to autohide the CPU module, you would use `bumblebee-status -m cpu memory traffic -a cpu`).
 
+## Additional widget themeing
+There are a few parameters you can tweak directly from the commandline via `-p` or `--parameters`:
+- `<modulename>.theme.minwidth` sets the minimum width of a module/widget (can be a comma-separated list for multi-widget modules). The parameter can be either an integer (in which case it is taken as "number of characters", or a string, in which case the minwidth is the width of the string (e.g. `-p cpu.minwidth="100.00%"`)
+- `<modulename>.theme.align` sets the alignment (again, can be comma-separated for multi-widget modules) - defaults to `left`, valid values are `left`, `right` and `center`
+
+An example:
+```
+$ bumblebee-status -m sensors2 -p sensors2.theme.minwidth=10,10,10,10 sensors2.theme.align=center,center,left,right
+```
+
+
+## Configuration file
+TODO

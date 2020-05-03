@@ -108,6 +108,7 @@ class block(object):
             "_suffix",
             "_prefix",
             "min_width",
+            "align"
         ]:
             assign(self.__attributes, result, k)
 
@@ -185,6 +186,7 @@ class i3(object):
                 blk.set("min-width", "-" * int(minwidth))
             except:
                 blk.set("min-width", minwidth)
+        blk.set("align", widget.theme("align"))
         blk.set("full_text", self.__content[widget])
         if widget.get("pango", False):
             blk.set("markup", "pango")
