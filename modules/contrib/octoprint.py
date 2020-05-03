@@ -72,8 +72,6 @@ class Module(core.module.Module):
         
         self.__printer_bed_temperature = "-"
         self.__tool1_temperature = "-"
-        
-        self.update_status()
 
         core.input.register(self, button=core.input.LEFT_MOUSE,
             cmd=self.__show_popup)
@@ -120,7 +118,7 @@ class Module(core.module.Module):
                 tool_id += 1
         return tool_temperatures
 
-    def update_status(self):
+    def update(self):
         try:
             self.__octoprint_state =  self.__get_octoprint_state()
 
@@ -214,9 +212,6 @@ class Module(core.module.Module):
     def __on_close_popup(self, event):
         self.__webcam_images_queue = None
         self.__webcam_images_worker.stop()
-
-    def update(self):
-        self.update_status()
 
     def state(self, widget):
         return [] 
