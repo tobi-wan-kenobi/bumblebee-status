@@ -2,7 +2,7 @@
 - core: only PSL
 - pass if modules are missing
 - minimize dependencies, code
-- test everything
+- test everything in the core framework
 - think about pylint
 
 # small stuff

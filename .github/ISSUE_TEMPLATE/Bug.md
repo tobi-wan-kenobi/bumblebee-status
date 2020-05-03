@@ -1,6 +1,6 @@
 ---
 name: Bug Report
-about: Something doesn't work (as expected)
+about: Something doesn't work as expected
 title: ''
 labels: ''
 assignees: ''
@@ -9,10 +9,10 @@ assignees: ''
 
 ### Bug Report
 
-#### Summary
+#### Description
 Affected module: <module name>
+Version used: <e.g. latest git, AUR, PIP>
 
-#### Description:
 <description>
 
 #### How to reproduce
