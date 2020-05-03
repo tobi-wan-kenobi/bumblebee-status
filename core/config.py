@@ -95,7 +95,7 @@ class print_usage(argparse.Action):
                     doc = doc.replace("\n", "<br />")
 
                     if os.path.exists(os.path.join(basepath, 'screenshots', '{}.png'.format(m))):
-                        doc = '{}<p />![{}](../screenshots/{}.png'.format(doc, m, m)
+                        doc = '{}<p />![{}](../screenshots/{}.png)'.format(doc, m, m)
 
                     print("|{} |{} |".format(m, doc))
                 else:
