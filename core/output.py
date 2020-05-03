@@ -108,7 +108,7 @@ class block(object):
             "_suffix",
             "_prefix",
             "min_width",
-            "align"
+            "align",
         ]:
             assign(self.__attributes, result, k)
 
