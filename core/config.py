@@ -67,11 +67,11 @@ class print_usage(argparse.Action):
             print("|Name |Description |")
             print("|-----|------------|")
 
+        basepath = os.path.abspath(
+            os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+        )
         for m in all_modules():
             try:
-                basepath = os.path.abspath(
-                    os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
-                )
                 filename = os.path.join(basepath, "modules", "core", "{}.py".format(m))
                 if not os.path.exists(filename):
                     filename = os.path.join(
@@ -92,7 +92,11 @@ class print_usage(argparse.Action):
                 if self._format == "markdown":
                     doc = doc.replace("<", "\<")
                     doc = doc.replace(">", "\>")
-                    doc = doc.replace("\n", "<br>")
+                    doc = doc.replace("\n", "<br />")
+
+                    if os.path.exists(os.path.join(basepath, 'screenshots', '{}.png'.format(m))):
+                        doc = '{}<p />![{}](../screenshots/{}.png'.format(doc, m, m)
+
                     print("|{} |{} |".format(m, doc))
                 else:
                     print(
