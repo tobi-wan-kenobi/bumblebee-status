@@ -7,7 +7,7 @@
 
 **Many, many thanks to all contributors! All of the really cool modules have been contributed by somebody else :)**
 
-![List of modules](doc/MODULES.md)
+![List of modules](doc/LIST-OF-MODULES.md)
 
 ![Solarized Powerline](https://github.com/tobi-wan-kenobi/bumblebee-status/blob/master/screenshots/themes/powerline-solarized.png)
 
@@ -15,8 +15,8 @@ bumblebee-status is a modular, theme-able status line generator for the [i3 wind
 
 Focus is on:
 * Ease of use
-* Support for easily adding [custom themes](doc/HOWTO_THEME.md)
-* Support for easily adding [custom modules](doc/HOWTO_MODULE.md)
+* Support for easily adding [custom themes](doc/development/WRITING-A-THEME.md)
+* Support for easily adding [custom modules](doc/development/WRITING-A-MODULE.md)
 
 I hope you like it and I appreciate any kind of feedback: Bug reports, feature requests, etc. :)
 
@@ -43,17 +43,27 @@ See [FAQ](doc/FAQ.md) for FAQs.
 
 Other resources:
 
-* A list of [available modules](doc/MODULES.md)
-* [How to write a theme](doc/HOWTO_THEME.md)
-* [How to write a module](doc/HOWTO_MODULE.md)
+* A list of [available modules](doc/LIST-OF-MODULES.md)
+* [How to write a module](doc/development/WRITING-A-MODULE.md)
+* [How to write a theme](doc/development/WRITING-A-THEME.md)
 
 # Installation
 ```
+# from git (development snapshot)
 $ git clone git://github.com/tobi-wan-kenobi/bumblebee-status
+
+# from AUR:
+git clone https://aur.archlinux.org/bumblebee-status.git
+cd bumblebee-status
+makepkg -sicr
+
+# from PyPI (thanks @tony):
+# will install bumblebee-status into ~/.local/bin/bumblebee-status
+pip install --user bumblebee-status
 ```
 
 # Dependencies
-[Available modules](doc/MODULES.md) lists the dependencies (Python modules and external executables)
+[Available modules](doc/LIST-OF-MODULES.md) lists the dependencies (Python modules and external executables)
 for each module. If you are not using a module, you don't need the dependencies.
 
 # Usage
@@ -78,14 +88,6 @@ $ ./bumblebee-status -l modules
 
 Any parameter you can specify with `-p <name>=<value>`, you can alternatively specify in `~/.bumblebee-status.conf` or `~/.config/bumblebee-status.conf`. This parameters act as a **fallback**, so values specified with `-p` have priority.
 
-Parameters can also be used to override theme settings, such as:
-
-```
-$ ./bumblebee-status -p <module>.theme.<theme field>=<value>
-# for example, to get a spacer with a red background:
-$ ./bumblebee-status -m spacer -p spacer.theme.bg=#ff0000
-```
-
 Configuration files have a format like this:
 ```
 $ cat ~/.bumblebee-status.conf
@@ -105,6 +107,11 @@ To change the update interval, use:
 $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
 ```
 
+The update interval can also be changed on a per-module basis, like this:
+```
+$ ./bumblebee-status -m cpu memory -p cpu.interval=5s memory.interval=1m
+```
+
 As a simple example, this is what my i3 configuration looks like:
 
 ```
@@ -121,4 +128,4 @@ Restart i3wm and - that's it!
 
 # Examples
 
-![List of themes](./doc/THEMES.md)
+![List of themes](./doc/LIST-OF-THEMES.md)
