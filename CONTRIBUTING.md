@@ -11,7 +11,7 @@ If you want to file a bug, simply open an issue and describe your problem. Thing
 But even if you can't provide those, any indicator that something is not working as it should is much appreciated!
 
 ### Adding a new module or theme
-If you want to add a new module, please have a look at [how to write a new module](doc/HOWTO_MODULE.md) and [how to write a new theme](doc/HOWTO_THEME.md). Then simply create a Pull Request and I will review the changes as soon as possible.
+If you want to add a new module, please have a look at [how to write a new module](docs/development/module.rst) and [how to write a new theme](docs/development/theme.rst). Then simply create a Pull Request and I will review the changes as soon as possible.
 If you want to do me a *big* favour, check the Travis status for any failing unit tests. Oh - and if you happen to add unit tests, that's also something I am very grateful for!
 
 Thanks for reading until here! :)
