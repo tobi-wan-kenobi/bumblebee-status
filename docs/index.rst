@@ -17,6 +17,8 @@ Welcome to bumblebee-status's documentation!
    themes
    development/index
 
+   src/modules
+
 Indices and tables
 ==================
 
