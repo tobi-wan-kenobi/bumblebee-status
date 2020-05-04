@@ -248,4 +248,5 @@ class Module(core.module.Module):
         self.__webcam_images_queue = None
         self.__webcam_images_worker.stop()
 
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
