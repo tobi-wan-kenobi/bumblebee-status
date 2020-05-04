@@ -62,5 +62,13 @@ class config(unittest.TestCase):
         self.assertEqual("bc", self.module.get(self.widget))
         self.assertEqual("cd", self.module.get(self.widget))
 
+    def test_changed_data(self):
+        self.module.text = "abcd"
+        self.module.set("width", 2)
+        self.assertEqual("ab", self.module.get(self.widget))
+        self.assertEqual("bc", self.module.get(self.widget))
+        self.module.text = "wxyz"
+        self.assertEqual("wx", self.module.get(self.widget))
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

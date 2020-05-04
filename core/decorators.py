@@ -27,6 +27,12 @@ def scrollable(func):
         text = func(module, widget)
         if not text:
             return text
+
+        if text != widget.get("__content__", text):
+            widget.set("scrolling.start", 0)
+            widget.set("scrolling.direction", "right")
+        widget.set("__content__", text)
+
         width = widget.get(
             "theme.width", util.format.asint(module.parameter("width", 30))
         )
