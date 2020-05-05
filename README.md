@@ -1,6 +1,7 @@
 # bumblebee-status
 
-[![Build Status](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status.svg?branch=master)](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status)
+[![Build Status](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status.svg?branch=development)](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status)
+[![Documentation Status](https://readthedocs.org/projects/bumblebee-status/badge/?version=development)](https://bumblebee-status.readthedocs.io/en/development/?badge=development)
 [![Code Climate](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/gpa.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
