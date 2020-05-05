@@ -20,6 +20,7 @@
 project = "bumblebee-status"
 copyright = "2020, tobi-wan-kenobi"
 author = "tobi-wan-kenobi"
+master_doc = 'index'
 
 import os
 import sys
