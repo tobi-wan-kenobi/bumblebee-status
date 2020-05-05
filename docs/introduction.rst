@@ -4,7 +4,7 @@ Introduction
 Installation
 ----------------
 
-.. code-block::
+.. code-block:: bash
 
 
    # from git (development snapshot)
@@ -35,7 +35,7 @@ Normal usage
 In your i3wm configuration, modify the *status_command* for your i3bar
 like this:
 
-.. code-block::
+.. code-block:: bash
 
    bar {
        status_command <path to bumblebee-status/bumblebee-status> \
@@ -47,7 +47,7 @@ like this:
 You can retrieve a list of modules (and their parameters) and themes by
 entering:
 
-.. code-block::
+.. code-block:: bash
 
    $ cd bumblebee-status
    $ ./bumblebee-status -l themes
@@ -55,27 +55,27 @@ entering:
 
 To change the update interval, use:
 
-.. code-block::
+.. code-block:: bash
 
    $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
 
 The update interval can also be changed on a per-module basis, like
 this:
 
-.. code-block::
+.. code-block:: bash
 
    $ ./bumblebee-status -m cpu memory -p cpu.interval=5s memory.interval=1m
 
 All modules can be given “aliases” using ``<module name>:<alias>``, by
 which they can be parametrized, for example:
 
-.. code-block::
+.. code-block:: bash
 
    $ ./bumblebee-status -m disk:root disk:home -p root.path=/ home.path=/home
 
 As a simple example, this is what my i3 configuration looks like:
 
-.. code-block::
+.. code-block:: bash
 
    bar {
        font pango:Inconsolata 10

@@ -34,7 +34,7 @@ see :doc:`FAQ` for details on this
 
 Example usage:
 
-.. code-block::
+.. code-block:: bash
 
    bar {
        status_command <path>/bumblebee-status \
