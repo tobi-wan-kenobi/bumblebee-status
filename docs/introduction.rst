@@ -22,7 +22,7 @@ Installation
 Dependencies
 ------------
 
-:doc:`development/module` lists the dependencies
+:doc:`modules` lists the dependencies
 (Python modules and external executables) for each module. If you are
 not using a module, you don’t need the dependencies.
 
