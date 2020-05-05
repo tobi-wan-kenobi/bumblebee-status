@@ -29,9 +29,6 @@ not using a module, you don’t need the dependencies.
 Usage
 ------------
 
-Normal usage
-~~~~~~~~~~~~
-
 In your i3wm configuration, modify the *status_command* for your i3bar
 like this:
 

@@ -3,6 +3,21 @@
 FAQs
 ====
 
+The new version has broken my setup!
+-----------------------------------------
+
+First, sorry about that!
+
+Then, please open a bug report and I will try to fix the issue quickly.
+
+If that is not an acceptable solution, here are different ways to step
+back to the last stable version:
+
+(TODO)
+- git
+- PIP
+- AUR
+
 My bar doesn’t show any background colors
 -----------------------------------------
 
