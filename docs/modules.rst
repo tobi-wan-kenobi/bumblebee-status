@@ -1,8 +1,12 @@
 List of modules
 ===============
 
+core
+----
+
+
 __pulseaudio
-------------
+~~~~~~~~~~~~
 
 Displays volume and mute status and controls for PulseAudio devices. Use wheel up and down to change volume, left click mutes, right click opens pavucontrol.
 
@@ -21,34 +25,8 @@ Requires the following executable:
     * pactl
     * pavucontrol
 
-amixer
-------
-
-get volume level
-
-Parameters:
-    * amixer.device: Device to use, defaults to "Master,0"
-
-.. image:: ../screenshots/amixer.png
-
-apt
----
-
-Displays APT package update information (<to upgrade>/<to remove >)
-Requires the following packages:
-
-    * aptitude
-
-arch-update
------------
-
-Check updates to Arch Linux.
-
-Requires the following executable:
-    * checkupdates (from pacman-contrib)
-
 battery
--------
+~~~~~~~
 
 Displays battery status, remaining percentage and charging information.
 
@@ -64,7 +42,7 @@ Parameters:
 .. image:: ../screenshots/battery.png
 
 battery-upower
---------------
+~~~~~~~~~~~~~~
 
 Displays battery status, remaining percentage and charging information.
 
@@ -73,33 +51,8 @@ Parameters:
     * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)
     * battery-upower.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
 
-bluetooth
----------
-
-Displays bluetooth status (Bluez). Left mouse click launches manager app,
-right click toggles bluetooth. Needs dbus-send to toggle bluetooth state.
-
-Parameters:
-    * bluetooth.device : the device to read state from (default is hci0)
-    * bluetooth.manager : application to launch on click (blueman-manager)
-    * bluetooth.dbus_destination : dbus destination (defaults to org.blueman.Mechanism)
-    * bluetooth.dbus_destination_path : dbus destination path (defaults to /)
-    * bluetooth.right_click_popup : use popup menu when right-clicked (defaults to True)
-
-.. image:: ../screenshots/bluetooth.png
-
-bluetooth2
-----------
-
-Displays bluetooth status. Left mouse click launches manager app,
-right click toggles bluetooth. Needs dbus-send to toggle bluetooth state and
-python-dbus to count the number of connections
-
-Parameters:
-    * bluetooth.manager : application to launch on click (blueman-manager)
-
 brightness
-----------
+~~~~~~~~~~
 
 Displays the brightness of a display
 
@@ -108,21 +61,8 @@ Parameters:
 
 .. image:: ../screenshots/brightness.png
 
-caffeine
---------
-
-Enable/disable automatic screen locking.
-
-Requires the following executables:
-    * xdg-screensaver
-    * xdotool
-    * xprop (as dependency for xdotool)
-    * notify-send
-
-.. image:: ../screenshots/caffeine.png
-
 cmus
-----
+~~~~
 
 Displays information about the current song in cmus.
 
@@ -145,7 +85,7 @@ Parameters:
 .. image:: ../screenshots/cmus.png
 
 cpu
----
+~~~
 
 Displays CPU utilization across all CPUs.
 
@@ -156,8 +96,312 @@ Parameters:
 
 .. image:: ../screenshots/cpu.png
 
+date
+~~~~
+
+Displays the current date and time.
+
+Parameters:
+    * date.format: strftime()-compatible formatting string
+    * date.locale: locale to use rather than the system default
+
+.. image:: ../screenshots/date.png
+
+datetime
+~~~~~~~~
+
+Displays the current date and time.
+
+Parameters:
+    * datetime.format: strftime()-compatible formatting string
+    * datetime.locale: locale to use rather than the system default
+
+.. image:: ../screenshots/datetime.png
+
+debug
+~~~~~
+
+Shows that debug is enabled
+
+disk
+~~~~
+
+Shows free diskspace, total diskspace and the percentage of free disk space.
+
+Parameters:
+    * disk.warning: Warning threshold in % of disk space (defaults to 80%)
+    * disk.critical: Critical threshold in % of disk space (defaults ot 90%)
+    * disk.path: Path to calculate disk usage from (defaults to /)
+    * disk.open: Which application / file manager to launch (default xdg-open)
+    * disk.format: Format string, tags {path}, {used}, {left}, {size} and {percent} (defaults to '{path} {used}/{size} ({percent:05.02f}%)')
+
+.. image:: ../screenshots/disk.png
+
+error
+~~~~~
+
+Shows bumblebee-status errors
+
+git
+~~~
+
+Print the branch and git status for the
+currently focused window.
+
+Requires:
+    * xcwd
+    * Python module 'pygit2'
+
+.. image:: ../screenshots/git.png
+
+kernel
+~~~~~~
+
+Shows Linux kernel version information
+
+.. image:: ../screenshots/kernel.png
+
+layout-xkb
+~~~~~~~~~~
+
+Displays the current keyboard layout using libX11
+
+Requires the following library:
+    * libX11.so.6
+and python module:
+    * xkbgroup
+
+Parameters:
+    * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
+    * layout-xkb.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
+
+load
+~~~~
+
+Displays system load.
+
+Parameters:
+    * load.warning : Warning threshold for the one-minute load average (defaults to 70% of the number of CPUs)
+    * load.critical: Critical threshold for the one-minute load average (defaults to 80% of the number of CPUs)
+
+.. image:: ../screenshots/load.png
+
+memory
+~~~~~~
+
+Displays available RAM, total amount of RAM and percentage available.
+
+Parameters:
+    * memory.warning : Warning threshold in % of memory used (defaults to 80%)
+    * memory.critical: Critical threshold in % of memory used (defaults to 90%)
+    * memory.format: Format string (defaults to '{used}/{total} ({percent:05.02f}%)')
+    * memory.usedonly: Only show the amount of RAM in use (defaults to False). Same as memory.format='{used}'
+
+.. image:: ../screenshots/memory.png
+
+nic
+~~~
+
+Displays the name, IP address(es) and status of each available network interface.
+
+Requires the following python module:
+    * netifaces
+
+Parameters:
+    * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br')
+    * nic.include: Comma-separated list of interfaces to include
+    * nic.states: Comma-separated list of states to show (prefix with '^' to invert - i.e. ^down -> show all devices that are not in state down)
+    * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid}')
+
+.. image:: ../screenshots/nic.png
+
+ping
+~~~~
+
+Periodically checks the RTT of a configurable host using ICMP echos
+
+Requires the following executable:
+    * ping
+
+Parameters:
+    * ping.address : IP address to check
+    * ping.timeout : Timeout for waiting for a reply (defaults to 5.0)
+    * ping.probes  : Number of probes to send (defaults to 5)
+    * ping.warning : Threshold for warning state, in seconds (defaults to 1.0)
+    * ping.critical: Threshold for critical state, in seconds (defaults to 2.0)
+
+.. image:: ../screenshots/ping.png
+
+redshift
+~~~~~~~~
+
+Displays the current color temperature of redshift
+
+Requires the following executable:
+    * redshift
+
+Parameters:
+    * redshift.location : location provider, either of 'auto' (default), 'geoclue2',
+        'ipinfo' or 'manual'
+        'auto' uses whatever redshift is configured to do
+    * redshift.lat : latitude if location is set to 'manual'
+    * redshift.lon : longitude if location is set to 'manual'
+
+.. image:: ../screenshots/redshift.png
+
+sensors2
+~~~~~~~~
+
+Displays sensor temperature and CPU frequency
+
+Parameters:
+
+    * sensors2.chip: 'sensors -u' compatible filter for chip to display (default to empty - show all chips)
+    * sensors2.showcpu: Enable or disable CPU frequency display (default: true)
+    * sensors2.showtemp: Enable or disable temperature display (default: true)
+    * sensors2.showfan: Enable or disable fan display (default: true)
+    * sensors2.showother: Enable or display 'other' sensor readings (default: false)
+    * sensors2.showname: Enable or disable show of sensor name (default: false)
+    * sensors2.chip_include: Comma-separated list of chip to include (defaults to '' will include all by default, example: 'coretemp,bat')
+    * sensors2.chip_exclude:Comma separated list of chip to exclude (defaults to '' will exlude none by default)
+    * sensors2.field_include: Comma separated list of chip to include (defaults to '' will include all by default, example: 'temp,fan')
+    * sensors2.field_exclude: Comma separated list of chip to exclude (defaults to '' will exclude none by default)
+    * sensors2.chip_field_exclude: Comma separated list of chip field to exclude (defaults to '' will exclude none by default, example: 'coretemp-isa-0000.temp1,coretemp-isa-0000.fan1')
+    * sensors2.chip_field_include: Comma-separated list of adaper field to include (defaults to '' will include all by default)
+
+.. image:: ../screenshots/sensors2.png
+
+spacer
+~~~~~~
+
+Draws a widget with configurable text content.
+
+Parameters:
+    * spacer.text: Widget contents (defaults to empty string)
+
+.. image:: ../screenshots/spacer.png
+
+test
+~~~~
+
+Test module
+
+time
+~~~~
+
+Displays the current date and time.
+
+Parameters:
+    * time.format: strftime()-compatible formatting string
+    * time.locale: locale to use rather than the system default
+
+.. image:: ../screenshots/time.png
+
+vault
+~~~~~
+
+Copy passwords from a password store into the clipboard (currently supports only 'pass')
+
+Many thanks to [@bbernhard](https://github.com/bbernhard) for the idea!
+
+Parameters:
+    * vault.duration: Duration until password is cleared from clipboard (defaults to 30)
+    * vault.location: Location of the password store (defaults to ~/.password-store)
+    * vault.offx: x-axis offset of popup menu (defaults to 0)
+    * vault.offy: y-axis offset of popup menu (defaults to 0)
+
+.. image:: ../screenshots/vault.png
+
+xrandr
+~~~~~~
+
+Shows a widget for each connected screen and allows the user to enable/disable screens.
+
+Parameters:
+    * xrandr.overwrite_i3config: If set to 'true', this module assembles a new i3 config
+        every time a screen is enabled or disabled by taking the file '~/.config/i3/config.template'
+        and appending a file '~/.config/i3/config.<screen name>' for every screen.
+    * xrandr.autoupdate: If set to 'false', does *not* invoke xrandr automatically. Instead, the
+        module will only refresh when displays are enabled or disabled (defaults to true)
+
+Requires the following python module:
+    * (optional) i3 - if present, the need for updating the widget list is auto-detected
+
+Requires the following executable:
+    * xrandr
+
+.. image:: ../screenshots/xrandr.png
+
+contrib
+-------
+
+
+amixer
+~~~~~~
+
+get volume level
+
+Parameters:
+    * amixer.device: Device to use, defaults to "Master,0"
+
+.. image:: ../screenshots/amixer.png
+
+apt
+~~~
+
+Displays APT package update information (<to upgrade>/<to remove >)
+Requires the following packages:
+
+    * aptitude
+
+arch-update
+~~~~~~~~~~~
+
+Check updates to Arch Linux.
+
+Requires the following executable:
+    * checkupdates (from pacman-contrib)
+
+bluetooth
+~~~~~~~~~
+
+Displays bluetooth status (Bluez). Left mouse click launches manager app,
+right click toggles bluetooth. Needs dbus-send to toggle bluetooth state.
+
+Parameters:
+    * bluetooth.device : the device to read state from (default is hci0)
+    * bluetooth.manager : application to launch on click (blueman-manager)
+    * bluetooth.dbus_destination : dbus destination (defaults to org.blueman.Mechanism)
+    * bluetooth.dbus_destination_path : dbus destination path (defaults to /)
+    * bluetooth.right_click_popup : use popup menu when right-clicked (defaults to True)
+
+.. image:: ../screenshots/bluetooth.png
+
+bluetooth2
+~~~~~~~~~~
+
+Displays bluetooth status. Left mouse click launches manager app,
+right click toggles bluetooth. Needs dbus-send to toggle bluetooth state and
+python-dbus to count the number of connections
+
+Parameters:
+    * bluetooth.manager : application to launch on click (blueman-manager)
+
+caffeine
+~~~~~~~~
+
+Enable/disable automatic screen locking.
+
+Requires the following executables:
+    * xdg-screensaver
+    * xdotool
+    * xprop (as dependency for xdotool)
+    * notify-send
+
+.. image:: ../screenshots/caffeine.png
+
 cpu2
-----
+~~~~
 
 Multiwidget CPU module
 
@@ -194,7 +438,7 @@ Note: if you are getting 'n/a' for CPU temperature / fan speed, then you're
 lacking the aforementioned pattern settings or they have wrong values.
 
 currency
---------
+~~~~~~~~
 
 Displays currency exchange rates. Currently, displays currency between GBP and USD/EUR only.
 
@@ -213,30 +457,8 @@ Note: source and destination names right now must correspond to the names used b
 
 .. image:: ../screenshots/currency.png
 
-date
-----
-
-Displays the current date and time.
-
-Parameters:
-    * date.format: strftime()-compatible formatting string
-    * date.locale: locale to use rather than the system default
-
-.. image:: ../screenshots/date.png
-
-datetime
---------
-
-Displays the current date and time.
-
-Parameters:
-    * datetime.format: strftime()-compatible formatting string
-    * datetime.locale: locale to use rather than the system default
-
-.. image:: ../screenshots/datetime.png
-
 datetimetz
-----------
+~~~~~~~~~~
 
 Displays the current date and time with timezone options.
 
@@ -252,7 +474,7 @@ Parameters:
     * timetz.timezone     : alias for datetimetz.timezone
 
 datetz
-------
+~~~~~~
 
 Displays the current date and time.
 
@@ -261,7 +483,7 @@ Parameters:
     * date.locale: locale to use rather than the system default
 
 deadbeef
---------
+~~~~~~~~
 
 Displays the current song being played in DeaDBeeF and provides
 some media control bindings.
@@ -295,13 +517,8 @@ Parameters:
     Available options for deadbeef.previous, deadbeef.next and deadbeef.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 
-debug
------
-
-Shows that debug is enabled
-
 deezer
-------
+~~~~~~
 
 Displays the current song being played
 
@@ -318,22 +535,8 @@ Parameters:
     Available options for deezer.previous, deezer.next and deezer.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 
-disk
-----
-
-Shows free diskspace, total diskspace and the percentage of free disk space.
-
-Parameters:
-    * disk.warning: Warning threshold in % of disk space (defaults to 80%)
-    * disk.critical: Critical threshold in % of disk space (defaults ot 90%)
-    * disk.path: Path to calculate disk usage from (defaults to /)
-    * disk.open: Which application / file manager to launch (default xdg-open)
-    * disk.format: Format string, tags {path}, {used}, {left}, {size} and {percent} (defaults to '{path} {used}/{size} ({percent:05.02f}%)')
-
-.. image:: ../screenshots/disk.png
-
 dnf
----
+~~~
 
 Displays DNF package update information (<security>/<bugfixes>/<enhancements>/<other>)
 
@@ -346,7 +549,7 @@ Parameters:
 .. image:: ../screenshots/dnf.png
 
 docker_ps
----------
+~~~~~~~~~
 
 Displays the number of docker containers running
 
@@ -354,19 +557,14 @@ Requires the following python packages:
     * docker
 
 dunst
------
+~~~~~
 
 Toggle dunst notifications.
 
 .. image:: ../screenshots/dunst.png
 
-error
------
-
-Shows bumblebee-status errors
-
 getcrypto
----------
+~~~~~~~~~
 
 Displays the price of a cryptocurrency.
 
@@ -382,20 +580,8 @@ Parameters:
 
 .. image:: ../screenshots/getcrypto.png
 
-git
----
-
-Print the branch and git status for the
-currently focused window.
-
-Requires:
-    * xcwd
-    * Python module 'pygit2'
-
-.. image:: ../screenshots/git.png
-
 github
-------
+~~~~~~
 
 Displays the unread GitHub notifications for a GitHub user
 
@@ -409,7 +595,7 @@ Parameters:
 .. image:: ../screenshots/github.png
 
 gpmdp
------
+~~~~~
 
 Displays information about the current song in Google Play music player.
 
@@ -417,18 +603,18 @@ Requires the following executable:
     * gpmdp-remote
 
 hddtemp
--------
+~~~~~~~
 
 Fetch hard drive temeperature data from a hddtemp daemon
 that runs on localhost and default port (7634)
 
 hostname
---------
+~~~~~~~~
 
 Displays the system hostname.
 
 http_status
------------
+~~~~~~~~~~~
 
 Display HTTP status code
 
@@ -440,7 +626,7 @@ Parameters:
 .. image:: ../screenshots/http_status.png
 
 indicator
----------
+~~~~~~~~~
 
 Displays the indicator status, for numlock, scrolllock and capslock 
 
@@ -450,15 +636,8 @@ Parameters:
 
 .. image:: ../screenshots/indicator.png
 
-kernel
-------
-
-Shows Linux kernel version information
-
-.. image:: ../screenshots/kernel.png
-
 layout
-------
+~~~~~~
 
 Displays and changes the current keyboard layout
 
@@ -467,22 +646,8 @@ Requires the following executable:
 
 .. image:: ../screenshots/layout.png
 
-layout-xkb
-----------
-
-Displays the current keyboard layout using libX11
-
-Requires the following library:
-    * libX11.so.6
-and python module:
-    * xkbgroup
-
-Parameters:
-    * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
-    * layout-xkb.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
-
 layout-xkbswitch
-----------------
+~~~~~~~~~~~~~~~~
 
 Displays and changes the current keyboard layout
 
@@ -490,39 +655,15 @@ Requires the following executable:
     * xkb-switch
 
 libvirtvms
-----------
+~~~~~~~~~~
 
 Displays count of running libvirt VMs.
 
 Required the following python packages:
         * libvirt
 
-load
-----
-
-Displays system load.
-
-Parameters:
-    * load.warning : Warning threshold for the one-minute load average (defaults to 70% of the number of CPUs)
-    * load.critical: Critical threshold for the one-minute load average (defaults to 80% of the number of CPUs)
-
-.. image:: ../screenshots/load.png
-
-memory
-------
-
-Displays available RAM, total amount of RAM and percentage available.
-
-Parameters:
-    * memory.warning : Warning threshold in % of memory used (defaults to 80%)
-    * memory.critical: Critical threshold in % of memory used (defaults to 90%)
-    * memory.format: Format string (defaults to '{used}/{total} ({percent:05.02f}%)')
-    * memory.usedonly: Only show the amount of RAM in use (defaults to False). Same as memory.format='{used}'
-
-.. image:: ../screenshots/memory.png
-
 mocp
-----
+~~~~
 
 Displays information about the current song in mocp. Left click toggles play/pause. Right click toggles shuffle.
 
@@ -546,7 +687,7 @@ Parameters:
          %r         Sample rate
 
 mpd
----
+~~~
 
 Displays information about the current song in mpd.
 
@@ -592,29 +733,13 @@ Parameters:
 .. image:: ../screenshots/mpd.png
 
 network_traffic
----------------
+~~~~~~~~~~~~~~~
 
 Displays network traffic
 * No extra configuration needed
 
-nic
----
-
-Displays the name, IP address(es) and status of each available network interface.
-
-Requires the following python module:
-    * netifaces
-
-Parameters:
-    * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br')
-    * nic.include: Comma-separated list of interfaces to include
-    * nic.states: Comma-separated list of states to show (prefix with '^' to invert - i.e. ^down -> show all devices that are not in state down)
-    * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid}')
-
-.. image:: ../screenshots/nic.png
-
 notmuch_count
--------------
+~~~~~~~~~~~~~
 
 Displays the result of a notmuch count query
    default : unread emails which path do not contained 'Trash' (notmuch count 'tag:unread AND NOT path:/.*Trash.*/')
@@ -629,7 +754,7 @@ Dependencies:
     notmuch (https://notmuchmail.org/)
 
 nvidiagpu
----------
+~~~~~~~~~
 
 Displays GPU name, temperature and memory usage.
 
@@ -640,7 +765,7 @@ Parameters:
 Requires nvidia-smi
 
 octoprint
----------
+~~~~~~~~~
 
 Displays the Octorpint status and the printer's bed/tools temperature in the status bar.
 
@@ -652,7 +777,7 @@ Parameters:
     * octoprint.webcam      : Set to True if a webcam is connected (default: False)
 
 pacman
-------
+~~~~~~
 
 Displays update information per repository for pacman.
 
@@ -666,7 +791,7 @@ Requires the following executables:
 .. image:: ../screenshots/pacman.png
 
 pihole
-------
+~~~~~~
 
 Displays the pi-hole status (up/down) together with the number of ads that were blocked today
 
@@ -674,25 +799,8 @@ Parameters:
     * pihole.address     : pi-hole address (e.q: http://192.168.1.3)
     * pihole.pwhash      : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
 
-ping
-----
-
-Periodically checks the RTT of a configurable host using ICMP echos
-
-Requires the following executable:
-    * ping
-
-Parameters:
-    * ping.address : IP address to check
-    * ping.timeout : Timeout for waiting for a reply (defaults to 5.0)
-    * ping.probes  : Number of probes to send (defaults to 5)
-    * ping.warning : Threshold for warning state, in seconds (defaults to 1.0)
-    * ping.critical: Threshold for critical state, in seconds (defaults to 2.0)
-
-.. image:: ../screenshots/ping.png
-
 pomodoro
---------
+~~~~~~~~
 
 Display and run a Pomodoro timer.
 Left click to start timer, left click again to pause.
@@ -710,7 +818,7 @@ Parameters:
                        for a detailled explanation)
 
 prime
------
+~~~~~
 
 Displays and changes the current selected prime video card
 
@@ -736,7 +844,7 @@ Requires the following executable:
     * prime-select
 
 progress
---------
+~~~~~~~~
 
 Show progress for cp, mv, dd, ...
 
@@ -752,29 +860,12 @@ Requires the following executable:
    * progress
 
 publicip
---------
+~~~~~~~~
 
 Displays public IP address
 
-redshift
---------
-
-Displays the current color temperature of redshift
-
-Requires the following executable:
-    * redshift
-
-Parameters:
-    * redshift.location : location provider, either of 'auto' (default), 'geoclue2',
-        'ipinfo' or 'manual'
-        'auto' uses whatever redshift is configured to do
-    * redshift.lat : latitude if location is set to 'manual'
-    * redshift.lon : longitude if location is set to 'manual'
-
-.. image:: ../screenshots/redshift.png
-
 rotation
---------
+~~~~~~~~
 
 Shows a widget for each connected screen and allows the user to loop through different orientations.
 
@@ -782,7 +873,7 @@ Requires the following executable:
     * xrandr
 
 rss
----
+~~~
 
 RSS news ticker
 
@@ -795,7 +886,7 @@ Parameters:
     * rss.length : Maximum length of the module, default is 60
 
 sensors
--------
+~~~~~~~
 
 Displays sensor temperature
 
@@ -811,30 +902,8 @@ Parameters:
 
 .. image:: ../screenshots/sensors.png
 
-sensors2
---------
-
-Displays sensor temperature and CPU frequency
-
-Parameters:
-
-    * sensors2.chip: 'sensors -u' compatible filter for chip to display (default to empty - show all chips)
-    * sensors2.showcpu: Enable or disable CPU frequency display (default: true)
-    * sensors2.showtemp: Enable or disable temperature display (default: true)
-    * sensors2.showfan: Enable or disable fan display (default: true)
-    * sensors2.showother: Enable or display 'other' sensor readings (default: false)
-    * sensors2.showname: Enable or disable show of sensor name (default: false)
-    * sensors2.chip_include: Comma-separated list of chip to include (defaults to '' will include all by default, example: 'coretemp,bat')
-    * sensors2.chip_exclude:Comma separated list of chip to exclude (defaults to '' will exlude none by default)
-    * sensors2.field_include: Comma separated list of chip to include (defaults to '' will include all by default, example: 'temp,fan')
-    * sensors2.field_exclude: Comma separated list of chip to exclude (defaults to '' will exclude none by default)
-    * sensors2.chip_field_exclude: Comma separated list of chip field to exclude (defaults to '' will exclude none by default, example: 'coretemp-isa-0000.temp1,coretemp-isa-0000.fan1')
-    * sensors2.chip_field_include: Comma-separated list of adaper field to include (defaults to '' will include all by default)
-
-.. image:: ../screenshots/sensors2.png
-
 shell
------
+~~~~~
 
 Execute command in shell and print result
 
@@ -859,7 +928,7 @@ Parameters:
                       (defaults to False)
 
 shortcut
---------
+~~~~~~~~
 
 Shows a widget per user-defined shortcut and allows to define the behaviour
 when clicking on it.
@@ -880,7 +949,7 @@ Parameters:
 .. image:: ../screenshots/shortcut.png
 
 smartstatus
------------
+~~~~~~~~~~~
 
 Displays HDD smart status of different drives or all drives
 
@@ -889,7 +958,7 @@ Parameters:
     * smartstauts.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
 
 spaceapi
---------
+~~~~~~~~
 
 Displays the state of a Space API endpoint
 Space API is an API for hackspaces based on JSON. See spaceapi.io for
@@ -913,18 +982,8 @@ Format Strings:
                to say 'Open/Closed' depending on the boolean you
                would write '%%state.open%Open%Closed%%'
 
-spacer
-------
-
-Draws a widget with configurable text content.
-
-Parameters:
-    * spacer.text: Widget contents (defaults to empty string)
-
-.. image:: ../screenshots/spacer.png
-
 spotify
--------
+~~~~~~~
 
 Displays the current song being played
 
@@ -944,7 +1003,7 @@ Parameters:
 .. image:: ../screenshots/spotify.png
 
 stock
------
+~~~~~
 
 Display a stock quote from worldtradingdata.com
 
@@ -958,7 +1017,7 @@ Parameters:
 .. image:: ../screenshots/stock.png
 
 sun
----
+~~~
 
 Displays sunrise and sunset times
 
@@ -971,7 +1030,7 @@ Parameters:
     * cpu.lon : Longitude of your location
 
 system
-------
+~~~~~~
 
 system module
 
@@ -994,7 +1053,7 @@ Parameters:
         * system.hibernate: specify a command for hibernating (defaults to 'i3exit hibernate')
 
 taskwarrior
------------
+~~~~~~~~~~~
 
 Displays the number of pending tasks in TaskWarrior.
 
@@ -1006,24 +1065,8 @@ Parameters:
 
 .. image:: ../screenshots/taskwarrior.png
 
-test
-----
-
-Test module
-
-time
-----
-
-Displays the current date and time.
-
-Parameters:
-    * time.format: strftime()-compatible formatting string
-    * time.locale: locale to use rather than the system default
-
-.. image:: ../screenshots/time.png
-
 timetz
-------
+~~~~~~
 
 Displays the current date and time.
 
@@ -1032,7 +1075,7 @@ Parameters:
     * time.locale: locale to use rather than the system default
 
 title
------
+~~~~~
 
 Displays focused i3 window title.
 
@@ -1047,7 +1090,7 @@ Parameters:
 .. image:: ../screenshots/title.png
 
 todo
-----
+~~~~
 
 Displays the number of todo items from a text file
 
@@ -1057,7 +1100,7 @@ Parameters:
 .. image:: ../screenshots/todo.png
 
 traffic
--------
+~~~~~~~
 
 Displays network IO for interfaces.
 
@@ -1074,34 +1117,19 @@ Parameters:
 .. image:: ../screenshots/traffic.png
 
 twmn
-----
+~~~~
 
 Toggle twmn notifications.
 
 uptime
-------
+~~~~~~
 
 Displays the system uptime.
 
 .. image:: ../screenshots/uptime.png
 
-vault
------
-
-Copy passwords from a password store into the clipboard (currently supports only 'pass')
-
-Many thanks to [@bbernhard](https://github.com/bbernhard) for the idea!
-
-Parameters:
-    * vault.duration: Duration until password is cleared from clipboard (defaults to 30)
-    * vault.location: Location of the password store (defaults to ~/.password-store)
-    * vault.offx: x-axis offset of popup menu (defaults to 0)
-    * vault.offy: y-axis offset of popup menu (defaults to 0)
-
-.. image:: ../screenshots/vault.png
-
 vpn
----
+~~~
 
 Displays the VPN profile that is currently in use.
 
@@ -1118,7 +1146,7 @@ Prerequisites:
            sudo nmcli connection import type openvpn file </path/to/your/openvpn/profile.ovpn>
 
 watson
-------
+~~~~~~
 
 Displays the status of watson (time-tracking tool)
 
@@ -1126,7 +1154,7 @@ Requires the following executable:
     * watson
 
 weather
--------
+~~~~~~~
 
 Displays the temperature on the current location based on the ip
 
@@ -1145,32 +1173,12 @@ Parameters:
 .. image:: ../screenshots/weather.png
 
 xkcd
-----
+~~~~
 
 Opens a random xkcd comic in the browser.
 
-xrandr
-------
-
-Shows a widget for each connected screen and allows the user to enable/disable screens.
-
-Parameters:
-    * xrandr.overwrite_i3config: If set to 'true', this module assembles a new i3 config
-        every time a screen is enabled or disabled by taking the file '~/.config/i3/config.template'
-        and appending a file '~/.config/i3/config.<screen name>' for every screen.
-    * xrandr.autoupdate: If set to 'false', does *not* invoke xrandr automatically. Instead, the
-        module will only refresh when displays are enabled or disabled (defaults to true)
-
-Requires the following python module:
-    * (optional) i3 - if present, the need for updating the widget list is auto-detected
-
-Requires the following executable:
-    * xrandr
-
-.. image:: ../screenshots/xrandr.png
-
 yubikey
--------
+~~~~~~~
 
 Shows yubikey information
 
@@ -1180,7 +1188,7 @@ The output indicates that a YubiKey is not connected or it displays
 the corresponding serial number.
 
 zpool
------
+~~~~~
 
 Displays info about zpools present on the system
 

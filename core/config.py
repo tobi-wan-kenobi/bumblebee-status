@@ -65,16 +65,17 @@ class print_usage(argparse.Action):
         basepath = os.path.abspath(
             os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
         )
-        if self._format == "rst":
-            print("List of modules\n===============")
 
+        rst = {}
         for m in all_modules():
             try:
+                module_type = "core"
                 filename = os.path.join(basepath, "modules", "core", "{}.py".format(m))
                 if not os.path.exists(filename):
                     filename = os.path.join(
                         basepath, "modules", "contrib", "{}.py".format(m)
                     )
+                    module_type = "contrib"
                 if not os.path.exists(filename):
                     log.warning("module {} not found".format(m))
                     continue
@@ -88,12 +89,13 @@ class print_usage(argparse.Action):
                     log.warning("failed to find docstring for {}".format(m))
                     continue
                 if self._format == "rst":
-                    print("\n{}\n{}\n".format(m, "-" * len(m)))
                     if os.path.exists(
                         os.path.join(basepath, "screenshots", "{}.png".format(m))
                     ):
                         doc = "{}\n\n.. image:: ../screenshots/{}.png".format(doc, m)
-                    print(doc)
+
+                    rst[module_type] = rst.get(module_type, [])
+                    rst[module_type].append({ "module": m, "content": doc })
                 else:
                     print(
                         textwrap.fill(
@@ -114,6 +116,14 @@ class print_usage(argparse.Action):
                         )
             except Exception as e:
                 log.warning(e)
+
+        if self._format == "rst":
+            print("List of modules\n===============")
+            for k in [ "core", "contrib" ]:
+                print("\n{}\n{}\n".format(k, "-"*len(k)))
+                for mod in rst[k]:
+                    print("\n{}\n{}\n".format(mod["module"], "~"*len(mod["module"])))
+                    print(mod["content"])
 
 
 class Config(util.store.Store):
