@@ -1,3 +1,13 @@
+"""Retrieves location information from an external
+service and caches it for 12h (retries are done every
+30m in case of problems)
+
+Right now, it uses (in order of preference):
+    - http://free.ipwhois.io/
+    - http://ipapi.co/
+"""
+
+
 import json
 import time
 import urllib.request
@@ -5,7 +15,6 @@ import urllib.request
 __document = None
 __data = {}
 __next = 0
-
 __sources = [
     {
         "url": "http://free.ipwhois.io/json/",
@@ -58,19 +67,36 @@ def __get(name, default=None):
 
 
 def reset():
+    """Resets the location library, ensuring that a new query will be started
+    """
     global __next
     __next = 0
 
 
 def coordinates():
+    """Returns a latitude, longitude pair
+
+    :return: current latitude and longitude
+    :rtype: pair of strings
+    """
     return __get("latitude"), __get("longitude")
 
 
 def country():
+    """Returns the current country name
+
+    :return: country name
+    :rtype: string
+    """
     return __get("country")
 
 
 def public_ip():
+    """Returns the current public IP
+
+    :return: public IP
+    :rtype: string
+    """
     return __get("public_ip")
 
 

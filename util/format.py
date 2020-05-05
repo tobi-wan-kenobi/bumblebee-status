@@ -2,6 +2,14 @@ import re
 
 
 def asbool(val):
+    """Converts a value into a boolean
+
+    :param val: value to convert; accepts a wide range of
+        possible representations, such as yes, no, true, false, on, off
+
+    :return: True of val maps to true, False otherwise
+    :rtype: boolean
+    """
     if val is None:
         return False
     if isinstance(val, bool):
@@ -11,6 +19,17 @@ def asbool(val):
 
 
 def asint(val, minimum=None, maximum=None):
+    """Converts a value into an integer
+
+    :param val: value to convert
+    :param minimum: if specified, this determines the lower
+        boundary for the returned value, defaults to None
+    :param maximum: if specified, this determines the upper
+        boundary for the returned value, defaults to None
+
+    :return: integer representation of value
+    :rtype: integer
+    """
     if val is None:
         val = 0
     val = int(val)
@@ -20,6 +39,13 @@ def asint(val, minimum=None, maximum=None):
 
 
 def aslist(val):
+    """Converts a comma-separated value string into a list
+
+    :param val: value to convert, either a single value or a comma-separated string
+
+    :return: list representation of the value passed in
+    :rtype: list of strings
+    """
     if val is None:
         return []
     if isinstance(val, list):
@@ -30,11 +56,30 @@ def aslist(val):
 __UNITS = {"metric": "C", "kelvin": "K", "imperial": "F", "default": "C"}
 
 
-def astemperature(value, unit="metric"):
+def astemperature(val, unit="metric"):
+    """Returns a temperature representation of the input value
+
+    :param val: value to format, must be convertible into an integer
+    :param unit: unit of the input value, supported units are:
+        metric, kelvin, imperial, defaults to metric
+
+    :return: temperature representation of the input value
+    :rtype: string
+    """
     return "{}°{}".format(int(value), __UNITS.get(unit, __UNITS["default"]))
 
 
 def byte(val, fmt="{:.2f}"):
+    """Returns a byte representation of the input value
+
+    :param val: value to format, must be convertible into a float
+    :param fmt: optional output format string, defaults to {:.2f}
+
+    :return: byte representation (e.g. <X> KiB, GiB, etc.) of the input value
+    :rtype: string
+    """
+
+    val = float(val)
     for unit in ["", "Ki", "Mi", "Gi"]:
         if val < 1024.0:
             return "{}{}B".format(fmt, unit).format(val)
@@ -46,6 +91,13 @@ __seconds_pattern = re.compile("(([\d\.?]+)h)?(([\d\.]+)m)?([\d\.]+)?s?")
 
 
 def seconds(duration):
+    """Returns a time duration (in seconds) representation of the input value
+
+    :param duration: value to format (e.g. 5h30m2s)
+
+    :return: duration in seconds of the input value
+    :rtype: float
+    """
     if isinstance(duration, int) or isinstance(duration, float):
         return float(duration)
 
@@ -62,6 +114,15 @@ def seconds(duration):
 
 
 def duration(duration, compact=False, unit=False):
+    """Returns a time duration string representing the input value
+
+    :param duration: value to format, must be convertible into an into
+    :param compact: whether to show also seconds, defaults to False
+    :param unit: whether to display he unit, defaults to False
+
+    :return: duration representation (e.g. 5:02s) of the input value
+    :rtype: string
+    """
     duration = int(duration)
     if duration < 0:
         return "n/a"

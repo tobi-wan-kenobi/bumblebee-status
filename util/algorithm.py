@@ -1,9 +1,15 @@
 import copy
 
-# algorithm copied from
-# http://blog.impressiver.com/post/31434674390/deep-merge-multiple-python-dicts
-# nicely done :)
+
 def merge(target, *args):
+    """Merges arbitrary data - copied from http://blog.impressiver.com/post/31434674390/deep-merge-multiple-python-dicts
+
+    :param target: the data structure to fill
+    :param args: a list of data structures to merge into target
+
+    :return: target, with all data in args merged into it
+    :rtype: whatever type was originally passed in
+    """
     if len(args) > 1:
         for item in args:
             merge(target, item)
