@@ -7,12 +7,13 @@ Requires the following executable:
 
 Parameters:
     * cmus.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
+
       Additional tags:
         * {file} - full song file name
         * {file1} - song file name without path prefix
-                    if {file} = '/foo/bar.baz', then {file1} = 'bar.baz'
+          if {file} = '/foo/bar.baz', then {file1} = 'bar.baz'
         * {file2} - song file name without path prefix and extension suffix
-                    if {file} = '/foo/bar.baz', then {file2} = 'bar'
+          if {file} = '/foo/bar.baz', then {file2} = 'bar'
     * cmus.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles cmus.prev, cmus.next, cmus.shuffle and cmus.repeat, and the main display with play/pause function cmus.main.
     * cmus.server: The address of the cmus server, either a UNIX socket or host[:port]. Connects to the local instance by default.
     * cmus.passwd: The password to use for the TCP/IP connection.

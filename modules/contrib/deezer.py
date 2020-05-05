@@ -1,14 +1,17 @@
 # pylint: disable=C0111,R0903
 
 """Displays the current song being played
+
 Requires the following library:
     * python-dbus
+
 Parameters:
     * deezer.format:   Format string (defaults to '{artist} - {title}')
-                        Available values are: {album}, {title}, {artist}, {trackNumber}, {playbackStatus}
+      Available values are: {album}, {title}, {artist}, {trackNumber}, {playbackStatus}
     * deezer.previous: Change binding for previous song (default is left click)
     * deezer.next:     Change binding for next song (default is right click)
     * deezer.pause:    Change binding for toggling pause (default is middle click)
+
     Available options for deezer.previous, deezer.next and deezer.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 """

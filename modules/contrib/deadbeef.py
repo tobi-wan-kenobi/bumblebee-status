@@ -9,25 +9,26 @@ Requires the following library:
     * subprocess
 Parameters:
     * deadbeef.format:    Format string (defaults to '{artist} - {title}')
-                          Available values are: {artist}, {title}, {album}, {length},
-                                                {trackno}, {year}, {comment},
-                                                {copyright}, {time}
-                          This is deprecated, but much simpler.
+      Available values are: {artist}, {title}, {album}, {length},
+      {trackno}, {year}, {comment},
+      {copyright}, {time}
+      This is deprecated, but much simpler.
     * deadbeef.tf_format: A foobar2000 title formatting-style format string.
-                          These can be much more sophisticated than the standard
-                          format strings. This is off by default, but specifying
-                          any tf_format will enable it. If both deadbeef.format
-                          and deadbeef.tf_format are specified, deadbeef.tf_format
-                          takes priority.
+      These can be much more sophisticated than the standard
+      format strings. This is off by default, but specifying
+      any tf_format will enable it. If both deadbeef.format
+      and deadbeef.tf_format are specified, deadbeef.tf_format
+      takes priority.
     * deadbeef.tf_format_if_stopped: Controls whether or not the tf_format format
-                          string should be displayed even if no song is paused or
-                          playing. This could be useful if you want to implement
-                          your own stop strings with the built in logic. Any non-
-                          null value will enable this (by default the module will
-                          hide itself when the player is stopped).
+      string should be displayed even if no song is paused or
+      playing. This could be useful if you want to implement
+      your own stop strings with the built in logic. Any non-
+      null value will enable this (by default the module will
+      hide itself when the player is stopped).
     * deadbeef.previous:  Change binding for previous song (default is left click)
     * deadbeef.next:      Change binding for next song (default is right click)
     * deadbeef.pause:     Change binding for toggling pause (default is middle click)
+
     Available options for deadbeef.previous, deadbeef.next and deadbeef.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 

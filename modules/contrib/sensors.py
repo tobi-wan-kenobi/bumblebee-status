@@ -6,8 +6,8 @@
 Parameters:
     * sensors.path: path to temperature file (default /sys/class/thermal/thermal_zone0/temp).
     * sensors.json: if set to 'true', interpret sensors.path as JSON 'path' in the output
-                    of 'sensors -j' (i.e. <key1>/<key2>/.../<value>), for example, path could
-                    be: 'coretemp-isa-00000/Core 0/temp1_input' (defaults to 'false')
+      of 'sensors -j' (i.e. <key1>/<key2>/.../<value>), for example, path could
+      be: 'coretemp-isa-00000/Core 0/temp1_input' (defaults to 'false')
     * sensors.match: (fallback) Line to match against output of 'sensors -u' (default: temp1_input)
     * sensors.match_pattern: (fallback) Line to match against before temperature is read (no default)
     * sensors.match_number: (fallback) which of the matches you want (default -1: last match).

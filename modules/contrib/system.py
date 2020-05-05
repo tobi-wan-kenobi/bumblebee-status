@@ -6,6 +6,7 @@
 adds the possibility to
 	* shutdown
 	* reboot
+
 the system.
 	
 Per default a confirmation dialog is shown before the actual action is performed.

@@ -2,6 +2,7 @@
 
 """Displays APT package update information (<to upgrade>/<to remove >)
 Requires the following packages:
+
     * aptitude
 
 """

@@ -50,9 +50,9 @@ class print_usage(argparse.Action):
             self._args = namespace
             self._format = "plain"
             self.print_modules()
-        elif value == "modules-markdown":
+        elif value == "modules-rst":
             self._args = namespace
-            self._format = "markdown"
+            self._format = "rst"
             self.print_modules()
         elif value == "themes":
             self.print_themes()
@@ -62,14 +62,12 @@ class print_usage(argparse.Action):
         print(", ".join(core.theme.themes()))
 
     def print_modules(self):
-        if self._format == "markdown":
-            print("# Table of modules")
-            print("|Name |Description |")
-            print("|-----|------------|")
-
         basepath = os.path.abspath(
             os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
         )
+        if self._format == "rst":
+            print("List of modules\n===============")
+
         for m in all_modules():
             try:
                 filename = os.path.join(basepath, "modules", "core", "{}.py".format(m))
@@ -89,19 +87,13 @@ class print_usage(argparse.Action):
                 if not doc:
                     log.warning("failed to find docstring for {}".format(m))
                     continue
-                if self._format == "markdown":
-                    doc = doc.replace("<", "\<")
-                    doc = doc.replace(">", "\>")
-                    doc = doc.replace("\n", "<br />")
-
+                if self._format == "rst":
+                    print("\n{}\n{}\n".format(m, "-" * len(m)))
                     if os.path.exists(
                         os.path.join(basepath, "screenshots", "{}.png".format(m))
                     ):
-                        doc = "{}<p /><p />![{}](../screenshots/{}.png)".format(
-                            doc, m, m
-                        )
-
-                    print("|{} |{} |".format(m, doc))
+                        doc = "{}\n\n.. image:: ../screenshots/{}.png".format(doc, m)
+                    print(doc)
                 else:
                     print(
                         textwrap.fill(
@@ -173,7 +165,7 @@ class Config(util.store.Store):
         parser.add_argument(
             "-l",
             "--list",
-            choices=["modules", "themes", "modules-markdown"],
+            choices=["modules", "themes", "modules-rst"],
             help="Display a list of available themes or available modules, along with their parameters",
             action=print_usage,
         )

@@ -8,34 +8,37 @@ Requires the following executable:
 
 Parameters:
     * mpd.format: Format string for the song information.
+
       Supported tags (see `man mpc` for additional information)
-        * {name}
-        * {artist}
-        * {album}
-        * {albumartist}
-        * {comment}
-        * {composer}
-        * {date}
-        * {originaldate}
-        * {disc}
-        * {genre}
-        * {performer}
-        * {title}
-        * {track}
-        * {time}
-        * {file}
-        * {id}
-        * {prio}
-        * {mtime}
-        * {mdate}
+         * {name}
+         * {artist}
+         * {album}
+         * {albumartist}
+         * {comment}
+         * {composer}
+         * {date}
+         * {originaldate}
+         * {disc}
+         * {genre}
+         * {performer}
+         * {title}
+         * {track}
+         * {time}
+         * {file}
+         * {id}
+         * {prio}
+         * {mtime}
+         * {mdate}
+
       Additional tags:
-        * {position} - position of currently playing song
-                       not to be confused with %position% mpc tag
-        * {duration} - duration of currently playing song
-        * {file1} - song file name without path prefix
-                    if {file} = '/foo/bar.baz', then {file1} = 'bar.baz'
-        * {file2} - song file name without path prefix and extension suffix
-                    if {file} = '/foo/bar.baz', then {file2} = 'bar'
+         * {position} - position of currently playing song
+           not to be confused with %position% mpc tag
+         * {duration} - duration of currently playing song
+         * {file1} - song file name without path prefix
+           if {file} = '/foo/bar.baz', then {file1} = 'bar.baz'
+         * {file2} - song file name without path prefix and extension suffix
+           if {file} = '/foo/bar.baz', then {file2} = 'bar'
+
     * mpd.host: MPD host to connect to. (mpc behaviour by default)
     * mpd.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles mpd.prev, mpd.next, mpd.shuffle and mpd.repeat, and the main display with play/pause function mpd.main.
 """

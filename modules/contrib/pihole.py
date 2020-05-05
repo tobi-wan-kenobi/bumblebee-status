@@ -1,6 +1,7 @@
 # pylint: disable=C0111,R0903
 
 """Displays the pi-hole status (up/down) together with the number of ads that were blocked today
+
 Parameters:
     * pihole.address     : pi-hole address (e.q: http://192.168.1.3)
     * pihole.pwhash      : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
