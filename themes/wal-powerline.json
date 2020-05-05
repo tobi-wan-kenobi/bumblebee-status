@@ -11,7 +11,7 @@
 			"fg": "cursor",
 			"bg": "color6"
 		},
-		"default_separators": false
+		"default-separators": false
 	},
 	"cycle": [
 		{

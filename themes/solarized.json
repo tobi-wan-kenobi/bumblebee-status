@@ -10,7 +10,7 @@
 			"fg": "#002b36",
 			"bg": "#b58900"
 		},
-		"default_separators": false,
+		"default-separators": false,
 		"separator": ""
 	},
 	"cycle": [

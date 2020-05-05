@@ -2,7 +2,9 @@
   "defaults": {
     "separator": "",
     "padding": " ",
-    "unknown": { "prefix": "" }
+    "unknown": { "prefix": "" },
+    "separator-block-width": 0,
+    "default-separators": false
   },
   "date": { "prefix": "" },
   "time": { "prefix": "" },
