@@ -1,41 +1,6 @@
 Introduction
 ================
 
-General
-----------------
-bumblebee-status is a modular, theme-able status line generator for the
-`i3 window manager <https://i3wm.org/>`__.
-
-Focus is on:
-
- - ease of use, sane defaults (no mandatory configuration file)
- - custom modules: :doc:`development/module`
- - custom themes: :doc:`development/theme`
- 
-I hope you like it and I appreciate any kind of feedback: bug reports,
-feature requests, etc. :)
-
-Thanks a lot!
-
-Required i3wm version: 4.12+ (in earlier versions, blocks won’t have
-background colors)
-
-Supported Python versions: 3.4, 3.5, 3.6, 3.7, 3.8
-
-Supported FontAwesome version: 4 (free version of 5 doesn’t include some
-of the icons)
-
-Example usage:
-
-.. code-block::
-
-   bar {
-       status_command <path>/bumblebee-status \
-        -m cpu memory battery time pasink pasource \
-        -p time.format="%H:%M" \
-        -t solarized
-   }
-
 Installation
 ----------------
 
@@ -123,9 +88,4 @@ As a simple example, this is what my i3 configuration looks like:
    }
 
 Restart i3wm and - that’s it!
-
-Examples
----------
-
-.. include:: themes.rst
 

@@ -1,8 +1,8 @@
-bumblebee-status
+API Reference
 ================
 
 .. toctree::
    :maxdepth: 4
 
-   core
-   util
+   src/core
+   src/util

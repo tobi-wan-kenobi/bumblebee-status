@@ -21,3 +21,5 @@
 
 # documentation
 Add info about error widget and events for error logging
+- generate rst instead of markdown (list of modules)
+- add module contributor doc

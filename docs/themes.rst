@@ -1,7 +1,5 @@
-Themes
-======
-
-Here are some screenshots of various themes:
+List of available themes
+========================
 
 .. warning:: Some themes (e.g. all ‘powerline’ themes) require `Font
     Awesome <http://fontawesome.io/>`__ and a powerline-compatible font
