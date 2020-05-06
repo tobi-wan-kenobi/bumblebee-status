@@ -1,4 +1,4 @@
-from .__pulseaudio import Module
+from .pulseaudio import Module
 
 
 class Module(Module):

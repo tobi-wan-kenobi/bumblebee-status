@@ -8,19 +8,20 @@ Requires the following executable:
 
 Parameters:
     * mocp.format: Format string for the song information. Replace string sequences with the actual information:
-         %state     State
-         %file      File
-         %title     Title, includes track, artist, song title and album
-         %artist    Artist
-         %song      SongTitle
-         %album     Album
-         %tt        TotalTime
-         %tl        TimeLeft
-         %ts        TotalSec
-         %ct        CurrentTime
-         %cs        CurrentSec
-         %b         Bitrate
-         %r         Sample rate
+
+       * %state     State
+       * %file      File
+       * %title     Title, includes track, artist, song title and album
+       * %artist    Artist
+       * %song      SongTitle
+       * %album     Album
+       * %tt        TotalTime
+       * %tl        TimeLeft
+       * %ts        TotalSec
+       * %ct        CurrentTime
+       * %cs        CurrentSec
+       * %b         Bitrate
+       * %r         Sample rate
 """
 
 import core.module

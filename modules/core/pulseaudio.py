@@ -8,9 +8,9 @@ Parameters:
     * pulseaudio.autostart: If set to 'true' (default is 'false'), automatically starts the pulseaudio daemon if it is not running
     * pulseaudio.percent_change: How much to change volume by when scrolling on the module (default is 2%)
     * pulseaudio.limit: Upper limit for setting the volume (default is 0%, which means 'no limit')
-                        Note: If the left and right channels have different volumes, the limit might not be reached exactly.
+      Note: If the left and right channels have different volumes, the limit might not be reached exactly.
     * pulseaudio.showbars: 1 for showing volume bars, requires --markup=pango;
-                           0 for not showing volume bars (default)
+      0 for not showing volume bars (default)
 
 Requires the following executable:
     * pulseaudio

@@ -21,8 +21,10 @@ You can provide your own handlers to any module by using the following
 -  right-click
 -  middle-click
 -  wheel-up
--  wheel-down For example, to execute “pavucontrol” whenever you
-   left-click on the nic module, you could write:
+-  wheel-down
+
+For example, to execute “pavucontrol” whenever you
+left-click on the nic module, you could write:
 
 ``$ bumblebee-status -p nic.left-click="pavucontrol"``
 
@@ -85,8 +87,8 @@ attention, it will remain hidden. Note that this parameter is specified
 *in addition* to ``-m`` (i.e. to autohide the CPU module, you would use
 ``bumblebee-status -m cpu memory traffic -a cpu``).
 
-Additional widget themeing
---------------------------
+Additional widget theme settings
+--------------------------------
 
 There are a few parameters you can tweak directly from the commandline
 via ``-p`` or ``--parameters``: - ``<modulename>.theme.minwidth`` sets

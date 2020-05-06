@@ -12,7 +12,7 @@
            lists all the connection profiles that are configured. Make sure that your VPN profile is in that list!
 
            e.g: to import a openvpn profile via nmcli:
-               sudo nmcli connection import type openvpn file </path/to/your/openvpn/profile.ovpn>
+           `sudo nmcli connection import type openvpn file </path/to/your/openvpn/profile.ovpn>`
 """
 
 import logging

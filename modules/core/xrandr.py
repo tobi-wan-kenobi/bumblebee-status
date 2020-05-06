@@ -4,10 +4,10 @@
 
 Parameters:
     * xrandr.overwrite_i3config: If set to 'true', this module assembles a new i3 config
-        every time a screen is enabled or disabled by taking the file '~/.config/i3/config.template'
-        and appending a file '~/.config/i3/config.<screen name>' for every screen.
+      every time a screen is enabled or disabled by taking the file '~/.config/i3/config.template'
+      and appending a file '~/.config/i3/config.<screen name>' for every screen.
     * xrandr.autoupdate: If set to 'false', does *not* invoke xrandr automatically. Instead, the
-        module will only refresh when displays are enabled or disabled (defaults to true)
+      module will only refresh when displays are enabled or disabled (defaults to true)
 
 Requires the following python module:
     * (optional) i3 - if present, the need for updating the widget list is auto-detected

@@ -8,12 +8,12 @@ Parameters:
     * pomodoro.work: The work duration of timer in minutes (defaults to 25)
     * pomodoro.break: The break duration of timer in minutes (defaults to 5)
     * pomodoro.format: Timer display format with '%m' and '%s' for minutes and seconds (defaults to '%m:%s')
-                       Examples: '%m min %s sec', '%mm', '', 'timer'
+      Examples: '%m min %s sec', '%mm', '', 'timer'
     * pomodoro.notify: Notification command to run when timer ends/starts (defaults to nothing)
-                       Example: 'notify-send 'Time up!''. If you want to chain multiple commands,
-                       please use an external wrapper script and invoke that. The module itself does
-                       not support command chaining (see https://github.com/tobi-wan-kenobi/bumblebee-status/issues/532
-                       for a detailled explanation)
+      Example: 'notify-send 'Time up!''. If you want to chain multiple commands,
+      please use an external wrapper script and invoke that. The module itself does
+      not support command chaining (see https://github.com/tobi-wan-kenobi/bumblebee-status/issues/532
+      for a detailled explanation)
 """
 
 from __future__ import absolute_import

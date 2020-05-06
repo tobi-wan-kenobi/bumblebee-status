@@ -8,9 +8,12 @@ Introduction
 attributes (foreground color, background color, etc.) of the blocks that
 make up a status bar.
 
-It is possible to specify each attribute at various levels: - For a
-specific state of a specific module - For a specific module - A cycle of
-attributes (those are cycled through widget-by-widget) - Default values
+It is possible to specify each attribute at various levels:
+
+ - For a specific state of a specific module
+ - For a specific module
+ - A cycle of attributes (those are cycled through widget-by-widget)
+ - Default values
 
 Looking up a value follows the “more specific rather than more generic”
 approach. In other words, if a foreground color exists for the “warning”

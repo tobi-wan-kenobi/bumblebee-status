@@ -21,9 +21,9 @@ Format Strings:
     * Boolean values can be overwritten by appending '%true%false'
       in the format string
     * Example: to reference 'open' in '{'state':{'open': true}}'
-               you would write '%%state.open%%', if you also want
-               to say 'Open/Closed' depending on the boolean you
-               would write '%%state.open%Open%Closed%%'
+      you would write '%%state.open%%', if you also want
+      to say 'Open/Closed' depending on the boolean you
+      would write '%%state.open%Open%Closed%%'
 """
 
 import requests

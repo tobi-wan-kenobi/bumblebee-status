@@ -8,8 +8,8 @@ Requires the following python packages:
 
 Parameters:
     * weather.location: Set location, defaults to 'auto' for getting location automatically from a web service
-                        If set to a comma-separated list, left-click and right-click can be used to rotate the locations.
-                        Locations should be city names or city ids.
+      If set to a comma-separated list, left-click and right-click can be used to rotate the locations.
+      Locations should be city names or city ids.
     * weather.unit: metric (default), kelvin, imperial
     * weather.showcity: If set to true, show location information, otherwise hide it (defaults to true)
     * weather.showminmax: If set to true, show the minimum and maximum temperature, otherwise hide it (defaults to false)

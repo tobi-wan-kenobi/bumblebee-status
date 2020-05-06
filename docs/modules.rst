@@ -5,26 +5,6 @@ core
 ----
 
 
-__pulseaudio
-~~~~~~~~~~~~
-
-Displays volume and mute status and controls for PulseAudio devices. Use wheel up and down to change volume, left click mutes, right click opens pavucontrol.
-
-Aliases: pasink (use this to control output instead of input), pasource
-
-Parameters:
-    * pulseaudio.autostart: If set to 'true' (default is 'false'), automatically starts the pulseaudio daemon if it is not running
-    * pulseaudio.percent_change: How much to change volume by when scrolling on the module (default is 2%)
-    * pulseaudio.limit: Upper limit for setting the volume (default is 0%, which means 'no limit')
-                        Note: If the left and right channels have different volumes, the limit might not be reached exactly.
-    * pulseaudio.showbars: 1 for showing volume bars, requires --markup=pango;
-                           0 for not showing volume bars (default)
-
-Requires the following executable:
-    * pulseaudio
-    * pactl
-    * pavucontrol
-
 battery
 ~~~~~~~
 
@@ -232,6 +212,28 @@ Parameters:
 
 .. image:: ../screenshots/ping.png
 
+pulseaudio
+~~~~~~~~~~
+
+Displays volume and mute status and controls for PulseAudio devices. Use wheel up and down to change volume, left click mutes, right click opens pavucontrol.
+
+Aliases: pasink (use this to control output instead of input), pasource
+
+Parameters:
+    * pulseaudio.autostart: If set to 'true' (default is 'false'), automatically starts the pulseaudio daemon if it is not running
+    * pulseaudio.percent_change: How much to change volume by when scrolling on the module (default is 2%)
+    * pulseaudio.limit: Upper limit for setting the volume (default is 0%, which means 'no limit')
+      Note: If the left and right channels have different volumes, the limit might not be reached exactly.
+    * pulseaudio.showbars: 1 for showing volume bars, requires --markup=pango;
+      0 for not showing volume bars (default)
+
+Requires the following executable:
+    * pulseaudio
+    * pactl
+    * pavucontrol
+
+.. image:: ../screenshots/pulseaudio.png
+
 redshift
 ~~~~~~~~
 
@@ -242,8 +244,8 @@ Requires the following executable:
 
 Parameters:
     * redshift.location : location provider, either of 'auto' (default), 'geoclue2',
-        'ipinfo' or 'manual'
-        'auto' uses whatever redshift is configured to do
+      'ipinfo' or 'manual'
+      'auto' uses whatever redshift is configured to do
     * redshift.lat : latitude if location is set to 'manual'
     * redshift.lon : longitude if location is set to 'manual'
 
@@ -319,10 +321,10 @@ Shows a widget for each connected screen and allows the user to enable/disable s
 
 Parameters:
     * xrandr.overwrite_i3config: If set to 'true', this module assembles a new i3 config
-        every time a screen is enabled or disabled by taking the file '~/.config/i3/config.template'
-        and appending a file '~/.config/i3/config.<screen name>' for every screen.
+      every time a screen is enabled or disabled by taking the file '~/.config/i3/config.template'
+      and appending a file '~/.config/i3/config.<screen name>' for every screen.
     * xrandr.autoupdate: If set to 'false', does *not* invoke xrandr automatically. Instead, the
-        module will only refresh when displays are enabled or disabled (defaults to true)
+      module will only refresh when displays are enabled or disabled (defaults to true)
 
 Requires the following python module:
     * (optional) i3 - if present, the need for updating the widget list is auto-detected
@@ -420,15 +422,14 @@ Requirements:
 
 Parameters:
     * cpu2.layout: Space-separated list of widgets to add.
-
       Possible widgets are:
+
          * cpu2.maxfreq
          * cpu2.cpuload
          * cpu2.coresload
          * cpu2.temp
          * cpu2.fanspeed
     * cpu2.colored: 1 for colored per core load graph, 0 for mono (default)
-      if this is set to 1, use --markup=pango
     * cpu2.temp_pattern: pattern to look for in the output of 'sensors -u';
       required if cpu2.temp widged is used
     * cpu2.fan_pattern: pattern to look for in the output of 'sensors -u';
@@ -450,7 +451,7 @@ Parameters:
     * currency.source: Source currency (ex. 'GBP', 'EUR'). Defaults to 'auto', which infers the local one from IP address.
     * currency.destination: Comma-separated list of destination currencies (defaults to 'USD,EUR')
     * currency.sourceformat: String format for source formatting; Defaults to '{}: {}' and has two variables,
-                             the base symbol and the rate list
+      the base symbol and the rate list
     * currency.destinationdelimiter: Delimiter used for separating individual rates (defaults to '|')
 
 Note: source and destination names right now must correspond to the names used by the API of https://markets.ft.com
@@ -672,19 +673,20 @@ Requires the following executable:
 
 Parameters:
     * mocp.format: Format string for the song information. Replace string sequences with the actual information:
-         %state     State
-         %file      File
-         %title     Title, includes track, artist, song title and album
-         %artist    Artist
-         %song      SongTitle
-         %album     Album
-         %tt        TotalTime
-         %tl        TimeLeft
-         %ts        TotalSec
-         %ct        CurrentTime
-         %cs        CurrentSec
-         %b         Bitrate
-         %r         Sample rate
+
+       * %state     State
+       * %file      File
+       * %title     Title, includes track, artist, song title and album
+       * %artist    Artist
+       * %song      SongTitle
+       * %album     Album
+       * %tt        TotalTime
+       * %tl        TimeLeft
+       * %ts        TotalSec
+       * %ct        CurrentTime
+       * %cs        CurrentSec
+       * %b         Bitrate
+       * %r         Sample rate
 
 mpd
 ~~~
@@ -698,6 +700,7 @@ Parameters:
     * mpd.format: Format string for the song information.
 
       Supported tags (see `man mpc` for additional information)
+
          * {name}
          * {artist}
          * {album}
@@ -719,6 +722,7 @@ Parameters:
          * {mdate}
 
       Additional tags:
+
          * {position} - position of currently playing song
            not to be confused with %position% mpc tag
          * {duration} - duration of currently playing song
@@ -760,7 +764,7 @@ Displays GPU name, temperature and memory usage.
 
 Parameters:
    * nvidiagpu.format: Format string (defaults to '{name}: {temp}°C %{usedmem}/{totalmem} MiB')
-                       Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem}
+     Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem}
 
 Requires nvidia-smi
 
@@ -810,12 +814,12 @@ Parameters:
     * pomodoro.work: The work duration of timer in minutes (defaults to 25)
     * pomodoro.break: The break duration of timer in minutes (defaults to 5)
     * pomodoro.format: Timer display format with '%m' and '%s' for minutes and seconds (defaults to '%m:%s')
-                       Examples: '%m min %s sec', '%mm', '', 'timer'
+      Examples: '%m min %s sec', '%mm', '', 'timer'
     * pomodoro.notify: Notification command to run when timer ends/starts (defaults to nothing)
-                       Example: 'notify-send 'Time up!''. If you want to chain multiple commands,
-                       please use an external wrapper script and invoke that. The module itself does
-                       not support command chaining (see https://github.com/tobi-wan-kenobi/bumblebee-status/issues/532
-                       for a detailled explanation)
+      Example: 'notify-send 'Time up!''. If you want to chain multiple commands,
+      please use an external wrapper script and invoke that. The module itself does
+      not support command chaining (see https://github.com/tobi-wan-kenobi/bumblebee-status/issues/532
+      for a detailled explanation)
 
 prime
 ~~~~~
@@ -852,7 +856,7 @@ Parameters:
    * progress.placeholder: Text to display while no process is running (defaults to 'n/a')
    * progress.barwidth: Width of the progressbar if it is used (defaults to 8)
    * progress.format: Format string (defaults to '{bar} {cmd} {arg}')
-                      Available values are: {bar} {pid} {cmd} {arg} {percentage} {quantity} {speed} {time}
+     Available values are: {bar} {pid} {cmd} {arg} {percentage} {quantity} {speed} {time}
    * progress.barfilledchar: Character used to draw the filled part of the bar (defaults to '#'), notice that it can be a string
    * progress.baremptychar: Character used to draw the empty part of the bar (defaults to '-'), notice that it can be a string
 
@@ -916,16 +920,16 @@ Few command examples:
 
 Parameters:
     * shell.command:  Command to execute
-                      Use single parentheses if evaluating anything inside (sh-style)
-                      For example shell.command='echo $(date +'%H:%M:%S')'
-                      But NOT shell.command='echo $(date +'%H:%M:%S')'
-                      Second one will be evaluated only once at startup
+      Use single parentheses if evaluating anything inside (sh-style)
+      For example shell.command='echo $(date +'%H:%M:%S')'
+      But NOT shell.command='echo $(date +'%H:%M:%S')'
+      Second one will be evaluated only once at startup
     * shell.interval: Update interval in seconds
-                      (defaults to 1s == every bumblebee-status update)
+      (defaults to 1s == every bumblebee-status update)
     * shell.async:    Run update in async mode. Won't run next thread if
-                      previous one didn't finished yet. Useful for long
-                      running scripts to avoid bumblebee-status freezes
-                      (defaults to False)
+      previous one didn't finished yet. Useful for long
+      running scripts to avoid bumblebee-status freezes
+      (defaults to False)
 
 shortcut
 ~~~~~~~~
@@ -978,9 +982,9 @@ Format Strings:
     * Boolean values can be overwritten by appending '%true%false'
       in the format string
     * Example: to reference 'open' in '{'state':{'open': true}}'
-               you would write '%%state.open%%', if you also want
-               to say 'Open/Closed' depending on the boolean you
-               would write '%%state.open%Open%Closed%%'
+      you would write '%%state.open%%', if you also want
+      to say 'Open/Closed' depending on the boolean you
+      would write '%%state.open%Open%Closed%%'
 
 spotify
 ~~~~~~~
@@ -1109,10 +1113,10 @@ Parameters:
     * traffic.states: Comma-separated list of states to show (prefix with '^' to invert - i.e. ^down -> show all devices that are not in state down)
     * traffic.showname: If set to False, hide network interface name (defaults to True)
     * traffic.format: Format string for download/upload speeds.
-                      Defaults to '{:.2f}'
+      Defaults to '{:.2f}'
     * traffic.graphlen: Graph lenth in seconds. Positive even integer. Each
-                        char shows 2 seconds. If set, enables up/down traffic
-                        graphs
+      char shows 2 seconds. If set, enables up/down traffic
+      graphs
 
 .. image:: ../screenshots/traffic.png
 
@@ -1143,7 +1147,7 @@ Prerequisites:
        lists all the connection profiles that are configured. Make sure that your VPN profile is in that list!
 
        e.g: to import a openvpn profile via nmcli:
-           sudo nmcli connection import type openvpn file </path/to/your/openvpn/profile.ovpn>
+       `sudo nmcli connection import type openvpn file </path/to/your/openvpn/profile.ovpn>`
 
 watson
 ~~~~~~
@@ -1163,8 +1167,8 @@ Requires the following python packages:
 
 Parameters:
     * weather.location: Set location, defaults to 'auto' for getting location automatically from a web service
-                        If set to a comma-separated list, left-click and right-click can be used to rotate the locations.
-                        Locations should be city names or city ids.
+      If set to a comma-separated list, left-click and right-click can be used to rotate the locations.
+      Locations should be city names or city ids.
     * weather.unit: metric (default), kelvin, imperial
     * weather.showcity: If set to true, show location information, otherwise hide it (defaults to true)
     * weather.showminmax: If set to true, show the minimum and maximum temperature, otherwise hide it (defaults to false)
@@ -1194,13 +1198,13 @@ Displays info about zpools present on the system
 
 Parameters:
    * zpool.list: Comma-separated list of zpools to display info for. If empty, info for all zpools
-                 is displayed. (Default: '')
+     is displayed. (Default: '')
    * zpool.format: Format string, tags {name}, {used}, {left}, {size}, {percentfree}, {percentuse},
-                   {status}, {shortstatus}, {fragpercent}, {deduppercent} are supported.
-                   (Default: '{name} {used}/{size} ({percentfree}%)')
+     {status}, {shortstatus}, {fragpercent}, {deduppercent} are supported.
+     (Default: '{name} {used}/{size} ({percentfree}%)')
    * zpool.showio: Show also widgets detailing current read and write I/O (Default: true)
    * zpool.ioformat: Format string for I/O widget, tags {ops} (operations per seconds) and {band}
-                     (bandwidth) are supported. (Default: '{band}')
+     (bandwidth) are supported. (Default: '{band}')
    * zpool.warnfree: Warn if free space is below this percentage (Default: 10)
    * zpool.sudo: Use sudo when calling the `zpool` binary. (Default: false)
 

@@ -11,16 +11,16 @@ Few command examples:
 
 Parameters:
     * shell.command:  Command to execute
-                      Use single parentheses if evaluating anything inside (sh-style)
-                      For example shell.command='echo $(date +'%H:%M:%S')'
-                      But NOT shell.command='echo $(date +'%H:%M:%S')'
-                      Second one will be evaluated only once at startup
+      Use single parentheses if evaluating anything inside (sh-style)
+      For example shell.command='echo $(date +'%H:%M:%S')'
+      But NOT shell.command='echo $(date +'%H:%M:%S')'
+      Second one will be evaluated only once at startup
     * shell.interval: Update interval in seconds
-                      (defaults to 1s == every bumblebee-status update)
+      (defaults to 1s == every bumblebee-status update)
     * shell.async:    Run update in async mode. Won't run next thread if
-                      previous one didn't finished yet. Useful for long
-                      running scripts to avoid bumblebee-status freezes
-                      (defaults to False)
+      previous one didn't finished yet. Useful for long
+      running scripts to avoid bumblebee-status freezes
+      (defaults to False)
 """
 
 import os

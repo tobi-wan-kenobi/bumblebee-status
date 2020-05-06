@@ -10,6 +10,7 @@ Parameters:
     * mpd.format: Format string for the song information.
 
       Supported tags (see `man mpc` for additional information)
+
          * {name}
          * {artist}
          * {album}
@@ -31,6 +32,7 @@ Parameters:
          * {mdate}
 
       Additional tags:
+
          * {position} - position of currently playing song
            not to be confused with %position% mpc tag
          * {duration} - duration of currently playing song

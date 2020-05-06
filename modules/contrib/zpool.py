@@ -2,13 +2,13 @@
 
 Parameters:
    * zpool.list: Comma-separated list of zpools to display info for. If empty, info for all zpools
-                 is displayed. (Default: '')
+     is displayed. (Default: '')
    * zpool.format: Format string, tags {name}, {used}, {left}, {size}, {percentfree}, {percentuse},
-                   {status}, {shortstatus}, {fragpercent}, {deduppercent} are supported.
-                   (Default: '{name} {used}/{size} ({percentfree}%)')
+     {status}, {shortstatus}, {fragpercent}, {deduppercent} are supported.
+     (Default: '{name} {used}/{size} ({percentfree}%)')
    * zpool.showio: Show also widgets detailing current read and write I/O (Default: true)
    * zpool.ioformat: Format string for I/O widget, tags {ops} (operations per seconds) and {band}
-                     (bandwidth) are supported. (Default: '{band}')
+     (bandwidth) are supported. (Default: '{band}')
    * zpool.warnfree: Warn if free space is below this percentage (Default: 10)
    * zpool.sudo: Use sudo when calling the `zpool` binary. (Default: false)
 

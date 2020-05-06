@@ -15,15 +15,14 @@ Requirements:
 
 Parameters:
     * cpu2.layout: Space-separated list of widgets to add.
-
       Possible widgets are:
+
          * cpu2.maxfreq
          * cpu2.cpuload
          * cpu2.coresload
          * cpu2.temp
          * cpu2.fanspeed
     * cpu2.colored: 1 for colored per core load graph, 0 for mono (default)
-      if this is set to 1, use --markup=pango
     * cpu2.temp_pattern: pattern to look for in the output of 'sensors -u';
       required if cpu2.temp widged is used
     * cpu2.fan_pattern: pattern to look for in the output of 'sensors -u';

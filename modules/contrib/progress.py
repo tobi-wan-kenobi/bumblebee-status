@@ -5,7 +5,7 @@ Parameters:
    * progress.placeholder: Text to display while no process is running (defaults to 'n/a')
    * progress.barwidth: Width of the progressbar if it is used (defaults to 8)
    * progress.format: Format string (defaults to '{bar} {cmd} {arg}')
-                      Available values are: {bar} {pid} {cmd} {arg} {percentage} {quantity} {speed} {time}
+     Available values are: {bar} {pid} {cmd} {arg} {percentage} {quantity} {speed} {time}
    * progress.barfilledchar: Character used to draw the filled part of the bar (defaults to '#'), notice that it can be a string
    * progress.baremptychar: Character used to draw the empty part of the bar (defaults to '-'), notice that it can be a string
 

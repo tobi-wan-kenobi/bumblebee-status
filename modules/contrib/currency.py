@@ -11,7 +11,7 @@ Parameters:
     * currency.source: Source currency (ex. 'GBP', 'EUR'). Defaults to 'auto', which infers the local one from IP address.
     * currency.destination: Comma-separated list of destination currencies (defaults to 'USD,EUR')
     * currency.sourceformat: String format for source formatting; Defaults to '{}: {}' and has two variables,
-                             the base symbol and the rate list
+      the base symbol and the rate list
     * currency.destinationdelimiter: Delimiter used for separating individual rates (defaults to '|')
 
 Note: source and destination names right now must correspond to the names used by the API of https://markets.ft.com

@@ -7,8 +7,8 @@ Requires the following executable:
 
 Parameters:
     * redshift.location : location provider, either of 'auto' (default), 'geoclue2',
-        'ipinfo' or 'manual'
-        'auto' uses whatever redshift is configured to do
+      'ipinfo' or 'manual'
+      'auto' uses whatever redshift is configured to do
     * redshift.lat : latitude if location is set to 'manual'
     * redshift.lon : longitude if location is set to 'manual'
 """
