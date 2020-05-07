@@ -22,14 +22,17 @@ class Module(core.module.Module):
         return self.parameter("format", "Update Arch: {}")
 
     def utilization(self, widget):
-        return self.__format.format(self.__packages)
+        return self.__format.format(self.__packages if self.__packages >= 0 else "n/a")
 
     def hidden(self):
         return self.__packages == 0
 
     def update(self):
-        result = util.cli.execute("checkupdates")
-        self.__packages = len(result.split("\n")) - 1
+        try:
+            result = util.cli.execute("checkupdates")
+            self.__packages = len(result.split("\n")) - 1
+        except:
+            self.__packages = -1
 
     def state(self, widget):
         return self.threshold_state(self.__packages, 1, 100)
