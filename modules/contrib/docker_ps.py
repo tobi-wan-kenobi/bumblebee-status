@@ -26,7 +26,7 @@ class Module(core.module.Module):
         state = []
         if self.__info == "OK - 0":
             state.append("warning")
-        elif self.__info in ["n/a", "daemon off"]:
+        elif self.__info in ["n/a", "Off"]:
             state.append("critical")
         return state
 
@@ -38,7 +38,7 @@ class Module(core.module.Module):
                 len(cli.containers.list(filters={"status": "running"}))
             )
         except ConnectionError:
-            self.__info = "daemon off"
+            self.__info = "Off"
         except Exception:
             self.__info = "n/a"
         return self.__info
