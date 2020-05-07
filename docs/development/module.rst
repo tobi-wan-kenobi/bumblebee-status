@@ -40,7 +40,11 @@ This example will show “hello world” in the status bar:
 
 .. code:: python
 
-   """Short description"""
+   """Short description in RST format
+
+      please have a look at other modules, this will go into the
+      documentation verbatim (list of modules)
+   """
 
    import core.module
    import core.widget
