@@ -66,7 +66,7 @@ def astemperature(val, unit="metric"):
     :return: temperature representation of the input value
     :rtype: string
     """
-    return "{}°{}".format(int(value), __UNITS.get(unit, __UNITS["default"]))
+    return "{}°{}".format(int(val), __UNITS.get(unit, __UNITS["default"]))
 
 
 def byte(val, fmt="{:.2f}"):

@@ -74,7 +74,7 @@ class config(unittest.TestCase):
         with unittest.mock.patch("core.config.sys") as sys:
             cfg = core.config.Config(["-l", "themes"])
             cfg = core.config.Config(["-l", "modules"])
-            cfg = core.config.Config(["-l", "modules-markdown"])
+            cfg = core.config.Config(["-l", "modules-rst"])
             # TODO: think of some plausibility testing here
 
     def test_missing_parameter(self):
