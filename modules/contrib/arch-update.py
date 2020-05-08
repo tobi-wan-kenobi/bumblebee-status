@@ -34,7 +34,7 @@ class Module(core.module.Module):
         try:
             result = util.cli.execute("checkupdates")
             self.__packages = len(result.split("\n")) - 1
-        except as e:
+        except Exception as e:
             logging.exception(e)
             self.__packages = -1
 
