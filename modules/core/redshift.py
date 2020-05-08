@@ -11,7 +11,7 @@ Parameters:
       'auto' uses whatever redshift is configured to do
     * redshift.lat : latitude if location is set to 'manual'
     * redshift.lon : longitude if location is set to 'manual'
-    * redshift.transition_info: information about the transitions (x% day) defaults to True
+    * redshift.show_transition: information about the transitions (x% day) defaults to True
 """
 
 import re
@@ -23,6 +23,7 @@ import core.input
 import core.decorators
 
 import util.cli
+import util.format
 import util.location
 
 
@@ -75,7 +76,9 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.text))
 
         self.__thread = None
-        self.transition_info = self.parameter("transition_info", "True")
+        self.show_transition = util.format.asbool(
+            self.parameter("show_transition", True)
+        )
 
         if self.parameter("location", "") == "ipinfo":
             # override lon/lat with ipinfo
@@ -93,7 +96,7 @@ class Module(core.module.Module):
     def text(self, widget):
         val = widget.get("temp", "n/a")
         transition = widget.get("transition", "")
-        if transition and self.transition_info=="True":
+        if transition and self.show_transition:
             val = "{} {}".format(val, transition)
         return val
 
