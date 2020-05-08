@@ -1,6 +1,9 @@
 # pylint: disable=C0111,R0903
 
-"""Displays the system hostname."""
+"""Displays the system hostname.
+
+contributed by `varkokonyi <https://github.com/varkokonyi>`_ - many thanks!
+"""
 
 import platform
 

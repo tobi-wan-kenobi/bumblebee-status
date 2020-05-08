@@ -21,6 +21,8 @@ Parameters:
       previous one didn't finished yet. Useful for long
       running scripts to avoid bumblebee-status freezes
       (defaults to False)
+
+contributed by `rrhuffy <https://github.com/rrhuffy>`_ - many thanks!
 """
 
 import os

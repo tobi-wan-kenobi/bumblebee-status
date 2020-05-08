@@ -14,6 +14,8 @@ Parameters:
       please use an external wrapper script and invoke that. The module itself does
       not support command chaining (see https://github.com/tobi-wan-kenobi/bumblebee-status/issues/532
       for a detailled explanation)
+
+contributed by `martindoublem <https://github.com/martindoublem>`_, inspired by `karthink <https://github.com/karthink>`_ - many thanks!
 """
 
 from __future__ import absolute_import

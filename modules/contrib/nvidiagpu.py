@@ -7,6 +7,8 @@ Parameters:
      Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem}
 
 Requires nvidia-smi
+
+contributed by `RileyRedpath <https://github.com/RileyRedpath>`_ - many thanks!
 """
 
 import core.module

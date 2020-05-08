@@ -12,6 +12,9 @@ Parameters:
     * sensors.match_pattern: (fallback) Line to match against before temperature is read (no default)
     * sensors.match_number: (fallback) which of the matches you want (default -1: last match).
     * sensors.show_freq: whether to show CPU frequency. (default: true)
+
+
+contributed by `mijoharas <https://github.com/mijoharas>`_ - many thanks!
 """
 
 import re

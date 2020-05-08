@@ -1,6 +1,9 @@
 # pylint: disable=C0111,R0903
 
-"""Opens a random xkcd comic in the browser."""
+"""Opens a random xkcd comic in the browser.
+
+contributed by `whzup <https://github.com/whzup>`_ - many thanks!
+"""
 
 import core.module
 import core.widget

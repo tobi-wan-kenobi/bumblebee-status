@@ -5,6 +5,7 @@
 Requires the following python packages:
     * docker
 
+contributed by `jlopezzarza <https://github.com/jlopezzarza>`_ - many thanks!
 """
 
 import docker

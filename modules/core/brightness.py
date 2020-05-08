@@ -5,6 +5,7 @@
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
 
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 """
 
 import glob

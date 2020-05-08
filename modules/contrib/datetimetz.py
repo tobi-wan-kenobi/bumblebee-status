@@ -12,6 +12,8 @@ Parameters:
     * datetz.locale       : alias for datetimetz.locale
     * timetz.locale       : alias for datetimetz.locale
     * timetz.timezone     : alias for datetimetz.timezone
+
+contributed by `frankzhao <https://github.com/frankzhao>`_ - many thanks!
 """
 
 from __future__ import absolute_import

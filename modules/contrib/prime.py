@@ -23,6 +23,7 @@ Parameters:
 Requires the following executable:
     * prime-select
 
+contributed by `jeffeb3 <https://github.com/jeffeb3>`_ - many thanks!
 """
 
 import core.module

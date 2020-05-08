@@ -8,6 +8,7 @@ Parameters:
     * bluetooth.dbus_destination_path : dbus destination path (defaults to /)
     * bluetooth.right_click_popup : use popup menu when right-clicked (defaults to True)
 
+contributed by `brunosmmm <https://github.com/brunosmmm>`_ - many thanks!
 """
 
 

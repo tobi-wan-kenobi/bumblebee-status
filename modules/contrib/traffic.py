@@ -11,6 +11,8 @@ Parameters:
     * traffic.graphlen: Graph lenth in seconds. Positive even integer. Each
       char shows 2 seconds. If set, enables up/down traffic
       graphs
+
+contributed by `meain <https://github.com/meain>`_ - many thanks!
 """
 
 import re

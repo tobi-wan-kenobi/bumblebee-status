@@ -13,6 +13,8 @@
 
            e.g: to import a openvpn profile via nmcli:
            `sudo nmcli connection import type openvpn file </path/to/your/openvpn/profile.ovpn>`
+
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 """
 
 import logging

@@ -2,6 +2,8 @@
 
 Required the following python packages:
         * libvirt
+
+contributed by `maxpivo <https://github.com/maxpivo>`_ - many thanks!
 """
 
 import sys

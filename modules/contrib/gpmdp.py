@@ -4,6 +4,8 @@
 
 Requires the following executable:
     * gpmdp-remote
+
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 """
 
 import core.module

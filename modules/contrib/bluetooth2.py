@@ -4,6 +4,8 @@ python-dbus to count the number of connections
 
 Parameters:
     * bluetooth.manager : application to launch on click (blueman-manager)
+
+contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
 """
 
 

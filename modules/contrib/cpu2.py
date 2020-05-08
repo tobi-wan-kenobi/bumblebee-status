@@ -31,6 +31,7 @@ Parameters:
 Note: if you are getting 'n/a' for CPU temperature / fan speed, then you're
 lacking the aforementioned pattern settings or they have wrong values.
 
+contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
 """
 
 import psutil

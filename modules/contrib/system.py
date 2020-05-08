@@ -20,6 +20,8 @@ Parameters:
         * system.lock: specify a command for locking the screen (defaults to 'i3exit lock')
         * system.suspend: specify a command for suspending (defaults to 'i3exit suspend')
         * system.hibernate: specify a command for hibernating (defaults to 'i3exit hibernate')
+
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 """
 
 import logging

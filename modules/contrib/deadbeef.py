@@ -32,6 +32,7 @@ Parameters:
     Available options for deadbeef.previous, deadbeef.next and deadbeef.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 
+contributed by `joshbarrass <https://github.com/joshbarrass>`_ - many thanks!
 """
 import sys
 

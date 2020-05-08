@@ -5,6 +5,9 @@ Requires the following library:
 
 Parameters:
     * taskwarrior.taskrc : path to the taskrc file (defaults to ~/.taskrc)
+
+
+contributed by `chdorb <https://github.com/chdorb>`_ - many thanks!
 """
 
 from taskw import TaskWarrior

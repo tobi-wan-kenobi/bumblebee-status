@@ -43,6 +43,8 @@ Parameters:
 
     * mpd.host: MPD host to connect to. (mpc behaviour by default)
     * mpd.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles mpd.prev, mpd.next, mpd.shuffle and mpd.repeat, and the main display with play/pause function mpd.main.
+
+contributed by `alrayyes <https://github.com/alrayyes>`_ - many thanks!
 """
 
 from collections import defaultdict

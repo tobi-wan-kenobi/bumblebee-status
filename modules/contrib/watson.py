@@ -4,6 +4,8 @@
 
 Requires the following executable:
     * watson
+
+contributed by `bendardenne <https://github.com/bendardenne>`_ - many thanks!
 """
 
 import logging

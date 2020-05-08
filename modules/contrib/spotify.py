@@ -14,6 +14,9 @@ Parameters:
 
     Available options for spotify.previous, spotify.next and spotify.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
+
+
+contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 """
 
 import sys

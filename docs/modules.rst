@@ -19,6 +19,8 @@ Parameters:
     * battery.showpowerconsumption: If set to 'true', show current power consumption (defaults to False)
     * battery.compact-devices     : If set to 'true', compacts multiple batteries into a single entry (default to False)
 
+(partially) contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
+
 .. image:: ../screenshots/battery.png
 
 battery-upower
@@ -31,6 +33,8 @@ Parameters:
     * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)
     * battery-upower.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
 
+contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
+
 brightness
 ~~~~~~~~~~
 
@@ -38,6 +42,8 @@ Displays the brightness of a display
 
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
+
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 
 .. image:: ../screenshots/brightness.png
 
@@ -61,6 +67,8 @@ Parameters:
     * cmus.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles cmus.prev, cmus.next, cmus.shuffle and cmus.repeat, and the main display with play/pause function cmus.main.
     * cmus.server: The address of the cmus server, either a UNIX socket or host[:port]. Connects to the local instance by default.
     * cmus.passwd: The password to use for the TCP/IP connection.
+
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 
 .. image:: ../screenshots/cmus.png
 
@@ -138,6 +146,8 @@ kernel
 ~~~~~~
 
 Shows Linux kernel version information
+
+contributed by `pierre87 <https://github.com/pierre87>`_ - many thanks!
 
 .. image:: ../screenshots/kernel.png
 
@@ -248,6 +258,7 @@ Parameters:
       'auto' uses whatever redshift is configured to do
     * redshift.lat : latitude if location is set to 'manual'
     * redshift.lon : longitude if location is set to 'manual'
+    * redshift.show_transition: information about the transitions (x% day) defaults to True
 
 .. image:: ../screenshots/redshift.png
 
@@ -312,6 +323,8 @@ Parameters:
     * vault.offx: x-axis offset of popup menu (defaults to 0)
     * vault.offy: y-axis offset of popup menu (defaults to 0)
 
+Many thanks to `bbernhard <https://github.com/bbernhard>`_ for the idea!
+
 .. image:: ../screenshots/vault.png
 
 xrandr
@@ -346,6 +359,8 @@ get volume level
 Parameters:
     * amixer.device: Device to use, defaults to "Master,0"
 
+contributed by `zetxx <https://github.com/zetxx>`_ - many thanks!
+
 .. image:: ../screenshots/amixer.png
 
 apt
@@ -356,6 +371,8 @@ Requires the following packages:
 
     * aptitude
 
+contributed by `qba10 <https://github.com/qba10>`_ - many thanks!
+
 arch-update
 ~~~~~~~~~~~
 
@@ -363,6 +380,8 @@ Check updates to Arch Linux.
 
 Requires the following executable:
     * checkupdates (from pacman-contrib)
+
+contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
 
 bluetooth
 ~~~~~~~~~
@@ -377,6 +396,8 @@ Parameters:
     * bluetooth.dbus_destination_path : dbus destination path (defaults to /)
     * bluetooth.right_click_popup : use popup menu when right-clicked (defaults to True)
 
+contributed by `brunosmmm <https://github.com/brunosmmm>`_ - many thanks!
+
 .. image:: ../screenshots/bluetooth.png
 
 bluetooth2
@@ -389,6 +410,8 @@ python-dbus to count the number of connections
 Parameters:
     * bluetooth.manager : application to launch on click (blueman-manager)
 
+contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
+
 caffeine
 ~~~~~~~~
 
@@ -399,6 +422,8 @@ Requires the following executables:
     * xdotool
     * xprop (as dependency for xdotool)
     * notify-send
+
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 
 .. image:: ../screenshots/caffeine.png
 
@@ -438,6 +463,8 @@ Parameters:
 Note: if you are getting 'n/a' for CPU temperature / fan speed, then you're
 lacking the aforementioned pattern settings or they have wrong values.
 
+contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
+
 currency
 ~~~~~~~~
 
@@ -456,6 +483,8 @@ Parameters:
 
 Note: source and destination names right now must correspond to the names used by the API of https://markets.ft.com
 
+contributed by `AntouanK <https://github.com/AntouanK>`_ - many thanks!
+
 .. image:: ../screenshots/currency.png
 
 datetimetz
@@ -473,6 +502,8 @@ Parameters:
     * datetz.locale       : alias for datetimetz.locale
     * timetz.locale       : alias for datetimetz.locale
     * timetz.timezone     : alias for datetimetz.timezone
+
+contributed by `frankzhao <https://github.com/frankzhao>`_ - many thanks!
 
 datetz
 ~~~~~~
@@ -518,6 +549,8 @@ Parameters:
     Available options for deadbeef.previous, deadbeef.next and deadbeef.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 
+contributed by `joshbarrass <https://github.com/joshbarrass>`_ - many thanks!
+
 deezer
 ~~~~~~
 
@@ -535,6 +568,8 @@ Parameters:
 
     Available options for deezer.previous, deezer.next and deezer.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
+
+contributed by `wwmoraes <https://github.com/wwmoraes>`_ - many thanks!
 
 dnf
 ~~~
@@ -557,10 +592,14 @@ Displays the number of docker containers running
 Requires the following python packages:
     * docker
 
+contributed by `jlopezzarza <https://github.com/jlopezzarza>`_ - many thanks!
+
 dunst
 ~~~~~
 
 Toggle dunst notifications.
+
+contributed by `eknoes <https://github.com/eknoes>`_ - many thanks!
 
 .. image:: ../screenshots/dunst.png
 
@@ -579,6 +618,8 @@ Parameters:
     * getcrypto.getltc: 0 for not getting price of LTC, 1 for getting it (default).
     * getcrypto.getcur: Set the currency to display the price in, usd is the default.
 
+contributed by `Ryunaq <https://github.com/Ryunaq>`_ - many thanks!
+
 .. image:: ../screenshots/getcrypto.png
 
 github
@@ -593,6 +634,8 @@ Parameters:
     * github.token: GitHub user access token, the token needs to have the 'notifications' scope.
     * github.interval: Interval in minutes between updates, default is 5.
 
+contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
+
 .. image:: ../screenshots/github.png
 
 gpmdp
@@ -603,16 +646,22 @@ Displays information about the current song in Google Play music player.
 Requires the following executable:
     * gpmdp-remote
 
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
+
 hddtemp
 ~~~~~~~
 
 Fetch hard drive temeperature data from a hddtemp daemon
 that runs on localhost and default port (7634)
 
+contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
+
 hostname
 ~~~~~~~~
 
 Displays the system hostname.
+
+contributed by `varkokonyi <https://github.com/varkokonyi>`_ - many thanks!
 
 http_status
 ~~~~~~~~~~~
@@ -623,6 +672,8 @@ Parameters:
     * http__status.label: Prefix label (optional)
     * http__status.target: Target to retrieve the HTTP status from
     * http__status.expect: Expected HTTP status
+
+contributed by `valkheim <https://github.com/valkheim>`_ - many thanks!
 
 .. image:: ../screenshots/http_status.png
 
@@ -635,6 +686,8 @@ Parameters:
     * indicator.include: Comma-separated list of interface prefixes to include (defaults to 'numlock,capslock')
     * indicator.signalstype: If you want the signali type color to be 'critical' or 'warning' (defaults to 'warning')
 
+contributed by `freed00m <https://github.com/freed00m>`_ - many thanks!
+
 .. image:: ../screenshots/indicator.png
 
 layout
@@ -644,6 +697,8 @@ Displays and changes the current keyboard layout
 
 Requires the following executable:
     * setxkbmap
+
+contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
 
 .. image:: ../screenshots/layout.png
 
@@ -655,6 +710,8 @@ Displays and changes the current keyboard layout
 Requires the following executable:
     * xkb-switch
 
+contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
+
 libvirtvms
 ~~~~~~~~~~
 
@@ -662,6 +719,8 @@ Displays count of running libvirt VMs.
 
 Required the following python packages:
         * libvirt
+
+contributed by `maxpivo <https://github.com/maxpivo>`_ - many thanks!
 
 mocp
 ~~~~
@@ -687,6 +746,8 @@ Parameters:
        * %cs        CurrentSec
        * %b         Bitrate
        * %r         Sample rate
+
+contributed by `chrugi <https://github.com/chrugi>`_ - many thanks!
 
 mpd
 ~~~
@@ -734,13 +795,17 @@ Parameters:
     * mpd.host: MPD host to connect to. (mpc behaviour by default)
     * mpd.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles mpd.prev, mpd.next, mpd.shuffle and mpd.repeat, and the main display with play/pause function mpd.main.
 
+contributed by `alrayyes <https://github.com/alrayyes>`_ - many thanks!
+
 .. image:: ../screenshots/mpd.png
 
 network_traffic
 ~~~~~~~~~~~~~~~
 
 Displays network traffic
-* No extra configuration needed
+   * No extra configuration needed
+
+contributed by `izn <https://github.com/izn>`_ - many thanks!
 
 notmuch_count
 ~~~~~~~~~~~~~
@@ -757,6 +822,8 @@ Errors:
 Dependencies:
     notmuch (https://notmuchmail.org/)
 
+contributed by `abdoulayeYATERA <https://github.com/abdoulayeYATERA>`_ - many thanks!
+
 nvidiagpu
 ~~~~~~~~~
 
@@ -767,6 +834,8 @@ Parameters:
      Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem}
 
 Requires nvidia-smi
+
+contributed by `RileyRedpath <https://github.com/RileyRedpath>`_ - many thanks!
 
 octoprint
 ~~~~~~~~~
@@ -792,6 +861,8 @@ Requires the following executables:
     * fakeroot
     * pacman
 
+contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
+
 .. image:: ../screenshots/pacman.png
 
 pihole
@@ -802,6 +873,8 @@ Displays the pi-hole status (up/down) together with the number of ads that were 
 Parameters:
     * pihole.address     : pi-hole address (e.q: http://192.168.1.3)
     * pihole.pwhash      : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
+
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 
 pomodoro
 ~~~~~~~~
@@ -820,6 +893,8 @@ Parameters:
       please use an external wrapper script and invoke that. The module itself does
       not support command chaining (see https://github.com/tobi-wan-kenobi/bumblebee-status/issues/532
       for a detailled explanation)
+
+contributed by `martindoublem <https://github.com/martindoublem>`_, inspired by `karthink <https://github.com/karthink>`_ - many thanks!
 
 prime
 ~~~~~
@@ -847,6 +922,8 @@ Parameters:
 Requires the following executable:
     * prime-select
 
+contributed by `jeffeb3 <https://github.com/jeffeb3>`_ - many thanks!
+
 progress
 ~~~~~~~~
 
@@ -862,6 +939,8 @@ Parameters:
 
 Requires the following executable:
    * progress
+
+contributed by `remi-dupre <https://github.com/remi-dupre>`_ - many thanks!
 
 publicip
 ~~~~~~~~
@@ -889,6 +968,8 @@ Parameters:
     * rss.feeds : Space-separated list of RSS URLs
     * rss.length : Maximum length of the module, default is 60
 
+contributed by `lonesomebyte537 <https://github.com/lonesomebyte537>`_ - many thanks!
+
 sensors
 ~~~~~~~
 
@@ -903,6 +984,9 @@ Parameters:
     * sensors.match_pattern: (fallback) Line to match against before temperature is read (no default)
     * sensors.match_number: (fallback) which of the matches you want (default -1: last match).
     * sensors.show_freq: whether to show CPU frequency. (default: true)
+
+
+contributed by `mijoharas <https://github.com/mijoharas>`_ - many thanks!
 
 .. image:: ../screenshots/sensors.png
 
@@ -931,6 +1015,8 @@ Parameters:
       running scripts to avoid bumblebee-status freezes
       (defaults to False)
 
+contributed by `rrhuffy <https://github.com/rrhuffy>`_ - many thanks!
+
 shortcut
 ~~~~~~~~
 
@@ -950,6 +1036,9 @@ Parameters:
     * shortcut.labels: List of widgets' labels (text)
     * shortcut.delim : Commands and labels delimiter (; semicolon by default)
 
+
+contributed by `cacyss0807 <https://github.com/cacyss0807>`_ - many thanks!
+
 .. image:: ../screenshots/shortcut.png
 
 smartstatus
@@ -959,7 +1048,8 @@ Displays HDD smart status of different drives or all drives
 
 Parameters:
     * smartstatus.display: how to display (defaults to 'combined', other choices: 'seperate' or 'singles')
-    * smartstauts.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
+    * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
+    * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
 
 spaceapi
 ~~~~~~~~
@@ -986,6 +1076,8 @@ Format Strings:
       to say 'Open/Closed' depending on the boolean you
       would write '%%state.open%Open%Closed%%'
 
+contributed by `rad4day <https://github.com/rad4day>`_ - many thanks!
+
 spotify
 ~~~~~~~
 
@@ -1004,6 +1096,9 @@ Parameters:
     Available options for spotify.previous, spotify.next and spotify.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
 
+
+contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
+
 .. image:: ../screenshots/spotify.png
 
 stock
@@ -1017,6 +1112,9 @@ Requires the following python packages:
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
     * stock.change : Should we fetch change in stock value (defaults to True)
+
+
+contributed by `msoulier <https://github.com/msoulier>`_ - many thanks!
 
 .. image:: ../screenshots/stock.png
 
@@ -1032,6 +1130,10 @@ Requires the following python packages:
 Parameters:
     * cpu.lat : Latitude of your location
     * cpu.lon : Longitude of your location
+
+(if none of those are set, location is determined automatically via location APIs)
+
+contributed by `lonesomebyte537 <https://github.com/lonesomebyte537>`_ - many thanks!
 
 system
 ~~~~~~
@@ -1056,6 +1158,8 @@ Parameters:
         * system.suspend: specify a command for suspending (defaults to 'i3exit suspend')
         * system.hibernate: specify a command for hibernating (defaults to 'i3exit hibernate')
 
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
+
 taskwarrior
 ~~~~~~~~~~~
 
@@ -1066,6 +1170,9 @@ Requires the following library:
 
 Parameters:
     * taskwarrior.taskrc : path to the taskrc file (defaults to ~/.taskrc)
+
+
+contributed by `chdorb <https://github.com/chdorb>`_ - many thanks!
 
 .. image:: ../screenshots/taskwarrior.png
 
@@ -1091,6 +1198,9 @@ Parameters:
     * title.placeholder : Placeholder text to be placed if title was truncated. Defaults to '...'.
     * title.scroll : Boolean flag for scrolling title. Defaults to False
 
+
+contributed by `UltimatePancake <https://github.com/UltimatePancake>`_ - many thanks!
+
 .. image:: ../screenshots/title.png
 
 todo
@@ -1100,6 +1210,9 @@ Displays the number of todo items from a text file
 
 Parameters:
     * todo.file: File to read TODOs from (defaults to ~/Documents/todo.txt)
+
+
+contributed by `codingo <https://github.com/codingo>`_ - many thanks!
 
 .. image:: ../screenshots/todo.png
 
@@ -1118,6 +1231,8 @@ Parameters:
       char shows 2 seconds. If set, enables up/down traffic
       graphs
 
+contributed by `meain <https://github.com/meain>`_ - many thanks!
+
 .. image:: ../screenshots/traffic.png
 
 twmn
@@ -1125,10 +1240,14 @@ twmn
 
 Toggle twmn notifications.
 
+contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
+
 uptime
 ~~~~~~
 
 Displays the system uptime.
+
+contributed by `ccoors <https://github.com/ccoors>`_ - many thanks!
 
 .. image:: ../screenshots/uptime.png
 
@@ -1137,17 +1256,19 @@ vpn
 
 Displays the VPN profile that is currently in use.
 
-Left click opens a popup menu that lists all available VPN profiles and allows to establish
-a VPN connection using that profile.
+    Left click opens a popup menu that lists all available VPN profiles and allows to establish
+    a VPN connection using that profile.
 
-Prerequisites:
-     * tk python library (usually python-tk or python3-tk, depending on your distribution)
-     * nmcli needs to be installed and configured properly.
-       To quickly test, whether nmcli is working correctly, type 'nmcli -g NAME,TYPE,DEVICE con' which
-       lists all the connection profiles that are configured. Make sure that your VPN profile is in that list!
+    Prerequisites:
+         * tk python library (usually python-tk or python3-tk, depending on your distribution)
+         * nmcli needs to be installed and configured properly.
+           To quickly test, whether nmcli is working correctly, type 'nmcli -g NAME,TYPE,DEVICE con' which
+           lists all the connection profiles that are configured. Make sure that your VPN profile is in that list!
 
-       e.g: to import a openvpn profile via nmcli:
-       `sudo nmcli connection import type openvpn file </path/to/your/openvpn/profile.ovpn>`
+           e.g: to import a openvpn profile via nmcli:
+           `sudo nmcli connection import type openvpn file </path/to/your/openvpn/profile.ovpn>`
+
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 
 watson
 ~~~~~~
@@ -1156,6 +1277,8 @@ Displays the status of watson (time-tracking tool)
 
 Requires the following executable:
     * watson
+
+contributed by `bendardenne <https://github.com/bendardenne>`_ - many thanks!
 
 weather
 ~~~~~~~
@@ -1174,12 +1297,17 @@ Parameters:
     * weather.showminmax: If set to true, show the minimum and maximum temperature, otherwise hide it (defaults to false)
     * weather.apikey: API key from http://api.openweathermap.org
 
+
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
+
 .. image:: ../screenshots/weather.png
 
 xkcd
 ~~~~
 
 Opens a random xkcd comic in the browser.
+
+contributed by `whzup <https://github.com/whzup>`_ - many thanks!
 
 yubikey
 ~~~~~~~
@@ -1190,6 +1318,9 @@ Requires: https://github.com/Yubico/python-yubico
 
 The output indicates that a YubiKey is not connected or it displays
 the corresponding serial number.
+
+
+contributed by `EmmaTinten <https://github.com/EmmaTinten>`_ - many thanks!
 
 zpool
 ~~~~~
@@ -1218,5 +1349,7 @@ is used, the following (or ekvivalent) must be added to the `sudoers(5)`:
 ```
 
 Be aware of security implications of doing this!
+
+contributed by `adam-dej <https://github.com/adam-dej>`_ - many thanks!
 
 .. image:: ../screenshots/zpool.png

@@ -2,6 +2,8 @@
 
 Requires the following executable:
     * xkb-switch
+
+contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
 """
 
 import core.module

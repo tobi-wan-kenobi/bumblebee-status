@@ -22,3 +22,4 @@
 # documentation
 Add info about error widget and events for error logging
 - add module contributor doc
+- which location APIs are used?

@@ -14,6 +14,9 @@ Parameters:
     * weather.showcity: If set to true, show location information, otherwise hide it (defaults to true)
     * weather.showminmax: If set to true, show the minimum and maximum temperature, otherwise hide it (defaults to false)
     * weather.apikey: API key from http://api.openweathermap.org
+
+
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 """
 
 import core.module

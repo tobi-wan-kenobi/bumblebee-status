@@ -3,6 +3,8 @@
 
 """Displays network traffic
    * No extra configuration needed
+
+contributed by `izn <https://github.com/izn>`_ - many thanks!
 """
 
 import psutil

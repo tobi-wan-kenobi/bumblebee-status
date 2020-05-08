@@ -6,6 +6,8 @@ Parameters:
     * http__status.label: Prefix label (optional)
     * http__status.target: Target to retrieve the HTTP status from
     * http__status.expect: Expected HTTP status
+
+contributed by `valkheim <https://github.com/valkheim>`_ - many thanks!
 """
 
 from requests import head

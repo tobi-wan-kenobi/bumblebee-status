@@ -24,6 +24,8 @@ Format Strings:
       you would write '%%state.open%%', if you also want
       to say 'Open/Closed' depending on the boolean you
       would write '%%state.open%Open%Closed%%'
+
+contributed by `rad4day <https://github.com/rad4day>`_ - many thanks!
 """
 
 import requests

@@ -1,6 +1,9 @@
 # pylint: disable=C0111,R0903
 
-"""Toggle twmn notifications."""
+"""Toggle twmn notifications.
+
+contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
+"""
 
 import core.module
 import core.widget

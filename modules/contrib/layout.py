@@ -4,6 +4,8 @@
 
 Requires the following executable:
     * setxkbmap
+
+contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
 """
 
 import core.module

@@ -8,6 +8,8 @@ Parameters:
 Requires the following executables:
     * fakeroot
     * pacman
+
+contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
 """
 
 import os

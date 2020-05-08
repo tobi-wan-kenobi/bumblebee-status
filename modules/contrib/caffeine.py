@@ -7,6 +7,8 @@ Requires the following executables:
     * xdotool
     * xprop (as dependency for xdotool)
     * notify-send
+
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 """
 
 import logging

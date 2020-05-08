@@ -18,6 +18,7 @@ Parameters:
     * cmus.server: The address of the cmus server, either a UNIX socket or host[:port]. Connects to the local instance by default.
     * cmus.passwd: The password to use for the TCP/IP connection.
 
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 """
 
 from collections import defaultdict

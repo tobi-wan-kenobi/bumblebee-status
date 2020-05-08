@@ -5,6 +5,7 @@ Requires the following packages:
 
     * aptitude
 
+contributed by `qba10 <https://github.com/qba10>`_ - many thanks!
 """
 
 import re

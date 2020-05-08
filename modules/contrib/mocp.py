@@ -22,6 +22,8 @@ Parameters:
        * %cs        CurrentSec
        * %b         Bitrate
        * %r         Sample rate
+
+contributed by `chrugi <https://github.com/chrugi>`_ - many thanks!
 """
 
 import core.module

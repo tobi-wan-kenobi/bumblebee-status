@@ -15,6 +15,9 @@ Parameters:
     * shortcut.cmds  : List of commands to execute
     * shortcut.labels: List of widgets' labels (text)
     * shortcut.delim : Commands and labels delimiter (; semicolon by default)
+
+
+contributed by `cacyss0807 <https://github.com/cacyss0807>`_ - many thanks!
 """
 
 import logging

@@ -9,6 +9,9 @@ Requires the following python packages:
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
     * stock.change : Should we fetch change in stock value (defaults to True)
+
+
+contributed by `msoulier <https://github.com/msoulier>`_ - many thanks!
 """
 
 import json

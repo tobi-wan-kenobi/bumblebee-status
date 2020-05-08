@@ -22,6 +22,8 @@ is used, the following (or ekvivalent) must be added to the `sudoers(5)`:
 ```
 
 Be aware of security implications of doing this!
+
+contributed by `adam-dej <https://github.com/adam-dej>`_ - many thanks!
 """
 
 import time

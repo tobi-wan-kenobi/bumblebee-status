@@ -14,6 +14,8 @@ Parameters:
 
     Available options for deezer.previous, deezer.next and deezer.pause are:
         LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
+
+contributed by `wwmoraes <https://github.com/wwmoraes>`_ - many thanks!
 """
 
 import dbus

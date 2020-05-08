@@ -6,6 +6,8 @@ Parameters:
     * battery-upower.warning      : Warning threshold in % of remaining charge (defaults to 20)
     * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)
     * battery-upower.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
+
+contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
 """
 
 import dbus

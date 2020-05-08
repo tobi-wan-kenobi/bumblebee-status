@@ -1,6 +1,9 @@
 # pylint: disable=C0111,R0903
 
-"""Displays the system uptime."""
+"""Displays the system uptime.
+
+contributed by `ccoors <https://github.com/ccoors>`_ - many thanks!
+"""
 
 from datetime import timedelta
 

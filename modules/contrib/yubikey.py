@@ -7,6 +7,8 @@ Requires: https://github.com/Yubico/python-yubico
 The output indicates that a YubiKey is not connected or it displays
 the corresponding serial number.
 
+
+contributed by `EmmaTinten <https://github.com/EmmaTinten>`_ - many thanks!
 """
 
 import yubico

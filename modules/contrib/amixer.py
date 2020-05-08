@@ -2,6 +2,8 @@
 
 Parameters:
     * amixer.device: Device to use, defaults to "Master,0"
+
+contributed by `zetxx <https://github.com/zetxx>`_ - many thanks!
 """
 import re
 

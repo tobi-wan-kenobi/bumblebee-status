@@ -11,6 +11,8 @@ Errors:
 
 Dependencies:
     notmuch (https://notmuchmail.org/)
+
+contributed by `abdoulayeYATERA <https://github.com/abdoulayeYATERA>`_ - many thanks!
 """
 
 import os

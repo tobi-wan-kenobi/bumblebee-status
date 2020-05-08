@@ -3,6 +3,7 @@
 Requires the following executable:
     * checkupdates (from pacman-contrib)
 
+contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
 """
 
 import logging

@@ -9,6 +9,8 @@ New stories are highlighted.
 Parameters:
     * rss.feeds : Space-separated list of RSS URLs
     * rss.length : Maximum length of the module, default is 60
+
+contributed by `lonesomebyte537 <https://github.com/lonesomebyte537>`_ - many thanks!
 """
 
 import feedparser

@@ -10,6 +10,8 @@ Parameters:
     * battery.decorate            : If set to 'false', hides additional icons (charging, etc.) (defaults to True)
     * battery.showpowerconsumption: If set to 'true', show current power consumption (defaults to False)
     * battery.compact-devices     : If set to 'true', compacts multiple batteries into a single entry (default to False)
+
+(partially) contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
 """
 
 import os

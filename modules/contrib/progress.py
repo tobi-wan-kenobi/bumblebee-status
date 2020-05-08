@@ -11,6 +11,8 @@ Parameters:
 
 Requires the following executable:
    * progress
+
+contributed by `remi-dupre <https://github.com/remi-dupre>`_ - many thanks!
 """
 
 import core.module

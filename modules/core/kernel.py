@@ -1,6 +1,9 @@
 # pylint: disable=C0111,R0903
 
-"""Shows Linux kernel version information"""
+"""Shows Linux kernel version information
+
+contributed by `pierre87 <https://github.com/pierre87>`_ - many thanks!
+"""
 
 import platform
 

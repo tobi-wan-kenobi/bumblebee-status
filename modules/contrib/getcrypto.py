@@ -11,6 +11,8 @@ Parameters:
     * getcrypto.geteth: 0 for not getting price of ETH, 1 for getting it (default).
     * getcrypto.getltc: 0 for not getting price of LTC, 1 for getting it (default).
     * getcrypto.getcur: Set the currency to display the price in, usd is the default.
+
+contributed by `Ryunaq <https://github.com/Ryunaq>`_ - many thanks!
 """
 
 import requests

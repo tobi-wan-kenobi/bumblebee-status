@@ -9,6 +9,9 @@ Parameters:
     * title.max : Maximum character length for title before truncating. Defaults to 64.
     * title.placeholder : Placeholder text to be placed if title was truncated. Defaults to '...'.
     * title.scroll : Boolean flag for scrolling title. Defaults to False
+
+
+contributed by `UltimatePancake <https://github.com/UltimatePancake>`_ - many thanks!
 """
 
 import threading

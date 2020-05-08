@@ -4,6 +4,9 @@
 
 Parameters:
     * todo.file: File to read TODOs from (defaults to ~/Documents/todo.txt)
+
+
+contributed by `codingo <https://github.com/codingo>`_ - many thanks!
 """
 
 import os.path

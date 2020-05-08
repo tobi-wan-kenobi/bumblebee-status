@@ -9,6 +9,8 @@ Parameters:
     * vault.location: Location of the password store (defaults to ~/.password-store)
     * vault.offx: x-axis offset of popup menu (defaults to 0)
     * vault.offy: y-axis offset of popup menu (defaults to 0)
+
+Many thanks to `bbernhard <https://github.com/bbernhard>`_ for the idea!
 """
 
 

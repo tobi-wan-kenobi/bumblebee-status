@@ -5,6 +5,8 @@
 Parameters:
     * indicator.include: Comma-separated list of interface prefixes to include (defaults to 'numlock,capslock')
     * indicator.signalstype: If you want the signali type color to be 'critical' or 'warning' (defaults to 'warning')
+
+contributed by `freed00m <https://github.com/freed00m>`_ - many thanks!
 """
 
 import core.module

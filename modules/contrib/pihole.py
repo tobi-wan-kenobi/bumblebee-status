@@ -5,6 +5,8 @@
 Parameters:
     * pihole.address     : pi-hole address (e.q: http://192.168.1.3)
     * pihole.pwhash      : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
+
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 """
 
 import requests

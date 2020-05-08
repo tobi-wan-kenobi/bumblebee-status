@@ -15,6 +15,8 @@ Parameters:
     * currency.destinationdelimiter: Delimiter used for separating individual rates (defaults to '|')
 
 Note: source and destination names right now must correspond to the names used by the API of https://markets.ft.com
+
+contributed by `AntouanK <https://github.com/AntouanK>`_ - many thanks!
 """
 
 import requests

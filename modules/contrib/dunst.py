@@ -1,6 +1,9 @@
 # pylint: disable=C0111,R0903
 
-"""Toggle dunst notifications."""
+"""Toggle dunst notifications.
+
+contributed by `eknoes <https://github.com/eknoes>`_ - many thanks!
+"""
 
 import core.module
 import core.widget
