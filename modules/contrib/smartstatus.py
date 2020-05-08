@@ -7,7 +7,8 @@
 
 Parameters:
     * smartstatus.display: how to display (defaults to 'combined', other choices: 'seperate' or 'singles')
-    * smartstauts.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
+    * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
+    * smartstatus.shownames: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
 """
 
 import os
@@ -29,6 +30,7 @@ class Module(core.module.Module):
         self.devices = self.list_devices()
         self.display = self.parameter("display", "combined")
         self.drives = self.parameter("drives", "sda")
+        self.show_names = self.parameter("show_names", "True")
         self.widgets(self.create_widgets())
 
     def create_widgets(self):
@@ -63,7 +65,10 @@ class Module(core.module.Module):
     def output(self, widget):
         device = widget.get("device")
         assessment = widget.get("assessment")
-        widget.full_text("{}: {}".format(device, assessment))
+        if self.show_names == "False":
+            widget.full_text("{}".format(assessment))
+        else:
+            widget.full_text("{}: {}".format(device, assessment))
 
     def state(self, widget):
         states = []
