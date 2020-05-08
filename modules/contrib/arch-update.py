@@ -4,6 +4,9 @@ Requires the following executable:
     * checkupdates (from pacman-contrib)
 
 """
+
+import logging
+
 import core.module
 import core.widget
 import core.decorators
@@ -31,7 +34,8 @@ class Module(core.module.Module):
         try:
             result = util.cli.execute("checkupdates")
             self.__packages = len(result.split("\n")) - 1
-        except:
+        except as e:
+            logging.exception(e)
             self.__packages = -1
 
     def state(self, widget):
