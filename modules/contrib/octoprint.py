@@ -8,6 +8,8 @@ Parameters:
     * octoprint.address     : Octoprint address (e.q: http://192.168.1.3)
     * octoprint.apitoken    : Octorpint API Token (can be obtained from the Octoprint Webinterface)
     * octoprint.webcam      : Set to True if a webcam is connected (default: False)
+
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 """
 
 

@@ -5,73 +5,6 @@ core
 ----
 
 
-battery
-~~~~~~~
-
-Displays battery status, remaining percentage and charging information.
-
-Parameters:
-    * battery.device              : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)
-    * battery.warning             : Warning threshold in % of remaining charge (defaults to 20)
-    * battery.critical            : Critical threshold in % of remaining charge (defaults to 10)
-    * battery.showdevice          : If set to 'true', add the device name to the widget (defaults to False)
-    * battery.decorate            : If set to 'false', hides additional icons (charging, etc.) (defaults to True)
-    * battery.showpowerconsumption: If set to 'true', show current power consumption (defaults to False)
-    * battery.compact-devices     : If set to 'true', compacts multiple batteries into a single entry (default to False)
-
-(partially) contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
-
-.. image:: ../screenshots/battery.png
-
-battery-upower
-~~~~~~~~~~~~~~
-
-Displays battery status, remaining percentage and charging information.
-
-Parameters:
-    * battery-upower.warning      : Warning threshold in % of remaining charge (defaults to 20)
-    * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)
-    * battery-upower.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
-
-contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
-
-brightness
-~~~~~~~~~~
-
-Displays the brightness of a display
-
-Parameters:
-    * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
-
-contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
-
-.. image:: ../screenshots/brightness.png
-
-cmus
-~~~~
-
-Displays information about the current song in cmus.
-
-Requires the following executable:
-    * cmus-remote
-
-Parameters:
-    * cmus.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
-
-      Additional tags:
-        * {file} - full song file name
-        * {file1} - song file name without path prefix
-          if {file} = '/foo/bar.baz', then {file1} = 'bar.baz'
-        * {file2} - song file name without path prefix and extension suffix
-          if {file} = '/foo/bar.baz', then {file2} = 'bar'
-    * cmus.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles cmus.prev, cmus.next, cmus.shuffle and cmus.repeat, and the main display with play/pause function cmus.main.
-    * cmus.server: The address of the cmus server, either a UNIX socket or host[:port]. Connects to the local instance by default.
-    * cmus.passwd: The password to use for the TCP/IP connection.
-
-contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
-
-.. image:: ../screenshots/cmus.png
-
 cpu
 ~~~
 
@@ -141,15 +74,6 @@ Requires:
     * Python module 'pygit2'
 
 .. image:: ../screenshots/git.png
-
-kernel
-~~~~~~
-
-Shows Linux kernel version information
-
-contributed by `pierre87 <https://github.com/pierre87>`_ - many thanks!
-
-.. image:: ../screenshots/kernel.png
 
 layout-xkb
 ~~~~~~~~~~
@@ -383,6 +307,36 @@ Requires the following executable:
 
 contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
 
+battery
+~~~~~~~
+
+Displays battery status, remaining percentage and charging information.
+
+Parameters:
+    * battery.device              : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)
+    * battery.warning             : Warning threshold in % of remaining charge (defaults to 20)
+    * battery.critical            : Critical threshold in % of remaining charge (defaults to 10)
+    * battery.showdevice          : If set to 'true', add the device name to the widget (defaults to False)
+    * battery.decorate            : If set to 'false', hides additional icons (charging, etc.) (defaults to True)
+    * battery.showpowerconsumption: If set to 'true', show current power consumption (defaults to False)
+    * battery.compact-devices     : If set to 'true', compacts multiple batteries into a single entry (default to False)
+
+(partially) contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
+
+.. image:: ../screenshots/battery.png
+
+battery-upower
+~~~~~~~~~~~~~~
+
+Displays battery status, remaining percentage and charging information.
+
+Parameters:
+    * battery-upower.warning      : Warning threshold in % of remaining charge (defaults to 20)
+    * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)
+    * battery-upower.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
+
+contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
+
 bluetooth
 ~~~~~~~~~
 
@@ -412,6 +366,18 @@ Parameters:
 
 contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
 
+brightness
+~~~~~~~~~~
+
+Displays the brightness of a display
+
+Parameters:
+    * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
+
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
+
+.. image:: ../screenshots/brightness.png
+
 caffeine
 ~~~~~~~~
 
@@ -426,6 +392,31 @@ Requires the following executables:
 contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 
 .. image:: ../screenshots/caffeine.png
+
+cmus
+~~~~
+
+Displays information about the current song in cmus.
+
+Requires the following executable:
+    * cmus-remote
+
+Parameters:
+    * cmus.format: Format string for the song information. Tag values can be put in curly brackets (i.e. {artist})
+
+      Additional tags:
+        * {file} - full song file name
+        * {file1} - song file name without path prefix
+          if {file} = '/foo/bar.baz', then {file1} = 'bar.baz'
+        * {file2} - song file name without path prefix and extension suffix
+          if {file} = '/foo/bar.baz', then {file2} = 'bar'
+    * cmus.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles cmus.prev, cmus.next, cmus.shuffle and cmus.repeat, and the main display with play/pause function cmus.main.
+    * cmus.server: The address of the cmus server, either a UNIX socket or host[:port]. Connects to the local instance by default.
+    * cmus.passwd: The password to use for the TCP/IP connection.
+
+contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
+
+.. image:: ../screenshots/cmus.png
 
 cpu2
 ~~~~
@@ -690,6 +681,15 @@ contributed by `freed00m <https://github.com/freed00m>`_ - many thanks!
 
 .. image:: ../screenshots/indicator.png
 
+kernel
+~~~~~~
+
+Shows Linux kernel version information
+
+contributed by `pierre87 <https://github.com/pierre87>`_ - many thanks!
+
+.. image:: ../screenshots/kernel.png
+
 layout
 ~~~~~~
 
@@ -848,6 +848,8 @@ Parameters:
     * octoprint.address     : Octoprint address (e.q: http://192.168.1.3)
     * octoprint.apitoken    : Octorpint API Token (can be obtained from the Octoprint Webinterface)
     * octoprint.webcam      : Set to True if a webcam is connected (default: False)
+
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 
 pacman
 ~~~~~~
