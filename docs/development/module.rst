@@ -33,6 +33,8 @@ to this): - Please favour single quotes for strings (except for
 docstrings, which are always """) - For private methods/variables,
 please use a leading ``__`` (e.g. ``__output`` rather than ``_output``)
 
+For anything else, please run your code through `black <https://github.com/psf/black>`_.
+
 Hello world
 -----------
 
@@ -88,8 +90,8 @@ If you want to add widgets during runtime, please use the
 
 TODO: expand on this
 
-Periodic updates
-----------------
+Periodic updates (update() vs. full_text)
+-----------------------------------------
 
 ``bumblebee-status`` modules have two different ways to update their
 data: 1. Each interval, the callback registered when the widget was
@@ -153,13 +155,53 @@ what the user configures via ``-i <interval>``! It is still possible to
 override the module’s interval using ``-p <module>.interval=<value>``,
 however.
 
-TODOs
------
+Redraw outside the update interval
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  default update interval
--  scrolling
--  theme.minwidth
--  scrolling decorator
--  theme.exclude
--  per module update interval -> nice string format
--  update via events
+Sometimes, it is desirable to redraw a widget dynamically, even outside its update
+interva. This can be useful if the value to be displayed is calculated in a separate
+thread. In such a scenario, the ``update()`` method would simply trigger of a thread
+and the actual value would be available later (but presumably before the next
+update call).
+
+If that is the case, it is possible to fire off an event in the thread to cause the
+affected widget to be redrawn, like this:
+
+.. code:: python
+
+    import core.event
+
+    # later
+    core.event.trigger("update", [<list of module IDs>], redraw_only=True)
+
+A concrete example of this can be found in the module ``redshift``, and a couple of others.
+
+Scrolling content
+~~~~~~~~~~~~~~~~~
+
+If a widgets produces a large amount of content, it might be desirable to limit the amount
+of space the widget can occupy and scroll the content, if necessary.
+
+This behaviour can be achieved using the ``scrollable`` decorator like this:
+
+.. code:: python
+
+    import core.module
+    import core.widget
+    import core.decorators
+
+    class Module(core.module.Module):
+        def __init__(self, config, theme):
+            super().__init__(config, theme, core.widget.Widget(self.description))
+
+    @core.decorators.scrollable
+    def description(self, widget):
+        pass # TODO: implement
+
+There are a couple of parameters that can be set on the affected module, either in the
+module using ``self.set()`` or via the CLI using the ``--parameter`` flag:
+
+- ``scrolling.width``: Integer, defaults to 30, determines the minimum width of the widgets, if ``makewide`` is specified
+- ``scrolling.makewide``: Boolean, defaults to true,  determines whether the widgets should be expanded to their minwidth
+  ``scrolling.bounce``: Boolean, defaults to true, determines whether the content should change directions when a scroll is completed, or just marquee through
+

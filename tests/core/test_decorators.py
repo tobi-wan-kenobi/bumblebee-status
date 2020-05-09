@@ -22,7 +22,7 @@ class config(unittest.TestCase):
         self.module = TestModule()
         self.widget = self.module.widget()
         self.width = 10
-        self.module.set("width", self.width)
+        self.module.set("scrolling.width", self.width)
 
     def test_no_text(self):
         self.assertEqual("", self.module.text)
@@ -40,7 +40,7 @@ class config(unittest.TestCase):
 
     def test_bounce(self):
         self.module.text = "abcd"
-        self.module.set("width", 2)
+        self.module.set("scrolling.width", 2)
         self.assertEqual("ab", self.module.get(self.widget))
         self.assertEqual("bc", self.module.get(self.widget))
         self.assertEqual("cd", self.module.get(self.widget))
@@ -54,7 +54,7 @@ class config(unittest.TestCase):
     def test_nobounce(self):
         self.module.set("scrolling.bounce", False)
         self.module.text = "abcd"
-        self.module.set("width", 2)
+        self.module.set("scrolling.width", 2)
         self.assertEqual("ab", self.module.get(self.widget))
         self.assertEqual("bc", self.module.get(self.widget))
         self.assertEqual("cd", self.module.get(self.widget))
@@ -64,7 +64,7 @@ class config(unittest.TestCase):
 
     def test_changed_data(self):
         self.module.text = "abcd"
-        self.module.set("width", 2)
+        self.module.set("scrolling.width", 2)
         self.assertEqual("ab", self.module.get(self.widget))
         self.assertEqual("bc", self.module.get(self.widget))
         self.module.text = "wxyz"
