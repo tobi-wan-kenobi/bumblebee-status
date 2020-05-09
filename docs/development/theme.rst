@@ -109,24 +109,67 @@ enclosing the actual text.
 Full list of attributes
 -----------------------
 
-(TODO: Add explanation)
+This list specifies the names of all attributes, their JSON type and a short description.
 
--  defaults
--  cycle
--  icons
--  warning
--  critical
--  fg
--  bg
--  separator
--  padding
--  pango
--  prefix
--  suffix
--  default-separators
--  separator-block-width
--  <module name>
--  <state>
+defaults, object
+  Container to specify fallback values, in case nothing more specific matches.
+  Can itself contain any of the other attributes (to e.g. specify a default background
+  color).
+cycle, array of objects
+  Similar to defaults, but specifies a list of containers that is iterated for each
+  widget being drawn. Effectively, this allows alternating attribute values for 
+  widgets (for a powerline effect, for example)
+icons, array of strings
+  Allows loading of external JSON files and merging them into the current one (adding fields
+  that do not exist in the current JSON, but not overwriting existing values). In practice, this
+  is used to load common icon sets (hence the name).
+warning, object
+  Specifies attributes such as foreground or background colors for a widget that is in state
+  "warning"
+critical, object
+  Specifies attributes such as foreground or background colors for a widget that is in state
+  "critical"
+fg, string
+  Specifies foreground (text) color
+bg, string
+  Specifies background (block) color
+separator, string
+  Specifies a string that will be used as separator between two widgets
+padding, string
+  Specifies a string that will be used as padding at the beginning and end of each widget
+pango, object
+  Specifies `pango <https://developer.gnome.org/platform-overview/stable/tech-pango.html>`_ markup
+  attributes. Once this attribute is encountered, all other text formatting, such as `fg` or `bg`
+  are ignored for this widget!
+prefix, string
+  Specifies a string that will be used as prefix for matching widgets
+suffix, string
+  Specifies a string that will be used as suffix for matching widgets
+default-separators, boolean
+  If set to true, the default i3bar separators are drawn, otherwise not
+separator-block-width, integer
+  Specifies the width of the i3bar default separators, if they are drawn
+<module name>, object
+  Container to specify values matching a specific module
+<state>, object
+  Container to specify values matching a specific state of a widget
+
+Note that it is also possible to nest containers, for example, it is possible to embed a "state"
+object inside a specific "module" object to have formatting specific to one module, depending
+on the state of a widget.
+
+In concrete terms, this is used, for example, by multiple mediaplayer modules (cmus, deadbeef, etc.)
+to have specific formatting for play/pause, etc, for that single widget only, like this:
+
+.. code-block:: json
+
+    {
+        "cmus": {
+            "playing": {
+                "prefix": "play"
+            }
+        }
+    }
 
 Examples
 --------

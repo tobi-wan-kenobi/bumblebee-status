@@ -13,10 +13,12 @@ Then, please open a bug report and I will try to fix the issue quickly.
 If that is not an acceptable solution, here are different ways to step
 back to the last stable version:
 
-(TODO)
-- git
-- PIP
-- AUR
+git
+  ``git checkout v1.10``
+pip
+  ``pip install --user --force-reinstall bumblebee-status==1.10``
+aur
+  TODO
 
 My bar doesn’t show any background colors
 -----------------------------------------
