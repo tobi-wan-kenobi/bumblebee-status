@@ -62,7 +62,11 @@ class config(unittest.TestCase):
             pyname = "{}.py".format(module)
             base = os.path.abspath(
                 os.path.join(
-                    os.path.dirname(os.path.realpath(__file__)), "..", "..", "bumblebee_status", "modules"
+                    os.path.dirname(os.path.realpath(__file__)),
+                    "..",
+                    "..",
+                    "bumblebee_status",
+                    "modules",
                 )
             )
             self.assertTrue(

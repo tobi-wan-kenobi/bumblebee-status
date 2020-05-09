@@ -66,9 +66,7 @@ class Module(core.module.Module):
 
             widget = self.widget(display)
             if not widget:
-                widget = self.add_widget(
-                    full_text=display, name=display
-                )
+                widget = self.add_widget(full_text=display, name=display)
                 core.input.register(widget, button=1, cmd=self._toggle)
                 core.input.register(widget, button=3, cmd=self._toggle)
             widget.set("state", "on" if m else "off")

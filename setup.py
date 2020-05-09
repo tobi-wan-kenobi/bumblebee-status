@@ -4,14 +4,15 @@
 from setuptools import setup
 import versioneer
 
-with open('requirements/base.txt') as f:
-    INSTALL_REQS = [line for line in f.read().split('\n') if line]
+with open("requirements/base.txt") as f:
+    INSTALL_REQS = [line for line in f.read().split("\n") if line]
 
 # Module packages
 def read_module(filename):
     """Read each in a module's requirements and parse it for extras"""
-    with open('requirements/modules/{}.txt'.format(filename)) as fname:
-        return [rline for rline in fname.read().split('\n') if rline]
+    with open("requirements/modules/{}.txt".format(filename)) as fname:
+        return [rline for rline in fname.read().split("\n") if rline]
+
 
 EXTRAS_REQUIREMENTS_MAP = {
     "battery-upower": read_module("battery_upower_reqs"),
@@ -45,14 +46,15 @@ EXTRAS_REQUIREMENTS_MAP = {
 import glob
 
 setup(
-#    packages=["bumblebee-status-packages"],
-#    package_dir={"bumblebee-status-packages": "."},
+    #    packages=["bumblebee-status-packages"],
+    #    package_dir={"bumblebee-status-packages": "."},
     install_requires=INSTALL_REQS,
     extras_require=EXTRAS_REQUIREMENTS_MAP,
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     zip_safe=False,
-    data_files=[('share/bumblebee-status/themes', glob.glob('themes/*.json')),
-        ('share/bumblebee-status/themes/icons', glob.glob('themes/icons/*.json'))
-    ]
+    data_files=[
+        ("share/bumblebee-status/themes", glob.glob("themes/*.json")),
+        ("share/bumblebee-status/themes/icons", glob.glob("themes/icons/*.json")),
+    ],
 )

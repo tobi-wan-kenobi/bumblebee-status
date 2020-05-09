@@ -95,7 +95,7 @@ class print_usage(argparse.Action):
                         doc = "{}\n\n.. image:: ../screenshots/{}.png".format(doc, m)
 
                     rst[module_type] = rst.get(module_type, [])
-                    rst[module_type].append({ "module": m, "content": doc })
+                    rst[module_type].append({"module": m, "content": doc})
                 else:
                     print(
                         textwrap.fill(
@@ -119,10 +119,10 @@ class print_usage(argparse.Action):
 
         if self._format == "rst":
             print("List of modules\n===============")
-            for k in [ "core", "contrib" ]:
-                print("\n{}\n{}\n".format(k, "-"*len(k)))
+            for k in ["core", "contrib"]:
+                print("\n{}\n{}\n".format(k, "-" * len(k)))
                 for mod in rst[k]:
-                    print("\n{}\n{}\n".format(mod["module"], "~"*len(mod["module"])))
+                    print("\n{}\n{}\n".format(mod["module"], "~" * len(mod["module"])))
                     print(mod["content"])
 
 

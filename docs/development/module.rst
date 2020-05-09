@@ -6,10 +6,10 @@ Introduction
 
 Adding a new module to ``bumblebee-status`` is straight-forward:
 
--  Add a new Python module in ``modules/contrib/``. The name of the
+-  Add a new Python module in ``bumblebee_status/modules/contrib/``. The name of the
    module will be the name that the user needs to specify when invoking
    ``bumblebee-status`` (i.e. a module called
-   ``modules/contrib/test.py`` will be loaded using
+   ``bumblebee_status/modules/contrib/test.py`` will be loaded using
    ``bumblebee-status -m test``)
 -  See below for how to actually write the module
 -  Test (run ``bumblebee-status`` in the CLI)

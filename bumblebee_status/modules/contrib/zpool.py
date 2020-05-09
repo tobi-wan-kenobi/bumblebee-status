@@ -198,7 +198,6 @@ class Module(core.module.Module):
                     )
                 )
 
-
     def state(self, widget):
         if widget.name.endswith("__read"):
             return "poolread"

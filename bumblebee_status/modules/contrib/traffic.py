@@ -159,8 +159,7 @@ class Module(core.module.Module):
             for direction in ["rx", "tx"]:
                 name = "traffic.{}-{}".format(direction, interface)
                 widget = self.create_widget(
-                    name,
-                    attributes={"theme.minwidth": self.get_minwidth_str()},
+                    name, attributes={"theme.minwidth": self.get_minwidth_str()},
                 )
                 prev = self._prev.get(name, 0)
                 bspeed = (int(data[direction]) - int(prev)) / timediff

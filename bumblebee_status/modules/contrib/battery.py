@@ -121,15 +121,11 @@ class Module(core.module.Module):
         )
 
         if util.format.asbool(self.parameter("compact-devices", False)):
-            widget = self.add_widget(
-                full_text=self.capacity, name="all-batteries"
-            )
+            widget = self.add_widget(full_text=self.capacity, name="all-batteries")
         else:
             for battery in self._batteries:
                 log.debug("adding new widget for {}".format(battery))
-                widget = self.add_widget(
-                    full_text=self.capacity, name=battery
-                )
+                widget = self.add_widget(full_text=self.capacity, name=battery)
         for w in self.widgets():
             if util.format.asbool(self.parameter("decorate", True)) == False:
                 widget.set("theme.exclude", "suffix")

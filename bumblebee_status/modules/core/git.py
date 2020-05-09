@@ -59,7 +59,6 @@ class Module(core.module.Module):
             if "deleted" in state:
                 self.add_widget(name="git.deleted")
 
-
         except Exception as e:
             self.__error = True
 
