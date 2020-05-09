@@ -13,8 +13,9 @@ log = logging.getLogger(__name__)
 THEME_BASE_DIR = os.path.dirname(os.path.realpath(__file__))
 PATHS = [
     ".",
-    os.path.join(THEME_BASE_DIR, "../themes"),
+    os.path.join(THEME_BASE_DIR, "../../themes"),
     os.path.expanduser("~/.config/bumblebee-status/themes"),
+    os.path.expanduser("~/.local/share/bumblebee-status/themes"), # PIP
 ]
 
 

@@ -9,6 +9,9 @@ import select
 import logging
 import threading
 
+import bumblebee_status.discover
+bumblebee_status.discover.discover()
+
 import core.config
 import core.output
 import core.module

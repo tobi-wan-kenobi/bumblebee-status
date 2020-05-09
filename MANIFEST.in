@@ -1,0 +1,6 @@
+include versioneer.py
+include bumblebee_status/_version.py
+include requirements/*
+include requirements/modules/*
+include themes/*
+include themes/icons/*
