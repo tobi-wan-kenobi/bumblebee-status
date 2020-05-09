@@ -5,13 +5,10 @@
 - test everything in the core framework
 
 # small stuff
-- rethink documentation (use mostly md files)
 - @parameter? (or was it @attribute?) - remove getter/setters
 - use __ for private
 
 ## Improvements
-- API documentation
-- github pages
 
 ## TODO
 - themes: use colors to improve theme readability
