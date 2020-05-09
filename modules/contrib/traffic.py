@@ -21,7 +21,6 @@ import psutil
 import netifaces
 
 import core.module
-import core.widget
 
 import util.format
 import util.graph
@@ -29,8 +28,7 @@ import util.graph
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
-        widgets = []
-        super().__init__(config, theme, widgets)
+        super().__init__(config, theme, [])
 
         self._exclude = tuple(
             filter(
@@ -60,7 +58,7 @@ class Module(core.module.Module):
         if self._graphlen > 0:
             self._graphdata = {}
         self._first_run = True
-        self._update_widgets(widgets)
+        self._update_widgets()
 
     def state(self, widget):
         if "traffic.rx" in widget.name:
@@ -70,12 +68,10 @@ class Module(core.module.Module):
         return self._status
 
     def update(self):
-        self._update_widgets(self.widgets())
+        self._update_widgets()
 
-    def create_widget(self, widgets, name, txt=None, attributes={}):
-        widget = core.widget.Widget(name=name, module=self)
-        widget.full_text(txt)
-        widgets.append(widget)
+    def create_widget(self, name, txt=None, attributes={}):
+        widget = self.add_widget(name=name, full_text=txt)
 
         for key in attributes:
             widget.set(key, attributes[key])
@@ -114,12 +110,12 @@ class Module(core.module.Module):
             minwidth_str += "KiB/s"
         return minwidth_str
 
-    def _update_widgets(self, widgets):
+    def _update_widgets(self):
         interfaces = [
             i for i in netifaces.interfaces() if not i.startswith(self._exclude)
         ]
 
-        del widgets[:]
+        self.clear_widgets()
 
         counters = psutil.net_io_counters(pernic=True)
         now = time.time()
@@ -158,12 +154,11 @@ class Module(core.module.Module):
             name = "traffic-{}".format(interface)
 
             if self._showname:
-                self.create_widget(widgets, name, interface)
+                self.create_widget(name, interface)
 
             for direction in ["rx", "tx"]:
                 name = "traffic.{}-{}".format(direction, interface)
                 widget = self.create_widget(
-                    widgets,
                     name,
                     attributes={"theme.minwidth": self.get_minwidth_str()},
                 )

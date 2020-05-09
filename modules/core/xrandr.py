@@ -21,7 +21,6 @@ import re
 import sys
 
 import core.module
-import core.widget
 import core.input
 import core.decorators
 
@@ -52,7 +51,7 @@ class Module(core.module.Module):
         self._needs_update = True
 
     def update(self):
-        new_widgets = []
+        self.clear_widgets()
 
         if self._autoupdate == False and self._needs_update == False:
             return
@@ -67,22 +66,18 @@ class Module(core.module.Module):
 
             widget = self.widget(display)
             if not widget:
-                widget = core.widget.Widget(
-                    full_text=display, name=display, module=self
+                widget = self.add_widget(
+                    full_text=display, name=display
                 )
                 core.input.register(widget, button=1, cmd=self._toggle)
                 core.input.register(widget, button=3, cmd=self._toggle)
-            new_widgets.append(widget)
             widget.set("state", "on" if m else "off")
             widget.set("pos", int(m.group(1)) if m else sys.maxsize)
 
-        self.widgets(new_widgets)
-
         if self._autoupdate == False:
-            widget = core.widget.Widget(full_text="", module=self)
+            widget = self.add_widget(full_text="")
             widget.set("state", "refresh")
             core.input.register(widget, button=1, cmd=self._refresh)
-            self.widgets().append(widget)
 
     def state(self, widget):
         return widget.get("state", "off")

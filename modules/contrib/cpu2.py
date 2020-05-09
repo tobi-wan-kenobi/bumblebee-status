@@ -37,7 +37,6 @@ contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
 import psutil
 
 import core.module
-import core.widget
 
 import util.cli
 import util.graph
@@ -53,27 +52,24 @@ class Module(core.module.Module):
         )
         self.__widget_names = self.__layout.split()
         self.__colored = util.format.asbool(self.parameter("colored", False))
-        widget_list = []
         for widget_name in self.__widget_names:
             if widget_name == "cpu2.maxfreq":
-                widget = core.widget.Widget(name=widget_name, full_text=self.maxfreq)
+                widget = self.add_widget(name=widget_name, full_text=self.maxfreq)
                 widget.set("type", "freq")
             elif widget_name == "cpu2.cpuload":
-                widget = core.widget.Widget(name=widget_name, full_text=self.cpuload)
+                widget = self.add_widget(name=widget_name, full_text=self.cpuload)
                 widget.set("type", "load")
             elif widget_name == "cpu2.coresload":
-                widget = core.widget.Widget(name=widget_name, full_text=self.coresload)
+                widget = self.add_widget(name=widget_name, full_text=self.coresload)
                 widget.set("type", "loads")
             elif widget_name == "cpu2.temp":
-                widget = core.widget.Widget(name=widget_name, full_text=self.temp)
+                widget = self.add_widget(name=widget_name, full_text=self.temp)
                 widget.set("type", "temp")
             elif widget_name == "cpu2.fanspeed":
-                widget = core.widget.Widget(name=widget_name, full_text=self.fanspeed)
+                widget = self.add_widget(name=widget_name, full_text=self.fanspeed)
                 widget.set("type", "fan")
             if self.__colored:
                 widget.set("pango", True)
-            widget_list.append(widget)
-        self.widgets(widget_list)
         self.__temp_pattern = self.parameter("temp_pattern")
         if self.__temp_pattern is None:
             self.__temp = "n/a"

@@ -33,7 +33,6 @@ from pkg_resources import parse_version
 log = logging.getLogger(__name__)
 
 import core.module
-import core.widget
 
 import util.cli
 import util.format
@@ -58,7 +57,7 @@ class Module(core.module.Module):
         self._warnfree = int(self.parameter("warnfree", default=10))
 
     def update(self):
-        widgets = self.widgets()
+        self.clear_widgets()
         zfs_version_path = "/sys/module/zfs/version"
         # zpool list -H: List all zpools, use script mode (no headers and tabs as separators).
         try:
@@ -76,9 +75,6 @@ class Module(core.module.Module):
         raw_zpools = util.cli.execute(
             ("sudo " if self._usesudo else "") + "zpool list -H"
         ).split("\n")
-
-        for widget in widgets:
-            widget.set("visited", False)
 
         for raw_zpool in raw_zpools:
             try:
@@ -136,10 +132,9 @@ class Module(core.module.Module):
 
             widget = self.widget(name)
             if not widget:
-                widget = core.widget.Widget(name=name)
+                widget = self.add_widget(name=name)
                 widget.set("last_iostat", [0, 0, 0, 0])
                 widget.set("last_timestamp", 0)
-                widgets.append(widget)
 
             delta_iostat = [b - a for a, b in zip(iostat, widget.get("last_iostat"))]
             widget.set("last_iostat", iostat)
@@ -183,9 +178,8 @@ class Module(core.module.Module):
                 widget_w = self.widget(wname)
                 widget_r = self.widget(rname)
                 if not widget_w or not widget_r:
-                    widget_r = core.widget.Widget(name=rname)
-                    widget_w = core.widget.Widget(name=wname)
-                    widgets.extend([widget_r, widget_w])
+                    widget_r = self.add_widget(name=rname)
+                    widget_w = self.add_widget(name=wname)
                 for w in [widget_r, widget_w]:
                     w.set(
                         "theme.minwidth",
@@ -193,7 +187,6 @@ class Module(core.module.Module):
                             ops=9999, band=util.format.bytefmt(999.99 * (1024 ** 2))
                         ),
                     )
-                    w.set("visited", True)
                 widget_w.full_text(
                     self._ioformat.format(
                         ops=round(writes), band=util.format.bytefmt(nwritten)
@@ -205,10 +198,6 @@ class Module(core.module.Module):
                     )
                 )
 
-        for widget in widgets:
-            if widget.get("visited") is False:
-                widgets.remove(widget)
-        self.widgets(widgets)
 
     def state(self, widget):
         if widget.name.endswith("__read"):

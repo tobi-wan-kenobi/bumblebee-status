@@ -26,7 +26,6 @@ except ImportError:
     log.warning('unable to import module "power": Time estimates will not be available')
 
 import core.module
-import core.widget
 import core.input
 
 import util.format
@@ -105,8 +104,7 @@ class BatteryManager(object):
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
-        widgets = []
-        super().__init__(config, theme, widgets)
+        super().__init__(config, theme, [])
 
         self.__manager = BatteryManager()
 
@@ -123,17 +121,15 @@ class Module(core.module.Module):
         )
 
         if util.format.asbool(self.parameter("compact-devices", False)):
-            widget = core.widget.Widget(
-                full_text=self.capacity, name="all-batteries", module=self
+            widget = self.add_widget(
+                full_text=self.capacity, name="all-batteries"
             )
-            widgets.append(widget)
         else:
             for battery in self._batteries:
                 log.debug("adding new widget for {}".format(battery))
-                widget = core.widget.Widget(
-                    full_text=self.capacity, name=battery, module=self
+                widget = self.add_widget(
+                    full_text=self.capacity, name=battery
                 )
-                widgets.append(widget)
         for w in self.widgets():
             if util.format.asbool(self.parameter("decorate", True)) == False:
                 widget.set("theme.exclude", "suffix")

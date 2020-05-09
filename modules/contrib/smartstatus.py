@@ -16,7 +16,6 @@ import os
 import shutil
 
 import core.module
-import core.widget
 import core.decorators
 
 import util.cli
@@ -32,26 +31,22 @@ class Module(core.module.Module):
         self.display = self.parameter("display", "combined")
         self.drives = self.parameter("drives", "sda")
         self.show_names = util.format.asbool(self.parameter("show_names", True))
-        self.widgets(self.create_widgets())
+        self.create_widgets()
 
     def create_widgets(self):
-        widgets = []
         if self.display == "combined":
-            widget = core.widget.Widget(module=self)
+            widget = self.add_widget()
             widget.set("device", "combined")
             widget.set("assessment", self.combined())
             self.output(widget)
-            widgets.append(widget)
         else:
             for device in self.devices:
                 if self.display == "singles" and device not in self.drives:
                     continue
-                widget = core.widget.Widget(module=self)
+                widget = self.add_widget()
                 widget.set("device", device)
                 widget.set("assessment", self.smart(device))
                 self.output(widget)
-                widgets.append(widget)
-        return widgets
 
     def update(self):
         for widget in self.widgets():

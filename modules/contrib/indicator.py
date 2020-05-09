@@ -10,7 +10,6 @@ contributed by `freed00m <https://github.com/freed00m>`_ - many thanks!
 """
 
 import core.module
-import core.widget
 
 import util.cli
 import util.format
@@ -42,8 +41,7 @@ class Module(core.module.Module):
         for indicator in self.__include:
             widget = self.widget(indicator)
             if not widget:
-                widget = core.widget.Widget(name=indicator, module=self)
-                self.widgets().append(widget)
+                widget = self.add_widget(name=indicator, full_text=indicator)
 
             widget.set(
                 "status",
@@ -51,7 +49,6 @@ class Module(core.module.Module):
                 if "{}:on".format(indicator.lower()) in status_line.lower()
                 else False,
             )
-            widget.full_text(indicator)
 
     def state(self, widget):
         states = []

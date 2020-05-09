@@ -53,7 +53,6 @@ import string
 import os
 
 import core.module
-import core.widget
 import core.input
 import core.decorators
 
@@ -80,11 +79,9 @@ class Module(core.module.Module):
             self._hostcmd = " -h " + self.parameter("host")
 
         # Create widgets
-        widget_list = []
         widget_map = {}
         for widget_name in self._layout.split():
-            widget = core.widget.Widget(name=widget_name, module=self)
-            widget_list.append(widget)
+            widget = self.add_widget(name=widget_name)
 
             if widget_name == "mpd.prev":
                 widget_map[widget] = {
@@ -118,7 +115,6 @@ class Module(core.module.Module):
                         widget_name=widget_name
                     )
                 )
-        self.widgets(widget_list)
 
         # Register input callbacks
         for widget, callback_options in widget_map.items():

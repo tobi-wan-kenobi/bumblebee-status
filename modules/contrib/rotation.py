@@ -7,7 +7,6 @@ Requires the following executable:
 """
 
 import core.module
-import core.widget
 import core.input
 
 import util.cli
@@ -34,7 +33,7 @@ class Module(core.module.Module):
 
             widget = self.widget(display)
             if not widget:
-                widget = core.widget.Widget(full_text=display, name=display)
+                widget = self.add_widget(full_text=display, name=display)
                 core.input.register(
                     widget, button=core.input.LEFT_MOUSE, cmd=self.__toggle
                 )

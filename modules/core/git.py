@@ -12,7 +12,6 @@ import os
 import pygit2
 
 import core.module
-import core.widget
 
 import util.cli
 
@@ -28,15 +27,13 @@ class Module(core.module.Module):
 
     def update(self):
         state = {}
-        new_widgets = []
+        self.clear_widgets()
         try:
             directory = util.cli.execute("xcwd").strip()
             directory = self.__get_git_root(directory)
             repo = pygit2.Repository(directory)
 
-            new_widgets.append(
-                core.widget.Widget(name="git.main", full_text=repo.head.shorthand)
-            )
+            self.add_widget(name="git.main", full_text=repo.head.shorthand)
 
             for filepath, flags in repo.status().items():
                 if (
@@ -56,14 +53,12 @@ class Module(core.module.Module):
                     state["modified"] = True
             self.__error = False
             if "new" in state:
-                new_widgets.append(core.widget.Widget(name="git.new"))
+                self.add_widget(name="git.new")
             if "modified" in state:
-                new_widgets.append(core.widget.Widget(name="git.modified"))
+                self.add_widget(name="git.modified")
             if "deleted" in state:
-                new_widgets.append(core.widget.Widget(name="git.deleted"))
+                self.add_widget(name="git.deleted")
 
-            self.widgets().clear()
-            self.widget(new_widgets)
 
         except Exception as e:
             self.__error = True

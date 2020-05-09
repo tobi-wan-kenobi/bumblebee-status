@@ -24,7 +24,6 @@ except ImportError:
 no_title = "n/a"
 
 import core.module
-import core.widget
 import core.decorators
 
 import util.format
@@ -41,14 +40,10 @@ class Module(core.module.Module):
         self.__title = ""
 
         # set output of the module
-        self.widgets(
-            [
-                core.widget.Widget(
-                    full_text=self.__scrolling_focused_title
-                    if self.__scroll
-                    else self.__focused_title
-                )
-            ]
+        self.add_widget(
+            full_text=self.__scrolling_focused_title
+            if self.__scroll
+            else self.__focused_title
         )
 
         # create a connection with i3ipc

@@ -28,6 +28,7 @@ def load(module_name, config=core.config.Config([]), theme=None):
             )
             return getattr(mod, "Module")(config, theme)
         except ImportError as e:
+            log.debug("failed to import {}: {}".format(module_name, e))
             error = e
     log.fatal("failed to import {}: {}".format(module_name, error))
     return Error(config=config, module=module_name, error=error)
@@ -76,10 +77,11 @@ class Module(core.input.Object):
             self.__widgets = [module.widget()]
             self.update = module.update
 
-    def widgets(self, widgets=None):
-        if widgets:
-            self.__widgets = widgets
+    def widgets(self):
         return self.__widgets
+
+    def clear_widgets(self):
+        del self.__widgets[:]
 
     def add_widget(self, full_text="", name=None):
         widget = core.widget.Widget(full_text=full_text, name=name, module=self)

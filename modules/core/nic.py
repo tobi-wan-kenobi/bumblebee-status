@@ -16,7 +16,6 @@ import shutil
 import netifaces
 import subprocess
 
-import core.widget
 import core.module
 import core.decorators
 import util.cli
@@ -87,13 +86,11 @@ class Module(core.module.Module):
         return retval
 
     def _update_widgets(self, widgets):
+        self.clear_widgets()
         interfaces = [
             i for i in netifaces.interfaces() if not i.startswith(self._exclude)
         ]
         interfaces.extend([i for i in netifaces.interfaces() if i in self._include])
-
-        for widget in widgets:
-            widget.set("visited", False)
 
         for intf in interfaces:
             addr = []
@@ -112,8 +109,7 @@ class Module(core.module.Module):
 
             widget = self.widget(intf)
             if not widget:
-                widget = core.widget.Widget(name=intf, module=self)
-                widgets.append(widget)
+                widget = self.add_widget(name=intf)
             # join/split is used to get rid of multiple whitespaces (in case SSID is not available, for instance
             widget.full_text(
                 " ".join(
@@ -127,11 +123,6 @@ class Module(core.module.Module):
             )
             widget.set("intf", intf)
             widget.set("state", state)
-            widget.set("visited", True)
-
-        for widget in widgets:
-            if widget.get("visited") is False:
-                widgets.remove(widget)
 
     def get_ssid(self, intf):
         if self._iswlan(intf) and self.iwgetid:

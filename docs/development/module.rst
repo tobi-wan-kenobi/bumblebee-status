@@ -72,7 +72,8 @@ Otherwise, you have a number of ways to handle widgets: - During the
 ``super().init__(...)`` inside the module’s constructor, you can specify
 a **list** of widgets, and those will comprise the widgets (in ordered
 fashion) - During runtime, you can set a new list of widgets by using
-the ``self.widgets(<new list>)`` method of the module
+the ``self.add_widget()`` method of the module to add new widgets and
+``self.clear_widgets()`` method to remove all widgets.
 
 Adding widgets at runtime
 -------------------------

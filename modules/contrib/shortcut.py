@@ -26,7 +26,6 @@ LINK = "https://github.com/tobi-wan-kenobi/bumblebee-status/wiki"
 LABEL = "Click me"
 
 import core.module
-import core.widget
 import core.input
 import core.decorators
 
@@ -44,8 +43,6 @@ class Module(core.module.Module):
 
     def update_widgets(self):
         """ Creates a set of widget per user define shortcut."""
-
-        widgets = self.widgets()
 
         cmds = self.__cmds.split(self.__delim)
         labels = self.__labels.split(self.__delim)
@@ -65,10 +62,8 @@ class Module(core.module.Module):
             cmd = cmds[idx]
             label = labels[idx]
 
-            widget = core.widget.Widget(full_text=label)
+            widget = self.add_widget(full_text=label)
             core.input.register(widget, button=core.input.LEFT_MOUSE, cmd=cmd)
-
-            widgets.append(widget)
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

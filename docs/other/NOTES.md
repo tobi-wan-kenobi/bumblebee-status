@@ -16,10 +16,8 @@
 ## TODO
 - themes: use colors to improve theme readability
 - convert some stuff to simple attributes to reduce LOCs
-- use add_widget() instead of core.widget.Widget()
 - use widget index for bumblebee-ctl as alternative (??)
 
 # documentation
 Add info about error widget and events for error logging
-- add module contributor doc
 - which location APIs are used?
