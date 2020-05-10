@@ -20,11 +20,20 @@ class HBar(Bar):
         "\u2588",
     ]
 
+    """This class is a helper class used to draw horizontal bars - please use hbar directly
+
+    :param value: percentage value to draw (float, between 0 and 100)
+    """
     def __init__(self, value):
         super(HBar, self).__init__(value)
         self.step = MAX_PERCENTS / len(HBar.bars)
 
     def get_char(self):
+        """Returns the character representing the current object's value
+
+        :return: character representing the value passed during initialization
+        :rtype: string with one character
+        """
         for i in range(len(HBar.bars)):
             left = i * self.step
             right = (i + 1) * self.step
@@ -34,6 +43,12 @@ class HBar(Bar):
 
 
 def hbar(value):
+    """"Retrieves the horizontal bar character representing the input value
+
+    :param value: percentage value to draw (float, between 0 and 100)
+    :return: character representing the value passed during initialization
+    :rtype: string with one character
+    """
     return HBar(value).get_char()
 
 
@@ -49,11 +64,21 @@ class VBar(Bar):
         "\u2588",
     ]
 
+    """This class is a helper class used to draw vertical bars - please use vbar directly
+
+    :param value: percentage value to draw (float, between 0 and 100)
+    :param width: maximum width of the bar in characters
+    """
     def __init__(self, value, width=1):
         super(VBar, self).__init__(value)
         self.step = MAX_PERCENTS / (len(VBar.bars) * width)
         self.width = width
 
+    """Returns the characters representing the current object's value
+
+    :return: characters representing the value passed during initialization
+    :rtype: string
+    """
     def get_chars(self):
         if self.value == 100:
             return self.bars[-1] * self.width
@@ -77,6 +102,14 @@ class VBar(Bar):
 
 
 def vbar(value, width):
+    """Returns the characters representing the current object's value
+
+    :param value: percentage value to draw (float, between 0 and 100)
+    :param width: maximum width of the bar in characters
+
+    :return: characters representing the value passed during initialization
+    :rtype: string
+    """
     return VBar(value, width).get_chars()
 
 
@@ -109,6 +142,10 @@ class BrailleGraph(object):
         (4, 4): "\u28ff",
     }
 
+    """This class is a helper class used to draw braille graphs - please use braille directly
+
+    :param values: values to draw
+    """
     def __init__(self, values):
         self.values = values
         # length of values list must be even
