@@ -2,22 +2,13 @@ MAX_PERCENTS = 100.0
 
 
 class Bar(object):
-    """superclass"""
-
     bars = None
 
     def __init__(self, value):
-        """
-            Args:
-
-                value (float): value between 0. and 100. meaning percents
-        """
         self.value = value
 
 
 class HBar(Bar):
-    """horizontal bar (1 char)"""
-
     bars = [
         "\u2581",
         "\u2582",
@@ -30,20 +21,10 @@ class HBar(Bar):
     ]
 
     def __init__(self, value):
-        """
-            Args:
-
-                value (float): value between 0. and 100. meaning percents
-        """
         super(HBar, self).__init__(value)
         self.step = MAX_PERCENTS / len(HBar.bars)
 
     def get_char(self):
-        """
-            Decide which char to draw
-
-            Return: str
-        """
         for i in range(len(HBar.bars)):
             left = i * self.step
             right = (i + 1) * self.step
@@ -53,13 +34,10 @@ class HBar(Bar):
 
 
 def hbar(value):
-    """wrapper function"""
     return HBar(value).get_char()
 
 
 class VBar(Bar):
-    """vertical bar (can be more than 1 char)"""
-
     bars = [
         "\u258f",
         "\u258e",
@@ -72,23 +50,11 @@ class VBar(Bar):
     ]
 
     def __init__(self, value, width=1):
-        """
-            Args:
-
-                value (float): value between 0. and 100. meaning percents
-
-                width (int): width
-        """
         super(VBar, self).__init__(value)
         self.step = MAX_PERCENTS / (len(VBar.bars) * width)
         self.width = width
 
     def get_chars(self):
-        """
-            Decide which char to draw
-
-            Return: str
-        """
         if self.value == 100:
             return self.bars[-1] * self.width
         if self.width == 1:
@@ -111,16 +77,10 @@ class VBar(Bar):
 
 
 def vbar(value, width):
-    """wrapper function"""
     return VBar(value, width).get_chars()
 
 
 class BrailleGraph(object):
-    """
-        graph using Braille chars
-        scaled to passed values
-    """
-
     chars = {
         (0, 0): " ",
         (1, 0): "\u2840",
@@ -150,11 +110,6 @@ class BrailleGraph(object):
     }
 
     def __init__(self, values):
-        """
-            Args:
-
-                values (list): list of values
-        """
         self.values = values
         # length of values list must be even
         # because one Braille char displays two values
@@ -165,15 +120,6 @@ class BrailleGraph(object):
 
     @staticmethod
     def get_height(value, unit):
-        """
-            Compute height of a value relative to unit
-
-            Args:
-
-                value (number): value
-
-                unit (number): unit
-        """
         if value < unit / 10.0:
             return 0
         elif value <= unit:
@@ -186,11 +132,6 @@ class BrailleGraph(object):
             return 4
 
     def get_steps(self):
-        """
-            Convert the list of values to a list of steps
-
-            Return: list
-        """
         maxval = max(self.values)
         unit = maxval / 4.0
         if unit == 0:
@@ -201,11 +142,6 @@ class BrailleGraph(object):
         return stepslist
 
     def get_chars(self):
-        """
-            Decide which chars to draw
-
-            Return: str
-        """
         chars = []
         for part in self.parts:
             chars.append(BrailleGraph.chars[part])
@@ -213,7 +149,6 @@ class BrailleGraph(object):
 
 
 def braille(values):
-    """wrapper function"""
     return BrailleGraph(values).get_chars()
 
 
