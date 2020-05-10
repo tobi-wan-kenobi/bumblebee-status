@@ -24,6 +24,8 @@ import core.module
 import core.input
 import core.decorators
 
+from bumblebee_status.discover import utility
+
 import util.cli
 import util.format
 
@@ -36,8 +38,7 @@ except:
 class Module(core.module.Module):
     @core.decorators.every(seconds=5)  # takes up to 5s to detect a new screen
     def __init__(self, config, theme):
-        widgets = []
-        super().__init__(config, theme, widgets)
+        super().__init__(config, theme, [])
 
         self._autoupdate = util.format.asbool(self.parameter("autoupdate", True))
         self._needs_update = True
@@ -85,10 +86,9 @@ class Module(core.module.Module):
 
     def _toggle(self, event):
         self._refresh(self, event)
-        path = os.path.dirname(os.path.abspath(__file__))
 
         if util.format.asbool(self.parameter("overwrite_i3config", False)) == True:
-            toggle_cmd = "{}/../../bin/toggle-display.sh".format(path)
+            toggle_cmd = utility("toggle-display.sh")
         else:
             toggle_cmd = "xrandr"
 

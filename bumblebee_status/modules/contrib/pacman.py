@@ -22,15 +22,15 @@ import core.decorators
 import util.cli
 import util.format
 
+from bumblebee_status.discover import utility
+
 # list of repositories.
 # the last one should always be other
 repos = ["core", "extra", "community", "multilib", "testing", "other"]
 
 
 def get_pacman_info(widget, path):
-    cmd = "{}/../../bin/pacman-updates".format(path)
-    if not os.path.exists(cmd):
-        cmd = "/usr/share/bumblebee-status/bin/pacman-update"
+    cmd = utility("pacman-updates")
     result = util.cli.execute(cmd, ignore_errors=True)
 
     count = len(repos) * [0]

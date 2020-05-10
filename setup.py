@@ -56,5 +56,6 @@ setup(
     data_files=[
         ("share/bumblebee-status/themes", glob.glob("themes/*.json")),
         ("share/bumblebee-status/themes/icons", glob.glob("themes/icons/*.json")),
+        ("share/bumblebee-status/utility", glob.glob("bin/*")),
     ],
 )
