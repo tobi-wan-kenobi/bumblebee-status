@@ -24,6 +24,7 @@ class HBar(Bar):
 
     :param value: percentage value to draw (float, between 0 and 100)
     """
+
     def __init__(self, value):
         super(HBar, self).__init__(value)
         self.step = MAX_PERCENTS / len(HBar.bars)
@@ -69,6 +70,7 @@ class VBar(Bar):
     :param value: percentage value to draw (float, between 0 and 100)
     :param width: maximum width of the bar in characters
     """
+
     def __init__(self, value, width=1):
         super(VBar, self).__init__(value)
         self.step = MAX_PERCENTS / (len(VBar.bars) * width)
@@ -79,6 +81,7 @@ class VBar(Bar):
     :return: characters representing the value passed during initialization
     :rtype: string
     """
+
     def get_chars(self):
         if self.value == 100:
             return self.bars[-1] * self.width
@@ -146,6 +149,7 @@ class BrailleGraph(object):
 
     :param values: values to draw
     """
+
     def __init__(self, values):
         self.values = values
         # length of values list must be even
