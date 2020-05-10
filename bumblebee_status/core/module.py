@@ -2,6 +2,7 @@ import os
 import importlib
 import logging
 
+import core.config
 import core.input
 import core.widget
 import core.decorators
