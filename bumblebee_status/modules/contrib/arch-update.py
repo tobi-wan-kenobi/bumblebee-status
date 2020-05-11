@@ -33,13 +33,16 @@ class Module(core.module.Module):
         return self.__packages == 0 and not self.__error
 
     def update(self):
-        try:
-            result = util.cli.execute("checkupdates")
-            self.__packages = len(result.split("\n")) - 1
-            self.__error = False
-        except Exception as e:
-            logging.exception(e)
+        self.__error = False
+        code, result = util.cli.execute("checkupdates", ignore_errors=True, return_exitcode=True)
+
+        if code == 0:
+            self.__packages = len(result.split("\n"))
+        elif code == 2:
+            self.__packages = 0
+        else:
             self.__error = True
+            log.error("checkupdates exited with {}: {}".format(code, result))
 
     def state(self, widget):
         if self.__error:
