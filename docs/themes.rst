@@ -88,6 +88,11 @@ List of available themes
 
    Nord Powerline (-t nord-powerline) (contributed by `uselessthird <https://github.com/uselessthird>`__)
 
+.. figure:: ../screenshots/themes/night-powerline.png
+   :alt: Night Powerline
+
+   Night Powerline (-t night-powerline) (contributed by `LtPeriwinkle <https://github.com/LtPeriwinkle>`__)
+
 .. figure:: ../screenshots/themes/default.png
    :alt: Default
 
