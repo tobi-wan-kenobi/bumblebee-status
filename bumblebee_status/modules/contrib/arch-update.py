@@ -34,7 +34,9 @@ class Module(core.module.Module):
 
     def update(self):
         self.__error = False
-        code, result = util.cli.execute("checkupdates", ignore_errors=True, return_exitcode=True)
+        code, result = util.cli.execute(
+            "checkupdates", ignore_errors=True, return_exitcode=True
+        )
 
         if code == 0:
             self.__packages = len(result.split("\n"))

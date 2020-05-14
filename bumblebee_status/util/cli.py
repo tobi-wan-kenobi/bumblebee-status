@@ -4,7 +4,14 @@ import subprocess
 import logging
 
 
-def execute(cmd, wait=True, ignore_errors=False, include_stderr=False, env=None, return_exitcode=False):
+def execute(
+    cmd,
+    wait=True,
+    ignore_errors=False,
+    include_stderr=False,
+    env=None,
+    return_exitcode=False,
+):
     """Executes a commandline utility and returns its output
 
     :param cmd: the command (as string) to execute, returns the program's output
