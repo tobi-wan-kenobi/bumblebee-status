@@ -70,5 +70,16 @@ class config(unittest.TestCase):
         self.module.text = "wxyz"
         self.assertEqual("wx", self.module.get(self.widget))
 
+    def test_minimum_changed_data(self):
+        self.module.text = "this is a sample song (0:00)"
+        self.module.set("scrolling.width", 10)
+        self.assertEqual(self.module.text[0:10], self.module.get(self.widget))
+        self.module.text = "this is a sample song (0:01)"
+        self.assertEqual(self.module.text[1:11], self.module.get(self.widget))
+        self.module.text = "this is a sample song (0:12)"
+        self.assertEqual(self.module.text[2:12], self.module.get(self.widget))
+        self.module.text = "this is a different song (0:12)"
+        self.assertEqual(self.module.text[0:10], self.module.get(self.widget))
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -1,3 +1,4 @@
+import difflib
 import util.format
 
 
@@ -28,7 +29,10 @@ def scrollable(func):
         if not text:
             return text
 
-        if text != widget.get("__content__", text):
+        if (
+            difflib.SequenceMatcher(a=text, b=widget.get("__content__", text)).ratio()
+            < 0.9
+        ):
             widget.set("scrolling.start", 0)
             widget.set("scrolling.direction", "right")
         widget.set("__content__", text)
