@@ -2,50 +2,81 @@
 
 import logging
 
-try:
-    import Tkinter as tk
-except ImportError:
-    # python 3
-    import tkinter as tk
+import tkinter as tk
 
 import functools
 
 
 class menu(object):
+    """Draws a hierarchical popup menu
+
+    :param parent: If given, this menu is a leave of the "parent" menu
+    :param leave: If set to True, close this menu when mouse leaves the area (defaults to True)
+    """
+
     def __init__(self, parent=None, leave=True):
         if not parent:
             self._root = tk.Tk()
             self._root.withdraw()
             self._menu = tk.Menu(self._root, tearoff=0)
-            self._menu.bind("<FocusOut>", self._on_focus_out)
+            self._menu.bind("<FocusOut>", self.__on_focus_out)
         else:
             self._root = parent.root()
             self._root.withdraw()
             self._menu = tk.Menu(self._root, tearoff=0)
-            self._menu.bind("<FocusOut>", self._on_focus_out)
+            self._menu.bind("<FocusOut>", self.__on_focus_out)
         if leave:
-            self._menu.bind("<Leave>", self._on_focus_out)
+            self._menu.bind("<Leave>", self.__on_focus_out)
+
+    """Returns the root node of this menu
+
+    :return: root node
+    """
 
     def root(self):
         return self._root
 
+    """Returns the menu
+
+    :return: menu
+    """
+
     def menu(self):
         return self._menu
 
-    def _on_focus_out(self, event=None):
+    def __on_focus_out(self, event=None):
         self._root.destroy()
 
-    def _on_click(self, callback):
+    def __on_click(self, callback):
         self._root.destroy()
         callback()
+
+    """Adds a cascading submenu to the current menu
+
+    :param menuitem: label to display for the submenu
+    :param submenu: submenu to show
+    """
 
     def add_cascade(self, menuitem, submenu):
         self._menu.add_cascade(label=menuitem, menu=submenu.menu())
 
+    """Adds an item to the current menu
+
+    :param menuitem: label to display for the entry
+    :param callback: method to invoke on click
+    """
+
     def add_menuitem(self, menuitem, callback):
         self._menu.add_command(
-            label=menuitem, command=functools.partial(self._on_click, callback)
+            label=menuitem, command=functools.partial(self.__on_click, callback)
         )
+
+    """Shows this menu
+
+    :param event: i3wm event that triggered the menu (dict that contains "x" and "y" fields)
+    :param offset_x: x-axis offset from mouse position for the menu (defaults to 0)
+    :param offset_y: y-axis offset from mouse position for the menu (defaults to 0)
+    """
 
     def show(self, event, offset_x=0, offset_y=0):
         try:
