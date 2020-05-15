@@ -115,7 +115,7 @@ class Module(core.module.Module):
                 for battery in glob.glob("/sys/class/power_supply/BAT*")
             ]
         if len(self._batteries) == 0:
-            raise Exceptions("no batteries configured/found")
+            raise Exception("no batteries configured/found")
         core.input.register(
             self, button=core.input.LEFT_MOUSE, cmd="gnome-power-statistics"
         )
