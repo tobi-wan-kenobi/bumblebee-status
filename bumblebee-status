@@ -102,6 +102,7 @@ def main():
 
     for module in config.modules():
         modules.append(core.module.load(module, config, theme))
+        modules[-1].register_callbacks()
 
     if config.reverse():
         modules.reverse()
