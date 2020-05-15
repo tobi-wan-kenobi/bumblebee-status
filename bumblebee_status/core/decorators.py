@@ -1,5 +1,9 @@
 import difflib
+import logging
+
 import util.format
+
+log = logging.getLogger(__name__)
 
 
 def never(init):
@@ -49,9 +53,10 @@ def scrollable(func):
         direction = widget.get("scrolling.direction", "right")
 
         if direction == "left":
-            scroll_speed = -scroll_speed
-            if start + scroll_speed <= 0:  # bounce back
+            if start - scroll_speed < 0:  # bounce back
                 widget.set("scrolling.direction", "right")
+            else:
+                scroll_speed = -scroll_speed
 
         next_start = start + scroll_speed
         if next_start + width > len(text):

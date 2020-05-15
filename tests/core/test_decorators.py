@@ -81,5 +81,14 @@ class config(unittest.TestCase):
         self.module.text = "this is a different song (0:12)"
         self.assertEqual(self.module.text[0:10], self.module.get(self.widget))
 
+    def test_n_plus_one(self):
+        self.module.text = "10 letters"
+        self.module.set("scrolling.width", 9)
+        self.assertEqual(self.module.text[0:9], self.module.get(self.widget))
+        self.assertEqual(self.module.text[1:10], self.module.get(self.widget))
+        self.assertEqual(self.module.text[0:9], self.module.get(self.widget))
+        self.assertEqual(self.module.text[1:10], self.module.get(self.widget))
+        self.assertEqual(self.module.text[0:9], self.module.get(self.widget))
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
