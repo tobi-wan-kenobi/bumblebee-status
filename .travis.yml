@@ -8,17 +8,9 @@ python:
   - "3.8"
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get install -y task libdbus-1-dev
 install:
-  - pip install i3ipc
-  - pip install psutil
-  - pip install netifaces
-  - pip install -U coverage==4.3
+  - pip install coverage
   - pip install codeclimate-test-reporter
-  - pip install taskw
-  - pip install pytz
-  - pip install tzlocal
-  - pip install dbus-python
   - pip install coverage
 script:
   - coverage run -m unittest discover -v
