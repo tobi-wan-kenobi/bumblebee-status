@@ -7,6 +7,8 @@ import core.input
 import core.widget
 import core.decorators
 
+import util.format
+
 try:
     error = ModuleNotFoundError("")
 except Exception as e:
@@ -211,7 +213,14 @@ class Module(core.input.Object):
         ]
         for action in actions:
             if self.parameter(action["name"]):
-                core.input.register(self, action["id"], self.parameter(action["name"]))
+                core.input.register(
+                    self,
+                    action["id"],
+                    self.parameter(action["name"]),
+                    util.format.asbool(
+                        self.parameter("{}-wait".format(action["name"]), False)
+                    ),
+                )
 
 
 class Error(Module):

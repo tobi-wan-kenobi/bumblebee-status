@@ -45,10 +45,12 @@ def execute(
         out, _ = proc.communicate()
         if proc.returncode != 0:
             err = "{} exited with code {}".format(cmd, proc.returncode)
+            logging.warning(err)
             if ignore_errors:
                 return (proc.returncode, err) if return_exitcode else err
             raise RuntimeError(err)
         res = out.decode("utf-8")
+        logging.debug(res)
         return (proc.returncode, res) if return_exitcode else res
     return (0, "") if return_exitcode else ""
 
