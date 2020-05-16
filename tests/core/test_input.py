@@ -70,7 +70,9 @@ class config(unittest.TestCase):
                 self.inputObject, self.someEvent["button"], self.someCommand
             )
             core.input.trigger(self.someEvent)
-            cli.execute.assert_called_once_with(self.someCommand, wait=False)
+            cli.execute.assert_called_once_with(
+                self.someCommand, wait=False, shell=True
+            )
 
     def test_non_existent_callback(self):
         with unittest.mock.patch("core.input.util.cli") as cli:

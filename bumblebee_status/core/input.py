@@ -38,7 +38,7 @@ def __event_id(obj_id, button):
 
 def __execute(cmd):
     try:
-        util.cli.execute(cmd, wait=False)
+        util.cli.execute(cmd, wait=False, shell=True)
     except Exception as e:
         logging.error("failed to invoke callback: {}".format(e))
 

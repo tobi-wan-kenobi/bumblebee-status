@@ -11,6 +11,7 @@ def execute(
     include_stderr=False,
     env=None,
     return_exitcode=False,
+    shell=False,
 ):
     """Executes a commandline utility and returns its output
 
@@ -20,13 +21,14 @@ def execute(
     :param include_stderr: set to True to include stderr output in the return value, defaults to False
     :param env: provide a dict here to specify a custom execution environment, defaults to None
     :param return_exitcode: set to True to return a pair, where the first member is the exit code and the message the second, defaults to False
+    :param shell: set to True to run command in a separate shell, defaults to False
 
     :raises RuntimeError: the command either didn't exist or didn't exit cleanly, and ignore_errors was set to False
 
     :return: output of cmd, or stderr, if ignore_errors is True and the command failed; or a tuple of exitcode and the previous, if return_exitcode is set to True
     :rtype: string or tuple (if return_exitcode is set to True)
     """
-    args = shlex.split(cmd)
+    args = cmd if shell else shlex.split(cmd)
     logging.debug(cmd)
     try:
         proc = subprocess.Popen(
@@ -34,6 +36,7 @@ def execute(
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT if include_stderr else subprocess.PIPE,
             env=env,
+            shell=shell,
         )
     except FileNotFoundError as e:
         raise RuntimeError("{} not found".format(cmd))
