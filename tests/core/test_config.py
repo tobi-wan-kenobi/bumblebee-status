@@ -52,8 +52,8 @@ class config(unittest.TestCase):
 
     def test_logfile(self):
         cfg = core.config.Config(["-f", "my-custom-logfile"])
-        self.assertEquals(None, self.defaultConfig.logfile())
-        self.assertEquals("my-custom-logfile", cfg.logfile())
+        self.assertEqual(None, self.defaultConfig.logfile())
+        self.assertEqual("my-custom-logfile", cfg.logfile())
 
     def test_all_modules(self):
         modules = core.config.all_modules()

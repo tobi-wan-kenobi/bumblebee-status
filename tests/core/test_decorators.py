@@ -7,6 +7,7 @@ import core.config
 
 
 class TestModule(core.module.Module):
+    @core.decorators.never
     def __init__(self, config=None, theme=None):
         config = core.config.Config([])
         super().__init__(config, theme, core.widget.Widget(self.get))
@@ -16,13 +17,16 @@ class TestModule(core.module.Module):
     def get(self, widget):
         return self.text
 
-
 class config(unittest.TestCase):
     def setUp(self):
         self.module = TestModule()
         self.widget = self.module.widget()
         self.width = 10
         self.module.set("scrolling.width", self.width)
+
+    def test_never(self):
+        self.module = TestModule()
+        self.assertEqual("never", self.module.parameter("interval"))
 
     def test_no_text(self):
         self.assertEqual("", self.module.text)
