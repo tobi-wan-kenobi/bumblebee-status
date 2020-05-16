@@ -9,6 +9,7 @@
 - use __ for private
 
 ## Improvements
+- app launcher (list of apps, themeable)
 
 ## TODO
 - themes: use colors to improve theme readability

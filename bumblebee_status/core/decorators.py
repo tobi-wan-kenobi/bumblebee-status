@@ -6,6 +6,15 @@ import util.format
 log = logging.getLogger(__name__)
 
 
+"""Specifies that a module should never update (i.e. has static content).
+This means that its update() method will never be invoked
+
+:param init: The __init__() method of the module
+
+:return: Wrapped method that sets the module's interval to "never"
+"""
+
+
 def never(init):
     def call_init(obj, *args, **kwargs):
         init(obj, *args, **kwargs)
@@ -13,6 +22,16 @@ def never(init):
             obj.set("interval", "never")
 
     return call_init
+
+
+"""Specifies the interval for executing the module's update() method
+
+:param hours: Hours between two update() invocations, defaults to 0
+:param minutes: Minutes between two update() invocations, defaults to 0
+:param seconds: Seconds between two update() invocations, defaults to 0
+
+:return: Wrapped method that sets the module's interval correspondingly
+"""
 
 
 def every(hours=0, minutes=0, seconds=0):
@@ -25,6 +44,20 @@ def every(hours=0, minutes=0, seconds=0):
         return call_init
 
     return decorator_init
+
+
+"""Specifies that the module's content should scroll, if required
+
+The exact behaviour of this method is governed by a number of parameters,
+specifically: The module's parameter "scrolling.width"  specifies the width when
+scrolling starts, "scrolling.makewide" defines whether the module should be expanded
+to "scrolling.width" automatically, if the content is shorter, the parameter
+"scrolling.bounce" defines whether it scrolls like a marquee (False) or should bounce
+when the end of the content is reached. "scrolling.speed" defines the number of characters
+to scroll each iteration.
+
+:param func: Function for which the result should be scrolled
+"""
 
 
 def scrollable(func):
