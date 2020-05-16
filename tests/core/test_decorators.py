@@ -17,6 +17,7 @@ class TestModule(core.module.Module):
     def get(self, widget):
         return self.text
 
+
 class config(unittest.TestCase):
     def setUp(self):
         self.module = TestModule()

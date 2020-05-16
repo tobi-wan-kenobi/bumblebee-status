@@ -203,11 +203,11 @@ class Module(core.input.Object):
 
     def register_callbacks(self):
         actions = [
-            { "name": "left-click", "id": core.input.LEFT_MOUSE },
-            { "name": "right-click", "id": core.input.RIGHT_MOUSE },
-            { "name": "middle-click", "id": core.input.MIDDLE_MOUSE },
-            { "name": "wheel-up", "id": core.input.WHEEL_UP },
-            { "name": "wheel-down", "id": core.input.WHEEL_DOWN },
+            {"name": "left-click", "id": core.input.LEFT_MOUSE},
+            {"name": "right-click", "id": core.input.RIGHT_MOUSE},
+            {"name": "middle-click", "id": core.input.MIDDLE_MOUSE},
+            {"name": "wheel-up", "id": core.input.WHEEL_UP},
+            {"name": "wheel-down", "id": core.input.WHEEL_DOWN},
         ]
         for action in actions:
             if self.parameter(action["name"]):

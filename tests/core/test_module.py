@@ -148,14 +148,11 @@ class module(unittest.TestCase):
 
         with unittest.mock.patch("core.input.util.cli") as cli:
             cli.execute.return_value = ""
-            core.input.trigger({
-                "button": core.input.LEFT_MOUSE,
-                "instance": module.id,
-            })
-
-            cli.execute.assert_called_once_with(
-                cmd, wait=False, shell=True
+            core.input.trigger(
+                {"button": core.input.LEFT_MOUSE, "instance": module.id,}
             )
+
+            cli.execute.assert_called_once_with(cmd, wait=False, shell=True)
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
