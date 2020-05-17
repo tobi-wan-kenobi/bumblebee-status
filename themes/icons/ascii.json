@@ -359,5 +359,8 @@
   },
   "hddtemp": {
         "prefix": "hddtemp"
+  },
+  "arandr": {
+      "prefix": " displays "
   }
 }
