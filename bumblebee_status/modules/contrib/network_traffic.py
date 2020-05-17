@@ -22,17 +22,18 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         widgets = [
             core.widget.Widget(
-                module=self,
                 name="{0}.rx".format(WIDGET_NAME),
                 full_text=self.download_rate,
             ),
             core.widget.Widget(
-                module=self,
                 name="{0}.tx".format(WIDGET_NAME),
                 full_text=self.upload_rate,
             ),
         ]
         super().__init__(config, theme, widgets)
+
+        self.widgets()[0].module = self
+        self.widgets()[1].module = self
 
         self.widgets()[0].set("theme.minwidth", "0000000KiB/s")
         self.widgets()[1].set("theme.minwidth", "0000000KiB/s")
