@@ -17,6 +17,7 @@ import util.format
 
 WIDGET_NAME = "network_traffic"
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         widgets = [
