@@ -271,5 +271,8 @@
   "hddtemp": { "prefix": "" },
   "octoprint": {
     "prefix": " "
+  },
+  "arandr": {
+    "prefix": " "
   }
 }
