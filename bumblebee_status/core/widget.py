@@ -6,10 +6,10 @@ import util.format
 
 
 class Widget(util.store.Store, core.input.Object):
-    def __init__(self, full_text="", name=None, module=None):
+    def __init__(self, full_text="", name=None):
         super(Widget, self).__init__()
         self.__full_text = full_text
-        self.module = module
+        self.module = None
         self.name = name
 
     @property

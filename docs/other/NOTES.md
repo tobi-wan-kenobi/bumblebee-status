@@ -10,6 +10,7 @@
 
 ## Improvements
 - app launcher (list of apps, themeable)
+- github pages?
 
 ## TODO
 - themes: use colors to improve theme readability
