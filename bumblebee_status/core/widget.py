@@ -1,8 +1,12 @@
+import logging
+
 import core.input
 import core.decorators
 
 import util.store
 import util.format
+
+log = logging.getLogger(__name__)
 
 
 class Widget(util.store.Store, core.input.Object):
@@ -27,6 +31,13 @@ class Widget(util.store.Store, core.input.Object):
             custom_ids = util.format.aslist(module.parameter("id"))
             if len(custom_ids) > self.index():
                 self.id = custom_ids[self.index()]
+            if util.format.asbool(module.parameter("scrolling", False)) == True:
+                if callable(self.__full_text):
+                    self.__full_text = core.decorators.scrollable(
+                        self.__full_text.__func__
+                    ).__get__(module)
+                else:
+                    log.warning("unable to make scrollable: {}".format(module.name))
 
     def index(self):
         if not self.module:
