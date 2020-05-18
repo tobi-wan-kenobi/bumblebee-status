@@ -6,6 +6,7 @@ import shlex
 import core.module
 import core.widget
 import core.config
+import core.input
 
 
 class TestModule(core.module.Module):
@@ -136,6 +137,22 @@ class module(unittest.TestCase):
         self.assertEqual("warning", module.threshold_state(81, 80, 100))
         self.assertEqual(None, module.threshold_state(80, 80, 100))
         self.assertEqual(None, module.threshold_state(10, 80, 100))
+
+    def test_configured_callbacks(self):
+        cfg = core.config.Config([])
+        module = TestModule(config=cfg, widgets=[self.someWidget, self.anotherWidget])
+
+        cmd = "sample-tool arg1 arg2 arg3"
+        module.set("left-click", cmd)
+        module.register_callbacks()
+
+        with unittest.mock.patch("core.input.util.cli") as cli:
+            cli.execute.return_value = ""
+            core.input.trigger(
+                {"button": core.input.LEFT_MOUSE, "instance": module.id,}
+            )
+
+            cli.execute.assert_called_once_with(cmd, wait=False, shell=True)
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -53,8 +53,10 @@ setup(
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     zip_safe=False,
+    test_suite="tests",
     data_files=[
         ("share/bumblebee-status/themes", glob.glob("themes/*.json")),
         ("share/bumblebee-status/themes/icons", glob.glob("themes/icons/*.json")),
+        ("share/bumblebee-status/utility", glob.glob("bin/*")),
     ],
 )

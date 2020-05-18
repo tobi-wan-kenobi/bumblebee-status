@@ -27,7 +27,11 @@ THEME_HELP = "Specify the theme to use for drawing modules"
 
 
 def all_modules():
-    """Return a list of available modules"""
+    """Returns a list of all available modules (either core or contrib)
+
+    :return: list of modules
+    :rtype: list of strings
+    """
     result = {}
 
     for path in [modules.core.__file__, modules.contrib.__file__]:
@@ -127,6 +131,11 @@ class print_usage(argparse.Action):
 
 
 class Config(util.store.Store):
+    """Represents the configuration of bumblebee-status (either via config file or via CLI)
+
+    :param args: The arguments passed via the commandline
+    """
+
     def __init__(self, args):
         super(Config, self).__init__()
 
@@ -202,6 +211,11 @@ class Config(util.store.Store):
             key, value = param.split("=", 1)
             self.set(key, value)
 
+    """Loads parameters from an init-style configuration file
+
+    :param filename: path to the file to load
+    """
+
     def load_config(self, filename):
         if os.path.exists(filename):
             log.info("loading {}".format(filename))
@@ -212,26 +226,74 @@ class Config(util.store.Store):
                 for key, value in tmp.items("module-parameters"):
                     self.set(key, value)
 
+    """Returns a list of configured modules
+
+    :return: list of configured (active) modules
+    :rtype: list of strings
+    """
+
     def modules(self):
         return [item for sub in self.__args.modules for item in sub]
+
+    """Returns the global update interval
+
+    :return: update interval in seconds
+    :rtype: float
+    """
 
     def interval(self, default=1):
         return util.format.seconds(self.get("interval", default))
 
+    """Returns whether debug mode is enabled
+
+    :return: True if debug is enabled, False otherwise
+    :rtype: boolean
+    """
+
     def debug(self):
         return self.__args.debug
+
+    """Returns whether module order should be reversed/inverted
+
+    :return: True if modules should be reversed, False otherwise
+    :rtype: boolean
+    """
 
     def reverse(self):
         return self.__args.right_to_left
 
+    """Returns the logfile location
+
+    :return: location where the logfile should be written
+    :rtype: string
+    """
+
     def logfile(self):
         return self.__args.logfile
+
+    """Returns the configured theme name
+
+    :return: name of the configured theme
+    :rtype: string
+    """
 
     def theme(self):
         return self.__args.theme
 
+    """Returns the configured iconset name
+
+    :return: name of the configured iconset
+    :rtype: string
+    """
+
     def iconset(self):
         return self.__args.iconset
+
+    """Returns which modules should be hidden if their state is not warning/critical
+
+    :return: list of modules to hide automatically
+    :rtype: list of strings
+    """
 
     def autohide(self, name):
         return name in self.__args.autohide

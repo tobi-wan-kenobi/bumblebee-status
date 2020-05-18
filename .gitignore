@@ -94,3 +94,6 @@ ENV/
 
 # Visual studio project files
 .vscode/
+
+# mypy cache
+.mypy_cache

@@ -13,4 +13,3 @@ ratings:
   - "**.py"
 exclude_paths:
 - tests/
-- thirdparty/

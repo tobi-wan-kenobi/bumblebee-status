@@ -2,22 +2,13 @@ MAX_PERCENTS = 100.0
 
 
 class Bar(object):
-    """superclass"""
-
     bars = None
 
     def __init__(self, value):
-        """
-            Args:
-
-                value (float): value between 0. and 100. meaning percents
-        """
         self.value = value
 
 
 class HBar(Bar):
-    """horizontal bar (1 char)"""
-
     bars = [
         "\u2581",
         "\u2582",
@@ -29,20 +20,20 @@ class HBar(Bar):
         "\u2588",
     ]
 
-    def __init__(self, value):
-        """
-            Args:
+    """This class is a helper class used to draw horizontal bars - please use hbar directly
 
-                value (float): value between 0. and 100. meaning percents
-        """
+    :param value: percentage value to draw (float, between 0 and 100)
+    """
+
+    def __init__(self, value):
         super(HBar, self).__init__(value)
         self.step = MAX_PERCENTS / len(HBar.bars)
 
     def get_char(self):
-        """
-            Decide which char to draw
+        """Returns the character representing the current object's value
 
-            Return: str
+        :return: character representing the value passed during initialization
+        :rtype: string with one character
         """
         for i in range(len(HBar.bars)):
             left = i * self.step
@@ -53,13 +44,16 @@ class HBar(Bar):
 
 
 def hbar(value):
-    """wrapper function"""
+    """"Retrieves the horizontal bar character representing the input value
+
+    :param value: percentage value to draw (float, between 0 and 100)
+    :return: character representing the value passed during initialization
+    :rtype: string with one character
+    """
     return HBar(value).get_char()
 
 
 class VBar(Bar):
-    """vertical bar (can be more than 1 char)"""
-
     bars = [
         "\u258f",
         "\u258e",
@@ -71,24 +65,24 @@ class VBar(Bar):
         "\u2588",
     ]
 
+    """This class is a helper class used to draw vertical bars - please use vbar directly
+
+    :param value: percentage value to draw (float, between 0 and 100)
+    :param width: maximum width of the bar in characters
+    """
+
     def __init__(self, value, width=1):
-        """
-            Args:
-
-                value (float): value between 0. and 100. meaning percents
-
-                width (int): width
-        """
         super(VBar, self).__init__(value)
         self.step = MAX_PERCENTS / (len(VBar.bars) * width)
         self.width = width
 
-    def get_chars(self):
-        """
-            Decide which char to draw
+    """Returns the characters representing the current object's value
 
-            Return: str
-        """
+    :return: characters representing the value passed during initialization
+    :rtype: string
+    """
+
+    def get_chars(self):
         if self.value == 100:
             return self.bars[-1] * self.width
         if self.width == 1:
@@ -111,16 +105,18 @@ class VBar(Bar):
 
 
 def vbar(value, width):
-    """wrapper function"""
+    """Returns the characters representing the current object's value
+
+    :param value: percentage value to draw (float, between 0 and 100)
+    :param width: maximum width of the bar in characters
+
+    :return: characters representing the value passed during initialization
+    :rtype: string
+    """
     return VBar(value, width).get_chars()
 
 
 class BrailleGraph(object):
-    """
-        graph using Braille chars
-        scaled to passed values
-    """
-
     chars = {
         (0, 0): " ",
         (1, 0): "\u2840",
@@ -149,12 +145,12 @@ class BrailleGraph(object):
         (4, 4): "\u28ff",
     }
 
-    def __init__(self, values):
-        """
-            Args:
+    """This class is a helper class used to draw braille graphs - please use braille directly
 
-                values (list): list of values
-        """
+    :param values: values to draw
+    """
+
+    def __init__(self, values):
         self.values = values
         # length of values list must be even
         # because one Braille char displays two values
@@ -165,15 +161,6 @@ class BrailleGraph(object):
 
     @staticmethod
     def get_height(value, unit):
-        """
-            Compute height of a value relative to unit
-
-            Args:
-
-                value (number): value
-
-                unit (number): unit
-        """
         if value < unit / 10.0:
             return 0
         elif value <= unit:
@@ -186,11 +173,6 @@ class BrailleGraph(object):
             return 4
 
     def get_steps(self):
-        """
-            Convert the list of values to a list of steps
-
-            Return: list
-        """
         maxval = max(self.values)
         unit = maxval / 4.0
         if unit == 0:
@@ -201,11 +183,6 @@ class BrailleGraph(object):
         return stepslist
 
     def get_chars(self):
-        """
-            Decide which chars to draw
-
-            Return: str
-        """
         chars = []
         for part in self.parts:
             chars.append(BrailleGraph.chars[part])
@@ -213,7 +190,6 @@ class BrailleGraph(object):
 
 
 def braille(values):
-    """wrapper function"""
     return BrailleGraph(values).get_chars()
 
 
