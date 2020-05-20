@@ -14,11 +14,11 @@ If that is not an acceptable solution, here are different ways to step
 back to the last stable version:
 
 git
-  ``git checkout v1.10``
+  ``git checkout v1.10.4``
 pip
-  ``pip install --user --force-reinstall bumblebee-status==1.10``
+  ``pip install --user --force-reinstall bumblebee-status==1.10.4``
 aur
-  TODO
+  ``# checkout rev. 9a53906a0decf30946c22976c8b4f34ab4354d74 from https://aur.archlinux.org/bumblebee-status.git`
 
 My bar doesn’t show any background colors
 -----------------------------------------
