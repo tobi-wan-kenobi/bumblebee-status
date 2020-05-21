@@ -18,7 +18,7 @@ git
 pip
   ``pip install --user --force-reinstall bumblebee-status==1.10.4``
 aur
-  ``# checkout rev. 9a53906a0decf30946c22976c8b4f34ab4354d74 from https://aur.archlinux.org/bumblebee-status.git``
+  ``# checkout rev. 7ac3dde7361c6a530141df2b3c0137f57d6b4f70 from https://aur.archlinux.org/bumblebee-status.git``
 
 My bar doesn’t show any background colors
 -----------------------------------------
