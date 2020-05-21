@@ -8,7 +8,7 @@
 
 **Many, many thanks to all contributors! I am still amazed by and deeply grateful for how many PRs this project gets.**
 
-![Click here for a list of available modules](https://bumblebee-status.readthedocs.io/en/master/modules.html)
+[Click here for a list of available modules](https://bumblebee-status.readthedocs.io/en/master/modules.html)
 
 ![Solarized Powerline](screenshots/themes/powerline-solarized.png)
 
