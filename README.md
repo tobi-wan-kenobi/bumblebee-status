@@ -8,7 +8,7 @@
 
 **Many, many thanks to all contributors! I am still amazed by and deeply grateful for how many PRs this project gets.**
 
-![List of modules](docs/modules.rst)
+![Click here for a list of available modules](https://bumblebee-status.readthedocs.io/en/master/modules.html)
 
 ![Solarized Powerline](screenshots/themes/powerline-solarized.png)
 
@@ -16,8 +16,8 @@ bumblebee-status is a modular, theme-able status line generator for the [i3 wind
 
 Focus is on:
 * ease of use, sane defaults (no mandatory configuration file)
-* [custom themes](docs/development/theme.rst)
-* [custom modules](docs/development/module.rst)
+* [easy creation of custom themes](docs/development/theme.rst)
+* [easy creation of custom modules](docs/development/module.rst)
 
 I hope you like it and I appreciate any kind of feedback: bug reports, feature requests, etc. :)
 
@@ -38,13 +38,13 @@ bar {
 ```
 
 # Documentation
-See [the docs](docs/) for detailed documentation.
+See [the docs](https://bumblebee-status.readthedocs.io) for detailed documentation.
 
-See [FAQ](docs/FAQ.rst) for. well, FAQs.
+See [FAQ](https://bumblebee-status.readthedocs.io/en/master/FAQ.html) for. well, FAQs.
 
 Other resources:
 
-* A list of [available modules](docs/modules.rst)
+* A list of [available modules](https://bumblebee-status.readthedocs.io/en/master/modules.html)
 * [How to write a module](docs/development/module.rst)
 * [How to write a theme](docs/development/theme.rst)
 
@@ -64,7 +64,7 @@ pip install --user bumblebee-status
 ```
 
 # Dependencies
-[Available modules](docs/modules.rst) lists the dependencies (Python modules and external executables)
+[Available modules](https://bumblebee-status.readthedocs.io/en/master/modules.html) lists the dependencies (Python modules and external executables)
 for each module. If you are not using a module, you don't need the dependencies.
 
 # Usage
