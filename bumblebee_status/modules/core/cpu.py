@@ -2,6 +2,9 @@
 
 """Displays CPU utilization across all CPUs.
 
+Requirements:
+    * the psutil Python module for the first three items from the list above
+
 Parameters:
     * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
     * cpu.critical: Critical threshold in % of CPU usage (defaults to 80%)
