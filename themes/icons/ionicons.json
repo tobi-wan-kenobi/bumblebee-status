@@ -193,6 +193,8 @@
       "off": { "prefix": "\uf24f" },
       "paused": { "prefix": "\uf210" },
       "on": { "prefix": "\uf488" }
+  },
+  "arandr": {
+    "prefix": "\uf465" 
   }
-
 }

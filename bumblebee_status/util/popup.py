@@ -71,6 +71,11 @@ class menu(object):
             label=menuitem, command=functools.partial(self.__on_click, callback)
         )
 
+    """Adds a separator to the menu in the current location"""
+
+    def add_separator(self):
+        self._menu.add_separator()
+
     """Shows this menu
 
     :param event: i3wm event that triggered the menu (dict that contains "x" and "y" fields)
