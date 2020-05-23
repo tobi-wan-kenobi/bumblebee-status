@@ -11,6 +11,7 @@ import fnmatch
 from functools import partial
 import logging
 import os
+import re
 
 import core.module
 import core.widget
@@ -31,6 +32,7 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(''))
 
         self.manager = self.parameter("manager", "arandr")
+        self.toggle_cmd = "xrandr"
         core.input.register(
             self,
             button=core.input.LEFT_MOUSE,
@@ -57,6 +59,7 @@ class Module(core.module.Module):
         menu.add_separator()
 
         displays = Module._get_displays()
+        log.debug(displays)
         layouts = Module._get_layouts()
         available_layouts = Module._prune_layouts(layouts, displays)
         log.debug("Available layouts:")
@@ -69,7 +72,35 @@ class Module(core.module.Module):
                 menu.add_menuitem(sh_name,
                                   callback=partial(self.activate_layout, sh))
 
+        menu.add_separator()
+        count_on = 0
+        for display, state in displays.items():
+            if state[1]:
+                count_on += 1
+        for display, state in displays.items():
+            if not state[0]:
+                continue
+            on_off = "On" if state[1] else "Off"
+            menu_line = "{}: {}".format(display, on_off)
+            menu.add_menuitem(menu_line,
+                              callback=partial(self.toggle_display, display,
+                                               state[1], count_on))
+
         menu.show(widget, 0, 0)
+
+    def toggle_display(self, display, current_state, count_on):
+        """Toggle a display on or off based on its current state."""
+        if current_state:
+            log.debug("toggling off {}".format(display))
+            if count_on == 1:
+                log.info("attempted to turn off last display")
+                return
+            execute("{} --output {} --off".format(self.toggle_cmd, display))
+        else:
+            log.debug("toggling on {}".format(display))
+            execute(
+                "{} --output {} --auto".format(self.toggle_cmd, display)
+            )
 
     @staticmethod
     def _get_displays():
@@ -82,9 +113,12 @@ class Module(core.module.Module):
         for line in execute("xrandr -q").split("\n"):
             if not "connected" in line:
                 continue
+            is_on = bool(re.search(r"\d+x\d+\+(\d+)\+\d+", line))
             parts = line.split(" ", 2)
             display = parts[0]
-            displays[display] = True if parts[1] == "connected" else False
+            displays[display] = (
+                (True, is_on) if parts[1] == "connected" else (False, is_on)
+            )
 
         return displays
 
@@ -124,7 +158,7 @@ class Module(core.module.Module):
         for layout, needs in layouts.items():
             still_valid = True
             for need in needs:
-                if need not in displays or not displays[need]:
+                if need not in displays or not displays[need][0]:
                     still_valid = False
                     break
             if still_valid:
