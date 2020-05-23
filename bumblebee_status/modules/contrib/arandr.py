@@ -54,6 +54,17 @@ class Module(core.module.Module):
         displays = Module._get_displays()
         layouts = Module._get_layouts()
         available_layouts = Module._prune_layouts(layouts, displays)
+        log.debug("Available layouts:")
+        log.debug(available_layouts)
+
+        if len(available_layouts) > 0:
+            for layout in available_layouts:
+                sh = os.path.join(__screenlayout_dir__, layout)
+                sh_name = os.path.splitext(layout)[0]
+                cmd = self.parameter(sh_name, sh)
+                menu.add_menuitem(sh_name,
+                                  callback=partial(util.cli.execute, sh)
+                )
 
         menu.show(widget, 0, 0)
 
