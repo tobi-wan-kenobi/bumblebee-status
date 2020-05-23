@@ -40,6 +40,11 @@ class Module(core.module.Module):
         core.input.register(self, button=core.input.RIGHT_MOUSE,
                             cmd=self.popup)
 
+    def activate_layout(self, layout_path):
+        log.debug("activating layout")
+        log.debug(layout_path)
+        execute(layout_path)
+
     def popup(self, widget):
         """Create Popup that allows the user to control their displays in one
         of three ways: launch arandr, select a pre-set screenlayout, toggle a
@@ -61,10 +66,8 @@ class Module(core.module.Module):
             for layout in available_layouts:
                 sh = os.path.join(__screenlayout_dir__, layout)
                 sh_name = os.path.splitext(layout)[0]
-                cmd = self.parameter(sh_name, sh)
                 menu.add_menuitem(sh_name,
-                                  callback=partial(util.cli.execute, sh)
-                )
+                                  callback=partial(self.activate_layout, sh))
 
         menu.show(widget, 0, 0)
 
