@@ -10,6 +10,9 @@ cpu
 
 Displays CPU utilization across all CPUs.
 
+Requirements:
+    * the psutil Python module for the first three items from the list above
+
 Parameters:
     * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
     * cpu.critical: Critical threshold in % of CPU usage (defaults to 80%)
@@ -296,6 +299,23 @@ Requires the following packages:
     * aptitude
 
 contributed by `qba10 <https://github.com/qba10>`_ - many thanks!
+
+arandr
+~~~~~~
+
+Enables handy interaction with arandr for display management.  Left-clicking
+will execute arandr for interactive display management.  Right-clicking will
+bring up a context- and state-sensitive menu that will allow you to switch to a
+saved screen layout as well as toggle on/off individual connected displays.
+
+Parameters:
+    * No configuration parameters
+
+Requires the following executable:
+    * arandr
+    * xrandr
+
+contributed by `zerorust <https://github.com/zerorust>`_ - many thanks!
 
 arch-update
 ~~~~~~~~~~~

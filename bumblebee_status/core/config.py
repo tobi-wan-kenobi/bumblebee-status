@@ -94,7 +94,7 @@ class print_usage(argparse.Action):
                     continue
                 if self._format == "rst":
                     if os.path.exists(
-                        os.path.join(basepath, "screenshots", "{}.png".format(m))
+                        os.path.join(basepath, "..", "screenshots", "{}.png".format(m))
                     ):
                         doc = "{}\n\n.. image:: ../screenshots/{}.png".format(doc, m)
 
