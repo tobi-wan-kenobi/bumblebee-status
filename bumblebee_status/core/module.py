@@ -154,8 +154,9 @@ class Module(core.input.Object):
     """
 
     def add_widget(self, full_text="", name=None):
-        widget = core.widget.Widget(full_text=full_text, name=name, module=self)
+        widget = core.widget.Widget(full_text=full_text, name=name)
         self.widgets().append(widget)
+        widget.module = self
         return widget
 
     """Convenience method to retrieve a named widget
