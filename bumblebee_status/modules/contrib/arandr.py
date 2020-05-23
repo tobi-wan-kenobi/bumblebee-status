@@ -11,6 +11,8 @@ Parameters:
 Requires the following executable:
     * arandr
     * xrandr
+
+contributed by `zerorust <https://github.com/zerorust>`_ - many thanks!
 """
 
 import fnmatch
