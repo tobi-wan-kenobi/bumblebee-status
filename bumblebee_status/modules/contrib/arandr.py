@@ -1,6 +1,12 @@
 # pylint: disable=C0111,R0903
 
-"""My TEST
+"""Enables handy interaction with arandr for display management.  Left-clicking
+will execute arandr for interactive display management.  Right-clicking will
+bring up a context- and state-sensitive menu that will allow you to switch to a
+saved screen layout as well as toggle on/off individual connected displays.
+
+Parameters:
+    * No configuration parameters
 
 Requires the following executable:
     * arandr
@@ -17,7 +23,6 @@ import core.module
 import core.widget
 import core.input
 import core.decorators
-import util.cli
 from util import popup
 from util.cli import execute
 
@@ -25,6 +30,7 @@ from util.cli import execute
 log = logging.getLogger(__name__)
 
 __screenlayout_dir__ = os.path.expanduser("~/.screenlayout")
+
 
 class Module(core.module.Module):
     @core.decorators.never
@@ -42,7 +48,8 @@ class Module(core.module.Module):
         core.input.register(self, button=core.input.RIGHT_MOUSE,
                             cmd=self.popup)
 
-    def activate_layout(self, layout_path):
+    @staticmethod
+    def activate_layout(layout_path):
         log.debug("activating layout")
         log.debug(layout_path)
         execute(layout_path)
@@ -53,7 +60,8 @@ class Module(core.module.Module):
         display.
         """
         menu = popup.menu()
-        menu.add_menuitem("arandr",
+        menu.add_menuitem(
+            "arandr",
             callback=partial(execute, self.manager)
         )
         menu.add_separator()
@@ -111,7 +119,7 @@ class Module(core.module.Module):
         """
         displays = {}
         for line in execute("xrandr -q").split("\n"):
-            if not "connected" in line:
+            if "connected" not in line:
                 continue
             is_on = bool(re.search(r"\d+x\d+\+(\d+)\+\d+", line))
             parts = line.split(" ", 2)
@@ -132,7 +140,7 @@ class Module(core.module.Module):
                 with open(fullpath, "r") as file:
                     for line in file:
                         s_line = line.strip()
-                        if not "xrandr" in s_line:
+                        if "xrandr" not in s_line:
                             continue
                         displays_in_file = Module._parse_layout(line)
                         layouts[filename] = displays_in_file
