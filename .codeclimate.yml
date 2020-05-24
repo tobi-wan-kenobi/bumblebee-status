@@ -13,3 +13,6 @@ ratings:
   - "**.py"
 exclude_paths:
 - tests/
+  versioneer.py
+  bumblebee_status/_version.py
+  setup.py
