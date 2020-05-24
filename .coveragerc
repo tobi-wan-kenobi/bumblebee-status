@@ -1,5 +1,8 @@
 [run]
 omit =
+	versioneer.*
+	bumblebee_status/_version.*
+	setup.*
 	tests/*
 	*mock*
 	*funcsigs*
