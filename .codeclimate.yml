@@ -1,5 +1,4 @@
 version: "2"
-checks:
 plugins:
   duplication:
     enabled: true
