@@ -1,19 +1,15 @@
-engines:
-  duplication:
-    enabled: true
-    config:
-      languages:
-      - python
+version: "2"
+checks:
+plugins:
   fixme:
     enabled: true
   radon:
     enabled: true
-ratings:
-  paths:
-  - "**.py"
+    config:
+      python_version: 3
+      threshold: "D"
 exclude_patterns:
-- tests/
-  versioneer.py
-  bumblebee_status/_version.py
-  setup.py
-
+- "tests/"
+- "versioneer.py"
+- "bumblebee_status/_version.py"
+- "setup.py"
