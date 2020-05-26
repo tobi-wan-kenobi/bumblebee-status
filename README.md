@@ -33,7 +33,8 @@ Example usage:
 
 ```
 bar {
-	status_command <path>/bumblebee-status -m cpu memory battery time pasink pasource -p time.format="%H:%M" -t solarized
+	status_command <path>/bumblebee-status -m cpu memory battery time \
+		pasink pasource -p time.format="%H:%M" -t solarized
 }
 ```
 
@@ -110,7 +111,10 @@ bar {
 	font pango:Inconsolata 10
 	position top
 	tray_output none
-	status_command ~/.i3/bumblebee-status/bumblebee-status -m nic disk:root cpu memory battery date time pasink pasource dnf -p root.path=/ time.format="%H:%M CW %V" date.format="%a, %b %d %Y" -t solarized-powerline
+	status_command ~/.i3/bumblebee-status/bumblebee-status -m nic disk:root cpu \
+		memory battery date time pasink pasource dnf \
+		-p root.path=/ time.format="%H:%M CW %V" date.format="%a, %b %d %Y" \
+		-t solarized-powerline
 }
 
 ```
@@ -119,4 +123,4 @@ Restart i3wm and - that's it!
 
 # Examples
 
-![List of themes](./docs/themes.rst)
+[List of themes](./docs/themes.rst)
