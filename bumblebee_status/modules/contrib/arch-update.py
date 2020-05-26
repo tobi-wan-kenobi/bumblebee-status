@@ -44,7 +44,7 @@ class Module(core.module.Module):
             self.__packages = 0
         else:
             self.__error = True
-            log.error("checkupdates exited with {}: {}".format(code, result))
+            logging.error("checkupdates exited with {}: {}".format(code, result))
 
     def state(self, widget):
         if self.__error:
