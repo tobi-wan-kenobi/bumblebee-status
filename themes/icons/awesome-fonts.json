@@ -73,6 +73,10 @@
     "muted": { "prefix": "" },
     "unmuted": { "prefix": "" }
   },
+  "amixer2": {
+    "muted": { "prefix": "" },
+    "unmuted": { "prefix": "" }
+  },
   "pasource": {
     "muted": { "prefix": "" },
     "unmuted": { "prefix": "" }
