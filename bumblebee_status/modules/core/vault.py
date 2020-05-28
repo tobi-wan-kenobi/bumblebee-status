@@ -32,6 +32,9 @@ import util.cli
 import util.popup
 
 
+def generate_callback(callback, path, name):
+    return lambda: callback(os.path.join(path, name))
+
 def build_menu(parent, current_directory, callback):
     with os.scandir(current_directory) as it:
         for entry in it:
@@ -41,7 +44,7 @@ def build_menu(parent, current_directory, callback):
                 name = entry.name[: entry.name.rfind(".")]
                 parent.add_menuitem(
                     name,
-                    callback=lambda: callback(os.path.join(current_directory, name)),
+                    callback=generate_callback(callback, current_directory, name),
                 )
 
             else:
@@ -79,10 +82,12 @@ class Module(core.module.Module):
         secret_name = secret_name.replace(self.__path, "")  # remove common path
         if self.__timer:
             self.__timer.cancel()
+        env = os.environ
+        env["PASSWORD_STORE_CLIP_TIME"] = str(self.__duration)
         res = util.cli.execute(
-            "pass -c {}".format(secret_name),
+            "pass show -c {}".format(secret_name),
             wait=False,
-            env={"PASSWORD_STORE_CLIP_TIME": self.__duration},
+            env=env,
         )
         self.__timer = threading.Timer(self.__duration, self.__reset)
         self.__timer.start()
