@@ -114,21 +114,28 @@ class Module(core.module.Module):
                 os.path.basename(battery)
                 for battery in glob.glob("/sys/class/power_supply/BAT*")
             ]
-        if len(self._batteries) == 0:
-            raise Exception("no batteries configured/found")
         core.input.register(
             self, button=core.input.LEFT_MOUSE, cmd="gnome-power-statistics"
         )
 
-        if util.format.asbool(self.parameter("compact-devices", False)):
-            widget = self.add_widget(full_text=self.capacity, name="all-batteries")
+        if len(self._batteries) == 0:
+            widget = self.add_widget(full_text=self.ac, name="ac")
+            widget.set("ac", True)
+            widget.set("capacity", 100)
         else:
-            for battery in self._batteries:
-                log.debug("adding new widget for {}".format(battery))
-                widget = self.add_widget(full_text=self.capacity, name=battery)
+            if util.format.asbool(self.parameter("compact-devices", False)):
+                widget = self.add_widget(full_text=self.capacity, name="all-batteries")
+            else:
+                for battery in self._batteries:
+                    log.debug("adding new widget for {}".format(battery))
+                    widget = self.add_widget(full_text=self.capacity, name=battery)
+
         for w in self.widgets():
             if util.format.asbool(self.parameter("decorate", True)) == False:
                 widget.set("theme.exclude", "suffix")
+
+    def ac(self, widget):
+        return "ac"
 
     def capacity(self, widget):
         if widget.name == "all-batteries":
