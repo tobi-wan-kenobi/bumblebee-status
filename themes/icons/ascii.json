@@ -72,6 +72,14 @@
       "prefix": "audio"
     }
   },
+  "amixer2": {
+    "muted": {
+      "prefix": "audio(mute)"
+    },
+    "unmuted": {
+      "prefix": "audio"
+    }
+  },
   "pasource": {
     "muted": {
       "prefix": "mic(mute)"
