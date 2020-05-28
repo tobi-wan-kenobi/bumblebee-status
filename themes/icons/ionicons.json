@@ -55,10 +55,6 @@
     "muted": { "prefix": "\uf3b9" },
     "unmuted": { "prefix": "\uf3ba" }
   },
-  "amixer2": {
-    "muted": { "prefix": "\uf3b9" },
-    "unmuted": { "prefix": "\uf3ba" }
-  },
   "pasource": {
     "muted": { "prefix": "\uf395" },
     "unmuted": { "prefix": "\uf2ec" }
