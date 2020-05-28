@@ -48,7 +48,7 @@ def build_menu(parent, current_directory, callback):
                 )
 
             else:
-                submenu = util.popup.menu(parent, leave=False)
+                submenu = util.popup.menu(parent, leave=True)
                 build_menu(
                     submenu, os.path.join(current_directory, entry.name), callback
                 )
