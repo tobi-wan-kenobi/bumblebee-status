@@ -281,12 +281,15 @@ contrib
 amixer
 ~~~~~~
 
-get volume level
+get volume level or control it
 
 Parameters:
-    * amixer.device: Device to use, defaults to "Master,0"
+    * amixer.device: Device to use (default is Master,0)
+    * amixer.percent_change: How much to change volume by when scrolling on the module (default is 4%)
 
 contributed by `zetxx <https://github.com/zetxx>`_ - many thanks!
+
+input handling contributed by `ardadem <https://github.com/ardadem>_ - many thanks!
 
 .. image:: ../screenshots/amixer.png
 
@@ -636,7 +639,9 @@ contributed by `Ryunaq <https://github.com/Ryunaq>`_ - many thanks!
 github
 ~~~~~~
 
-Displays the unread GitHub notifications for a GitHub user
+Displays the unread GitHub notifications count for a GitHub user using the following reasons:
+
+    * https://developer.github.com/v3/activity/notifications/#notification-reasons
 
 Requires the following library:
     * requests
@@ -644,8 +649,11 @@ Requires the following library:
 Parameters:
     * github.token: GitHub user access token, the token needs to have the 'notifications' scope.
     * github.interval: Interval in minutes between updates, default is 5.
+    * github.reasons: Comma separated reasons to be parsed (e.g.: github.reasons=mention,team_mention,review_requested)
 
-contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
+contributed by:
+    * v1 - `yvesh <https://github.com/yvesh>`_ - many thanks!
+    * v2 - `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
 
 .. image:: ../screenshots/github.png
 
