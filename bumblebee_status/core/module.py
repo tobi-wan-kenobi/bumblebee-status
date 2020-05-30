@@ -1,6 +1,7 @@
 import os
 import importlib
 import logging
+import threading
 
 import core.config
 import core.input
@@ -58,6 +59,8 @@ class Module(core.input.Object):
 
     def __init__(self, config=core.config.Config([]), theme=None, widgets=[]):
         super().__init__()
+        self.background = False
+        self.__thread = None
         self.__config = config
         self.__widgets = widgets if isinstance(widgets, list) else [widgets]
 
@@ -116,14 +119,28 @@ class Module(core.input.Object):
     def update(self):
         pass
 
+
+
+    def update_wrapper(self):
+        if self.background == True:
+            if self.__thread and self.__thread.isAlive():
+                return # skip this update interval
+            self.__thread = threading.Thread(target=self.internal_update, args=(True,))
+            self.__thread.start()
+        else:
+            self.internal_update(False)
+
+
     """Wrapper method that ensures that all exceptions thrown by the
     update() method are caught and displayed in a bumblebee_status.module.Error
     module
     """
 
-    def update_wrapper(self):
+    def internal_update(self, trigger_redraw=False):
         try:
             self.update()
+            if trigger_redraw:
+                core.event.trigger("update", [self.id], redraw_only=True)
         except Exception as e:
             self.set("interval", 1)
             module = Error(config=self.__config, module="error", error=str(e))

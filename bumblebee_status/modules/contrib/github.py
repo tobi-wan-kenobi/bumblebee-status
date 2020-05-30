@@ -34,6 +34,7 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.github))
 
+        self.background = True
         self.__count = 0
         self.__label = ""
         self.__requests = requests.Session()
