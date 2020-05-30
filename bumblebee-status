@@ -121,7 +121,6 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         # really basic errors -> make sure these are shown in the status bar by minimal config
-        sys.stdout.write('{"version":1}\n[\n')
         while True:
             sys.stdout.write(
                 json.dumps(
