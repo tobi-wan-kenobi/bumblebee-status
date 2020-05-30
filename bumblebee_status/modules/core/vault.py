@@ -48,7 +48,7 @@ def build_menu(parent, current_directory, callback):
                 )
 
             else:
-                submenu = util.popup.menu(parent, leave=True)
+                submenu = util.popup.menu(parent, leave=False)
                 build_menu(
                     submenu, os.path.join(current_directory, entry.name), callback
                 )
@@ -88,6 +88,7 @@ class Module(core.module.Module):
             "pass show -c {}".format(secret_name),
             wait=False,
             env=env,
+            ignore_errors=True,
         )
         self.__timer = threading.Timer(self.__duration, self.__reset)
         self.__timer.start()

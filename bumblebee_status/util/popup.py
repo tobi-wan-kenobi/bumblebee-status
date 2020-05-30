@@ -15,6 +15,8 @@ class menu(object):
     """
 
     def __init__(self, parent=None, leave=True):
+        self.running = True
+        self.parent = None
         if not parent:
             self._root = tk.Tk()
             self._root.withdraw()
@@ -25,8 +27,11 @@ class menu(object):
             self._root.withdraw()
             self._menu = tk.Menu(self._root, tearoff=0)
             self._menu.bind("<FocusOut>", self.__on_focus_out)
+            self.parent = parent
         if leave:
             self._menu.bind("<Leave>", self.__on_focus_out)
+
+        self._menu.bind("<ButtonRelease-1>", self.release)
 
     """Returns the root node of this menu
 
@@ -50,6 +55,11 @@ class menu(object):
     def __on_click(self, callback):
         self._root.destroy()
         callback()
+
+    def release(self, event=None):
+        self.running=False
+        if self.parent:
+            self.parent.release(event)
 
     """Adds a cascading submenu to the current menu
 
@@ -88,7 +98,17 @@ class menu(object):
             self._menu.tk_popup(event["x"] + offset_x, event["y"] + offset_y)
         finally:
             self._menu.grab_release()
-        self._root.mainloop()
+
+        while self.running == True:
+            try:
+                self._root.update_idletasks()
+                self._root.update()
+            except:
+                self.running = False
+        try:
+            self._root.destroy()
+        except:
+            pass
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
