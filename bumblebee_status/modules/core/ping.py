@@ -15,7 +15,6 @@ Parameters:
 
 import re
 import time
-import threading
 
 import core.module
 import core.widget
@@ -25,43 +24,14 @@ import core.decorators
 import util.cli
 
 
-def get_rtt(module, widget):
-    try:
-        widget.set("rtt-unreachable", False)
-        res = util.cli.execute(
-            "ping -n -q -c {} -W {} {}".format(
-                widget.get("rtt-probes"),
-                widget.get("rtt-timeout"),
-                widget.get("address"),
-            )
-        )
-
-        for line in res.split("\n"):
-            if line.startswith(
-                "{} packets transmitted".format(widget.get("rtt-probes"))
-            ):
-                m = re.search(r"(\d+)% packet loss", line)
-
-                widget.set("packet-loss", m.group(1))
-
-            if not line.startswith("rtt"):
-                continue
-            m = re.search(r"([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)", line)
-
-            widget.set("rtt-min", float(m.group(1)))
-            widget.set("rtt-avg", float(m.group(2)))
-            widget.set("rtt-max", float(m.group(3)))
-            widget.set("rtt-unit", m.group(5))
-    except Exception as e:
-        widget.set("rtt-unreachable", True)
-
-    core.event.trigger("update", [module.id], redraw_only=True)
 
 
 class Module(core.module.Module):
     @core.decorators.every(seconds=60)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.rtt))
+
+        self.background = True
 
         widget = self.widget()
 
@@ -88,8 +58,35 @@ class Module(core.module.Module):
         return self.threshold_state(widget.get("rtt-avg"), 1000.0, 2000.0)
 
     def update(self):
-        thread = threading.Thread(target=get_rtt, args=(self, self.widget(),))
-        thread.start()
+        widget = self.widget()
+        try:
+            widget.set("rtt-unreachable", False)
+            res = util.cli.execute(
+                "ping -n -q -c {} -W {} {}".format(
+                    widget.get("rtt-probes"),
+                    widget.get("rtt-timeout"),
+                    widget.get("address"),
+                )
+            )
+
+            for line in res.split("\n"):
+                if line.startswith(
+                    "{} packets transmitted".format(widget.get("rtt-probes"))
+                ):
+                    m = re.search(r"(\d+)% packet loss", line)
+
+                    widget.set("packet-loss", m.group(1))
+
+                if not line.startswith("rtt"):
+                    continue
+                m = re.search(r"([0-9\.]+)/([0-9\.]+)/([0-9\.]+)/([0-9\.]+)\s+(\S+)", line)
+
+                widget.set("rtt-min", float(m.group(1)))
+                widget.set("rtt-avg", float(m.group(2)))
+                widget.set("rtt-max", float(m.group(3)))
+                widget.set("rtt-unit", m.group(5))
+        except Exception as e:
+            widget.set("rtt-unreachable", True)
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
