@@ -16,8 +16,8 @@ bumblebee-status is a modular, theme-able status line generator for the [i3 wind
 
 Focus is on:
 * ease of use, sane defaults (no mandatory configuration file)
-* [easy creation of custom themes](docs/development/theme.rst)
-* [easy creation of custom modules](docs/development/module.rst)
+* [easy creation of custom themes](https://bumblebee-status.readthedocs.io/en/master/development/theme.html)
+* [easy creation of custom modules](https://bumblebee-status.readthedocs.io/en/master/development/module.html)
 
 I hope you like it and I appreciate any kind of feedback: bug reports, feature requests, etc. :)
 
@@ -46,8 +46,8 @@ See [FAQ](https://bumblebee-status.readthedocs.io/en/master/FAQ.html) for. well,
 Other resources:
 
 * A list of [available modules](https://bumblebee-status.readthedocs.io/en/master/modules.html)
-* [How to write a module](docs/development/module.rst)
-* [How to write a theme](docs/development/theme.rst)
+* [How to write a module](https://bumblebee-status.readthedocs.io/en/master/development/module.html)
+* [How to write a theme](https://bumblebee-status.readthedocs.io/en/master/development/theme.html)
 
 # Installation
 ```
@@ -72,7 +72,7 @@ for each module. If you are not using a module, you don't need the dependencies.
 ## Normal usage
 In your i3wm configuration, modify the *status_command* for your i3bar like this:
 
-```
+```bash
 bar {
 	status_command <path to bumblebee-status/bumblebee-status> \
 		-m <list of modules> \
@@ -82,31 +82,31 @@ bar {
 ```
 
 You can retrieve a list of modules (and their parameters) and themes by entering:
-```
+```bash
 $ cd bumblebee-status
 $ ./bumblebee-status -l themes
 $ ./bumblebee-status -l modules
 ```
 
 To change the update interval, use:
-```
+```bash
 $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
 ```
 
 The update interval can also be changed on a per-module basis, like this:
-```
+```bash
 $ ./bumblebee-status -m cpu memory -p cpu.interval=5s memory.interval=1m
 ```
 
 All modules can be given "aliases" using `<module name>:<alias>`, by which they can be parametrized, for example:
 
-```
+```bash
 $ ./bumblebee-status -m disk:root disk:home -p root.path=/ home.path=/home
 ```
 
 As a simple example, this is what my i3 configuration looks like:
 
-```
+```bash
 bar {
 	font pango:Inconsolata 10
 	position top
@@ -123,4 +123,4 @@ Restart i3wm and - that's it!
 
 # Examples
 
-[List of themes](./docs/themes.rst)
+[List of themes](https://bumblebee-status.readthedocs.io/en/master/themes.html)
