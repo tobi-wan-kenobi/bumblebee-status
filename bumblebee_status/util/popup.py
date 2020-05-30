@@ -22,6 +22,9 @@ class menu(object):
             self._root.withdraw()
             self._menu = tk.Menu(self._root, tearoff=0)
             self._menu.bind("<FocusOut>", self.__on_focus_out)
+
+            self.add_menuitem("close", self.__on_focus_out)
+            self.add_separator()
         else:
             self._root = parent.root()
             self._root.withdraw()
