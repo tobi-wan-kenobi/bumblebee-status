@@ -4,6 +4,7 @@ omit =
 	bumblebee_status/_version.*
 	setup.*
 	tests/*
+	pytests/*
 	*mock*
 	*funcsigs*
 	*pbr*
