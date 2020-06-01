@@ -3,7 +3,7 @@ __callbacks = {}
 
 def register(event, callback, *args, **kwargs):
     cb = callback
-    if len(args) + len(kwargs) > 0:
+    if args or kwargs:
         cb = lambda: callback(*args, **kwargs)
 
     __callbacks.setdefault(event, []).append(cb)
@@ -19,10 +19,10 @@ def trigger(event, *args, **kwargs):
         return False
 
     for callback in cb:
-        if len(args) + len(kwargs) == 0:
-            callback()
-        else:
+        if args or kwargs:
             callback(*args, **kwargs)
+        else:
+            callback()
     return True
 
 
