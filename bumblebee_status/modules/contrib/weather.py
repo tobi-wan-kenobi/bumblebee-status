@@ -74,7 +74,7 @@ class Module(core.module.Module):
         return util.format.astemperature(self.__tempmax, self.__unit)
 
     def city(self):
-        city = re.sub("[_-]", " ", self.__city)
+        city = re.sub(r"[_-]", " ", self.__city)
         return "{} ".format(city)
 
     def output(self, widget):

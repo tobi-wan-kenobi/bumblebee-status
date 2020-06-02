@@ -220,7 +220,7 @@ class Config(util.store.Store):
         if os.path.exists(filename):
             log.info("loading {}".format(filename))
             tmp = RawConfigParser()
-            tmp.read(filename)
+            tmp.read(u"{}".format(filename))
 
             if tmp.has_section("module-parameters"):
                 for key, value in tmp.items("module-parameters"):

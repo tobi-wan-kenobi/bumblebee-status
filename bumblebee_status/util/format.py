@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 import re
 
 
@@ -87,7 +89,7 @@ def byte(val, fmt="{:.2f}"):
     return "{}GiB".format(fmt).format(val * 1024.0)
 
 
-__seconds_pattern = re.compile("(([\d\.?]+)h)?(([\d\.]+)m)?([\d\.]+)?s?")
+__seconds_pattern = re.compile(r"(([\d\.?]+)h)?(([\d\.]+)m)?([\d\.]+)?s?")
 
 
 def seconds(duration):

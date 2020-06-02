@@ -46,7 +46,7 @@ def formatStringBuilder(s, json):
         s -> format string
         json -> the spaceapi response object
     """
-    identifiers = re.findall("%%.*?%%", s)
+    identifiers = re.findall(r"%%.*?%%", s)
     for i in identifiers:
         ic = i[2:-2]  # Discard %%
         j = ic.split("%")

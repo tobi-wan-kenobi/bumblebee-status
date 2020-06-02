@@ -66,10 +66,10 @@ class Module(core.module.Module):
         #  6. speed
         #  7. time remaining
         extract_nospeed = re.compile(
-            "\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\)\n.*"
+            r"\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\)\n.*"
         )
         extract_wtspeed = re.compile(
-            "\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\) (\d*\.\d .*) remaining (\d*:\d*:\d*)\n.*"
+            r"\[ *(\d*)\] ([a-zA-Z]*) (.*)\n\t(\d*\.*\d*)% \((.*)\) (\d*\.\d .*) remaining (\d*:\d*:\d*)\n.*"
         )
 
         try:

@@ -122,7 +122,7 @@ class Module(core.module.Module):
         return image if image else ""
 
     def _remove_tags(self, txt):
-        return re.sub("<[^>]*>", "", txt)
+        return re.sub(r"<[^>]*>", "", txt)
 
     def _create_item(self, entry, url, feed):
         return {

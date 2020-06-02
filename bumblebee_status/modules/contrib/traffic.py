@@ -100,7 +100,7 @@ class Module(core.module.Module):
             minwidth_str += graph_prefix
         minwidth_str += "1000"
         try:
-            length = int(re.match("{:\.(\d+)f}", self._format).group(1))
+            length = int(re.match(r"{:\.(\d+)f}", self._format).group(1))
             if length > 0:
                 minwidth_str += "." + "0" * length
         except AttributeError:

@@ -24,7 +24,7 @@ def parse_result(to_parse):
     # We want to line with the iforamtion about package upgrade
     line_to_parse = to_parse.split("\n")[-4]
     result = re.search(
-        "(.+) packages upgraded, (.+) newly installed, (.+) to remove", line_to_parse
+        r"(.+) packages upgraded, (.+) newly installed, (.+) to remove", line_to_parse
     )
 
     return int(result.group(1)), int(result.group(3))

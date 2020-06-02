@@ -45,7 +45,7 @@ class Module(core.module.Module):
 
     def update(self):
         output = util.cli.execute("watson status")
-        if re.match("No project started", output):
+        if re.match(r"No project started", output):
             self.__tracking = False
             return
 
