@@ -21,7 +21,7 @@ PATTERN = "{} packages upgraded, {} newly installed, {} to remove and {} not upg
 
 
 def parse_result(to_parse):
-    # We want to line with the iforamtion about package upgrade
+    # We want the line with the package upgrade information
     line_to_parse = to_parse.split("\n")[-4]
     result = re.search(
         "(.+) packages upgraded, (.+) newly installed, (.+) to remove", line_to_parse
