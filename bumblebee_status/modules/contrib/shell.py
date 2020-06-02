@@ -1,6 +1,6 @@
 # pylint: disable=C0111,R0903,W1401
 
-""" Execute command in shell and print result
+r""" Execute command in shell and print result
 
 Few command examples:
     'ping -c 1 1.1.1.1 | grep -Po '(?<=time=)\d+(\.\d+)? ms''

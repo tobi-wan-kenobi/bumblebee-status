@@ -88,11 +88,11 @@ def test_all_modules():
     assert os.path.exists(os.path.join(base, "contrib", pyname)) \
         or os.path.exists(os.path.join(base, "core", pyname))
 
-#def test_list_output(mocker):
-#    mocker.patch("core.config.sys")
-#    cfg = core.config.Config(["-l", "themes"])
-#    cfg = core.config.Config(["-l", "modules"])
-#    cfg = core.config.Config(["-l", "modules-rst"])
+def test_list_output(mocker):
+    mocker.patch("core.config.sys")
+    cfg = core.config.Config(["-l", "themes"])
+    cfg = core.config.Config(["-l", "modules"])
+    cfg = core.config.Config(["-l", "modules-rst"])
 
 def test_missing_parameter():
     cfg = core.config.Config(["-p", "test.key"])
