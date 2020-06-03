@@ -19,6 +19,7 @@ class Module(core.module.Module):
     @core.decorators.every(minutes=60)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.utilization))
+        self.background = True
         self.__packages = 0
         self.__error = False
 
