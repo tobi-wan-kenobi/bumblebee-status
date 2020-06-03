@@ -47,6 +47,13 @@
     "prev": { "prefix": "\uf4ab" },
     "next": { "prefix": "\uf4ad" }
   },
+  "playerctl": {
+    "playing": { "prefix": "\uf488" },
+    "paused": { "prefix": "\uf210" },
+    "stopped": { "prefix": "\uf24f" },
+    "prev": { "prefix": "\uf4ab" },
+    "next": { "prefix": "\uf4ad" }
+  },
   "pasink": {
     "muted": { "prefix": "\uf3b9" },
     "unmuted": { "prefix": "\uf3ba" }
