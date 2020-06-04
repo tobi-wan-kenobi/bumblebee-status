@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status.svg?branch=master)](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status)
 [![Documentation Status](https://readthedocs.org/projects/bumblebee-status/badge/?version=master)](https://bumblebee-status.readthedocs.io/en/master/?badge=master)
+![AUR version](https://img.shields.io/aur/version/bumblebee-status)
+[![PyPI version](https://badge.fury.io/py/bumblebee-status.svg)](https://badge.fury.io/py/bumblebee-status)
 [![Code Climate](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/gpa.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
