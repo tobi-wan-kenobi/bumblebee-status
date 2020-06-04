@@ -4,6 +4,13 @@ import types
 import core.theme
 import core.event
 import core.widget
+import core.module
+
+
+class TestModule(core.module.Module):
+    def __init__(self, widgets, config=core.config.Config([]), theme=None):
+        super().__init__(config, theme, widgets)
+        self.name = "test"
 
 
 class theme(unittest.TestCase):
@@ -23,6 +30,10 @@ class theme(unittest.TestCase):
         self.walTheme = {"colors": ["wal"]}
         self.cycleValueTheme = {"defaults": {"fg": ["red", "green", "blue"]}}
         self.stateTheme = {"warning": {"fg": "yellow"}, "critical": {"fg": "red"}}
+        self.overlayTheme = {
+            "load": {"prefix": "a"},
+            "test": {"load": {"prefix": "b"}, "prefix": "x"},
+        }
 
     def test_invalid_theme(self):
         with self.assertRaises(RuntimeError):
@@ -113,6 +124,22 @@ class theme(unittest.TestCase):
 
         widget.state = types.MethodType(lambda self: ["critical"], widget)
         self.assertEqual(self.stateTheme["critical"]["fg"], theme.get("fg", widget))
+
+    def test_overlay(self):
+        widget = core.widget.Widget()
+        module = TestModule(widget)
+        theme = core.theme.Theme(raw_data=self.overlayTheme)
+
+        self.assertEqual(
+            self.overlayTheme[module.name]["prefix"], theme.get("prefix", widget)
+        )
+
+        widget.state = types.MethodType(lambda self: ["load"], widget)
+
+        self.assertEqual(
+            self.overlayTheme[module.name]["load"]["prefix"],
+            theme.get("prefix", widget),
+        )
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

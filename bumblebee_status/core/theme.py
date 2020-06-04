@@ -35,8 +35,7 @@ def merge_replace(value, new_value, key):
     if not isinstance(value, dict):
         return new_value
     if isinstance(new_value, dict):
-        util.algorithm.merge(value, new_value)
-        return value
+        return util.algorithm.merge(new_value, value)
     # right now, merging needs explicit pango support :(
     if "pango" in value:
         value["pango"]["full_text"] = new_value
