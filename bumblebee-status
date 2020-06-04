@@ -20,6 +20,8 @@ import core.input
 import core.event
 
 
+started = False
+
 class CommandSocket(object):
     def __init__(self):
         self.__name = "/tmp/.bumblebee-status.{}".format(os.getpid())
@@ -109,6 +111,7 @@ def main():
 
     output.modules(modules)
     core.event.trigger("start")
+    started = True
     while True:
         core.event.trigger("update")
         core.event.trigger("draw")
@@ -118,9 +121,14 @@ def main():
 
 if __name__ == "__main__":
     try:
+        if sys.version_info.major < 3:
+            raise Exception("at least Python 3.4 required (Python 2.x not supported)")
         main()
     except Exception as e:
         # really basic errors -> make sure these are shown in the status bar by minimal config
+        if not started:
+            print("{\"version\":1}")
+            print("[")
         while True:
             sys.stdout.write(
                 json.dumps(
