@@ -149,6 +149,18 @@ Parameters:
 
 .. image:: ../screenshots/ping.png
 
+playerctl
+~~~~~~~~~~
+Displays information about the current song in vlc, audacious, bmp, xmms2, spotify and others
+
+Requires the following executable:
+    * playerctl
+
+contributed by `smitajit <https://github.com/smitajit>`_ - many thanks!
+
+.. image:: ../screenshots/playerctl.png
+
+
 pulseaudio
 ~~~~~~~~~~
 
