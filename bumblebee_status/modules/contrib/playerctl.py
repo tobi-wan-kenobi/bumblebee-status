@@ -9,25 +9,25 @@ contributed by `smitajit <https://github.com/smitajit>`_ - many thanks!
 
 """
 
-import bumblebee.util
-import bumblebee.input
-import bumblebee.output
-import bumblebee.engine
+import core.module
+import core.widget
+import core.input
+import util.cli
 
-class Module(bumblebee.engine.Module):
-    def __init__(self, engine, config):
+class Module(core.module.Module):
+    def __init__(self,config , theme):
         widgets = [
-            bumblebee.output.Widget(name="playerctl.prev"),
-            bumblebee.output.Widget(name="playerctl.main", full_text=self.description),
-            bumblebee.output.Widget(name="playerctl.next"),
+            core.widget.Widget(name="playerctl.prev"),
+            core.widget.Widget(name="playerctl.main", full_text=self.description),
+            core.widget.Widget(name="playerctl.next"),
         ]
-        super(Module, self).__init__(engine, config, widgets)
+        super(Module, self).__init__(config, theme ,  widgets)
 
-        engine.input.register_callback(widgets[0], button=bumblebee.input.LEFT_MOUSE,
+        core.input.register(widgets[0], button=core.input.LEFT_MOUSE,
             cmd="playerctl previous")
-        engine.input.register_callback(widgets[1], button=bumblebee.input.LEFT_MOUSE,
+        core.input.register(widgets[1], button=core.input.LEFT_MOUSE,
              cmd="playerctl play-pause")
-        engine.input.register_callback(widgets[2], button=bumblebee.input.LEFT_MOUSE,
+        core.input.register(widgets[2], button=core.input.LEFT_MOUSE,
              cmd="playerctl next")
 
         self._status = None
@@ -36,7 +36,7 @@ class Module(bumblebee.engine.Module):
     def description(self, widget):
         return self._tags if self._tags else "..."
 
-    def update(self, widgets):
+    def update(self):
         self._load_song()
 
     def state(self, widget):
@@ -49,8 +49,8 @@ class Module(bumblebee.engine.Module):
     def _load_song(self):
         info = ""
         try:
-            status = bumblebee.util.execute("playerctl status")
-            info = bumblebee.util.execute("playerctl metadata xesam:title")
+            status = util.cli.execute("playerctl status").lower()
+            info = util.cli.execute("playerctl metadata xesam:title")
         except :
             self._status = None
             self._tags = None
