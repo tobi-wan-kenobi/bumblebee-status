@@ -51,10 +51,11 @@ class Theme(object):
         self.__keywords = {}
         self.__value_idx = {}
         self.__data = raw_data if raw_data else self.load(name)
+
+        for icons in self.__data.get("icons", []):
+            self.__data = util.algorithm.merge(self.load(icons, "icons"), self.__data)
         if iconset != "auto":
             self.__data = util.algorithm.merge(self.load(iconset, "icons"), self.__data)
-        for icons in self.__data.get("icons", []):
-            util.algorithm.merge(self.__data, self.load(icons, "icons"))
         for colors in self.__data.get("colors", []):
             util.algorithm.merge(self.__keywords, self.load_keywords(colors))
 
