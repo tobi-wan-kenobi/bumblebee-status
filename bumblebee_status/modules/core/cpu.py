@@ -9,8 +9,10 @@ Parameters:
     * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
     * cpu.critical: Critical threshold in % of CPU usage (defaults to 80%)
     * cpu.format  : Format string (defaults to '{:.01f}%')
+    * cpu.cmd     : Using the system monitor of choice (defaults 'gnome-system-monitor')
 """
 
+import shutil
 import psutil
 
 import core.module
@@ -24,8 +26,16 @@ class Module(core.module.Module):
         self.widget().set("theme.minwidth", self._format.format(100.0 - 10e-20))
         self._utilization = psutil.cpu_percent(percpu=False)
         core.input.register(
-            self, button=core.input.LEFT_MOUSE, cmd="gnome-system-monitor"
+            self, button=core.input.LEFT_MOUSE, cmd=self.monitor_name()
         )
+
+    def monitor_name(self):
+        cmd = self.parameter("cmd")
+        if cmd is None:
+            return "gnome-system-monitor"
+        elif shutil.which(cmd):
+            return cmd
+        raise Exception("can't find process: '{}'".format(cmd))
 
     @property
     def _format(self):
