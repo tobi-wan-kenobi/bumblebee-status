@@ -1,4 +1,4 @@
-How to write a new theme
+How to write a theme
 ========================
 
 Introduction

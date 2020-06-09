@@ -149,18 +149,6 @@ Parameters:
 
 .. image:: ../screenshots/ping.png
 
-playerctl
-~~~~~~~~~~
-Displays information about the current song in vlc, audacious, bmp, xmms2, spotify and others
-
-Requires the following executable:
-    * playerctl
-
-contributed by `smitajit <https://github.com/smitajit>`_ - many thanks!
-
-.. image:: ../screenshots/playerctl.png
-
-
 pulseaudio
 ~~~~~~~~~~
 
@@ -301,7 +289,7 @@ Parameters:
 
 contributed by `zetxx <https://github.com/zetxx>`_ - many thanks!
 
-input handling contributed by `ardadem <https://github.com/ardadem>_ - many thanks!
+input handling contributed by `ardadem <https://github.com/ardadem>`_ - many thanks!
 
 .. image:: ../screenshots/amixer.png
 
@@ -918,6 +906,18 @@ Parameters:
 
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 
+playerctl
+~~~~~~~~~
+
+Displays information about the current song in vlc, audacious, bmp, xmms2, spotify and others
+
+Requires the following executable:
+    * playerctl
+
+contributed by `smitajit <https://github.com/smitajit>`_ - many thanks!
+
+.. image:: ../screenshots/playerctl.png
+
 pomodoro
 ~~~~~~~~
 
@@ -1039,7 +1039,7 @@ Execute command in shell and print result
 
 Few command examples:
     'ping -c 1 1.1.1.1 | grep -Po '(?<=time=)\d+(\.\d+)? ms''
-    'echo 'BTC=$(curl -s rate.sx/1BTC | grep -Po '^\d+')USD''
+    'echo 'BTC=$(curl -s rate.sx/1BTC | grep -Po \'^\d+\')USD''
     'curl -s https://wttr.in/London?format=%l+%t+%h+%w'
     'pip3 freeze | wc -l'
     'any_custom_script.sh | grep arguments'

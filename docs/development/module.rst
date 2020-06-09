@@ -1,5 +1,5 @@
-How to write a new module
-=========================
+How to write a module
+=====================
 
 Introduction
 ------------
@@ -103,6 +103,51 @@ Largely, where you want to put your update code is up to you. My
 observations: - If you want to change the widgets a module has, you
 **have** to stick with ``update()`` - For simple modules, doing the data
 update in the widget callback is simplest (see ``kernel``, for example)
+
+Widget states
+-------------
+
+Each widget inside a module can have a list of states (for example, two
+predefined states are ``warning`` and ``critical``). States define how
+a widget is rendered (i.e. which fields in the theme file are selected to
+draw it.
+
+Somewhat paradoxically, to give a **widget** a state, a method called
+``def state(self, widget)`` has to be defined on the **module**. The
+reason for this is that the module typically contains all of the statefulness,
+so assumedly, it's easier to determine the state of a widget from the
+module, rather than from the module itself.
+
+The ``state()`` method simply returns a list of strings, which make up
+the state this particular widget has.
+
+The themeing code then iterates these states and selects the matching
+theme information from the theme file. This, it does by performing a "best match"
+search through the theme, like this:
+
+- Is there a theme definition for the **module** that in turn contains a JSON object
+  for the **state**? If so, use that (for example: ``"cpu": { "critical": { "fg": "#ff0000" } }``)
+- If not, is there a theme definition inside the ``defaults`` or ``cycle`` theme entries?
+
+For more details on that, please refer to `How to write a theme <theme.rst>`_
+
+If multiple states match on the "same level", the last state in the state list is used.
+For example, if a module returns ``[ "critical", "warning" ]`` as state, typically, the
+widget will be drawn as ``warning``.
+
+One important helper method is ``def threshold_state(value, warning, critical)``, which each
+module possesses. Using that, it is very easy to define warning and critical states when the
+widget represents a simple numeric value.
+
+Sounds confusing? An example will clarify: Let's say your widget returns a percentage (disk
+usage, or CPU usage). The widget should be marked as "warning" when the percentage is above
+50, and as "critical", if it is above 90. This, you would do like this:
+
+.. code-block:: python
+
+  def state(self, widget):
+      return self.threshold_state(self.__value, 50, 90)
+
 
 Advanced topics
 ---------------

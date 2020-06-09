@@ -6,7 +6,7 @@ Parameters:
 
 contributed by `zetxx <https://github.com/zetxx>`_ - many thanks!
 
-input handling contributed by `ardadem <https://github.com/ardadem>_ - many thanks!
+input handling contributed by `ardadem <https://github.com/ardadem>`_ - many thanks!
 """
 import re
 
