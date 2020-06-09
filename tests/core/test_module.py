@@ -18,6 +18,7 @@ class TestModule(core.module.Module):
 
 class module(unittest.TestCase):
     def setUp(self):
+        core.event.clear()
         self.invalidModuleName = "invalid-module-name"
         self.validModuleName = "test"
         self.someWidget = core.widget.Widget("randomeWidgetContent", name="A")
@@ -153,6 +154,30 @@ class module(unittest.TestCase):
             )
 
             cli.execute.assert_called_once_with(cmd, wait=False, shell=True)
+
+    def test_configured_callbacks_with_parameters(self):
+        cfg = core.config.Config([])
+        module = TestModule(config=cfg, widgets=[self.someWidget])
+
+        cmd = "sample-tool {instance} {name}"
+        module.set("left-click", cmd)
+        module.register_callbacks()
+
+        with unittest.mock.patch("core.input.util.cli") as cli:
+            cli.execute.return_value = ""
+            core.input.trigger(
+                {
+                    "button": core.input.LEFT_MOUSE,
+                    "instance": module.id,
+                    "name": "sample-name",
+                }
+            )
+
+            cli.execute.assert_called_once_with(
+                cmd.format(instance=module.id, name="sample-name"),
+                wait=False,
+                shell=True,
+            )
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

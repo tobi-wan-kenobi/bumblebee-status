@@ -36,9 +36,13 @@ def __event_id(obj_id, button):
     return "{}::{}".format(obj_id, button_name(button))
 
 
-def __execute(cmd, wait=False):
+def __execute(event, cmd, wait=False):
     try:
-        util.cli.execute(cmd, wait=wait, shell=True)
+        util.cli.execute(
+            cmd.format(instance=event.get("instance", ""), name=event.get("name", ""),),
+            wait=wait,
+            shell=True,
+        )
     except Exception as e:
         logging.error("failed to invoke callback: {}".format(e))
 
@@ -49,7 +53,7 @@ def register(obj, button=None, cmd=None, wait=False):
     if callable(cmd):
         core.event.register(event_id, cmd)
     else:
-        core.event.register(event_id, lambda _: __execute(cmd, wait))
+        core.event.register(event_id, lambda event: __execute(event, cmd, wait))
 
 
 def trigger(event):
