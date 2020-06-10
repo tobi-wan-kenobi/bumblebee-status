@@ -116,7 +116,7 @@ Somewhat paradoxically, to give a **widget** a state, a method called
 ``def state(self, widget)`` has to be defined on the **module**. The
 reason for this is that the module typically contains all of the statefulness,
 so assumedly, it's easier to determine the state of a widget from the
-module, rather than from the module itself.
+module, rather than from the widget itself.
 
 The ``state()`` method simply returns a list of strings, which make up
 the state this particular widget has.
