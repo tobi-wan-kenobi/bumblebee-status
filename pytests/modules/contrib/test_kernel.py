@@ -5,7 +5,7 @@ import modules.contrib.kernel
 
 @pytest.fixture
 def some_kernel():
-    return "this-is-my-kernel"
+    return 'this-is-my-kernel'
 
 @pytest.fixture
 def kernel_module():
