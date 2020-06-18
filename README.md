@@ -31,6 +31,15 @@ Supported Python versions: 3.4, 3.5, 3.6, 3.7, 3.8
 
 Supported FontAwesome version: 4 (free version of 5 doesn't include some of the icons)
 
+---
+**NOTE**
+
+I am planning to rename `master` to `main` - the branch already exists, and I will eventually change the **default** branch to `main`. Just be advised :)
+
+If you are curious why: [ZDNet:github-master-alternative](https://www.zdnet.com/article/github-to-replace-master-with-alternative-term-to-avoid-slavery-references/)
+
+---
+
 Example usage:
 
 ```
