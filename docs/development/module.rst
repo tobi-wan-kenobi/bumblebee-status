@@ -29,8 +29,8 @@ Coding guidelines
 
 I’m pretty open to whatever style you use, but if it’s all the same to
 you (and yes, I know that the current codebase is only slowly adapting
-to this): - Please favour single quotes for strings (except for
-docstrings, which are always """) - For private methods/variables,
+to this): - Please favour double quotes for strings.
+For private methods/variables,
 please use a leading ``__`` (e.g. ``__output`` rather than ``_output``)
 
 For anything else, please run your code through `black <https://github.com/psf/black>`_.
