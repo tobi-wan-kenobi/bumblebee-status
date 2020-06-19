@@ -9,3 +9,8 @@ def mpd_module():
 
 def test_shuffle_off_by_default(mpd_module):
     assert not mpd_module._shuffle
+
+def test_shuffle_state(mocker, mpd_module):
+    widget = mocker.Mock()
+    widget.name = 'mpd.shuffle'
+    assert mpd_module.state(widget) == 'shuffle-off'
