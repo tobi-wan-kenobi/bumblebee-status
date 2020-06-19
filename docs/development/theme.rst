@@ -175,4 +175,4 @@ Examples
 --------
 
 see
-`github:tobi-wan-kenobi/bumblebee-status/themes <https://github.com/tobi-wan-kenobi/bumblebee-status/tree/master/themes>`__
+`github:tobi-wan-kenobi/bumblebee-status/themes <https://github.com/tobi-wan-kenobi/bumblebee-status/tree/main/themes>`__

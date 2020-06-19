@@ -1,7 +1,7 @@
 # bumblebee-status
 
-[![Build Status](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status.svg?branch=master)](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status)
-[![Documentation Status](https://readthedocs.org/projects/bumblebee-status/badge/?version=master)](https://bumblebee-status.readthedocs.io/en/master/?badge=master)
+[![Build Status](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status.svg?branch=main)](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status)
+[![Documentation Status](https://readthedocs.org/projects/bumblebee-status/badge/?version=main)](https://bumblebee-status.readthedocs.io/en/main/?badge=main)
 ![AUR version](https://img.shields.io/aur/version/bumblebee-status)
 [![PyPI version](https://badge.fury.io/py/bumblebee-status.svg)](https://badge.fury.io/py/bumblebee-status)
 [![Code Climate](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/gpa.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
@@ -10,7 +10,7 @@
 
 **Many, many thanks to all contributors! I am still amazed by and deeply grateful for how many PRs this project gets.**
 
-[Click here for a list of available modules](https://bumblebee-status.readthedocs.io/en/master/modules.html)
+[Click here for a list of available modules](https://bumblebee-status.readthedocs.io/en/main/modules.html)
 
 ![Solarized Powerline](screenshots/themes/powerline-solarized.png)
 
@@ -18,8 +18,8 @@ bumblebee-status is a modular, theme-able status line generator for the [i3 wind
 
 Focus is on:
 * ease of use, sane defaults (no mandatory configuration file)
-* [easy creation of custom themes](https://bumblebee-status.readthedocs.io/en/master/development/theme.html)
-* [easy creation of custom modules](https://bumblebee-status.readthedocs.io/en/master/development/module.html)
+* [easy creation of custom themes](https://bumblebee-status.readthedocs.io/en/main/development/theme.html)
+* [easy creation of custom modules](https://bumblebee-status.readthedocs.io/en/main/development/module.html)
 
 I hope you like it and I appreciate any kind of feedback: bug reports, feature requests, etc. :)
 
@@ -34,7 +34,7 @@ Supported FontAwesome version: 4 (free version of 5 doesn't include some of the 
 ---
 **NOTE**
 
-I am planning to rename `master` to `main` - the branch already exists, and I will eventually change the **default** branch to `main`. Just be advised :)
+The default branch for this project is `main` - I'm keeping `master` around for backwards compatibility (I do not want to break anybody's setup), but the default branch is now `main`!
 
 If you are curious why: [ZDNet:github-master-alternative](https://www.zdnet.com/article/github-to-replace-master-with-alternative-term-to-avoid-slavery-references/)
 
@@ -52,13 +52,13 @@ bar {
 # Documentation
 See [the docs](https://bumblebee-status.readthedocs.io) for detailed documentation.
 
-See [FAQ](https://bumblebee-status.readthedocs.io/en/master/FAQ.html) for. well, FAQs.
+See [FAQ](https://bumblebee-status.readthedocs.io/en/main/FAQ.html) for. well, FAQs.
 
 Other resources:
 
-* A list of [available modules](https://bumblebee-status.readthedocs.io/en/master/modules.html)
-* [How to write a module](https://bumblebee-status.readthedocs.io/en/master/development/module.html)
-* [How to write a theme](https://bumblebee-status.readthedocs.io/en/master/development/theme.html)
+* A list of [available modules](https://bumblebee-status.readthedocs.io/en/main/modules.html)
+* [How to write a module](https://bumblebee-status.readthedocs.io/en/main/development/module.html)
+* [How to write a theme](https://bumblebee-status.readthedocs.io/en/main/development/theme.html)
 
 # Installation
 ```
@@ -76,7 +76,7 @@ pip install --user bumblebee-status
 ```
 
 # Dependencies
-[Available modules](https://bumblebee-status.readthedocs.io/en/master/modules.html) lists the dependencies (Python modules and external executables)
+[Available modules](https://bumblebee-status.readthedocs.io/en/main/modules.html) lists the dependencies (Python modules and external executables)
 for each module. If you are not using a module, you don't need the dependencies.
 
 # Usage
@@ -142,4 +142,4 @@ Restart i3wm and - that's it!
 
 # Examples
 
-[List of themes](https://bumblebee-status.readthedocs.io/en/master/themes.html)
+[List of themes](https://bumblebee-status.readthedocs.io/en/main/themes.html)
