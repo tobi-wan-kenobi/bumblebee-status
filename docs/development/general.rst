@@ -23,7 +23,7 @@ installed, it is not part of the Python Standard Library. Most
 distributions call the package ``python-pytest`` or ``python3-pytest``
 or something similar (or you just use ``pip install --use pytest``)
 
-Aside from that, you just write you tests using ``pytest`` as usual,
+Aside from that, you just write your tests using ``pytest`` as usual,
 with one big caveat:
 
 **If** you create a new directory inside ``pytests/``, you need to
