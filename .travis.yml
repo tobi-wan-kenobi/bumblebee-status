@@ -8,7 +8,7 @@ python:
 before_install:
   - sudo apt-get -qq update
 install:
-  - pip install -U coverage==4.3 pytest
+  - pip install -U coverage==4.3 pytest pytest-mock
   - pip install codeclimate-test-reporter
 script:
   - coverage run --source=. -m pytest tests -v
