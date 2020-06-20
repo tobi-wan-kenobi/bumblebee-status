@@ -18,11 +18,13 @@ class SampleModule(core.module.Module):
     def state(self, widget):
         return self.states
 
+
 @pytest.fixture
 def widget_a():
     return core.widget.Widget("some random value")
 
-#class widget(unittest.TestCase):
+
+# class widget(unittest.TestCase):
 #    def setUp(self):
 #        self.someValue = "some random value"
 #        self.someOtherValue = "some different value"
@@ -34,14 +36,17 @@ def widget_a():
 #
 #        self.assertNotEqual(self.someValue, self.someOtherValue)
 
+
 def test_text_fulltext():
     widget = core.widget.Widget(full_text="this is some value")
     assert widget.full_text() == "this is some value"
+
 
 def test_set_fulltext(widget_a):
     assert widget_a.full_text() != "new value"
     widget_a.full_text("new value")
     assert widget_a.full_text() == "new value"
+
 
 def test_callable_fulltext(mocker):
     callback = mocker.MagicMock(return_value="callback returns")
@@ -49,22 +54,27 @@ def test_callable_fulltext(mocker):
     assert widget.full_text() == "callback returns"
     callback.assert_called_once_with(widget)
 
+
 def test_set_callable_fulltext(mocker, widget_a):
     callback = mocker.MagicMock(return_value="this is a test")
     widget_a.full_text(callback)
     assert widget_a.full_text() == "this is a test"
     callback.assert_called_once_with(widget_a)
 
+
 def test_state_defaults_to_empty(widget_a):
     assert widget_a.state() == []
+
 
 def test_single_widget_state(widget_a):
     widget_a.set("state", "state1")
     assert widget_a.state() == ["state1"]
 
+
 def test_multiple_widget_states(widget_a):
     widget_a.set("state", ["state1", "state2"])
     assert widget_a.state() == ["state1", "state2"]
+
 
 def test_widget_module_state(widget_a):
     module = SampleModule(widgets=widget_a)
@@ -75,6 +85,7 @@ def test_widget_module_state(widget_a):
 
     module.states = ["a", "b"]
     assert widget_a.state() == ["state1", "state2", "a", "b"]
+
 
 def test_multiple_widget_themes():
     widget1 = core.widget.Widget(full_text="a")

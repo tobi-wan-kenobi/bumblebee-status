@@ -2,9 +2,10 @@ import pytest
 
 import core.event
 
+
 @pytest.fixture
 def someEvent():
-    class Event():
+    class Event:
         def __init__(self):
             core.event.clear()
             self.id = "some event"
@@ -32,6 +33,7 @@ def test_simple_callback(someEvent):
 
     assert someEvent.called == 2
 
+
 def test_args_callback(someEvent):
     core.event.register(someEvent.id, someEvent.callback, "a", "b")
     core.event.trigger(someEvent.id)
@@ -39,6 +41,7 @@ def test_args_callback(someEvent):
     assert someEvent.called == 1
     assert len(someEvent.call_args) == 1
     assert someEvent.call_args[0] == ["a", "b"]
+
 
 def test_kwargs_callback(someEvent):
     core.event.register(
@@ -50,7 +53,8 @@ def test_kwargs_callback(someEvent):
     assert len(someEvent.call_args) == 1
     assert someEvent.call_args[0] == ["a", "b"]
     assert len(someEvent.call_kwargs) == 1
-    assert someEvent.call_kwargs[0] == { "key1": "test", "key2": "another" }
+    assert someEvent.call_kwargs[0] == {"key1": "test", "key2": "another"}
+
 
 def test_arg_trigger(someEvent):
     core.event.register(someEvent.id, someEvent.callback)
@@ -60,6 +64,7 @@ def test_arg_trigger(someEvent):
     assert len(someEvent.call_args) == 1
     assert someEvent.call_args[0] == ["a", "b"]
 
+
 def test_kwargs_trigger(someEvent):
     core.event.register(someEvent.id, someEvent.callback)
     core.event.trigger(someEvent.id, "a", "c", key1="test", key2="something")
@@ -68,6 +73,7 @@ def test_kwargs_trigger(someEvent):
     assert len(someEvent.call_args) == 1
     assert someEvent.call_args[0] == ["a", "c"]
     assert len(someEvent.call_kwargs) == 1
-    assert someEvent.call_kwargs[0] == { "key1": "test", "key2": "something" }
+    assert someEvent.call_kwargs[0] == {"key1": "test", "key2": "something"}
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

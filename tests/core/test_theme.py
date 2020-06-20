@@ -12,13 +12,16 @@ class SampleModule(core.module.Module):
         super().__init__(config, theme, widgets)
         self.name = "test"
 
+
 @pytest.fixture(autouse=True)
 def clear_events():
     core.event.clear()
 
+
 @pytest.fixture
 def defaultsTheme():
     return {"defaults": {"fg": "red", "bg": "black"}}
+
 
 @pytest.fixture
 def cycleTheme():
@@ -30,21 +33,26 @@ def cycleTheme():
         ]
     }
 
+
 @pytest.fixture
 def colorTheme():
     return {"colors": [{"red": "#ff0000", "blue": "#0000ff"}]}
+
 
 @pytest.fixture
 def walTheme():
     return {"colors": ["wal"]}
 
+
 @pytest.fixture
 def cycleValueTheme():
     return {"defaults": {"fg": ["red", "green", "blue"]}}
 
+
 @pytest.fixture
 def stateTheme():
     return {"warning": {"fg": "yellow"}, "critical": {"fg": "red"}}
+
 
 @pytest.fixture
 def overlayTheme():
@@ -53,19 +61,23 @@ def overlayTheme():
         "test": {"load": {"prefix": "b"}, "prefix": "x"},
     }
 
+
 def test_invalid_theme():
     with pytest.raises(RuntimeError):
         core.theme.Theme("this-theme-does-not-exist")
 
+
 def test_valid_theme():
     theme = core.theme.Theme("default")
     assert theme.name == "default"
+
 
 def test_defaults(defaultsTheme):
     theme = core.theme.Theme(raw_data=defaultsTheme)
 
     assert theme.get("fg") == defaultsTheme["defaults"]["fg"]
     assert theme.get("bg") == defaultsTheme["defaults"]["bg"]
+
 
 def test_cycle(mocker, cycleTheme):
     theme = core.theme.Theme(raw_data=cycleTheme)
@@ -90,6 +102,7 @@ def test_cycle(mocker, cycleTheme):
     assert theme.get("fg") == cycleTheme["cycle"][0]["fg"]
     assert theme.get("bg") == cycleTheme["cycle"][0]["bg"]
 
+
 def test_custom_iconset(defaultsTheme):
     theme = core.theme.Theme(raw_data=defaultsTheme)
 
@@ -101,7 +114,8 @@ def test_custom_iconset(defaultsTheme):
     )
 
     assert theme.get("padding") == "aaa"
-    assert theme.get("fg") == "blue" # test override
+    assert theme.get("fg") == "blue"  # test override
+
 
 def test_colors(defaultsTheme, colorTheme):
     theme = core.theme.Theme(raw_data=defaultsTheme)
@@ -109,6 +123,7 @@ def test_colors(defaultsTheme, colorTheme):
 
     theme = core.theme.Theme(raw_data=colorTheme)
     assert theme.keywords() == colorTheme["colors"][0]
+
 
 def test_wal_colors(mocker, walTheme):
     io = mocker.patch("core.theme.io")
@@ -124,6 +139,7 @@ def test_wal_colors(mocker, walTheme):
 
     assert theme.keywords() == {"red": "#ff0000"}
 
+
 def test_wal_special(mocker, walTheme):
     io = mocker.patch("core.theme.io")
     os = mocker.patch("core.theme.os")
@@ -137,16 +153,18 @@ def test_wal_special(mocker, walTheme):
 
     assert theme.keywords() == {"background": "#ff0000"}
 
+
 def test_cycle_value(cycleValueTheme):
     widget = core.widget.Widget()
     expected = cycleValueTheme["defaults"]["fg"]
     theme = core.theme.Theme(raw_data=cycleValueTheme)
 
     for i in range(0, len(expected) * 3):
-        assert theme.get("fg", widget) == expected[i%len(expected)]
+        assert theme.get("fg", widget) == expected[i % len(expected)]
         # ensure multiple invocations are OK
-        assert theme.get("fg", widget) == expected[i%len(expected)]
+        assert theme.get("fg", widget) == expected[i % len(expected)]
         core.event.trigger("draw")
+
 
 def test_state(stateTheme):
     widget = core.widget.Widget()
@@ -159,6 +177,7 @@ def test_state(stateTheme):
 
     widget.state = types.MethodType(lambda self: ["critical"], widget)
     assert theme.get("fg", widget) == stateTheme["critical"]["fg"]
+
 
 def test_overlay(overlayTheme):
     widget = core.widget.Widget()

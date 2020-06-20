@@ -2,21 +2,26 @@ import pytest
 
 from util.algorithm import *
 
+
 @pytest.fixture
 def someData():
     return {"a": 100, "b": 200, "c": [1, 2, 3]}
+
 
 @pytest.fixture
 def differentData():
     return {"x": 20, "y": "bla", "z": ["a", "b"]}
 
+
 @pytest.fixture
 def moreData():
     return {"n": 100}
 
+
 @pytest.fixture
 def overlapData():
     return {"a": 200, "c": [1, 2, 4]}
+
 
 def test_merge_with_empty(someData):
     assert merge(someData, {}) == someData

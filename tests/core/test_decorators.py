@@ -5,6 +5,7 @@ import core.widget
 import core.module
 import core.config
 
+
 @pytest.fixture
 def module():
     class TestModule(core.module.Module):
@@ -17,27 +18,33 @@ def module():
         @core.decorators.scrollable
         def get(self, widget):
             return self.text
+
     module = TestModule()
     module.set("scrolling.width", 10)
     return module
 
+
 def test_never(module):
     assert module.parameter("interval") == "never"
+
 
 def test_no_text(module):
     assert module.text == ""
     assert module.get(module.widget()) == ""
+
 
 def test_smaller(module):
     module.text = "test"
     assert module.parameter("scrolling.width") > len(module.text)
     assert module.get(module.widget()) == module.text
 
+
 def test_bigger(module):
     module.text = "this is a really really long sample text"
     maxwidth = module.parameter("scrolling.width")
     assert maxwidth < len(module.text)
     assert module.get(module.widget()) == module.text[:maxwidth]
+
 
 def test_bounce(module):
     module.text = "abcd"
@@ -52,6 +59,7 @@ def test_bounce(module):
     assert module.get(module.widget()) == "bc"
     assert module.get(module.widget()) == "ab"
 
+
 def test_nobounce(module):
     module.set("scrolling.bounce", False)
     module.set("scrolling.width", 2)
@@ -64,6 +72,7 @@ def test_nobounce(module):
     assert module.get(module.widget()) == "bc"
     assert module.get(module.widget()) == "cd"
 
+
 def test_completely_changed_data(module):
     module.text = "abcd"
     module.set("scrolling.width", 2)
@@ -74,6 +83,7 @@ def test_completely_changed_data(module):
     module.text = "wxyz"
     assert module.get(module.widget()) == "wx"
     assert module.get(module.widget()) == "xy"
+
 
 def test_slightly_changed_data(module):
     module.text = "this is a sample song (0:00)"
@@ -88,6 +98,7 @@ def test_slightly_changed_data(module):
     assert module.get(module.widget()) == module.text[3:13]
     module.text = "this is a different song (0:13)"
     assert module.get(module.widget()) == module.text[0:10]
+
 
 def test_n_plus_one(module):
     module.text = "10 letters"
