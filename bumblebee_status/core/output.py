@@ -171,7 +171,7 @@ class i3(object):
     def stop(self):
         return {"suffix": "\n]"}
 
-    def __separator_block(self, module, widget):
+    def separator_block(self, module, widget):
         if not self.__theme.get("separator"):
             return []
         blk = block(self.__theme, module, widget)
@@ -207,7 +207,7 @@ class i3(object):
                     continue
             if module.hidden():
                 continue
-            blocks.extend(self.__separator_block(module, widget))
+            blocks.extend(self.separator_block(module, widget))
             blocks.append(self.__content_block(module, widget))
             core.event.trigger("next-widget")
         return blocks

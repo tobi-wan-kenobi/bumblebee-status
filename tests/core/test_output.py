@@ -94,12 +94,12 @@ class i3(unittest.TestCase):
         self.assertEqual(" abc ", result)
 
     def test_no_separator(self):
-        result = self.i3.__separator_block(self.someModule, self.someModule.widget())
+        result = self.i3.separator_block(self.someModule, self.someModule.widget())
         self.assertEqual([], result)
 
     def test_separator(self):
         self.i3.theme(self.separatorTheme)
-        result = self.i3.__separator_block(self.someModule, self.someModule.widget())
+        result = self.i3.separator_block(self.someModule, self.someModule.widget())
         self.assertEqual(1, len(result))
         self.assertEqual("***", result[0].dict()["full_text"])
         self.assertTrue(result[0].dict().get("_decorator", False))
