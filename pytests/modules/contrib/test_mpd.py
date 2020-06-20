@@ -31,7 +31,7 @@ def test_host2(mocker):
     module_with_host.update()
     args, kwargs = cli.execute.call_args
 
-    assert " -h sample-host" in args[0]
+    assert " -h sample-host" in args[0] and "mpc" in args[0]
 
 def test_bad_layout():
     pytest.raises(KeyError, modules.contrib.mpd.Module, config=core.config.Config(['-p', 'mpd.layout="mpd.inexistent"']), theme=None)
