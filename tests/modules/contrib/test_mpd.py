@@ -42,7 +42,7 @@ def test_hidden_on_creation(mpd_module):
 def test_update_calls_load_song(mocker, mpd_module):
     mocker.patch.object(mpd_module, '_load_song')
     mpd_module.update()
-    mpd_module._load_song.assert_called()
+    mpd_module._load_song.assert_called_with()
 
 def test_default_layout(mpd_module):
     assert mpd_module._layout == "mpd.prev mpd.main mpd.next mpd.shuffle mpd.repeat"
