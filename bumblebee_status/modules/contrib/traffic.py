@@ -18,6 +18,7 @@ contributed by `meain <https://github.com/meain>`_ - many thanks!
 import re
 import time
 import psutil
+import logging
 import netifaces
 
 import core.module
@@ -68,7 +69,10 @@ class Module(core.module.Module):
         return self._status
 
     def update(self):
-        self._update_widgets()
+        try:
+            self._update_widgets()
+        except Exception as e:
+            logging.exception(e)
 
     def create_widget(self, name, txt=None, attributes={}):
         widget = self.add_widget(name=name, full_text=txt)
