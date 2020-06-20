@@ -34,7 +34,7 @@ def test_unused_keys(store):
     store.set("key 1", "value x")
     store.set("key 2", "value y")
 
-    assert store.unused_keys() == sorted(["key 1", "key 2"])
+    assert sorted(store.unused_keys()) == sorted(["key 1", "key 2"])
 
     store.get("key 2")
 
