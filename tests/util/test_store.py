@@ -1,62 +1,48 @@
-import unittest
+import pytest
 
 import util.store
 
 
-class store(unittest.TestCase):
-    def setUp(self):
-        self.store = util.store.Store()
+@pytest.fixture
+def emptyStore():
+    return util.store.Store()
 
-        self.unusedKey = "someRandomUnusedKey"
-        self.someKey = "someRandomKey"
-        self.someOtherKey = "anotherRandomKey"
-        self.someValue = "someRandomValue"
-        self.someOtherValue = "anotherRandomValue"
 
-    def test_get_of_unset_key(self):
-        self.assertEqual(
-            None, self.store.get(self.unusedKey), "default value expected to be None"
-        )
-        self.assertEqual(
-            self.someValue,
-            self.store.get(self.unusedKey, self.someValue),
-            "wrong user-provided default value returned",
-        )
+@pytest.fixture
+def store():
+    return util.store.Store()
 
-    def test_get_of_set_key(self):
-        self.assertNotEqual(self.someValue, None)
 
-        self.store.set(self.someKey, self.someValue)
-        self.assertEqual(
-            self.someValue,
-            self.store.get(self.someKey),
-            "unexpected value for existing key",
-        )
+def test_get_of_unset_key(emptyStore):
+    assert emptyStore.get("any-key") == None
+    assert emptyStore.get("any-key", "default-value") == "default-value"
 
-    def test_overwrite_set(self):
-        self.assertNotEqual(self.someValue, None)
-        self.assertNotEqual(self.someOtherValue, self.someValue)
 
-        self.store.set(self.someKey, self.someValue)
-        self.store.set(self.someKey, self.someOtherValue)
-        self.assertEqual(
-            self.someOtherValue,
-            self.store.get(self.someKey),
-            "unexpected value for existing key",
-        )
+def test_get_of_set_key(store):
+    store.set("key", "value")
+    assert store.get("key") == "value"
 
-    def test_unused_keys(self):
-        self.assertNotEqual(self.someKey, self.someOtherKey)
 
-        self.store.set(self.someKey, self.someValue)
-        self.store.set(self.someOtherKey, self.someOtherValue)
+def test_overwrite_set(store):
+    store.set("key", "value 1")
+    store.set("key", "value 2")
 
-        self.assertEqual(
-            sorted(self.store.unused_keys()), sorted([self.someKey, self.someOtherKey])
-        )
+    assert store.get("key") == "value 2"
 
-        self.store.get(self.someKey)
-        self.assertEqual(self.store.unused_keys(), [self.someOtherKey])
+
+def test_unused_keys(store):
+    store.set("key 1", "value x")
+    store.set("key 2", "value y")
+
+    assert store.unused_keys() == sorted(["key 1", "key 2"])
+
+    store.get("key 2")
+
+    assert store.unused_keys() == ["key 1"]
+
+    store.get("key 1")
+
+    assert store.unused_keys() == []
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

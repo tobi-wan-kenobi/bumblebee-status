@@ -1,99 +1,103 @@
-import unittest
+import pytest
 
 import core.decorators
 import core.widget
 import core.module
 import core.config
 
+@pytest.fixture
+def module():
+    class TestModule(core.module.Module):
+        @core.decorators.never
+        def __init__(self, config=None, theme=None):
+            config = core.config.Config([])
+            super().__init__(config, theme, core.widget.Widget(self.get))
+            self.text = ""
 
-class TestModule(core.module.Module):
-    @core.decorators.never
-    def __init__(self, config=None, theme=None):
-        config = core.config.Config([])
-        super().__init__(config, theme, core.widget.Widget(self.get))
-        self.text = ""
+        @core.decorators.scrollable
+        def get(self, widget):
+            return self.text
+    module = TestModule()
+    module.set("scrolling.width", 10)
+    return module
 
-    @core.decorators.scrollable
-    def get(self, widget):
-        return self.text
+def test_never(module):
+    assert module.parameter("interval") == "never"
 
+def test_no_text(module):
+    assert module.text == ""
+    assert module.get(module.widget()) == ""
 
-class config(unittest.TestCase):
-    def setUp(self):
-        self.module = TestModule()
-        self.widget = self.module.widget()
-        self.width = 10
-        self.module.set("scrolling.width", self.width)
+def test_smaller(module):
+    module.text = "test"
+    assert module.parameter("scrolling.width") > len(module.text)
+    assert module.get(module.widget()) == module.text
 
-    def test_never(self):
-        self.module = TestModule()
-        self.assertEqual("never", self.module.parameter("interval"))
+def test_bigger(module):
+    module.text = "this is a really really long sample text"
+    maxwidth = module.parameter("scrolling.width")
+    assert maxwidth < len(module.text)
+    assert module.get(module.widget()) == module.text[:maxwidth]
 
-    def test_no_text(self):
-        self.assertEqual("", self.module.text)
-        self.assertEqual("", self.module.get(self.widget))
+def test_bounce(module):
+    module.text = "abcd"
+    module.set("scrolling.width", 2)
+    assert module.get(module.widget()) == "ab"
+    assert module.get(module.widget()) == "bc"
+    assert module.get(module.widget()) == "cd"
+    assert module.get(module.widget()) == "bc"
+    assert module.get(module.widget()) == "ab"
+    assert module.get(module.widget()) == "bc"
+    assert module.get(module.widget()) == "cd"
+    assert module.get(module.widget()) == "bc"
+    assert module.get(module.widget()) == "ab"
 
-    def test_smaller(self):
-        self.module.text = "test"
-        self.assertLess(len(self.module.text), self.width)
-        self.assertEqual("test", self.module.get(self.widget))
+def test_nobounce(module):
+    module.set("scrolling.bounce", False)
+    module.set("scrolling.width", 2)
+    module.text = "abcd"
 
-    def test_bigger(self):
-        self.module.text = "abcdefghijklmnopqrst"
-        self.assertGreater(len(self.module.text), self.width)
-        self.assertEqual(self.module.text[: self.width], self.module.get(self.widget))
+    assert module.get(module.widget()) == "ab"
+    assert module.get(module.widget()) == "bc"
+    assert module.get(module.widget()) == "cd"
+    assert module.get(module.widget()) == "ab"
+    assert module.get(module.widget()) == "bc"
+    assert module.get(module.widget()) == "cd"
 
-    def test_bounce(self):
-        self.module.text = "abcd"
-        self.module.set("scrolling.width", 2)
-        self.assertEqual("ab", self.module.get(self.widget))
-        self.assertEqual("bc", self.module.get(self.widget))
-        self.assertEqual("cd", self.module.get(self.widget))
-        self.assertEqual("bc", self.module.get(self.widget))
-        self.assertEqual("ab", self.module.get(self.widget))
-        self.assertEqual("bc", self.module.get(self.widget))
-        self.assertEqual("cd", self.module.get(self.widget))
-        self.assertEqual("bc", self.module.get(self.widget))
-        self.assertEqual("ab", self.module.get(self.widget))
+def test_completely_changed_data(module):
+    module.text = "abcd"
+    module.set("scrolling.width", 2)
 
-    def test_nobounce(self):
-        self.module.set("scrolling.bounce", False)
-        self.module.text = "abcd"
-        self.module.set("scrolling.width", 2)
-        self.assertEqual("ab", self.module.get(self.widget))
-        self.assertEqual("bc", self.module.get(self.widget))
-        self.assertEqual("cd", self.module.get(self.widget))
-        self.assertEqual("ab", self.module.get(self.widget))
-        self.assertEqual("bc", self.module.get(self.widget))
-        self.assertEqual("cd", self.module.get(self.widget))
+    assert module.get(module.widget()) == "ab"
+    assert module.get(module.widget()) == "bc"
 
-    def test_changed_data(self):
-        self.module.text = "abcd"
-        self.module.set("scrolling.width", 2)
-        self.assertEqual("ab", self.module.get(self.widget))
-        self.assertEqual("bc", self.module.get(self.widget))
-        self.module.text = "wxyz"
-        self.assertEqual("wx", self.module.get(self.widget))
+    module.text = "wxyz"
+    assert module.get(module.widget()) == "wx"
+    assert module.get(module.widget()) == "xy"
 
-    def test_minimum_changed_data(self):
-        self.module.text = "this is a sample song (0:00)"
-        self.module.set("scrolling.width", 10)
-        self.assertEqual(self.module.text[0:10], self.module.get(self.widget))
-        self.module.text = "this is a sample song (0:01)"
-        self.assertEqual(self.module.text[1:11], self.module.get(self.widget))
-        self.module.text = "this is a sample song (0:12)"
-        self.assertEqual(self.module.text[2:12], self.module.get(self.widget))
-        self.module.text = "this is a different song (0:12)"
-        self.assertEqual(self.module.text[0:10], self.module.get(self.widget))
+def test_slightly_changed_data(module):
+    module.text = "this is a sample song (0:00)"
+    module.set("scrolling.width", 10)
 
-    def test_n_plus_one(self):
-        self.module.text = "10 letters"
-        self.module.set("scrolling.width", 9)
-        self.assertEqual(self.module.text[0:9], self.module.get(self.widget))
-        self.assertEqual(self.module.text[1:10], self.module.get(self.widget))
-        self.assertEqual(self.module.text[0:9], self.module.get(self.widget))
-        self.assertEqual(self.module.text[1:10], self.module.get(self.widget))
-        self.assertEqual(self.module.text[0:9], self.module.get(self.widget))
+    assert module.get(module.widget()) == module.text[0:10]
+    module.text = "this is a sample song (0:01)"
+    assert module.get(module.widget()) == module.text[1:11]
+    module.text = "this is a sample song (0:02)"
+    assert module.get(module.widget()) == module.text[2:12]
+    module.text = "this is a sample song (0:13)"
+    assert module.get(module.widget()) == module.text[3:13]
+    module.text = "this is a different song (0:13)"
+    assert module.get(module.widget()) == module.text[0:10]
+
+def test_n_plus_one(module):
+    module.text = "10 letters"
+    module.set("scrolling.width", 9)
+
+    assert module.get(module.widget()) == module.text[0:9]
+    assert module.get(module.widget()) == module.text[1:10]
+    assert module.get(module.widget()) == module.text[0:9]
+    assert module.get(module.widget()) == module.text[1:10]
+    assert module.get(module.widget()) == module.text[0:9]
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

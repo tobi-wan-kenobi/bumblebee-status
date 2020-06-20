@@ -1,89 +1,102 @@
 import os
-import unittest
+import pytest
 
 import core.config
 
+@pytest.fixture
+def defaultConfig():
+    return core.config.Config([])
 
-class config(unittest.TestCase):
-    def setUp(self):
-        self.someModules = ["b", "x", "a"]
-        self.moreModules = ["this", "module", "here"]
-        self.someTheme = "some-theme"
-        self.someIconset = "some-iconset"
-        self.defaultConfig = core.config.Config([])
+def test_module():
+    modules = ["module-1", "module-2", "module-3"]
 
-    def test_module(self):
-        cfg = core.config.Config(["-m"] + self.someModules)
-        self.assertEqual(self.someModules, cfg.modules())
+    cfg = core.config.Config(["-m"] + modules)
 
-    def test_module_ordering_maintained(self):
-        cfg = core.config.Config(["-m"] + self.someModules + ["-m"] + self.moreModules)
-        self.assertEqual(self.someModules + self.moreModules, cfg.modules())
+    assert cfg.modules() == modules
 
-    def test_default_interval(self):
-        self.assertEqual(1, self.defaultConfig.interval())
+def test_module_ordering_maintained():
+    modules = ["module-1", "module-5", "module-7"]
+    more_modules = ["module-0", "module-2", "aaa"]
 
-    def test_interval(self):
-        cfg = core.config.Config(["-p", "interval=4"])
-        self.assertEqual(4, cfg.interval())
+    cfg = core.config.Config(["-m"] + modules + ["-m"] + more_modules)
 
-    def test_float_interval(self):
-        cfg = core.config.Config(["-p", "interval=0.5"])
-        self.assertEqual(0.5, cfg.interval())
+    assert cfg.modules() == modules + more_modules
 
-    def test_default_theme(self):
-        self.assertEqual("default", self.defaultConfig.theme())
+def test_default_interval(defaultConfig):
+    assert defaultConfig.interval() == 1
 
-    def test_theme(self):
-        cfg = core.config.Config(["-t", self.someTheme])
-        self.assertEqual(self.someTheme, cfg.theme())
+def test_interval():
+    interval = 4
+    cfg = core.config.Config(["-p", "interval={}".format(interval)])
 
-    def test_default_iconset(self):
-        self.assertEqual("auto", self.defaultConfig.iconset())
+    assert cfg.interval() == interval
 
-    def test_iconset(self):
-        cfg = core.config.Config(["-i", self.someIconset])
-        self.assertEqual(self.someIconset, cfg.iconset())
+def test_floating_interval():
+    interval = 4.5
+    cfg = core.config.Config(["-p", "interval={}".format(interval)])
 
-    def test_right_to_left(self):
-        cfg = core.config.Config(["-r"])
-        self.assertTrue(cfg.reverse())
-        self.assertFalse(self.defaultConfig.reverse())
+    assert cfg.interval() == interval
 
-    def test_logfile(self):
-        cfg = core.config.Config(["-f", "my-custom-logfile"])
-        self.assertEqual(None, self.defaultConfig.logfile())
-        self.assertEqual("my-custom-logfile", cfg.logfile())
+def test_default_theme(defaultConfig):
+    assert defaultConfig.theme() == "default"
 
-    def test_all_modules(self):
-        modules = core.config.all_modules()
-        self.assertGreater(len(modules), 0)
-        for module in modules:
-            pyname = "{}.py".format(module)
-            base = os.path.abspath(
-                os.path.join(
-                    os.path.dirname(os.path.realpath(__file__)),
-                    "..",
-                    "..",
-                    "bumblebee_status",
-                    "modules",
-                )
+def test_theme():
+    theme_name = "sample-theme"
+    cfg = core.config.Config(["-t", theme_name])
+    assert cfg.theme() == theme_name
+
+def test_default_iconset(defaultConfig):
+    assert defaultConfig.iconset() == "auto"
+
+def test_iconset():
+    iconset_name = "random-iconset"
+    cfg = core.config.Config(["-i", iconset_name])
+    assert cfg.iconset() == iconset_name
+
+def test_reverse(defaultConfig):
+    assert defaultConfig.reverse() == False
+
+    cfg = core.config.Config(["-r"])
+
+    assert cfg.reverse() == True
+
+def test_logfile(defaultConfig):
+    assert defaultConfig.logfile() is None
+
+    logfile = "some-random-logfile"
+    cfg = core.config.Config(["-f", logfile])
+    assert cfg.logfile() == logfile
+
+
+
+def test_all_modules():
+    modules = core.config.all_modules()
+    assert len(modules) > 0
+
+    for module in modules:
+        pyname = "{}.py".format(module)
+        base = os.path.abspath(
+            os.path.join(
+                os.path.dirname(os.path.realpath(__file__)),
+                "..",
+                "..",
+                "bumblebee_status",
+                "modules",
             )
-            self.assertTrue(
-                os.path.exists(os.path.join(base, "contrib", pyname))
-                or os.path.exists(os.path.join(base, "core", pyname))
-            )
+        )
+    assert os.path.exists(os.path.join(base, "contrib", pyname)) \
+        or os.path.exists(os.path.join(base, "core", pyname))
 
-    def test_list_output(self):
-        with unittest.mock.patch("core.config.sys") as sys:
-            cfg = core.config.Config(["-l", "themes"])
-            cfg = core.config.Config(["-l", "modules"])
-            cfg = core.config.Config(["-l", "modules-rst"])
-            # TODO: think of some plausibility testing here
+def test_list_output(mocker):
+    mocker.patch("core.config.sys")
+    cfg = core.config.Config(["-l", "themes"])
+    cfg = core.config.Config(["-l", "modules"])
+    cfg = core.config.Config(["-l", "modules-rst"])
 
-    def test_missing_parameter(self):
-        cfg = core.config.Config(["-p", "test.key"])
-        self.assertEqual("no-value-set", cfg.get("test.key", "no-value-set"))
+def test_missing_parameter():
+    cfg = core.config.Config(["-p", "test.key"])
 
-
+    assert cfg.get("test.key") == None
+    assert cfg.get("test.key", "no-value-set") == "no-value-set"
+#
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

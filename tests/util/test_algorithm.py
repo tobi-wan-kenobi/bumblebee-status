@@ -1,42 +1,50 @@
-import unittest
+import pytest
 
 from util.algorithm import *
 
+@pytest.fixture
+def someData():
+    return {"a": 100, "b": 200, "c": [1, 2, 3]}
 
-class algorithm(unittest.TestCase):
-    def setUp(self):
-        self.someData = {"a": 100, "b": 200, "c": [1, 2, 3]}
-        self.differentData = {"x": 20, "y": "bla", "z": ["a", "b"]}
-        self.moreData = {"n": 100}
-        self.overlapData = {"a": 200, "c": [1, 2, 4]}
+@pytest.fixture
+def differentData():
+    return {"x": 20, "y": "bla", "z": ["a", "b"]}
 
-    def test_merge_with_empty(self):
-        self.assertEqual(self.someData, merge(self.someData, {}))
-        self.assertEqual(None, merge(self.someData, None))
+@pytest.fixture
+def moreData():
+    return {"n": 100}
 
-    def test_merge_no_overwrite(self):
-        result = merge(self.someData, self.differentData)
-        for k in self.someData:
-            self.assertEqual(result[k], self.someData[k])
+@pytest.fixture
+def overlapData():
+    return {"a": 200, "c": [1, 2, 4]}
+
+def test_merge_with_empty(someData):
+    assert merge(someData, {}) == someData
+    assert merge(someData, None) == None
+
+    def test_merge_no_overwrite(someData, differentData):
+        result = merge(someData, differentData)
+        for k in someData:
+            assert someData[k] == result[k]
         for k in self.differentData:
-            self.assertEqual(result[k], self.differentData[k])
+            assert differentData[k] == result[k]
 
-    def test_merge_multiple(self):
-        result = merge(self.someData, self.differentData, self.moreData)
-        for k in self.someData:
-            self.assertEqual(result[k], self.someData[k])
-        for k in self.differentData:
-            self.assertEqual(result[k], self.differentData[k])
-        for k in self.moreData:
-            self.assertEqual(result[k], self.moreData[k])
+    def test_merge_multiple(someData, differentData, moreData):
+        result = merge(someData, differentData, moreData)
+        for k in someData:
+            assert someData[k] == result[k]
+        for k in differentData:
+            assert differentData[k] == result[k]
+        for k in moreData:
+            assert moreData[k] == result[k]
 
-    def merge_overlap(self):
-        result = merge(self.someData, self.overlapData)
-        for k in self.someData:
+    def merge_overlap(someData, overlapData):
+        result = merge(someData, overlapData)
+        for k in someData:
             if not k in self.overlapData:
-                self.assertEqual(result[k], self.someData[k])
+                assert someData[k] == result[k]
         for k in self.overlapData:
-            self.assertEqual(result[k], self.overlapData[k])
+            assert overlapData[k] == result[k]
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

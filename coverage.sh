@@ -1,4 +1,4 @@
 #!/bin/bash
 
-coverage run --source=. -m unittest discover -v -b
+coverage run --source=. -m pytest tests -v
 coverage report -m 

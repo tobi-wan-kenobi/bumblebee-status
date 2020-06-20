@@ -8,10 +8,10 @@ python:
 before_install:
   - sudo apt-get -qq update
 install:
-  - pip install -U coverage==4.3
+  - pip install -U coverage==4.3 pytest
   - pip install codeclimate-test-reporter
 script:
-  - coverage run --source=. -m unittest discover -v
+  - coverage run --source=. -m pytest tests -v
   - CODECLIMATE_REPO_TOKEN=40cb00907f7a10e04868e856570bb997ab9c42fd3b63d980f2b2269433195fdf codeclimate-test-reporter
 addons:
   code_climate:
