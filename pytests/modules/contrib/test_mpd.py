@@ -25,6 +25,14 @@ def test_host():
     module_with_host = modules.contrib.mpd.Module(config=core.config.Config(['-p', 'mpd.host=sample-host']), theme=None)
     assert module_with_host._hostcmd == ' -h sample-host'
 
+def test_host2(mocker):
+    cli = mocker.patch("modules.contrib.mpd.util.cli")
+    module_with_host = modules.contrib.mpd.Module(config=core.config.Config(['-p', 'mpd.host=sample-host']), theme=None)
+    module_with_host.update()
+    args, kwargs = cli.execute.call_args
+
+    assert " -h sample-host" in args[0]
+
 def test_bad_layout():
     pytest.raises(KeyError, modules.contrib.mpd.Module, config=core.config.Config(['-p', 'mpd.layout="mpd.inexistent"']), theme=None)
 
