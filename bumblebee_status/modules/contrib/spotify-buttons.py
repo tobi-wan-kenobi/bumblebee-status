@@ -30,28 +30,27 @@ class Module(core.module.Module):
 
         cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
                 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
-        #core.input.register(self, button=buttons[prev_button], cmd=cmd + "Previous")
-        #core.input.register(self, button=buttons[next_button], cmd=cmd + "Next")
-        #core.input.register(self, button=buttons[pause_button], cmd=cmd + "PlayPause")
 
         widget_map = {}
-        for widget in self.__layout.split():
+        for widget_name in self.__layout.split():
             widget = self.add_widget(name = widget_name)
-            if widget_name = "spotify-buttons.prev":
+            if widget_name == "spotify-buttons.prev":
                 widget_map[widget] = {
                     "button": core.input.LEFT_MOUSE,
                     "cmd": cmd + "Previous",
                 }
-            elif widget_name = "spotify-buttons.pause":
+            elif widget_name == "spotify-buttons.pause":
                 widget_map[widget] = {
                     "button": core.input.LEFT_MOUSE,
                     "cmd": cmd + "PlayPause",
                 }
-            elif widget_name = "spotify-buttons.next":
+            elif widget_name == "spotify-buttons.next":
                 widget_map[widget] = {
                     "button": core.input.LEFT_MOUSE,
                     "cmd": cmd + "Next",
                 }
+        for widget, callback_options in widget_map.items():
+            core.input.register(widget, **callback_options)
 
     @core.decorators.scrollable
     def spotify(self, widget):
