@@ -125,7 +125,7 @@ class Module(core.module.Module):
             widget.set("state", state)
 
     def get_ssid(self, intf):
-        if self._iswlan(intf) and self.iwgetid:
+        if self._iswlan(intf) and not self._istunnel(intf) and self.iwgetid:
             return util.cli.execute(
                 "{} -r {}".format(self.iwgetid, intf), ignore_errors=True
             )
