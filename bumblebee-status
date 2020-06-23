@@ -39,7 +39,7 @@ class CommandSocket(object):
         os.unlink(self.__name)
 
 
-def handle_input(output):
+def handle_input(output, update_lock):
     with CommandSocket() as cmdsocket:
         poll = select.poll()
         poll.register(sys.stdin.fileno(), select.POLLIN)
@@ -67,8 +67,10 @@ def handle_input(output):
                         modules[event["name"]] = True
                 except ValueError:
                     pass
+            update_lock.acquire()
             core.event.trigger("update", modules.keys())
             core.event.trigger("draw")
+            update_lock.release()
 
         poll.unregister(sys.stdin.fileno())
 
@@ -96,7 +98,8 @@ def main():
     core.input.register(None, core.input.WHEEL_UP, "i3-msg workspace prev_on_output")
     core.input.register(None, core.input.WHEEL_DOWN, "i3-msg workspace next_on_output")
 
-    input_thread = threading.Thread(target=handle_input, args=(output,))
+    update_lock = threading.Lock()
+    input_thread = threading.Thread(target=handle_input, args=(output, update_lock, ))
     input_thread.daemon = True
     input_thread.start()
 
@@ -118,8 +121,10 @@ def main():
     core.event.trigger("start")
     started = True
     while True:
-        core.event.trigger("update")
-        core.event.trigger("draw")
+        if update_lock.acquire(blocking=False) == True:
+            core.event.trigger("update")
+            core.event.trigger("draw")
+            update_lock.release()
         output.wait(config.interval())
     core.event.trigger("stop")
 
