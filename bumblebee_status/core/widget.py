@@ -15,6 +15,7 @@ class Widget(util.store.Store, core.input.Object):
         self.__full_text = full_text
         self.module = None
         self.name = name
+        self.minimized = False
 
     @property
     def module(self):

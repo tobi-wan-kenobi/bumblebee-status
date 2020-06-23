@@ -184,12 +184,14 @@ class Module(core.input.Object):
     :rtype: bumblebee_status.widget.Widget
     """
 
-    def widget(self, name=None):
-        if not name:
+    def widget(self, name=None, widget_id=None):
+        if not name and not widget_id:
             return self.widgets()[0]
 
         for w in self.widgets():
-            if w.name == name:
+            if name and w.name == name:
+                return w
+            if w.id == widget_id:
                 return w
         return None
 

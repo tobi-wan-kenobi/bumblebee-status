@@ -129,6 +129,13 @@ def test_get_widget_by_name(empty_config, widget_a, widget_b):
     assert module.widget("i-do-not-exist") == None
     assert module.widget() == widget_a
 
+def test_get_widget_by_id(empty_config, widget_a, widget_b):
+    module = SampleModule(config=empty_config, widgets=[widget_a, widget_b])
+
+    assert module.widget(widget_id=widget_a.id) == widget_a
+    assert module.widget(widget_id=widget_b.id) == widget_b
+    assert module.widget(widget_id="i-do-not-exist") == None
+
 
 def test_default_thresholds(empty_config, widget_a, widget_b):
     module = SampleModule(config=empty_config, widgets=[widget_a, widget_b])

@@ -19,6 +19,7 @@ import core.module
 import core.input
 import core.event
 
+import util.format
 
 started = False
 
@@ -110,6 +111,10 @@ def main():
         modules.reverse()
 
     output.modules(modules)
+
+    if util.format.asbool(config.get("engine.collapsible", True)) == True:
+        core.input.register(None, core.input.MIDDLE_MOUSE, output.toggle_minimize)
+
     core.event.trigger("start")
     started = True
     while True:

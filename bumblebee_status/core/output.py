@@ -152,6 +152,12 @@ class i3(object):
             return self.__modules
         self.__modules = modules if isinstance(modules, list) else [modules]
 
+    def toggle_minimize(self, event):
+        for module in self.__modules:
+            widget = module.widget(widget_id=event["instance"])
+            if widget:
+                widget.minimized = not widget.minimized
+
     def draw(self, what, args=None):
         cb = getattr(self, what)
         data = cb(args) if args else cb()
@@ -187,7 +193,7 @@ class i3(object):
             except:
                 blk.set("min-width", minwidth)
         blk.set("align", widget.theme("align"))
-        blk.set("full_text", self.__content[widget])
+        blk.set("full_text", "\u2026" if widget.minimized else self.__content[widget])
         if widget.get("pango", False):
             blk.set("markup", "pango")
         if self.__config.debug():

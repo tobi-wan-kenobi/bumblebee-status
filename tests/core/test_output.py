@@ -25,6 +25,16 @@ def i3():
 def module_a(mocker):
     widget = mocker.MagicMock()
     widget.full_text.return_value = "test"
+    widget.id = "a"
+    widget.minimized = False
+    return SampleModule(config=core.config.Config([]), widgets=[widget, widget, widget])
+
+@pytest.fixture
+def module_b(mocker):
+    widget = mocker.MagicMock()
+    widget.full_text.return_value = "test"
+    widget.id = "b"
+    widget.minimized = False
     return SampleModule(config=core.config.Config([]), widgets=[widget, widget, widget])
 
 
@@ -46,16 +56,6 @@ def block_a(separatorTheme, module_a):
         theme=separatorTheme, module=module_a, widget=module_a.widget(),
     )
 
-
-# def setUp(self):
-#    self.i3 = core.output.i3()
-#    widget = unittest.mock.MagicMock()
-#    widget.full_text.return_value = "test"
-#    self.someModule = SampleModule(
-#        config=core.config.Config([]), widgets=[widget, widget, widget]
-#    )
-#    self.separator = "***"
-#
 def test_start(i3):
     all_data = i3.start()
     data = all_data["blocks"]
@@ -83,6 +83,19 @@ def test_register_multiple_modules(i3, module_a):
     i3.modules([module_a, module_a, module_a])
     assert i3.modules() == [module_a, module_a, module_a]
 
+def test_toggle_module(i3, module_a, module_b):
+    i3.modules([module_a, module_b])
+
+    i3.toggle_minimize({ "instance": module_a.widget().id })
+
+    assert module_a.widget().minimized == True
+    assert module_b.widget().minimized == False
+
+    i3.toggle_minimize({ "instance": module_a.widget().id })
+    i3.toggle_minimize({ "instance": module_b.widget().id })
+
+    assert module_a.widget().minimized == False
+    assert module_b.widget().minimized == True
 
 def test_draw_existing_module(mocker, i3):
     i3.test_draw = mocker.MagicMock(
