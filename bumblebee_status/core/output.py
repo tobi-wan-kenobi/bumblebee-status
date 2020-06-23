@@ -142,6 +142,9 @@ class i3(object):
         core.event.register("draw", self.draw, "statusline")
         core.event.register("stop", self.draw, "stop")
 
+    def content(self):
+        return self.__content
+
     def theme(self, new_theme=None):
         if new_theme:
             self.__theme = new_theme
@@ -153,10 +156,10 @@ class i3(object):
         self.__modules = modules if isinstance(modules, list) else [modules]
 
     def toggle_minimize(self, event):
-        for module in self.__modules:
-            widget = module.widget(widget_id=event["instance"])
-            if widget:
-                widget.minimized = not widget.minimized
+        widget_id = event["instance"]
+
+        if widget_id in self.__content:
+            self.__content[widget_id]["minimized"] = not self.__content[widget_id]["minimized"]
 
     def draw(self, what, args=None):
         cb = getattr(self, what)
@@ -193,7 +196,7 @@ class i3(object):
             except:
                 blk.set("min-width", minwidth)
         blk.set("align", widget.theme("align"))
-        blk.set("full_text", "\u2026" if widget.minimized else self.__content[widget])
+        blk.set("full_text", "\u2026" if self.__content[widget.id]["minimized"] else self.__content[widget.id]["text"])
         if widget.get("pango", False):
             blk.set("markup", "pango")
         if self.__config.debug():
@@ -236,7 +239,9 @@ class i3(object):
                         module.parameter("interval", self.__config.interval())
                     )
             for widget in module.widgets():
-                self.__content[widget] = widget.full_text()
+                if not widget.id in self.__content:
+                    self.__content[widget.id] = { "minimized": False }
+                self.__content[widget.id]["text"] = widget.full_text()
 
     def statusline(self):
         blocks = []
