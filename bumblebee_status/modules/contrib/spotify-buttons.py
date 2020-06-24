@@ -44,9 +44,9 @@ class Module(core.module.Module):
                 spotify_iface.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
             )
             if playback_status == "Playing":
-                self.__pause = "\u25B6"
-            else:
                 self.__pause = "\u258D\u258D"
+            else:
+                self.__pause = "\u25B6"
             self.__song = self.__format.format(
                 album=str(props.get("xesam:album")),
                 title=str(props.get("xesam:title")),
