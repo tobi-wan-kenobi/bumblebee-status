@@ -30,6 +30,11 @@ def execute(
     """
     args = cmd if shell else shlex.split(cmd)
     logging.debug(cmd)
+
+    if not env:
+        env = os.environ.copy()
+    env["LC_ALL"] = "C"
+
     try:
         proc = subprocess.Popen(
             args,
