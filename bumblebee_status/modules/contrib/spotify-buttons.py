@@ -13,6 +13,8 @@ Requires the following library:
 Parameters:
     * spotify-buttons.format:   Format string (defaults to '{artist} - {title}')
       Available values are: {album}, {title}, {artist}, {trackNumber}
+    * spotify-buttons.layout:   Order in which widgets appear (defaults to song, previous, pause, next)
+      Widget names are: spotify-buttons.song, spotify-buttons.prev, spotify-buttons.pause, spotify-buttons.next
 """
 
 class Module(core.module.Module):
