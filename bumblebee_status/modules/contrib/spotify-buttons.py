@@ -60,7 +60,8 @@ class Module(core.module.Module):
                 artist=",".join(props.get("xesam:artist")),
                 trackNumber=str(props.get("xesam:trackNumber")),
             )
-            # this feels like a stupid way to do this but its all i can think of
+
+            #add widgets
             widget_map = {}
             for widget_name in self.__layout.split():
                 widget = self.add_widget(name=widget_name)
