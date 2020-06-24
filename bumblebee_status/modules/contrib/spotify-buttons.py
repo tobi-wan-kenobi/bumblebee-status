@@ -5,6 +5,7 @@ import core.module
 import core.widget
 import core.input
 import core.decorators
+
 """Displays the current song being played and allows pausing, skipping ahead, and skipping back.
 
 Requires the following library:
@@ -17,11 +18,15 @@ Parameters:
       Widget names are: spotify-buttons.song, spotify-buttons.prev, spotify-buttons.pause, spotify-buttons.next
 """
 
+
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
 
-        self.__layout = self.parameter("layout", "spotify-buttons.song spotify-buttons.prev spotify-buttons.pause spotify-buttons.next")
+        self.__layout = self.parameter(
+            "layout",
+            "spotify-buttons.song spotify-buttons.prev spotify-buttons.pause spotify-buttons.next",
+        )
 
         self.__song = ""
         self.__pause = ""
@@ -55,34 +60,36 @@ class Module(core.module.Module):
                 artist=",".join(props.get("xesam:artist")),
                 trackNumber=str(props.get("xesam:trackNumber")),
             )
-            #this feels like a stupid way to do this but its all i can think of
+            # this feels like a stupid way to do this but its all i can think of
             widget_map = {}
             for widget_name in self.__layout.split():
-                widget = self.add_widget(name = widget_name)
+                widget = self.add_widget(name=widget_name)
                 if widget_name == "spotify-buttons.prev":
                     widget_map[widget] = {
                         "button": core.input.LEFT_MOUSE,
                         "cmd": self.__cmd + "Previous",
-                        }
+                    }
                     widget.full_text("\u258F\u25C0")
                 elif widget_name == "spotify-buttons.pause":
                     widget_map[widget] = {
                         "button": core.input.LEFT_MOUSE,
                         "cmd": self.__cmd + "PlayPause",
-                        }
+                    }
                     widget.full_text(self.__pause)
                 elif widget_name == "spotify-buttons.next":
                     widget_map[widget] = {
                         "button": core.input.LEFT_MOUSE,
                         "cmd": self.__cmd + "Next",
-                        }
+                    }
                     widget.full_text("\u25B6\u2595")
                 elif widget_name == "spotify-buttons.song":
                     widget.full_text(self.__song)
                 else:
                     raise KeyError(
-                        "The spotify-buttons module does not have a {widget_name!r} widget".format(widget_name=widget_name)
+                        "The spotify-buttons module does not have a {widget_name!r} widget".format(
+                            widget_name=widget_name
                         )
+                    )
             for widget, callback_options in widget_map.items():
                 core.input.register(widget, **callback_options)
 
