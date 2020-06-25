@@ -221,6 +221,14 @@ Parameters:
 
 .. image:: ../screenshots/spacer.png
 
+speedtest
+~~~~~~~~~
+
+Performs a speedtest - only updates when the "play" button is clicked
+
+Requires the following python module:
+    * speedtest-cli
+
 test
 ~~~~
 
