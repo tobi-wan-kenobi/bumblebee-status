@@ -281,5 +281,9 @@
   },
   "arandr": {
     "prefix": ""
+  },
+  "speedtest": {
+    "running": { "prefix": "\uf110" },
+	"not-running": { "prefix": "\uf144" }
   }
 }

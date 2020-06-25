@@ -24,8 +24,6 @@ import core.decorators
 import util.cli
 
 
-
-
 class Module(core.module.Module):
     @core.decorators.every(seconds=60)
     def __init__(self, config, theme):

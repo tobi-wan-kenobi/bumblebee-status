@@ -228,16 +228,17 @@ class i3(object):
             if affected_modules and not module.id in affected_modules:
                 continue
             if not affected_modules and module.next_update:
-                if module.parameter("interval", "") == "never":
-                    continue
                 if now < module.next_update:
                     continue
+
             if not redraw_only:
                 module.update_wrapper()
                 if module.parameter("interval", "") != "never":
                     module.next_update = now + util.format.seconds(
                         module.parameter("interval", self.__config.interval())
                     )
+                else:
+                    module.next_update = sys.maxsize
             for widget in module.widgets():
                 if not widget.id in self.__content:
                     self.__content[widget.id] = { "minimized": False }
