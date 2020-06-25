@@ -5,6 +5,7 @@ import core.module
 import core.widget
 import core.input
 import core.decorators
+import util.format
 
 """Displays the current song being played and allows pausing, skipping ahead, and skipping back.
 
@@ -25,7 +26,7 @@ class Module(core.module.Module):
 
         self.__layout = self.parameter(
             "layout",
-            "spotify-buttons.song spotify-buttons.prev spotify-buttons.pause spotify-buttons.next",
+            util.format.aslist("spotify-buttons.song,spotify-buttons.prev,spotify-buttons.pause,spotify-buttons.next"),
         )
 
         self.__song = ""
@@ -63,7 +64,7 @@ class Module(core.module.Module):
 
             #add widgets
             widget_map = {}
-            for widget_name in self.__layout.split():
+            for widget_name in self.__layout:
                 widget = self.add_widget(name=widget_name)
                 if widget_name == "spotify-buttons.prev":
                     widget_map[widget] = {
