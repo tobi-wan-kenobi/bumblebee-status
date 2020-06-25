@@ -9,6 +9,7 @@ Requires the following python module:
 
 import core.module
 import core.widget
+import core.input
 import core.decorators
 
 import speedtest
@@ -26,8 +27,13 @@ class Module(core.module.Module):
         start = self.add_widget(name="start")
         main = self.add_widget(name="main", full_text=self.result)
 
+        core.input.register(start, button=core.input.LEFT_MOUSE, cmd=self.update_event)
+
     def result(self, _):
         return self.__result
+
+    def update_event(self, _):
+        self.update()
 
     def update(self):
         self.__running = True
