@@ -10,6 +10,7 @@ Requires the following python module:
 import core.module
 import core.widget
 import core.input
+import core.event
 import core.decorators
 
 import speedtest
@@ -37,6 +38,7 @@ class Module(core.module.Module):
 
     def update(self):
         self.__running = True
+        core.event.trigger("update", [self.id], redraw_only=True)
         s = speedtest.Speedtest()
         s.get_best_server()
         s.download(threads=None)
