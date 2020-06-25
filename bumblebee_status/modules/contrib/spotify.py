@@ -17,6 +17,10 @@ Parameters:
       Available values are: {album}, {title}, {artist}, {trackNumber}
     * spotify.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
       Widget names are: spotify.song, spotify.prev, spotify.pause, spotify.next
+
+contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
+
+added controls by `LtPeriwinkle <https://github.com/LtPeriwinkle>`_ - many thanks!
 """
 
 
