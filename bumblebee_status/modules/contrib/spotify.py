@@ -1,24 +1,3 @@
-# pylint: disable=C0111,R0903
-
-"""Displays the current song being played
-
-Requires the following library:
-    * python-dbus
-
-Parameters:
-    * spotify.format:   Format string (defaults to '{artist} - {title}')
-      Available values are: {album}, {title}, {artist}, {trackNumber}, {playbackStatus}
-    * spotify.previous: Change binding for previous song (default is left click)
-    * spotify.next:     Change binding for next song (default is right click)
-    * spotify.pause:    Change binding for toggling pause (default is middle click)
-
-    Available options for spotify.previous, spotify.next and spotify.pause are:
-        LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
-
-
-contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
-"""
-
 import sys
 import dbus
 
@@ -26,41 +5,43 @@ import core.module
 import core.widget
 import core.input
 import core.decorators
+import util.format
+
+"""Displays the current song being played and allows pausing, skipping ahead, and skipping back.
+
+Requires the following library:
+    * python-dbus
+
+Parameters:
+    * spotify-buttons.format:   Format string (defaults to '{artist} - {title}')
+      Available values are: {album}, {title}, {artist}, {trackNumber}
+    * spotify-buttons.layout:   Order in which widgets appear (defaults to song, previous, pause, next)
+      Widget names are: spotify-buttons.song, spotify-buttons.prev, spotify-buttons.pause, spotify-buttons.next
+"""
 
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
-        super().__init__(config, theme, core.widget.Widget(self.spotify))
+        super().__init__(config, theme, [])
 
-        buttons = {
-            "LEFT_CLICK": core.input.LEFT_MOUSE,
-            "RIGHT_CLICK": core.input.RIGHT_MOUSE,
-            "MIDDLE_CLICK": core.input.MIDDLE_MOUSE,
-            "SCROLL_UP": core.input.WHEEL_UP,
-            "SCROLL_DOWN": core.input.WHEEL_DOWN,
-        }
+        self.__layout = self.parameter(
+            "layout",
+            util.format.aslist("spotify-buttons.song,spotify-buttons.prev,spotify-buttons.pause,spotify-buttons.next"),
+        )
 
         self.__song = ""
+        self.__pause = ""
         self.__format = self.parameter("format", "{artist} - {title}")
-        prev_button = self.parameter("previous", "LEFT_CLICK")
-        next_button = self.parameter("next", "RIGHT_CLICK")
-        pause_button = self.parameter("pause", "MIDDLE_CLICK")
 
-        cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
+        self.__cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
                 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
-        core.input.register(self, button=buttons[prev_button], cmd=cmd + "Previous")
-        core.input.register(self, button=buttons[next_button], cmd=cmd + "Next")
-        core.input.register(self, button=buttons[pause_button], cmd=cmd + "PlayPause")
-
-    @core.decorators.scrollable
-    def spotify(self, widget):
-        return self.string_song
 
     def hidden(self):
         return self.string_song == ""
 
     def update(self):
         try:
+            self.clear_widgets()
             bus = dbus.SessionBus()
             spotify = bus.get_object(
                 "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"
@@ -70,17 +51,49 @@ class Module(core.module.Module):
             playback_status = str(
                 spotify_iface.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
             )
+            if playback_status == "Playing":
+                self.__pause = "\u258D\u258D"
+            else:
+                self.__pause = "\u25B6"
             self.__song = self.__format.format(
                 album=str(props.get("xesam:album")),
                 title=str(props.get("xesam:title")),
                 artist=",".join(props.get("xesam:artist")),
                 trackNumber=str(props.get("xesam:trackNumber")),
-                playbackStatus="\u25B6"
-                if playback_status == "Playing"
-                else "\u258D\u258D"
-                if playback_status == "Paused"
-                else "",
             )
+
+            #add widgets
+            widget_map = {}
+            for widget_name in self.__layout:
+                widget = self.add_widget(name=widget_name)
+                if widget_name == "spotify-buttons.prev":
+                    widget_map[widget] = {
+                        "button": core.input.LEFT_MOUSE,
+                        "cmd": self.__cmd + "Previous",
+                    }
+                    widget.full_text("\u258F\u25C0")
+                elif widget_name == "spotify-buttons.pause":
+                    widget_map[widget] = {
+                        "button": core.input.LEFT_MOUSE,
+                        "cmd": self.__cmd + "PlayPause",
+                    }
+                    widget.full_text(self.__pause)
+                elif widget_name == "spotify-buttons.next":
+                    widget_map[widget] = {
+                        "button": core.input.LEFT_MOUSE,
+                        "cmd": self.__cmd + "Next",
+                    }
+                    widget.full_text("\u25B6\u2595")
+                elif widget_name == "spotify-buttons.song":
+                    widget.full_text(self.__song)
+                else:
+                    raise KeyError(
+                        "The spotify module does not have a {widget_name!r} widget".format(
+                            widget_name=widget_name
+                        )
+                    )
+            for widget, callback_options in widget_map.items():
+                core.input.register(widget, **callback_options)
 
         except Exception:
             self.__song = ""
@@ -90,6 +103,3 @@ class Module(core.module.Module):
         if sys.version_info.major < 3:
             return unicode(self.__song)
         return str(self.__song)
-
-
-# vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
