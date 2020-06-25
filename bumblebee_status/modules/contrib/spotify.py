@@ -13,10 +13,10 @@ Requires the following library:
     * python-dbus
 
 Parameters:
-    * spotify-buttons.format:   Format string (defaults to '{artist} - {title}')
+    * spotify.format:   Format string (defaults to '{artist} - {title}')
       Available values are: {album}, {title}, {artist}, {trackNumber}
-    * spotify-buttons.layout:   Order in which widgets appear (defaults to song, previous, pause, next)
-      Widget names are: spotify-buttons.song, spotify-buttons.prev, spotify-buttons.pause, spotify-buttons.next
+    * spotify.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
+      Widget names are: spotify.song, spotify.prev, spotify.pause, spotify.next
 """
 
 
@@ -26,7 +26,7 @@ class Module(core.module.Module):
 
         self.__layout = self.parameter(
             "layout",
-            util.format.aslist("spotify-buttons.song,spotify-buttons.prev,spotify-buttons.pause,spotify-buttons.next"),
+            util.format.aslist("spotify.song,spotify.prev,spotify.pause,spotify.next"),
         )
 
         self.__song = ""
@@ -39,52 +39,54 @@ class Module(core.module.Module):
     def hidden(self):
         return self.string_song == ""
 
-    def update(self):
-        try:
-            self.clear_widgets()
-            bus = dbus.SessionBus()
-            spotify = bus.get_object(
-                "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"
-            )
-            spotify_iface = dbus.Interface(spotify, "org.freedesktop.DBus.Properties")
-            props = spotify_iface.Get("org.mpris.MediaPlayer2.Player", "Metadata")
-            playback_status = str(
-                spotify_iface.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
-            )
-            if playback_status == "Playing":
-                self.__pause = "\u258D\u258D"
-            else:
-                self.__pause = "\u25B6"
+    def __get_song(self):
+        bus = dbus.SessionBus()
+        spotify = bus.get_object(
+            "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"
+        )
+        spotify_iface = dbus.Interface(spotify, "org.freedesktop.DBus.Properties")
+        props = spotify_iface.Get("org.mpris.MediaPlayer2.Player", "Metadata")
+        playback_status = str(
+            spotify_iface.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
+        )
+        if playback_status == "Playing":
+            self.__pause = "\u258D\u258D"
+        else:
+            self.__pause = "\u25B6"
             self.__song = self.__format.format(
-                album=str(props.get("xesam:album")),
-                title=str(props.get("xesam:title")),
+            album=str(props.get("xesam:album")),
+            title=str(props.get("xesam:title")),
                 artist=",".join(props.get("xesam:artist")),
                 trackNumber=str(props.get("xesam:trackNumber")),
             )
 
-            #add widgets
+    def update(self):
+        try:
+            self.clear_widgets()
+            self.__get_song()
+            
             widget_map = {}
             for widget_name in self.__layout:
                 widget = self.add_widget(name=widget_name)
-                if widget_name == "spotify-buttons.prev":
+                if widget_name == "spotify.prev":
                     widget_map[widget] = {
                         "button": core.input.LEFT_MOUSE,
                         "cmd": self.__cmd + "Previous",
                     }
                     widget.full_text("\u258F\u25C0")
-                elif widget_name == "spotify-buttons.pause":
+                elif widget_name == "spotify.pause":
                     widget_map[widget] = {
                         "button": core.input.LEFT_MOUSE,
                         "cmd": self.__cmd + "PlayPause",
                     }
                     widget.full_text(self.__pause)
-                elif widget_name == "spotify-buttons.next":
+                elif widget_name == "spotify.next":
                     widget_map[widget] = {
                         "button": core.input.LEFT_MOUSE,
                         "cmd": self.__cmd + "Next",
                     }
                     widget.full_text("\u25B6\u2595")
-                elif widget_name == "spotify-buttons.song":
+                elif widget_name == "spotify.song":
                     widget.full_text(self.__song)
                 else:
                     raise KeyError(
