@@ -1123,23 +1123,20 @@ contributed by `rad4day <https://github.com/rad4day>`_ - many thanks!
 spotify
 ~~~~~~~
 
-Displays the current song being played
+Displays the current song being played and allows pausing, skipping ahead, and skipping back.
 
 Requires the following library:
     * python-dbus
 
 Parameters:
     * spotify.format:   Format string (defaults to '{artist} - {title}')
-      Available values are: {album}, {title}, {artist}, {trackNumber}, {playbackStatus}
-    * spotify.previous: Change binding for previous song (default is left click)
-    * spotify.next:     Change binding for next song (default is right click)
-    * spotify.pause:    Change binding for toggling pause (default is middle click)
-
-    Available options for spotify.previous, spotify.next and spotify.pause are:
-        LEFT_CLICK, RIGHT_CLICK, MIDDLE_CLICK, SCROLL_UP, SCROLL_DOWN
-
+      Available values are: {album}, {title}, {artist}, {trackNumber}
+    * spotify.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
+      Widget names are: spotify.song, spotify.prev, spotify.pause, spotify.next
 
 contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
+
+added controls by `LtPeriwinkle <https://github.com/LtPeriwinkle>`_ - many thanks!
 
 .. image:: ../screenshots/spotify.png
 

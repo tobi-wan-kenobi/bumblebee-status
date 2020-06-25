@@ -1,12 +1,3 @@
-import sys
-import dbus
-
-import core.module
-import core.widget
-import core.input
-import core.decorators
-import util.format
-
 """Displays the current song being played and allows pausing, skipping ahead, and skipping back.
 
 Requires the following library:
@@ -22,6 +13,15 @@ contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 
 added controls by `LtPeriwinkle <https://github.com/LtPeriwinkle>`_ - many thanks!
 """
+
+import sys
+import dbus
+
+import core.module
+import core.widget
+import core.input
+import core.decorators
+import util.format
 
 
 class Module(core.module.Module):
