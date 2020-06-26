@@ -7,6 +7,8 @@ Requires the following python module:
 
 """
 
+import sys
+
 import core.module
 import core.widget
 import core.input
@@ -22,7 +24,7 @@ class Module(core.module.Module):
         super().__init__(config, theme, [])
 
         self.background = True
-        self.__result = "waiting"
+        self.__result = "<speedtest>"
         self.__running = False
 
         start = self.add_widget(name="start")
@@ -34,10 +36,12 @@ class Module(core.module.Module):
         return self.__result
 
     def update_event(self, _):
+        self.__running = True
         self.update()
 
     def update(self):
-        self.__running = True
+        if not self.__running:
+            return
         core.event.trigger("update", [self.id], redraw_only=True)
         s = speedtest.Speedtest()
         s.get_best_server()
@@ -50,6 +54,7 @@ class Module(core.module.Module):
             s.results.upload / 1024 / 1024,
         )
         self.__running = False
+        core.event.trigger("update", [self.id], redraw_only=True)
 
     def state(self, widget):
         if widget.name == "start":

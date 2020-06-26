@@ -283,7 +283,7 @@
     "prefix": ""
   },
   "speedtest": {
-    "running": { "prefix": "\uf110" },
+    "running": { "prefix": ["\uf251", "\uf252", "\uf253"] },
 	"not-running": { "prefix": "\uf144" }
   }
 }

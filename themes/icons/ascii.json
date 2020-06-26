@@ -362,5 +362,9 @@
   },
   "arandr": {
       "prefix": " displays "
+  },
+  "speedtest": {
+    "running": { "prefix": [".", "..", "...", ".."] },
+	"not-running": { "prefix": "[start]" }
   }
 }
