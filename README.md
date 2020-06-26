@@ -133,14 +133,6 @@ bar {
 
 Restart i3wm and - that's it!
 
-# User contributions
-
-[@somospocos:bumblebee-status-contrib](https://github.com/somospocos/bumblebee-status-contrib): Collected resources and useful tricks by @somospocos
-
-[@somospocos:bumblebee-bridge-dwm](https://github.com/somospocos/bumblebee-bridge-dwm): Bridge bumblebee-status output into dwm status bar
-
-[@somospocos:bumblebee-bridge-dzen2](https://github.com/somospocos/bumblebee-bridge-dzen2): Bridge bumblebee-status output into dzen2
-
 # Examples
 
 [List of themes](https://bumblebee-status.readthedocs.io/en/main/themes.html)
