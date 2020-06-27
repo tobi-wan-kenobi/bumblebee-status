@@ -17,15 +17,6 @@ __data = {}
 __next = 0
 __sources = [
     {
-        "url": "http://free.ipwhois.io/json/",
-        "mapping": {
-            "latitude": "latitude",
-            "longitude": "longitude",
-            "country": "country",
-            "ip": "public_ip",
-        },
-    },
-    {
         "url": "http://ipapi.co/json",
         "mapping": {
             "latitude": "latitude",
@@ -34,6 +25,15 @@ __sources = [
             "ip": "public_ip",
         },
     },
+    {
+        "url": "http://free.ipwhois.io/json/",
+        "mapping": {
+            "latitude": "latitude",
+            "longitude": "longitude",
+            "country": "country",
+            "ip": "public_ip",
+        },
+    }
 ]
 
 
