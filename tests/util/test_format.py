@@ -110,4 +110,7 @@ def test_temperature():
     assert astemperature(-100, "kelvin") == "-100°K"
 
 
+def test_temperature_case():
+    assert astemperature(100, "ImPeRiAl") == "100°F"
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
