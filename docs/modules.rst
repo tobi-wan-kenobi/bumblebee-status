@@ -404,6 +404,8 @@ Displays the brightness of a display
 
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
+    * brightness.device_path: The device path (defaults to /sys/class/backlight/intel_backlight), can contain wildcards (in this case, the first matching path will be used); This is only used when brightness.use_acpi is set to true
+    * brightness.use_acpi: If set to true, read brightness directly from the sys ACPI interface, using the device specified in brightness.device_path (defaults to false)
 
 contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
 
