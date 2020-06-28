@@ -11,7 +11,7 @@ def urllib_req(mocker):
 
 
 @pytest.fixture
-def primaryLocation():
+def secondaryLocation():
     return {
         "country": "Middle Earth",
         "longitude": "10.0",
@@ -21,7 +21,7 @@ def primaryLocation():
 
 
 @pytest.fixture
-def secondaryLocation():
+def primaryLocation():
     return {
         "country_name": "Rivia",
         "longitude": "-10.0",
@@ -33,7 +33,7 @@ def secondaryLocation():
 def test_primary_provider(urllib_req, primaryLocation):
     urllib_req.urlopen.return_value.read.return_value = json.dumps(primaryLocation)
 
-    assert util.location.country() == primaryLocation["country"]
+    assert util.location.country() == primaryLocation["country_name"]
     assert util.location.coordinates() == (
         primaryLocation["latitude"],
         primaryLocation["longitude"],
@@ -46,7 +46,7 @@ def test_secondary_provider(mocker, urllib_req, secondaryLocation):
     urlopen.read.return_value = json.dumps(secondaryLocation)
     urllib_req.urlopen.side_effect = [RuntimeError(), urlopen]
 
-    assert util.location.country() == secondaryLocation["country_name"]
+    assert util.location.country() == secondaryLocation["country"]
     assert util.location.coordinates() == (
         secondaryLocation["latitude"],
         secondaryLocation["longitude"],
