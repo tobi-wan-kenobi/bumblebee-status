@@ -33,14 +33,19 @@ def execute(
 
     if not env:
         env = os.environ.copy()
-    env["LC_ALL"] = "C"
+
+    myenv = env.copy()
+
+    myenv["LC_ALL"] = "C"
+    if "WAYLAND_SOCKET" in myenv:
+        del myenv["WAYLAND_SOCKET"]
 
     try:
         proc = subprocess.Popen(
             args,
             stdout=subprocess.PIPE,
             stderr=subprocess.STDOUT if include_stderr else subprocess.PIPE,
-            env=env,
+            env=myenv,
             shell=shell,
         )
     except FileNotFoundError as e:
