@@ -297,7 +297,11 @@
     "prefix": ""
   },
   "spotify": {
-    "prefix": ""
+    "song": { "prefix": "spotify" },
+    "prev": { "prefix": "|<" },
+    "playing": { "prefix": "|>" },
+    "paused": { "prefix": "||" },
+    "next": { "prefix": ">|" }
   },
   "uptime": {
     "prefix": "uptime"
