@@ -50,25 +50,18 @@ class Module(core.module.Module):
         )
         spotify_iface = dbus.Interface(spotify, "org.freedesktop.DBus.Properties")
         props = spotify_iface.Get("org.mpris.MediaPlayer2.Player", "Metadata")
-        playback_status = str(
-            spotify_iface.Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
-        )
-        if playback_status == "Playing":
-            self.__pause = "\u258D\u258D"
-        else:
-            self.__pause = "\u25B6"
-            self.__song = self.__format.format(
+        self.__song = self.__format.format(
             album=str(props.get("xesam:album")),
             title=str(props.get("xesam:title")),
-                artist=",".join(props.get("xesam:artist")),
-                trackNumber=str(props.get("xesam:trackNumber")),
-            )
+            artist=",".join(props.get("xesam:artist")),
+            trackNumber=str(props.get("xesam:trackNumber")),
+        )
 
     def update(self):
         try:
             self.clear_widgets()
             self.__get_song()
-            
+
             widget_map = {}
             for widget_name in self.__layout:
                 widget = self.add_widget(name=widget_name)
@@ -77,20 +70,29 @@ class Module(core.module.Module):
                         "button": core.input.LEFT_MOUSE,
                         "cmd": self.__cmd + "Previous",
                     }
-                    widget.full_text("\u258F\u25C0")
+                    widget.set("state", "prev")
                 elif widget_name == "spotify.pause":
                     widget_map[widget] = {
                         "button": core.input.LEFT_MOUSE,
                         "cmd": self.__cmd + "PlayPause",
                     }
-                    widget.full_text(self.__pause)
+                    playback_status = str(
+                        dbus.Interface(dbus.SessionBus().get_object(
+                            "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"), "org.freedesktop.DBus.Properties")
+                                .Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
+                    )
+                    if playback_status == "Playing":
+                        widget.set("state", "playing")
+                    else:
+                        widget.set("state", "paused")
                 elif widget_name == "spotify.next":
                     widget_map[widget] = {
                         "button": core.input.LEFT_MOUSE,
                         "cmd": self.__cmd + "Next",
                     }
-                    widget.full_text("\u25B6\u2595")
+                    widget.set("state", "next")
                 elif widget_name == "spotify.song":
+                    widget.set("state", "song")
                     widget.full_text(self.__song)
                 else:
                     raise KeyError(
