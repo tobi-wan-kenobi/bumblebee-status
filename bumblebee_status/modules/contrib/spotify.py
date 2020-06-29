@@ -6,12 +6,15 @@ Requires the following library:
 Parameters:
     * spotify.format:   Format string (defaults to '{artist} - {title}')
       Available values are: {album}, {title}, {artist}, {trackNumber}
-    * spotify.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
+    * spotify.layout:   Space-separated list to change order of widgets (defaults to song, previous, pause, next)
       Widget names are: spotify.song, spotify.prev, spotify.pause, spotify.next
+      Example: `spotify.layout="spotify.prev spotify.song spotify.pause spotify.next"`
 
 contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 
 added controls by `LtPeriwinkle <https://github.com/LtPeriwinkle>`_ - many thanks!
+
+fixed icons and layout parameter by `gkeep <https://github.com/gkeep>`_ - many thanks!
 """
 
 import sys
@@ -29,8 +32,7 @@ class Module(core.module.Module):
         super().__init__(config, theme, [])
 
         self.__layout = self.parameter(
-            "layout",
-            util.format.aslist("spotify.song,spotify.prev,spotify.pause,spotify.next"),
+            "layout", "spotify.song spotify.prev spotify.pause spotify.next",
         )
 
         self.__song = ""
@@ -63,7 +65,7 @@ class Module(core.module.Module):
             self.__get_song()
 
             widget_map = {}
-            for widget_name in self.__layout:
+            for widget_name in self.__layout.split():
                 widget = self.add_widget(name=widget_name)
                 if widget_name == "spotify.prev":
                     widget_map[widget] = {
