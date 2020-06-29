@@ -53,12 +53,12 @@ class Module(core.module.Module):
             self.__pause = "\u258D\u258D"
         else:
             self.__pause = "\u25B6"
-            self.__song = self.__format.format(
+        self.__song = self.__format.format(
             album=str(props.get("xesam:album")),
             title=str(props.get("xesam:title")),
-                artist=",".join(props.get("xesam:artist")),
-                trackNumber=str(props.get("xesam:trackNumber")),
-            )
+            artist=",".join(props.get("xesam:artist")),
+            trackNumber=str(props.get("xesam:trackNumber")),
+        )
 
     def update(self):
         try:
