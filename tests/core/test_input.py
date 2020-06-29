@@ -59,14 +59,14 @@ def test_different_events(obj, obj2, cb, cb2):
     cb2.assert_not_called()
 
 
-def test_multiple_registrations(obj, cb, cb2):
+def test_multiple_registrations_on_same_button(obj, cb, cb2):
     core.input.register(obj, event(obj)["button"], cb)
     core.input.register(obj, event(obj)["button"], cb2)
 
     core.input.trigger(event(obj))
 
-    cb.assert_called_once_with(event(obj))
     cb2.assert_called_once_with(event(obj))
+    cb.assert_not_called()
 
 
 def test_event_names():

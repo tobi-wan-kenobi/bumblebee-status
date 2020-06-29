@@ -8,6 +8,9 @@ def register(event, callback, *args, **kwargs):
 
     __callbacks.setdefault(event, []).append(cb)
 
+def unregister(event):
+    if event in __callbacks:
+        del __callbacks[event]
 
 def clear():
     __callbacks.clear()

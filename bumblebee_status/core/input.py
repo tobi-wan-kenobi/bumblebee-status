@@ -50,6 +50,7 @@ def __execute(event, cmd, wait=False):
 def register(obj, button=None, cmd=None, wait=False):
     event_id = __event_id(obj.id if obj is not None else "", button)
     logging.debug("registering callback {}".format(event_id))
+    core.event.unregister(event_id) # make sure there's always only one input event
     if callable(cmd):
         core.event.register(event_id, cmd)
     else:
