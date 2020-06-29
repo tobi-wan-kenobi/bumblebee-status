@@ -219,7 +219,11 @@
     "prefix": "  "
   },
   "spotify": {
-    "prefix": "  "
+    "song": { "prefix": "" },
+    "prev": { "prefix": "" },
+    "playing": { "prefix": "" },
+    "paused": { "prefix": "" },
+    "next": { "prefix": "" }
   },
   "publicip": {
     "prefix": "  "
