@@ -79,9 +79,13 @@ class Module(core.module.Module):
                         "cmd": self.__cmd + "PlayPause",
                     }
                     playback_status = str(
-                        dbus.Interface(dbus.SessionBus().get_object(
-                            "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"), "org.freedesktop.DBus.Properties")
-                                .Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
+                        dbus.Interface(
+                            dbus.SessionBus().get_object(
+                                "org.mpris.MediaPlayer2.spotify",
+                                "/org/mpris/MediaPlayer2",
+                            ),
+                            "org.freedesktop.DBus.Properties",
+                        ).Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
                     )
                     if playback_status == "Playing":
                         widget.set("state", "playing")
