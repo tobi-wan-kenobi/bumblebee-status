@@ -52,6 +52,21 @@ JSON file located in ``$(THEME_DIRECTORY)/icons/``. The format of the
 icon file is identical to the theme itself (as the two are essentially
 just merged into a single JSON.
 
+To create an "icon-only" widget (e.g. the play/pause/forward/rewind buttons
+of a media player), you need to do the following:
+
+1. In the module, create a widget, and set its state to a descriptive value
+   (for example `widget.set("state", "next")`
+2. In the theme's icon definition JSON, define a `prefix` for that state:
+
+.. code:: json
+
+    {
+      "spotify": {
+        "next": { "prefix": "<next icon>" }
+      },
+    }
+
 Color definitions and pyWAL support
 -----------------------------------
 
