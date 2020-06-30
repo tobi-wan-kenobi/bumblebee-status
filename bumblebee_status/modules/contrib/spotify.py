@@ -12,6 +12,8 @@ Parameters:
 contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 
 added controls by `LtPeriwinkle <https://github.com/LtPeriwinkle>`_ - many thanks!
+
+fixed icons and layout parameter by `gkeep <https://github.com/gkeep>`_ - many thanks!
 """
 
 import sys
@@ -28,9 +30,10 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
 
-        self.__layout = self.parameter(
-            "layout",
-            util.format.aslist("spotify.song,spotify.prev,spotify.pause,spotify.next"),
+        self.__layout = util.format.aslist(
+            self.parameter(
+                "layout", "spotify.song,spotify.prev,spotify.pause,spotify.next",
+            )
         )
 
         self.__song = ""
@@ -77,9 +80,13 @@ class Module(core.module.Module):
                         "cmd": self.__cmd + "PlayPause",
                     }
                     playback_status = str(
-                        dbus.Interface(dbus.SessionBus().get_object(
-                            "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"), "org.freedesktop.DBus.Properties")
-                                .Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
+                        dbus.Interface(
+                            dbus.SessionBus().get_object(
+                                "org.mpris.MediaPlayer2.spotify",
+                                "/org/mpris/MediaPlayer2",
+                            ),
+                            "org.freedesktop.DBus.Properties",
+                        ).Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
                     )
                     if playback_status == "Playing":
                         widget.set("state", "playing")
