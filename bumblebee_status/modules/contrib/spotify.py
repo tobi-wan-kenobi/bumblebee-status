@@ -89,9 +89,9 @@ class Module(core.module.Module):
                         ).Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
                     )
                     if playback_status == "Playing":
-                        widget.set("state", "playing")
-                    else:
                         widget.set("state", "paused")
+                    else:
+                        widget.set("state", "playing")
                 elif widget_name == "spotify.next":
                     widget_map[widget] = {
                         "button": core.input.LEFT_MOUSE,
