@@ -22,7 +22,7 @@
     "fan": { "prefix": "" }
   },
   "disk": { "prefix": "" },
-  "smartstatus": { "prefix": "" },  
+  "smartstatus": { "prefix": "" },
   "dnf": { "prefix": "" },
   "apt": { "prefix": "" },
   "pacman": { "prefix": "" },
@@ -48,8 +48,8 @@
     "DEGRADED": { "prefix": "!" }
   },
   "cmus": {
-    "playing": { "prefix": "" },
-    "paused": { "prefix": "" },
+    "playing": { "prefix": "" },
+    "paused": { "prefix": "" },
     "stopped": { "prefix": "" },
     "prev": { "prefix": "" },
     "next": { "prefix": "" },
@@ -59,15 +59,15 @@
     "repeat-off": { "prefix": "" }
   },
   "gpmdp": {
-    "playing": { "prefix": "" },
-    "paused": { "prefix": "" },
+    "playing": { "prefix": "" },
+    "paused": { "prefix": "" },
     "stopped": { "prefix": "" },
     "prev": { "prefix": "" },
     "next": { "prefix": "" }
   },
   "playerctl": {
-    "playing": { "prefix": "" },
-    "paused": { "prefix": "" },
+    "playing": { "prefix": "" },
+    "paused": { "prefix": "" },
     "stopped": { "prefix": "" },
     "prev": { "prefix": "" },
     "next": { "prefix": "" }
@@ -199,8 +199,8 @@
     "tx": { "prefix": "" }
   },
   "mpd": {
-    "playing": { "prefix": "" },
-    "paused": { "prefix": "" },
+    "playing": { "prefix": "" },
+    "paused": { "prefix": "" },
     "stopped": { "prefix": "" },
     "prev": { "prefix": "" },
     "next": { "prefix": "" },
@@ -220,9 +220,9 @@
   },
   "spotify": {
     "song": { "prefix": "" },
+    "playing": { "prefix": "" },
+    "paused": { "prefix": "" },
     "prev": { "prefix": "" },
-    "playing": { "prefix": "" },
-    "paused": { "prefix": "" },
     "next": { "prefix": "" }
   },
   "publicip": {

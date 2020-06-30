@@ -30,8 +30,8 @@
     "DEGRADED": { "prefix": "\u26c1\uf3bc" }
   },
   "cmus": {
-    "playing": { "prefix": "\uf488" },
-    "paused": { "prefix": "\uf210" },
+    "playing": { "prefix": "\uf210" },
+    "paused": { "prefix": "\uf488" },
     "stopped": { "prefix": "\uf24f" },
     "prev": { "prefix": "\uf4ab" },
     "next": { "prefix": "\uf4ad" },
@@ -41,15 +41,15 @@
     "repeat-off": { "prefix": "\uf30f" }
   },
   "gpmdp": {
-    "playing": { "prefix": "\uf488" },
-    "paused": { "prefix": "\uf210" },
+    "playing": { "prefix": "\uf210" },
+    "paused": { "prefix": "\uf488" },
     "stopped": { "prefix": "\uf24f" },
     "prev": { "prefix": "\uf4ab" },
     "next": { "prefix": "\uf4ad" }
   },
   "playerctl": {
-    "playing": { "prefix": "\uf488" },
-    "paused": { "prefix": "\uf210" },
+    "playing": { "prefix": "\uf210" },
+    "paused": { "prefix": "\uf488" },
     "stopped": { "prefix": "\uf24f" },
     "prev": { "prefix": "\uf4ab" },
     "next": { "prefix": "\uf4ad" }
@@ -147,8 +147,8 @@
     "tx": { "prefix": "\uf35f" }
   },
   "mpd": {
-    "playing": { "prefix": "\uf488" },
-    "paused": { "prefix": "\uf210" },
+    "playing": { "prefix": "\uf210" },
+    "paused": { "prefix": "\uf488" },
     "stopped": { "prefix": "\uf24f" },
     "prev": { "prefix": "\uf4ab" },
     "next": { "prefix": "\uf4ad" },
@@ -164,7 +164,11 @@
     "prefix": "\uf305"
   },
   "spotify": {
-    "prefix": "\uf305"
+    "song": { "prefix": "\uf305" },
+    "playing": { "prefix": "\uf210" },
+    "paused": { "prefix": "\uf488" },
+    "prev": { "prefix": "\uf4ab" },
+    "next": { "prefix": "\uf4ad" }
   },
   "publicip": {
     "prefix": "\uf268"
@@ -202,6 +206,6 @@
       "on": { "prefix": "\uf488" }
   },
   "arandr": {
-    "prefix": "\uf465" 
+    "prefix": "\uf465"
   }
 }
