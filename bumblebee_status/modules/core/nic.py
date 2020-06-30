@@ -12,6 +12,7 @@ Parameters:
     * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid}')
 """
 
+import re
 import shutil
 import netifaces
 import subprocess
@@ -44,7 +45,7 @@ class Module(core.module.Module):
             else:
                 self._states["include"].append(state)
         self._format = self.parameter("format", "{intf} {state} {ip} {ssid}")
-        self.iwgetid = shutil.which("iwgetid")
+        self.iw = shutil.which("iw")
         self._update_widgets(widgets)
 
     def update(self):
@@ -125,10 +126,13 @@ class Module(core.module.Module):
             widget.set("state", state)
 
     def get_ssid(self, intf):
-        if self._iswlan(intf) and not self._istunnel(intf) and self.iwgetid:
-            return util.cli.execute(
-                "{} -r {}".format(self.iwgetid, intf), ignore_errors=True
-            )
+        if self._iswlan(intf) and not self._istunnel(intf) and self.iw:
+            ssid = util.cli.execute("{} dev {} link".format(self.iw, intf))
+            found_ssid = re.findall("SSID:\s(.+)", ssid)
+            if len(found_ssid) > 0:
+                return found_ssid[0]
+            else:
+                return ""
         return ""
 
 
