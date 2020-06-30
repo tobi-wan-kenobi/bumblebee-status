@@ -29,10 +29,10 @@
   },
   "cmus": {
     "playing": {
-      "prefix": ">"
+      "prefix": "||"
     },
     "paused": {
-      "prefix": "||"
+      "prefix": "|>"
     },
     "stopped": {
       "prefix": "[]"
@@ -263,10 +263,10 @@
   },
   "mpd": {
     "playing": {
-      "prefix": ">"
+      "prefix": "||"
     },
     "paused": {
-      "prefix": "||"
+      "prefix": "|>"
     },
     "stopped": {
       "prefix": "[]"
@@ -297,11 +297,21 @@
     "prefix": ""
   },
   "spotify": {
-    "song": { "prefix": "spotify" },
-    "prev": { "prefix": "|<" },
-    "playing": { "prefix": "|>" },
-    "paused": { "prefix": "||" },
-    "next": { "prefix": ">|" }
+    "song": {
+      "prefix": "spotify"
+    },
+    "playing": {
+      "prefix": "||"
+    },
+    "paused": {
+      "prefix": "|>"
+    },
+    "prev": {
+      "prefix": "|<"
+    },
+    "next": {
+      "prefix": ">|"
+    }
   },
   "uptime": {
     "prefix": "uptime"
