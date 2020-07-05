@@ -85,14 +85,14 @@ class Module(core.module.Module):
         self._needs_update = True
 
     def _toggle(self, event):
-        self._refresh(self, event)
+        self._refresh(event)
 
         if util.format.asbool(self.parameter("overwrite_i3config", False)) == True:
             toggle_cmd = utility("toggle-display.sh")
         else:
             toggle_cmd = "xrandr"
 
-        widget = self.widget_by_id(event["instance"])
+        widget = self.widget(widget_id=event["instance"])
 
         if widget.get("state") == "on":
             util.cli.execute("{} --output {} --off".format(toggle_cmd, widget.name))
