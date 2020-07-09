@@ -225,6 +225,10 @@ class Config(util.store.Store):
             if tmp.has_section("module-parameters"):
                 for key, value in tmp.items("module-parameters"):
                     self.set(key, value)
+            if tmp.has_section("core"):
+                for key, value in tmp.items("core"):
+                    self.set(key, value)
+
 
     """Returns a list of configured modules
 
