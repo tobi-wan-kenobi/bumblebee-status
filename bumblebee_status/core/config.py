@@ -153,7 +153,7 @@ class Config(util.store.Store):
             default=[],
             help=PARAMETER_HELP,
         )
-        parser.add_argument("-t", "--theme", default="default", help=THEME_HELP)
+        parser.add_argument("-t", "--theme", default=None, help=THEME_HELP)
         parser.add_argument(
             "-i",
             "--iconset",
@@ -281,7 +281,7 @@ class Config(util.store.Store):
     """
 
     def theme(self):
-        return self.get('theme', self.__args.theme)
+        return self.__args.theme or self.get("theme") or "default"
 
     """Returns the configured iconset name
 
