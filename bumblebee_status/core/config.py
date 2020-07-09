@@ -233,7 +233,10 @@ class Config(util.store.Store):
     """
 
     def modules(self):
-        return [item for sub in self.__args.modules for item in sub]
+        list_of_modules = self.get('modules', None)
+        if (list_of_modules is None) or (type(list_of_modules) != list):
+            list_of_modules  = [item for sub in self.__args.modules for item in sub]
+        return list_of_modules
 
     """Returns the global update interval
 
@@ -278,7 +281,7 @@ class Config(util.store.Store):
     """
 
     def theme(self):
-        return self.__args.theme
+        return self.get('theme', self.__args.theme)
 
     """Returns the configured iconset name
 
