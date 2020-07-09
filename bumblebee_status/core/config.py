@@ -237,9 +237,10 @@ class Config(util.store.Store):
     """
 
     def modules(self):
-        list_of_modules = self.get('modules', None)
-        if (list_of_modules is None) or (type(list_of_modules) != list):
-            list_of_modules  = [item for sub in self.__args.modules for item in sub]
+        list_of_modules = [item for sub in self.__args.modules for item in sub]
+
+        if list_of_modules == []:
+            list_of_modules = util.format.aslist(self.get('modules', []))
         return list_of_modules
 
     """Returns the global update interval
