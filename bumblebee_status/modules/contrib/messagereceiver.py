@@ -32,7 +32,7 @@ class Worker(threading.Thread):
             except OSError as e:
                 if os.path.exists(self.__unix_socket_address):
                     logging.exception(
-                        "Couldn't bind to unix socket %s" % self.__unix_socket_address
+                        "Couldn't bind to unix socket %s", self.__unix_socket_address
                     )
                     raise
 
