@@ -15,7 +15,7 @@ Example:
     In order to highlight the text, the state variable can be used: 
         echo -e '{"message":"I  bumblebee-status", "state": "warning"}' | socat unix-connect:/tmp/bumblebee_messagereceiver.sock STDIO
 
-
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 """
 
 import core.module

@@ -760,6 +760,25 @@ Required the following python packages:
 
 contributed by `maxpivo <https://github.com/maxpivo>`_ - many thanks!
 
+messagereceiver
+~~~~~~~~~~~~~~~
+
+Displays the message that's received via unix socket.
+
+Parameteres:
+    * messagereceiver   : Unix socket address (e.g: /tmp/bumblebee_messagereceiver.sock)
+
+Example:
+    The following examples assume that /tmp/bumblebee_messagereceiver.sock is used as unix socket address.
+    
+    In order to send the string "I  bumblebee-status" to your status bar, use the following command: 
+        echo -e '{"message":"I  bumblebee-status", "state": ""}' | socat unix-connect:/tmp/bumblebee_messagereceiver.sock STDIO
+
+    In order to highlight the text, the state variable can be used: 
+        echo -e '{"message":"I  bumblebee-status", "state": "warning"}' | socat unix-connect:/tmp/bumblebee_messagereceiver.sock STDIO
+
+contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
+
 mocp
 ~~~~
 
@@ -1147,6 +1166,8 @@ Parameters:
 contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 
 added controls by `LtPeriwinkle <https://github.com/LtPeriwinkle>`_ - many thanks!
+
+fixed icons and layout parameter by `gkeep <https://github.com/gkeep>`_ - many thanks!
 
 .. image:: ../screenshots/spotify.png
 
