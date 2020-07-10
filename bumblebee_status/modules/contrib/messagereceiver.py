@@ -5,6 +5,17 @@ Displays the message that's received via unix socket.
 
 Parameteres:
     * messagereceiver   : Unix socket address (e.g: /tmp/bumblebee_messagereceiver.sock)
+
+Example:
+    The following examples assume that /tmp/bumblebee_messagereceiver.sock is used as unix socket address.
+    
+    In order to send the string "I  bumblebee-status" to your status bar, use the following command: 
+        echo -e '{"message":"I  bumblebee-status", "state": ""}' | socat unix-connect:/tmp/bumblebee_messagereceiver.sock STDIO
+
+    In order to highlight the text, the state variable can be used: 
+        echo -e '{"message":"I  bumblebee-status", "state": "warning"}' | socat unix-connect:/tmp/bumblebee_messagereceiver.sock STDIO
+
+
 """
 
 import core.module
