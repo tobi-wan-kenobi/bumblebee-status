@@ -18,29 +18,36 @@ Example:
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 """
 
+import socket
+import logging
+import os
+import json
+
 import core.module
 import core.widget
 import core.input
 
-import socket
-import threading
-import logging
-import os
-import queue
-import json
 
+class Module(core.module.Module):
+    @core.decorators.never
+    def __init__(self, config, theme):
+        super().__init__(config, theme, core.widget.Widget(self.message))
 
-class Worker(threading.Thread):
-    def __init__(self, unix_socket_address, queue):
-        threading.Thread.__init__(self)
-        self.__unix_socket_address = unix_socket_address
-        self.__queue = queue
+        self.background = True
 
-    def run(self):
+        self.__unix_socket_address = self.parameter("address", "")
+
+        self.__message = ""
+        self.__state = []
+
+    def message(self, widget):
+        return self.__message
+
+    def __read_data_from_socket(self):
         while True:
             try:
                 os.unlink(self.__unix_socket_address)
-            except OSError as e:
+            except OSError:
                 if os.path.exists(self.__unix_socket_address):
                     logging.exception(
                         "Couldn't bind to unix socket %s", self.__unix_socket_address
@@ -57,37 +64,19 @@ class Worker(threading.Thread):
                         data = conn.recv(1024)
                         if not data:
                             break
-                        self.__queue.put(data.decode("utf-8"))
-
-
-class Module(core.module.Module):
-    @core.decorators.every(seconds=1)
-    def __init__(self, config, theme):
-        super().__init__(config, theme, core.widget.Widget(self.message))
-
-        self.__unix_socket_address = self.parameter("address", "")
-
-        self.__message = ""
-        self.__state = []
-
-        self.__queue = queue.Queue()
-        self.__worker = Worker(self.__unix_socket_address, self.__queue)
-        self.__worker.daemon = True
-        self.__worker.start()
-
-    def message(self, widget):
-        return self.__message
+                        yield data.decode("utf-8")
 
     def update(self):
         try:
-            received_data = self.__queue.get(block=False)
-            parsed_data = json.loads(received_data)
-            self.__message = parsed_data["message"]
-            self.__state = parsed_data["state"]
-        except json.JSONDecodeError as e:
+            for received_data in self.__read_data_from_socket():
+                parsed_data = json.loads(received_data)
+                self.__message = parsed_data["message"]
+                self.__state = parsed_data["state"]
+                core.event.trigger("update", [self.id], redraw_only=True)
+        except json.JSONDecodeError:
             logging.exception("Couldn't parse message")
-        except queue.Empty as e:
-            pass
+        except Exception:
+            logging.exception("Unexpected exception while reading from socket")
 
     def state(self, widget):
         return self.__state
