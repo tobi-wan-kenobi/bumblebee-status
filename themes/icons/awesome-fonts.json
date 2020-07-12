@@ -35,6 +35,10 @@
     "empty": { "prefix": "\uf0e0" },
     "items": { "prefix": "\uf0e0" }
   },
+  "portage_status": {
+    "idle": { "prefix": "" },
+    "active": { "prefix": "" }
+  },
   "todo": {
     "empty": { "prefix": "" },
     "items": { "prefix": "" },
