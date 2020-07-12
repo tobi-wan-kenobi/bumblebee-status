@@ -967,6 +967,16 @@ Parameters:
 
 contributed by `martindoublem <https://github.com/martindoublem>`_, inspired by `karthink <https://github.com/karthink>`_ - many thanks!
 
+portage_status
+~~~~~~~~~~~~~~
+
+Displays the status of Gentoo portage operations.
+
+Parameters:
+    * portage_status.logfile: logfile for portage (default is /var/log/emerge.log)
+
+contributed by `andrewreisner <https://github.com/andrewreisner>`_ - many thanks!
+
 prime
 ~~~~~
 

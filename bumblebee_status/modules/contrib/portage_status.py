@@ -2,6 +2,8 @@
 
 Parameters:
     * portage_status.logfile: logfile for portage (default is /var/log/emerge.log)
+
+contributed by `andrewreisner <https://github.com/andrewreisner>`_ - many thanks!
 """
 
 import os
