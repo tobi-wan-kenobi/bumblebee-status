@@ -71,6 +71,11 @@ class print_usage(argparse.Action):
         )
 
         rst = {}
+
+        if self._format == "rst":
+            print(".. THIS DOCUMENT IS AUTO-GENERATED, DO NOT MODIFY")
+            print(".. To change this document, please update the docstrings in the individual modules")
+
         for m in all_modules():
             try:
                 module_type = "core"

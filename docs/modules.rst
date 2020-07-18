@@ -1,3 +1,5 @@
+.. THIS DOCUMENT IS AUTO-GENERATED, DO NOT MODIFY
+.. To change this document, please update the docstrings in the individual modules
 List of modules
 ===============
 
