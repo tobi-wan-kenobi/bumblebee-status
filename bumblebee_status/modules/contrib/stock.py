@@ -1,7 +1,7 @@
 # -*- coding: UTF-8 -*-
 # pylint: disable=C0111,R0903
 
-"""Display a stock quote from worldtradingdata.com
+"""Display a stock quote from finance.yahoo.com
 
 Requires the following python packages:
     * requests

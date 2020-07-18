@@ -2,8 +2,11 @@
 
 """Displays CPU utilization across all CPUs.
 
+By default, opens `gnome-system-monitor` on left mouse click.
+
 Requirements:
     * the psutil Python module for the first three items from the list above
+    * gnome-system-monitor for default mouse click action
 
 Parameters:
     * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)

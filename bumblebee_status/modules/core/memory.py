@@ -2,6 +2,11 @@
 
 """Displays available RAM, total amount of RAM and percentage available.
 
+By default, opens `gnome-system-monitor` on left mouse click.
+
+Requirements:
+    * gnome-system-monitor for default mouse click action
+
 Parameters:
     * memory.warning : Warning threshold in % of memory used (defaults to 80%)
     * memory.critical: Critical threshold in % of memory used (defaults to 90%)
