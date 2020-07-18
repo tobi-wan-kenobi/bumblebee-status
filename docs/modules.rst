@@ -12,8 +12,11 @@ cpu
 
 Displays CPU utilization across all CPUs.
 
+By default, opens `gnome-system-monitor` on left mouse click.
+
 Requirements:
     * the psutil Python module for the first three items from the list above
+    * gnome-system-monitor for default mouse click action
 
 Parameters:
     * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
@@ -99,6 +102,11 @@ load
 
 Displays system load.
 
+By default, opens `gnome-system-monitor` on left mouse click.
+
+Requirements:
+    * gnome-system-monitor for default mouse click action
+
 Parameters:
     * load.warning : Warning threshold for the one-minute load average (defaults to 70% of the number of CPUs)
     * load.critical: Critical threshold for the one-minute load average (defaults to 80% of the number of CPUs)
@@ -109,6 +117,11 @@ memory
 ~~~~~~
 
 Displays available RAM, total amount of RAM and percentage available.
+
+By default, opens `gnome-system-monitor` on left mouse click.
+
+Requirements:
+    * gnome-system-monitor for default mouse click action
 
 Parameters:
     * memory.warning : Warning threshold in % of memory used (defaults to 80%)
@@ -125,6 +138,9 @@ Displays the name, IP address(es) and status of each available network interface
 
 Requires the following python module:
     * netifaces
+
+Requires the following executable:
+    * iw
 
 Parameters:
     * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br')
@@ -254,6 +270,9 @@ Copy passwords from a password store into the clipboard (currently supports only
 
 Many thanks to [@bbernhard](https://github.com/bbernhard) for the idea!
 
+Requires the following executable:
+    * pass (aka password-store)
+
 Parameters:
     * vault.duration: Duration until password is cleared from clipboard (defaults to 30)
     * vault.location: Location of the password store (defaults to ~/.password-store)
@@ -292,6 +311,9 @@ amixer
 ~~~~~~
 
 get volume level or control it
+
+Requires the following executable:
+    * amixer
 
 Parameters:
     * amixer.device: Device to use (default is Master,0)
@@ -373,7 +395,7 @@ contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks
 bluetooth
 ~~~~~~~~~
 
-Displays bluetooth status (Bluez). Left mouse click launches manager app,
+Displays bluetooth status (Bluez). Left mouse click launches manager app `blueman-manager`,
 right click toggles bluetooth. Needs dbus-send to toggle bluetooth state.
 
 Parameters:
@@ -390,7 +412,7 @@ contributed by `brunosmmm <https://github.com/brunosmmm>`_ - many thanks!
 bluetooth2
 ~~~~~~~~~~
 
-Displays bluetooth status. Left mouse click launches manager app,
+Displays bluetooth status. Left mouse click launches manager app `blueman-manager`,
 right click toggles bluetooth. Needs dbus-send to toggle bluetooth state and
 python-dbus to count the number of connections
 
@@ -403,6 +425,11 @@ brightness
 ~~~~~~~~~~
 
 Displays the brightness of a display
+
+The following executables can be used if `use_acpi` is not enabled:
+    * brightnessctl
+    * light
+    * xbacklight
 
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
@@ -517,6 +544,10 @@ datetimetz
 ~~~~~~~~~~
 
 Displays the current date and time with timezone options.
+
+Requires the following python packages:
+    * tzlocal
+    * pytz
 
 Parameters:
     * datetimetz.format   : strftime()-compatible formatting string
@@ -655,6 +686,8 @@ Displays the unread GitHub notifications count for a GitHub user using the follo
 
     * https://developer.github.com/v3/activity/notifications/#notification-reasons
 
+Uses `xdg-open` or `x-www-browser` to open web-pages.
+
 Requires the following library:
     * requests
 
@@ -712,6 +745,9 @@ indicator
 ~~~~~~~~~
 
 Displays the indicator status, for numlock, scrolllock and capslock 
+
+Requires the following executable:
+    * xset
 
 Parameters:
     * indicator.include: Comma-separated list of interface prefixes to include (defaults to 'numlock,capslock')
@@ -899,9 +935,12 @@ contributed by `RileyRedpath <https://github.com/RileyRedpath>`_ - many thanks!
 octoprint
 ~~~~~~~~~
 
-Displays the Octorpint status and the printer's bed/tools temperature in the status bar.
+Displays the Octorrint status and the printer's bed/tools temperature in the status bar.
 
    Left click opens a popup which shows the bed & tools temperatures and additionally a livestream of the webcam (if enabled).
+
+Prerequisites:
+    * tk python library (usually python-tk or python3-tk, depending on your distribution)
 
 Parameters:
     * octoprint.address     : Octoprint address (e.q: http://192.168.1.3)
@@ -1002,7 +1041,8 @@ Parameters:
     * prime.nvidiastring: String to use when nvidia is selected (defaults to 'intel')
     * prime.intelstring: String to use when intel is selected (defaults to 'intel')
 
-Requires the following executable:
+Requires the following executables:
+    * sudo
     * prime-select
 
 contributed by `jeffeb3 <https://github.com/jeffeb3>`_ - many thanks!
@@ -1129,6 +1169,10 @@ smartstatus
 
 Displays HDD smart status of different drives or all drives
 
+Requires the following executables:
+    * sudo
+    * smartctl
+
 Parameters:
     * smartstatus.display: how to display (defaults to 'combined', other choices: 'seperate' or 'singles')
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
@@ -1186,7 +1230,7 @@ fixed icons and layout parameter by `gkeep <https://github.com/gkeep>`_ - many t
 stock
 ~~~~~
 
-Display a stock quote from worldtradingdata.com
+Display a stock quote from finance.yahoo.com
 
 Requires the following python packages:
     * requests
@@ -1208,6 +1252,7 @@ Displays sunrise and sunset times
 Requires the following python packages:
     * requests
     * suntime
+    * python-dateutil
 
 Parameters:
     * cpu.lat : Latitude of your location
@@ -1322,6 +1367,9 @@ twmn
 
 Toggle twmn notifications.
 
+Requires the following executable:
+    * systemctl
+
 contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
 
 uptime
@@ -1408,6 +1456,9 @@ zpool
 ~~~~~
 
 Displays info about zpools present on the system
+
+Requires the following executable:
+    * sudo (if `zpool.sudo` is explicitly set to `true`)
 
 Parameters:
    * zpool.list: Comma-separated list of zpools to display info for. If empty, info for all zpools
