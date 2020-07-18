@@ -1,5 +1,8 @@
 """Displays info about zpools present on the system
 
+Requires the following executable:
+    * sudo (if `zpool.sudo` is explicitly set to `true`)
+
 Parameters:
    * zpool.list: Comma-separated list of zpools to display info for. If empty, info for all zpools
      is displayed. (Default: '')

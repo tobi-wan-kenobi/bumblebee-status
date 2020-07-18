@@ -2,6 +2,10 @@
 
 """Displays the current date and time with timezone options.
 
+Requires the following python packages:
+    * tzlocal
+    * pytz
+
 Parameters:
     * datetimetz.format   : strftime()-compatible formatting string
     * datetimetz.timezone : IANA timezone name

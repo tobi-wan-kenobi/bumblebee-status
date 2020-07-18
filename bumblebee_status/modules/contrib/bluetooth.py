@@ -1,4 +1,4 @@
-"""Displays bluetooth status (Bluez). Left mouse click launches manager app,
+"""Displays bluetooth status (Bluez). Left mouse click launches manager app `blueman-manager`,
 right click toggles bluetooth. Needs dbus-send to toggle bluetooth state.
 
 Parameters:

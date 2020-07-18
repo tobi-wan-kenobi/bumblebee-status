@@ -20,7 +20,8 @@ Parameters:
     * prime.nvidiastring: String to use when nvidia is selected (defaults to 'intel')
     * prime.intelstring: String to use when intel is selected (defaults to 'intel')
 
-Requires the following executable:
+Requires the following executables:
+    * sudo
     * prime-select
 
 contributed by `jeffeb3 <https://github.com/jeffeb3>`_ - many thanks!

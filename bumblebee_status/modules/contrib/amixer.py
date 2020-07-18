@@ -1,5 +1,8 @@
 """get volume level or control it
 
+Requires the following executable:
+    * amixer
+
 Parameters:
     * amixer.device: Device to use (default is Master,0)
     * amixer.percent_change: How much to change volume by when scrolling on the module (default is 4%)

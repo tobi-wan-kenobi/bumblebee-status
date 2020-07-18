@@ -2,6 +2,11 @@
 
 """Displays the brightness of a display
 
+The following executables can be used if `use_acpi` is not enabled:
+    * brightnessctl
+    * light
+    * xbacklight
+
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
     * brightness.device_path: The device path (defaults to /sys/class/backlight/intel_backlight), can contain wildcards (in this case, the first matching path will be used); This is only used when brightness.use_acpi is set to true

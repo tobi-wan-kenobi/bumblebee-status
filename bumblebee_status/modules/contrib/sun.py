@@ -5,6 +5,7 @@
 Requires the following python packages:
     * requests
     * suntime
+    * python-dateutil
 
 Parameters:
     * cpu.lat : Latitude of your location

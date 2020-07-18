@@ -1,8 +1,11 @@
 # pylint: disable=C0111,R0903
 
-"""Displays the Octorpint status and the printer's bed/tools temperature in the status bar.
+"""Displays the Octorrint status and the printer's bed/tools temperature in the status bar.
 
    Left click opens a popup which shows the bed & tools temperatures and additionally a livestream of the webcam (if enabled).
+
+Prerequisites:
+    * tk python library (usually python-tk or python3-tk, depending on your distribution)
 
 Parameters:
     * octoprint.address     : Octoprint address (e.q: http://192.168.1.3)

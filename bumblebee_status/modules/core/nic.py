@@ -5,6 +5,9 @@
 Requires the following python module:
     * netifaces
 
+Requires the following executable:
+    * iw
+
 Parameters:
     * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br')
     * nic.include: Comma-separated list of interfaces to include

@@ -2,6 +2,9 @@
 
 """Toggle twmn notifications.
 
+Requires the following executable:
+    * systemctl
+
 contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
 """
 

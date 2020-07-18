@@ -5,6 +5,10 @@
 
 """Displays HDD smart status of different drives or all drives
 
+Requires the following executables:
+    * sudo
+    * smartctl
+
 Parameters:
     * smartstatus.display: how to display (defaults to 'combined', other choices: 'seperate' or 'singles')
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
