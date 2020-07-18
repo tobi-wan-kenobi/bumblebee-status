@@ -12,6 +12,7 @@ Displays CPU utilization across all CPUs.
 
 Requirements:
     * the psutil Python module for the first three items from the list above
+    * gnome-system-monitor for mouse clicks
 
 Parameters:
     * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
@@ -97,6 +98,8 @@ load
 
 Displays system load.
 
+Opens `gnome-system-monitor` on left mouse click.
+
 Parameters:
     * load.warning : Warning threshold for the one-minute load average (defaults to 70% of the number of CPUs)
     * load.critical: Critical threshold for the one-minute load average (defaults to 80% of the number of CPUs)
@@ -107,6 +110,8 @@ memory
 ~~~~~~
 
 Displays available RAM, total amount of RAM and percentage available.
+
+Opens `gnome-system-monitor` on left mouse click.
 
 Parameters:
     * memory.warning : Warning threshold in % of memory used (defaults to 80%)
@@ -123,6 +128,9 @@ Displays the name, IP address(es) and status of each available network interface
 
 Requires the following python module:
     * netifaces
+
+Requires the following executable:
+    * iwgetid
 
 Parameters:
     * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br')
@@ -252,6 +260,9 @@ Copy passwords from a password store into the clipboard (currently supports only
 
 Many thanks to [@bbernhard](https://github.com/bbernhard) for the idea!
 
+Requires the following executable:
+    * pass (aka password-store)
+
 Parameters:
     * vault.duration: Duration until password is cleared from clipboard (defaults to 30)
     * vault.location: Location of the password store (defaults to ~/.password-store)
@@ -290,6 +301,9 @@ amixer
 ~~~~~~
 
 get volume level or control it
+
+Requires the following executable:
+    * amixer
 
 Parameters:
     * amixer.device: Device to use (default is Master,0)
@@ -343,6 +357,8 @@ battery
 
 Displays battery status, remaining percentage and charging information.
 
+Opens `gnome-power-statistics` on left mouse click.
+
 Parameters:
     * battery.device              : Comma-separated list of battery devices to read information from (defaults to auto for auto-detection)
     * battery.warning             : Warning threshold in % of remaining charge (defaults to 20)
@@ -361,6 +377,8 @@ battery-upower
 
 Displays battery status, remaining percentage and charging information.
 
+Opens `gnome-power-statistics` on left mouse click.
+
 Parameters:
     * battery-upower.warning      : Warning threshold in % of remaining charge (defaults to 20)
     * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)
@@ -371,7 +389,7 @@ contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks
 bluetooth
 ~~~~~~~~~
 
-Displays bluetooth status (Bluez). Left mouse click launches manager app,
+Displays bluetooth status (Bluez). Left mouse click launches manager app `blueman-manager`,
 right click toggles bluetooth. Needs dbus-send to toggle bluetooth state.
 
 Parameters:
@@ -388,9 +406,9 @@ contributed by `brunosmmm <https://github.com/brunosmmm>`_ - many thanks!
 bluetooth2
 ~~~~~~~~~~
 
-Displays bluetooth status. Left mouse click launches manager app,
+Displays bluetooth status. Left mouse click launches manager app `blueman-manager`,
 right click toggles bluetooth. Needs dbus-send to toggle bluetooth state and
-python-dbus to count the number of connections
+python-dbus to count the number of connections.
 
 Parameters:
     * bluetooth.manager : application to launch on click (blueman-manager)
@@ -401,6 +419,11 @@ brightness
 ~~~~~~~~~~
 
 Displays the brightness of a display
+
+The following executables can be used if `use_acpi` is not enabled:
+    * brightnessctl
+    * light
+    * xbacklight
 
 Parameters:
     * brightness.step: The amount of increase/decrease on scroll in % (defaults to 2)
@@ -515,6 +538,10 @@ datetimetz
 ~~~~~~~~~~
 
 Displays the current date and time with timezone options.
+
+Requires the following python packages:
+    * tzlocal
+    * pytz
 
 Parameters:
     * datetimetz.format   : strftime()-compatible formatting string
@@ -656,6 +683,8 @@ Displays the unread GitHub notifications count for a GitHub user using the follo
 Requires the following library:
     * requests
 
+Uses `xdg-open` or `x-www-browser` to open web-pages.
+
 Parameters:
     * github.token: GitHub user access token, the token needs to have the 'notifications' scope.
     * github.interval: Interval in minutes between updates, default is 5.
@@ -710,6 +739,9 @@ indicator
 ~~~~~~~~~
 
 Displays the indicator status, for numlock, scrolllock and capslock 
+
+Requires the following executable:
+    * xset
 
 Parameters:
     * indicator.include: Comma-separated list of interface prefixes to include (defaults to 'numlock,capslock')
@@ -878,9 +910,12 @@ contributed by `RileyRedpath <https://github.com/RileyRedpath>`_ - many thanks!
 octoprint
 ~~~~~~~~~
 
-Displays the Octorpint status and the printer's bed/tools temperature in the status bar.
+Displays the Octoprint status and the printer's bed/tools temperature in the status bar.
 
    Left click opens a popup which shows the bed & tools temperatures and additionally a livestream of the webcam (if enabled).
+
+Prerequisites:
+    * tk python library (usually python-tk or python3-tk, depending on your distribution)
 
 Parameters:
     * octoprint.address     : Octoprint address (e.q: http://192.168.1.3)
@@ -971,7 +1006,8 @@ Parameters:
     * prime.nvidiastring: String to use when nvidia is selected (defaults to 'intel')
     * prime.intelstring: String to use when intel is selected (defaults to 'intel')
 
-Requires the following executable:
+Requires the following executables:
+    * sudo
     * prime-select
 
 contributed by `jeffeb3 <https://github.com/jeffeb3>`_ - many thanks!
@@ -1103,6 +1139,10 @@ Parameters:
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
     * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
 
+Requires the following executables:
+    * sudo
+    * smartctl
+
 spaceapi
 ~~~~~~~~
 
@@ -1137,6 +1177,7 @@ Displays the current song being played and allows pausing, skipping ahead, and s
 
 Requires the following library:
     * python-dbus
+    * `spotify <https://wiki.manjaro.org/index.php?title=Spotify>`_
 
 Parameters:
     * spotify.format:   Format string (defaults to '{artist} - {title}')
@@ -1153,7 +1194,7 @@ added controls by `LtPeriwinkle <https://github.com/LtPeriwinkle>`_ - many thank
 stock
 ~~~~~
 
-Display a stock quote from worldtradingdata.com
+Display a stock quote from finance.yahoo.com
 
 Requires the following python packages:
     * requests
@@ -1173,6 +1214,7 @@ sun
 Displays sunrise and sunset times
 
 Requires the following python packages:
+    * python-dateutil
     * requests
     * suntime
 
@@ -1289,6 +1331,9 @@ twmn
 
 Toggle twmn notifications.
 
+Requires the following executable:
+    * systemctl
+
 contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
 
 uptime
@@ -1392,6 +1437,9 @@ Option `zpool.sudo` is intended for Linux users using zfsonlinux older than 0.7.
 releases of zfsonlinux regular users couldn't invoke even informative commands such as
 `zpool list`. If this option is true, command `zpool list` is invoked with sudo. If this option
 is used, the following (or ekvivalent) must be added to the `sudoers(5)`:
+
+Requires the following executable:
+    * sudo
 
 ```
 <username/ALL> ALL = (root) NOPASSWD: /usr/bin/zpool list
