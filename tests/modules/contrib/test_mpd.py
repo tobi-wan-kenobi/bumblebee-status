@@ -65,3 +65,8 @@ def test_update_calls_load_song(mocker, mpd_module):
 
 def test_default_layout(mpd_module):
     assert mpd_module._layout == "mpd.prev mpd.main mpd.next mpd.shuffle mpd.repeat"
+
+
+def test_load_module():
+    __import__("modules.contrib.mpd")
+

@@ -36,16 +36,18 @@ def dependencies(filename):
                 dep = match.group(2) or match.group(3)
                 if "util.popup" in dep or ("util" in line and "popup" in line):
                     deps.append("tkinter")
+                if ".datetimetz" in line:
+                    deps.extend(dependencies("bumblebee_status/modules/contrib/datetimetz.py"))
                 elif not is_internal(dep):
                     deps.append(dep)
     return deps
 
 def write_test(testname, modname, deps):
+    fqmn = ".".join(["modules", testname.split(os.sep)[2], modname])
     if not os.path.exists(testname):
         with open(testname, "w") as f:
             f.writelines([
                 "import pytest\n\n",
-                "import core.module\n\n",
             ])
             for dep in deps:
                 f.write("pytest.importorskip(\"{}\")\n\n".format(dep))
@@ -60,7 +62,7 @@ def write_test(testname, modname, deps):
     with open(testname, "a+") as f:
         f.writelines([
             "def test_load_module():\n",
-            "    core.module.load(\"{}\")\n\n".format(modname),
+            "    __import__(\"{}\")\n\n".format(fqmn),
         ])
 
 def main():

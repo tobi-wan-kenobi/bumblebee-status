@@ -21,4 +21,8 @@ def test_full_text(mocker, kernel_module):
     assert some_kernel == kernel_module.widget().full_text()
 
 
+def test_load_module():
+    __import__("modules.contrib.kernel")
+
+
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
