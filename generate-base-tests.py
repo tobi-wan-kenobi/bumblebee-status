@@ -5,6 +5,7 @@ import re
 import sys
 import glob
 
+
 def is_psl(module):
     lib_path = os.path.dirname(os.__file__)
     old_sys = sys.path
@@ -20,11 +21,15 @@ def is_psl(module):
 
 
 def is_internal(module):
-    if module.startswith("core.") or module == "core": return True
-    if module.startswith("util.") or module == "util": return True
-    if module.startswith("."): return True
+    if module.startswith("core.") or module == "core":
+        return True
+    if module.startswith("util.") or module == "util":
+        return True
+    if module.startswith("."):
+        return True
 
     return is_psl(module)
+
 
 def dependencies(filename):
     deps = []
@@ -32,25 +37,29 @@ def dependencies(filename):
         for line in f:
             if "import" in line:
                 match = re.match("\s*(from (\S+) )?import (\S+)", line)
-                if not match: continue
+                if not match:
+                    continue
                 dep = match.group(2) or match.group(3)
                 if "util.popup" in dep or ("util" in line and "popup" in line):
                     deps.append("tkinter")
                 if ".datetimetz" in line:
-                    deps.extend(dependencies("bumblebee_status/modules/contrib/datetimetz.py"))
+                    deps.extend(
+                        dependencies("bumblebee_status/modules/contrib/datetimetz.py")
+                    )
                 elif not is_internal(dep):
                     deps.append(dep)
     return deps
+
 
 def write_test(testname, modname, deps):
     fqmn = ".".join(["modules", testname.split(os.sep)[2], modname])
     if not os.path.exists(testname):
         with open(testname, "w") as f:
-            f.writelines([
-                "import pytest\n\n",
-            ])
+            f.writelines(
+                ["import pytest\n\n",]
+            )
             for dep in deps:
-                f.write("pytest.importorskip(\"{}\")\n\n".format(dep))
+                f.write('pytest.importorskip("{}")\n\n'.format(dep))
 
     with open(testname) as f:
         for line in f:
@@ -60,23 +69,26 @@ def write_test(testname, modname, deps):
 
     print("writing base test for {}".format(modname))
     with open(testname, "a+") as f:
-        f.writelines([
-            "def test_load_module():\n",
-            "    __import__(\"{}\")\n\n".format(fqmn),
-        ])
+        f.writelines(
+            ["def test_load_module():\n", '    __import__("{}")\n\n'.format(fqmn),]
+        )
+
 
 def main():
     for f in glob.glob("bumblebee_status/modules/*/*.py"):
-        if os.path.basename(f) == "__init__.py": continue
+        if os.path.basename(f) == "__init__.py":
+            continue
 
         modname = os.path.splitext(os.path.basename(f))[0]
 
         modpath = os.path.dirname(f)
         deps = dependencies(f)
-        testname = os.path.join("tests", "modules", modpath.split(os.sep)[2], "test_{}.py".format(modname))
+        testname = os.path.join(
+            "tests", "modules", modpath.split(os.sep)[2], "test_{}.py".format(modname)
+        )
 
         write_test(testname, modname, deps)
-        
+
 
 if __name__ == "__main__":
     main()
