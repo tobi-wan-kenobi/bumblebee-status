@@ -16,7 +16,7 @@ install:
   - pip install netifaces power
   - pip install psutil pytz
   - pip install requests simplejson
-  - pip install speedtest suntime
+  - pip install suntime
   - pip install tempfile tkinter tzlocal
   - pip install taskw webbrowser
 script:
