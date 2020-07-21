@@ -13,7 +13,6 @@ install:
   - pip install codeclimate-test-reporter
   - pip install i3-py Pillow Babel DateTime python-dateutil
   - pip install docker feedparser i3ipc
-  - pip install libvirt-python
   - pip install multiprocessing netifaces power
   - pip install psutil pygit2 pytz random
   - pip install requests simplejson
