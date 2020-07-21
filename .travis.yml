@@ -10,6 +10,15 @@ before_install:
 install:
   - pip install -U coverage==4.3 pytest pytest-mock
   - pip install codeclimate-test-reporter
+  - pip install i3-py Pillow Babel DateTime python-dateutil
+  - pip install dbus-python docker feedparser i3ipc
+  - pip install libvirt-python math-utils
+  - pip install multiprocessing netifaces power
+  - pip install psutil pygit2 pytz random
+  - pip install requests simplejson
+  - pip install socket speedtest suntime
+  - pip install tempfile tkinter tzlocal
+  - pip install taskw webbrowser xkbgroup yubico
 script:
   - coverage run --source=. -m pytest tests -v
   - CODECLIMATE_REPO_TOKEN=40cb00907f7a10e04868e856570bb997ab9c42fd3b63d980f2b2269433195fdf codeclimate-test-reporter
