@@ -8,7 +8,7 @@ python:
 before_install:
   - sudo apt-get -qq update
 install:
-  - apt-get install dbus-python
+  - sudo apt-get install dbus-python
   - pip install -U coverage==4.3 pytest pytest-mock
   - pip install codeclimate-test-reporter
   - pip install i3-py Pillow Babel DateTime python-dateutil
