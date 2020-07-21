@@ -17,7 +17,7 @@ install:
   - pip install psutil pytz
   - pip install requests simplejson
   - pip install suntime
-  - pip install tempfile tkinter tzlocal
+  - pip install tkinter tzlocal
   - pip install taskw webbrowser
 script:
   - coverage run --source=. -m pytest tests -v
