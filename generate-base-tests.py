@@ -25,6 +25,8 @@ def is_internal(module):
         return True
     if module.startswith("util.") or module == "util":
         return True
+    if module.startswith("bumblebee_status."):
+        return True
     if module.startswith("."):
         return True
 
