@@ -16,9 +16,9 @@ install:
   - pip install netifaces power
   - pip install psutil pytz
   - pip install requests simplejson
-  - pip install socket speedtest suntime
+  - pip install speedtest suntime
   - pip install tempfile tkinter tzlocal
-  - pip install taskw webbrowser xkbgroup yubico
+  - pip install taskw webbrowser
 script:
   - coverage run --source=. -m pytest tests -v
   - CODECLIMATE_REPO_TOKEN=40cb00907f7a10e04868e856570bb997ab9c42fd3b63d980f2b2269433195fdf codeclimate-test-reporter
