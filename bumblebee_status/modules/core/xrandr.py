@@ -103,7 +103,8 @@ class Module(core.module.Module):
         widget = self.widget(widget_id=event["instance"])
 
         if widget.get("state") == "on":
-            util.cli.execute("{} --output {} --off".format(toggle_cmd, widget.name))
+            if len(self._active_displays) > 1:
+                util.cli.execute("{} --output {} --off".format(toggle_cmd, widget.name))
         elif not self._active_displays:
             util.cli.execute("{} --output {} --auto".format(toggle_cmd, widget.name))
         else:
