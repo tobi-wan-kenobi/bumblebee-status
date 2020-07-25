@@ -47,7 +47,7 @@ class Module(core.module.Module):
 
         try:
             i3.Subscription(self._output_update, "output")
-        except NameError:
+        except Exception:
             pass
 
     def _output_update(self, event, data, _):
@@ -120,5 +120,6 @@ class Module(core.module.Module):
             )
 
         self._refresh(event)
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
