@@ -12,6 +12,8 @@ Parameters:
     * vault.location: Location of the password store (defaults to ~/.password-store)
     * vault.offx: x-axis offset of popup menu (defaults to 0)
     * vault.offy: y-axis offset of popup menu (defaults to 0)
+    * vault.leave_menu: Boolean flag to close menu when the mouse leaves (defaults to False)
+    * vault.text: Text to display on the widget (defaults to <click-for-password>)
 
 Many thanks to `bbernhard <https://github.com/bbernhard>`_ for the idea!
 """
@@ -72,7 +74,7 @@ class Module(core.module.Module):
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.popup)
 
     def popup(self, widget):
-        menu = util.popup.menu(leave=False)
+        menu = util.popup.menu(leave=util.format.asbool(self.parameter("leave_menu", False)))
 
         build_menu(menu, self.__path, self.__callback)
         menu.show(widget, offset_x=self.__offx, offset_y=self.__offy)
