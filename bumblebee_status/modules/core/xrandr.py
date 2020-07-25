@@ -8,6 +8,7 @@ Parameters:
       and appending a file '~/.config/i3/config.<screen name>' for every screen.
     * xrandr.autoupdate: If set to 'false', does *not* invoke xrandr automatically. Instead, the
       module will only refresh when displays are enabled or disabled (defaults to true)
+    * xrandr.exclude: Comma-separated list of display name prefixes to exclude
 
 Requires the following python module:
     * (optional) i3 - if present, the need for updating the widget list is auto-detected
@@ -40,6 +41,7 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
 
+        self._exclude = tuple(filter(len, self.parameter("exclude", "").split(",")))
         self._autoupdate = util.format.asbool(self.parameter("autoupdate", True))
         self._needs_update = True
 
@@ -62,16 +64,20 @@ class Module(core.module.Module):
         for line in util.cli.execute("xrandr -q").split("\n"):
             if not " connected" in line:
                 continue
+
             display = line.split(" ", 2)[0]
-            m = re.search(r"\d+x\d+\+(\d+)\+\d+", line)
+            if display.startswith(self._exclude):
+                continue
+
+            resolution = re.search(r"\d+x\d+\+(\d+)\+\d+", line)
 
             widget = self.widget(display)
             if not widget:
                 widget = self.add_widget(full_text=display, name=display)
                 core.input.register(widget, button=1, cmd=self._toggle)
                 core.input.register(widget, button=3, cmd=self._toggle)
-            widget.set("state", "on" if m else "off")
-            widget.set("pos", int(m.group(1)) if m else sys.maxsize)
+            widget.set("state", "on" if resolution else "off")
+            widget.set("pos", int(resolution.group(1)) if resolution else sys.maxsize)
 
         if self._autoupdate == False:
             widget = self.add_widget(full_text="")
