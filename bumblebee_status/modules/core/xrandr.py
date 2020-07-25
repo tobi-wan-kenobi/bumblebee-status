@@ -17,7 +17,6 @@ Requires the following executable:
     * xrandr
 """
 
-import os
 import re
 import sys
 
@@ -32,7 +31,7 @@ import util.format
 
 try:
     import i3
-except:
+except ModuleNotFoundError:
     pass
 
 
@@ -42,34 +41,39 @@ class Module(core.module.Module):
         super().__init__(config, theme, [])
 
         self._exclude = tuple(filter(len, self.parameter("exclude", "").split(",")))
+        self._active_displays = []
         self._autoupdate = util.format.asbool(self.parameter("autoupdate", True))
         self._needs_update = True
 
         try:
             i3.Subscription(self._output_update, "output")
-        except:
+        except NameError:
             pass
 
     def _output_update(self, event, data, _):
         self._needs_update = True
 
     def update(self):
-        self.clear_widgets()
-
-        if self._autoupdate == False and self._needs_update == False:
+        if not self._autoupdate and not self._needs_update:
             return
+
+        self.clear_widgets()
+        self._active_displays.clear()
 
         self._needs_update = False
 
         for line in util.cli.execute("xrandr -q").split("\n"):
-            if not " connected" in line:
+            if " connected" not in line:
                 continue
 
             display = line.split(" ", 2)[0]
+            resolution = re.search(r"\d+x\d+\+(\d+)\+\d+", line)
+
+            if resolution:
+                self._active_displays.append(display)
+
             if display.startswith(self._exclude):
                 continue
-
-            resolution = re.search(r"\d+x\d+\+(\d+)\+\d+", line)
 
             widget = self.widget(display)
             if not widget:
@@ -79,7 +83,7 @@ class Module(core.module.Module):
             widget.set("state", "on" if resolution else "off")
             widget.set("pos", int(resolution.group(1)) if resolution else sys.maxsize)
 
-        if self._autoupdate == False:
+        if not self._autoupdate:
             widget = self.add_widget(full_text="")
             widget.set("state", "refresh")
             core.input.register(widget, button=1, cmd=self._refresh)
@@ -91,9 +95,7 @@ class Module(core.module.Module):
         self._needs_update = True
 
     def _toggle(self, event):
-        self._refresh(event)
-
-        if util.format.asbool(self.parameter("overwrite_i3config", False)) == True:
+        if util.format.asbool(self.parameter("overwrite_i3config", False)):
             toggle_cmd = utility("toggle-display.sh")
         else:
             toggle_cmd = "xrandr"
@@ -102,41 +104,20 @@ class Module(core.module.Module):
 
         if widget.get("state") == "on":
             util.cli.execute("{} --output {} --off".format(toggle_cmd, widget.name))
+        elif not self._active_displays:
+            util.cli.execute("{} --output {} --auto".format(toggle_cmd, widget.name))
         else:
-            first_neighbor = next(
-                (widget for widget in self.widgets() if widget.get("state") == "on"),
-                None,
-            )
-            last_neighbor = next(
-                (
-                    widget
-                    for widget in reversed(self.widgets())
-                    if widget.get("state") == "on"
-                ),
-                None,
-            )
-
-            neighbor = (
-                first_neighbor
-                if event["button"] == core.input.LEFT_MOUSE
-                else last_neighbor
-            )
-
-            if neighbor is None:
-                util.cli.execute(
-                    "{} --output {} --auto".format(toggle_cmd, widget.name)
-                )
+            if event["button"] == core.input.LEFT_MOUSE:
+                side, neighbor = "left", self._active_displays[0]
             else:
-                util.cli.execute(
-                    "{} --output {} --auto --{}-of {}".format(
-                        toggle_cmd,
-                        widget.name,
-                        "left"
-                        if event.get("button") == core.input.LEFT_MOUSE
-                        else "right",
-                        neighbor.name,
-                    )
-                )
+                side, neighbor = "right", self._active_displays[-1]
 
+            util.cli.execute(
+                "{} --output {} --auto --{}-of {}".format(
+                    toggle_cmd, widget.name, side, neighbor,
+                )
+            )
+
+        self._refresh(event)
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
