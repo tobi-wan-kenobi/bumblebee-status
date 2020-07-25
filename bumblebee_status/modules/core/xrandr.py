@@ -31,7 +31,7 @@ import util.format
 
 try:
     import i3
-except ModuleNotFoundError:
+except Exception:
     pass
 
 
