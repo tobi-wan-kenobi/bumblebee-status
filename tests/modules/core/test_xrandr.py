@@ -103,13 +103,28 @@ def test_exclude_off(mocker):
     assert_trigger(xrandr_cli, module, 0, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --auto --right-of eDP-1-1")
 
 
-def test_autotoggle_excluded_active_disconnected(mocker):
-    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_ACTIVE)
-    module = Module(Config(["-p", "xrandr.autotoggle=true", "xrandr.exclude=HDMI"]), theme=None)
+def test_no_autotoggle_inactive_connected(mocker):
+    xrandr_cli = mock_xrandr(mocker, HDMI_DISCONNECTED_INACTIVE)
+    module = Module(Config([]), theme=None)
     module.update()
     xrandr_cli.assert_called_once_with("xrandr -q")
 
     assert_widgets(module, ("eDP-1-1", "on", 0))
+
+    xrandr_cli.return_value = HDMI_CONNECTED_INACTIVE
+    xrandr_cli.reset_mock()
+
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+
+def test_no_autotoggle_active_disconnected(mocker):
+    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_ACTIVE)
+    module = Module(Config([]), theme=None)
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+    assert_widgets(module, ("eDP-1-1", "on", 0), ("HDMI-1-1", "on", 1920))
 
     xrandr_cli.return_value = HDMI_DISCONNECTED_ACTIVE
     xrandr_cli.reset_mock()
