@@ -16,23 +16,19 @@ class menu(object):
 
     def __init__(self, parent=None, leave=True):
         self.running = True
-        self.parent = None
-        if not parent:
-            self._root = tk.Tk()
-            self._root.withdraw()
-            self._menu = tk.Menu(self._root, tearoff=0)
-            self._menu.bind("<FocusOut>", self.__on_focus_out)
 
-            self.add_menuitem("close", self.__on_focus_out)
-            self.add_separator()
-        else:
-            self._root = parent.root()
-            self._root.withdraw()
-            self._menu = tk.Menu(self._root, tearoff=0)
-            self._menu.bind("<FocusOut>", self.__on_focus_out)
-            self.parent = parent
+        self.parent = parent
+
+        self._root = parent.root() if parent else tk.Tk()
+        self._root.withdraw()
+        self._menu = tk.Menu(self._root, tearoff=0)
+        self._menu.bind("<FocusOut>", self.__on_focus_out)
+
         if leave:
             self._menu.bind("<Leave>", self.__on_focus_out)
+        elif not parent:
+            self.add_menuitem("close", self.__on_focus_out)
+            self.add_separator()
 
         self._menu.bind("<ButtonRelease-1>", self.release)
 
