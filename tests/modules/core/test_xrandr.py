@@ -21,47 +21,50 @@ def assert_widgets(module, *expected_widgets):
         assert widget.get("pos") == pos
 
 
-def assert_trigger(mocker, module, widget_index, button, expected_command):
-    xrandr_cli = mock_xrandr(mocker, "")
+def assert_trigger(xrandr_cli, module, widget_index, button, expected_command):
+    xrandr_cli.reset_mock()
+
     widget = module.widgets()[widget_index]
     trigger({"button": button, "instance": widget.id, "name": module.id})
 
     if expected_command is None:
-        xrandr_cli.assert_not_called()
+        xrandr_cli.assert_called_once_with("xrandr -q")
     else:
-        xrandr_cli.assert_called_once_with(expected_command)
+        assert xrandr_cli.call_count == 2
+        xrandr_cli.assert_any_call(expected_command)
+        xrandr_cli.assert_called_with("xrandr -q")
 
 
 def test_autoupdate(mocker):
-    xrandr_cli = mock_xrandr(mocker, FULL_OUTPUT_TWO_DISPLAYS)
+    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_ACTIVE)
     module = Module(Config([]), theme=None)
     module.update()
     xrandr_cli.assert_called_once_with("xrandr -q")
 
     assert_widgets(module, ("eDP-1-1", "on", 0), ("HDMI-1-1", "on", 1920))
 
-    assert_trigger(mocker, module, 0, LEFT_MOUSE, "xrandr --output eDP-1-1 --off")
-    assert_trigger(mocker, module, 0, RIGHT_MOUSE, "xrandr --output eDP-1-1 --off")
-    assert_trigger(mocker, module, 1, LEFT_MOUSE, "xrandr --output HDMI-1-1 --off")
-    assert_trigger(mocker, module, 1, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --off")
+    assert_trigger(xrandr_cli, module, 0, LEFT_MOUSE, "xrandr --output eDP-1-1 --off")
+    assert_trigger(xrandr_cli, module, 0, RIGHT_MOUSE, "xrandr --output eDP-1-1 --off")
+    assert_trigger(xrandr_cli, module, 1, LEFT_MOUSE, "xrandr --output HDMI-1-1 --off")
+    assert_trigger(xrandr_cli, module, 1, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --off")
 
 
 def test_display_off(mocker):
-    xrandr_cli = mock_xrandr(mocker, TRUNCATED_OUTPUT_DISPLAY_OFF)
+    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_INACTIVE)
     module = Module(Config([]), theme=None)
     module.update()
     xrandr_cli.assert_called_once_with("xrandr -q")
 
     assert_widgets(module, ("eDP-1-1", "on", 0), ("HDMI-1-1", "off", sys.maxsize))
 
-    assert_trigger(mocker, module, 0, LEFT_MOUSE, None)
-    assert_trigger(mocker, module, 0, RIGHT_MOUSE, None)
-    assert_trigger(mocker, module, 1, LEFT_MOUSE, "xrandr --output HDMI-1-1 --auto --left-of eDP-1-1")
-    assert_trigger(mocker, module, 1, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --auto --right-of eDP-1-1")
+    assert_trigger(xrandr_cli, module, 0, LEFT_MOUSE, None)
+    assert_trigger(xrandr_cli, module, 0, RIGHT_MOUSE, None)
+    assert_trigger(xrandr_cli, module, 1, LEFT_MOUSE, "xrandr --output HDMI-1-1 --auto --left-of eDP-1-1")
+    assert_trigger(xrandr_cli, module, 1, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --auto --right-of eDP-1-1")
 
 
 def test_no_autoupdate(mocker):
-    xrandr_cli = mock_xrandr(mocker, FULL_OUTPUT_TWO_DISPLAYS)
+    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_ACTIVE)
     module = Module(Config(["-p", "xrandr.autoupdate=false"]), theme=None)
     module.update()
     xrandr_cli.assert_called_once_with("xrandr -q")
@@ -70,39 +73,151 @@ def test_no_autoupdate(mocker):
         module, ("eDP-1-1", "on", 0), ("HDMI-1-1", "on", 1920), (None, "refresh", None)
     )
 
-    assert_trigger(mocker, module, 0, LEFT_MOUSE, "xrandr --output eDP-1-1 --off")
-    assert_trigger(mocker, module, 0, RIGHT_MOUSE, "xrandr --output eDP-1-1 --off")
-    assert_trigger(mocker, module, 1, LEFT_MOUSE, "xrandr --output HDMI-1-1 --off")
-    assert_trigger(mocker, module, 1, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --off")
+    assert_trigger(xrandr_cli, module, 0, LEFT_MOUSE, "xrandr --output eDP-1-1 --off")
+    assert_trigger(xrandr_cli, module, 0, RIGHT_MOUSE, "xrandr --output eDP-1-1 --off")
+    assert_trigger(xrandr_cli, module, 1, LEFT_MOUSE, "xrandr --output HDMI-1-1 --off")
+    assert_trigger(xrandr_cli, module, 1, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --off")
 
 
 def test_exclude(mocker):
-    xrandr_cli = mock_xrandr(mocker, FULL_OUTPUT_TWO_DISPLAYS)
+    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_ACTIVE)
     module = Module(Config(["-p", "xrandr.exclude=eDP"]), theme=None)
     module.update()
     xrandr_cli.assert_called_once_with("xrandr -q")
 
     assert_widgets(module, ("HDMI-1-1", "on", 1920))
 
-    assert_trigger(mocker, module, 0, LEFT_MOUSE, "xrandr --output HDMI-1-1 --off")
-    assert_trigger(mocker, module, 0, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --off")
+    assert_trigger(xrandr_cli, module, 0, LEFT_MOUSE, "xrandr --output HDMI-1-1 --off")
+    assert_trigger(xrandr_cli, module, 0, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --off")
 
 
 def test_exclude_off(mocker):
-    xrandr_cli = mock_xrandr(mocker, TRUNCATED_OUTPUT_DISPLAY_OFF)
+    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_INACTIVE)
     module = Module(Config(["-p", "xrandr.exclude=eDP"]), theme=None)
     module.update()
     xrandr_cli.assert_called_once_with("xrandr -q")
 
     assert_widgets(module, ("HDMI-1-1", "off", sys.maxsize))
 
-    assert_trigger(mocker, module, 0, LEFT_MOUSE, "xrandr --output HDMI-1-1 --auto --left-of eDP-1-1")
-    assert_trigger(mocker, module, 0, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --auto --right-of eDP-1-1")
+    assert_trigger(xrandr_cli, module, 0, LEFT_MOUSE, "xrandr --output HDMI-1-1 --auto --left-of eDP-1-1")
+    assert_trigger(xrandr_cli, module, 0, RIGHT_MOUSE, "xrandr --output HDMI-1-1 --auto --right-of eDP-1-1")
+
+
+def test_autotoggle_excluded_active_disconnected(mocker):
+    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_ACTIVE)
+    module = Module(Config(["-p", "xrandr.autotoggle=true", "xrandr.exclude=HDMI"]), theme=None)
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+    assert_widgets(module, ("eDP-1-1", "on", 0))
+
+    xrandr_cli.return_value = HDMI_DISCONNECTED_ACTIVE
+    xrandr_cli.reset_mock()
+
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+
+def test_autotoggle_excluded_inactive_connected(mocker):
+    xrandr_cli = mock_xrandr(mocker, HDMI_DISCONNECTED_INACTIVE)
+    module = Module(Config(["-p", "xrandr.autotoggle=true", "xrandr.exclude=HDMI"]), theme=None)
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+    assert_widgets(module, ("eDP-1-1", "on", 0))
+
+    xrandr_cli.return_value = HDMI_CONNECTED_INACTIVE
+    xrandr_cli.reset_mock()
+
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+
+def test_autotoggle_active_disconnected(mocker):
+    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_ACTIVE)
+    module = Module(Config(["-p", "xrandr.autotoggle=true"]), theme=None)
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+    assert_widgets(module, ("eDP-1-1", "on", 0), ("HDMI-1-1", "on", 1920))
+
+    xrandr_cli.return_value = HDMI_DISCONNECTED_ACTIVE
+    xrandr_cli.reset_mock()
+
+    module.update()
+    assert xrandr_cli.call_count == 2
+    xrandr_cli.assert_any_call("xrandr -q")
+    xrandr_cli.assert_called_with("xrandr --output HDMI-1-1 --off")
+
+
+def test_autotoggle_inactive_disconnected(mocker):
+    xrandr_cli = mock_xrandr(mocker, HDMI_CONNECTED_INACTIVE)
+    module = Module(Config(["-p", "xrandr.autotoggle=true"]), theme=None)
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+    assert_widgets(module, ("eDP-1-1", "on", 0), ("HDMI-1-1", "off", sys.maxsize))
+
+    xrandr_cli.return_value = HDMI_DISCONNECTED_INACTIVE
+    xrandr_cli.reset_mock()
+
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+
+def test_autotoggle_active_connected(mocker):
+    xrandr_cli = mock_xrandr(mocker, HDMI_DISCONNECTED_ACTIVE)
+    module = Module(Config(["-p", "xrandr.autotoggle=true"]), theme=None)
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+    assert_widgets(module, ("eDP-1-1", "on", 0))
+
+    xrandr_cli.return_value = HDMI_CONNECTED_ACTIVE
+    xrandr_cli.reset_mock()
+
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+
+def test_autotoggle_inactive_connected(mocker):
+    xrandr_cli = mock_xrandr(mocker, HDMI_DISCONNECTED_INACTIVE)
+    module = Module(Config(["-p", "xrandr.autotoggle=true"]), theme=None)
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+    assert_widgets(module, ("eDP-1-1", "on", 0))
+
+    xrandr_cli.return_value = HDMI_CONNECTED_INACTIVE
+    xrandr_cli.reset_mock()
+
+    module.update()
+    assert xrandr_cli.call_count == 2
+    xrandr_cli.assert_any_call("xrandr -q")
+    xrandr_cli.assert_called_with("xrandr --output HDMI-1-1 --auto --right-of eDP-1-1")
+
+
+def test_autotoggle_left(mocker):
+    xrandr_cli = mock_xrandr(mocker, HDMI_DISCONNECTED_INACTIVE)
+    module = Module(Config(["-p", "xrandr.autotoggle=true", "xrandr.autotoggle_side=left"]), theme=None)
+    module.update()
+    xrandr_cli.assert_called_once_with("xrandr -q")
+
+    assert_widgets(module, ("eDP-1-1", "on", 0))
+
+    xrandr_cli.return_value = HDMI_CONNECTED_INACTIVE
+    xrandr_cli.reset_mock()
+
+    module.update()
+    assert xrandr_cli.call_count == 2
+    xrandr_cli.assert_any_call("xrandr -q")
+    xrandr_cli.assert_called_with("xrandr --output HDMI-1-1 --auto --left-of eDP-1-1")
 
 
 # xrandr sample data
 
-FULL_OUTPUT_TWO_DISPLAYS = """Screen 0: minimum 8 x 8, current 4480 x 1440, maximum 32767 x 32767
+HDMI_CONNECTED_ACTIVE = """
+Screen 0: minimum 8 x 8, current 4480 x 1440, maximum 32767 x 32767
 eDP-1-1 connected primary 1920x1080+0+0 344mm x 193mm
    1920x1080     60.00*+  59.93    48.00
    1680x1050     59.95    59.88
@@ -150,8 +265,24 @@ HDMI-1-1 connected 2560x1440+1920+0 596mm x 335mm
 """
 
 
-TRUNCATED_OUTPUT_DISPLAY_OFF = """eDP-1-1 connected primary 1920x1080+0+0 344mm x 193mm
+HDMI_CONNECTED_INACTIVE = """
+eDP-1-1 connected primary 1920x1080+0+0 344mm x 193mm
    1920x1080     60.00*+  59.93    48.00
 HDMI-1-1 connected
    2560x1440     59.95 +
+"""
+
+HDMI_DISCONNECTED_ACTIVE = """
+eDP-1-1 connected primary 1920x1080+0+0 344mm x 193mm
+   1920x1080     60.00*+  59.93    48.00
+HDMI-1-1 disconnected 2560x1440+1920+0 0mm x 0mm
+  2560x1440 (0x6b) 241.500MHz +HSync +VSync
+        h: width  2560 start 2608 end 2640 total 2720 skew    0 clock  88.79KHz
+        v: height 1440 start 1442 end 1447 total 1481           clock  59.95Hz
+"""
+
+HDMI_DISCONNECTED_INACTIVE = """
+eDP-1-1 connected primary 1920x1080+0+0 344mm x 193mm
+   1920x1080     60.00*+  59.93    48.00
+HDMI-1-1 disconnected
 """
