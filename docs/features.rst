@@ -110,6 +110,10 @@ An example:
 Configuration files
 -------------------
 
+Using a configuration file, it is possible to define a list of modules
+that will be loaded if no modules are specified on the CLI, as well as
+defining a default theme to use.
+
 Any parameter that can be specified using ``-p <name>=<value>`` on the
 commandline, can alternatively be specified in one of the following
 configuration files: - ~/.bumblebee-status.conf -
@@ -122,6 +126,10 @@ Configuration files have the following format:
 
 ::
 
+   [core]
+   modules = <comma-separated list of modules to load>
+   theme = <theme to use by default>
+
    [module-parameters]
    <key> = <value>
 
@@ -131,3 +139,5 @@ For example:
 
    [module-parameters]
    github.token=abcdefabcdef12345
+
+
