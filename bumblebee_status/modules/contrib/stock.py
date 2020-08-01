@@ -56,7 +56,11 @@ class Module(core.module.Module):
                 self.__symbols
                 + "&fields=regularMarketPrice,currency,regularMarketChange"
             )
-            return urllib.request.urlopen(url).read().strip()
+            try:
+                return urllib.request.urlopen(url).read().strip()
+            except urllib.request.URLError:
+                logging.error("unable to open stock exchange url")
+                return None
         else:
             logging.error("unable to retrieve stock exchange rate")
             return None
