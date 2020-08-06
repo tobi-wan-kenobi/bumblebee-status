@@ -53,7 +53,7 @@ class Module(core.module.Module):
             log.debug("group num: {}".format(xkb.group_num))
             name = (
                 xkb.group_name
-                if util.format.asbool(self.parameter("showname"), False)
+                if util.format.asbool(self.parameter("showname", False))
                 else xkb.group_symbol
             )
             if self.__show_variant:
