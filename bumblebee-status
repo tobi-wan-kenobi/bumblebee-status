@@ -4,6 +4,7 @@ import os
 import sys
 import json
 import time
+import signal
 import socket
 import select
 import logging
@@ -103,6 +104,12 @@ def main():
     input_thread.daemon = True
     input_thread.start()
 
+    def sig_USR1_handler(signum,stack):
+        if update_lock.acquire(blocking=False) == True:
+            core.event.trigger("update", redraw_only=False)
+            core.event.trigger("draw")
+            update_lock.release()
+
     if config.debug():
         modules.append(core.module.load("debug", config, theme))
 
@@ -120,6 +127,7 @@ def main():
 
     core.event.trigger("start")
     started = True
+    signal.signal(10, sig_USR1_handler)
     while True:
         if update_lock.acquire(blocking=False) == True:
             core.event.trigger("update")
