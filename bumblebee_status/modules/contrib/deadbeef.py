@@ -114,7 +114,7 @@ class Module(core.module.Module):
             self._song = ""
             return
         ## perform the actual query -- these can be much more sophisticated
-        data = util.cli.execute(self.now_playing_tf + self._tf_format)
+        data = util.cli.execute(self.now_playing_tf + '"'+self._tf_format+'"')
         self._song = data
 
     def update_standard(self, widgets):
