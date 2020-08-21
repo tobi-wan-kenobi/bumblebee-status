@@ -83,7 +83,6 @@ class Module(core.module.Module):
                 self.__label += "/".join(counts)
 
         except Exception as err:
-            print(err)
             self.__label = "n/a"
 
     def __getUnreadNotificationsCountByReason(self, notifications, reason):
