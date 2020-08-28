@@ -29,6 +29,7 @@ class Module(core.module.Module):
         return "/".join(result)
 
     def update(self):
+        widget = self.widget()
         res = util.cli.execute("dnf updateinfo", ignore_errors=True)
 
         security = 0
