@@ -106,7 +106,7 @@ def main():
 
     def sig_USR1_handler(signum,stack):
         if update_lock.acquire(blocking=False) == True:
-            core.event.trigger("update", redraw_only=False)
+            core.event.trigger("update", force=True)
             core.event.trigger("draw")
             update_lock.release()
 

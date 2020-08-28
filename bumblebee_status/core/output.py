@@ -221,15 +221,13 @@ class i3(object):
             core.event.trigger("next-widget")
         return blocks
 
-    # TODO: only updates full text, not the state!?
-    # can this TODO be removed now? Will update the state if not redraw_only
-    def update(self, affected_modules=None, redraw_only=False):
+    def update(self, affected_modules=None, redraw_only=False, force=False):
         now = time.time()
         for module in self.__modules:
             if affected_modules and not module.id in affected_modules:
                 continue
             if not affected_modules and module.next_update:
-                if now < module.next_update and redraw_only:
+                if now < module.next_update and not force:
                     continue
 
             if not redraw_only:
