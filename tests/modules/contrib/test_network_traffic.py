@@ -26,11 +26,47 @@ def gateways_response():
     }
 
 def build_module():
-    return modules.contrib.network_traffic.Module(config=core.config.Config([]), theme=None)
+    config = core.config.Config([])
+    return modules.contrib.network_traffic.Module(config=config, theme=None)
+
+def download_widget(module):
+    return module.widgets()[0]
+
+def upload_widget(module):
+    return module.widgets()[1]
+
+def mb_to_bytes(value):
+    return value*1024**2
 
 class TestNetworkTrafficUnit(TestCase):
     def test_load_module(self):
         __import__("modules.contrib.network_traffic")
+
+    def test_initial_download_rate(self):
+        module = build_module()
+        assert download_widget(module).full_text() == '0.00B/s'
+
+    def test_initial_upload_rate(self):
+        module = build_module()
+        assert upload_widget(module).full_text() == '0.00B/s'
+
+    @mock.patch('netifaces.gateways')
+    def test_invalid_gateways(self, gateways_mock):
+        gateways_mock.return_value = { 'invalid': 'gateways' }
+
+        module = build_module()
+
+        assert download_widget(module).full_text() == '0.00B/s'
+        assert upload_widget(module).full_text() == '0.00B/s'
+
+    @mock.patch('psutil.net_io_counters')
+    def test_invalid_io_counters(self, net_io_counters_mock):
+        net_io_counters_mock.return_value = { 'invalid': 'io_counters' }
+
+        module = build_module()
+
+        assert download_widget(module).full_text() == '0.00B/s'
+        assert upload_widget(module).full_text() == '0.00B/s'
 
     @mock.patch('psutil.net_io_counters')
     @mock.patch('netifaces.gateways')
@@ -41,17 +77,15 @@ class TestNetworkTrafficUnit(TestCase):
 
         module = build_module()
 
-        net_io_counters_mock.return_value = io_counters_mock(2842135, 1932215)
+        assert download_widget(module).full_text() == '0.00B/s'
+        assert upload_widget(module).full_text() == '0.00B/s'
+
+        net_io_counters_mock.return_value = io_counters_mock(
+            mb_to_bytes(30),
+            mb_to_bytes(0.5)
+        )
+
         module.update()
 
-        assert module.widgets()[1].full_text() == '1.84MiB/s'
-        assert module.widgets()[0].full_text() == '2.71MiB/s'
-
-    def test_initial_download_rate(self):
-        module = build_module()
-        assert module.widgets()[0].full_text() == '0.00B/s'
-
-    def test_initial_upload_rate(self):
-        module = build_module()
-        assert module.widgets()[1].full_text() == '0.00B/s'
-
+        assert download_widget(module).full_text() == '30.00MiB/s'
+        assert upload_widget(module).full_text() == '512.00KiB/s'
