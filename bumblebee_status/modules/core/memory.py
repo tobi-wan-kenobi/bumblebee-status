@@ -41,18 +41,8 @@ class Module(core.module.Module):
         return self._format.format(**self._mem)
 
     def update(self):
-        data = {}
-        with open("/proc/meminfo", "r") as f:
-            for line in f:
-                tmp = re.split(r"[:\s]+", line)
-                value = int(tmp[1])
-                if tmp[2] == "kB":
-                    value = value * 1024
-                if tmp[2] == "mB":
-                    value = value * 1024 * 1024
-                if tmp[2] == "gB":
-                    value = value * 1024 * 1024 * 1024
-                data[tmp[0]] = value
+        data = self.__parse_meminfo()
+
         if "MemAvailable" in data:
             used = data["MemTotal"] - data["MemAvailable"]
         else:
@@ -78,5 +68,26 @@ class Module(core.module.Module):
             return "warning"
         return None
 
+    def __parse_meminfo(self):
+        data = {}
+        with open("/proc/meminfo", "r") as f:
+            # https://bugs.python.org/issue32933
+            while True:
+                line = f.readline()
+
+                if line == '':
+                    break
+
+                tmp = re.split(r"[:\s]+", line)
+                value = int(tmp[1])
+                if tmp[2] == "kB":
+                    value = value * 1024
+                if tmp[2] == "mB":
+                    value = value * 1024 * 1024
+                if tmp[2] == "gB":
+                    value = value * 1024 * 1024 * 1024
+                data[tmp[0]] = value
+
+        return data
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

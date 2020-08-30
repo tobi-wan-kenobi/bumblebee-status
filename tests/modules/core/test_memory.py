@@ -30,7 +30,6 @@ def meminfo_mock(
         ('Slab', slab)
     ]
 
-
     for i, (key, value) in enumerate(states):
         data.append('{}: {} kB'.format(key, value))
 
