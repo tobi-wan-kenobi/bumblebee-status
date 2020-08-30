@@ -72,12 +72,7 @@ class Module(core.module.Module):
         data = {}
         with open("/proc/meminfo", "r") as f:
             # https://bugs.python.org/issue32933
-            while True:
-                line = f.readline()
-
-                if line == '':
-                    break
-
+            for line in f.readlines():
                 tmp = re.split(r"[:\s]+", line)
                 value = int(tmp[1])
                 if tmp[2] == "kB":
