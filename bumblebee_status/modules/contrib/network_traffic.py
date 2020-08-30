@@ -38,8 +38,8 @@ class Module(core.module.Module):
         try:
             self._bandwidth = BandwidthInfo()
 
-            self._rate_recv = "?"
-            self._rate_sent = "?"
+            self._rate_recv = 0
+            self._rate_sent = 0
             self._bytes_recv = self._bandwidth.bytes_recv()
             self._bytes_sent = self._bandwidth.bytes_sent()
         except Exception:
