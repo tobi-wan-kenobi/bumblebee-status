@@ -15,6 +15,7 @@ def memory_widget(module):
 def meminfo_mock(
     total,
     available,
+    unit = 'kB',
     free = 0,
     buffers = 0,
     cached = 0,
@@ -31,7 +32,7 @@ def meminfo_mock(
     ]
 
     for i, (key, value) in enumerate(states):
-        data.append('{}: {} kB'.format(key, value))
+        data.append('{}: {} {}'.format(key, value, unit))
 
     return '\n'.join(data)
 
@@ -118,3 +119,25 @@ class TestMemory(TestCase):
 
         assert widget.full_text() == '50.0%'
         assert module.state(widget) == None
+
+
+    @mock.patch('builtins.open', mock.mock_open(read_data=meminfo_mock(8196, 4096, 'mB')))
+    def test_mb_unit(self):
+        module = build_module()
+        module.update()
+
+        widget = memory_widget(module)
+
+        assert widget.full_text() == '4.00GiB/8.00GiB (50.02%)'
+        assert module.state(widget) == None
+
+    @mock.patch('builtins.open', mock.mock_open(read_data=meminfo_mock(2, 1, 'gB')))
+    def test_gb_unit(self):
+        module = build_module()
+        module.update()
+
+        widget = memory_widget(module)
+
+        assert widget.full_text() == '1.00GiB/2.00GiB (50.00%)'
+        assert module.state(widget) == None
+
