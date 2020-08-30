@@ -85,8 +85,15 @@ class Module(core.module.Module):
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.__show_popup)
 
     def octoprint_status(self, widget):
-        if self.__octoprint_state == "Offline" or self.__octoprint_state == "Unknown":
-            return self.__octoprint_state
+        if (
+            self.__octoprint_state.startswith("Offline")
+            or self.__octoprint_state == "Unknown"
+        ):
+            return (
+                (self.__octoprint_state[:25] + "...")
+                if len(self.__octoprint_state) > 25
+                else self.__octoprint_state
+            )
         return (
             self.__octoprint_state
             + " | B: "
