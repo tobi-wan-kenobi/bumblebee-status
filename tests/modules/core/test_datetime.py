@@ -1,7 +1,5 @@
 import pytest
 from unittest import mock, TestCase
-
-import datetime
 from freezegun import freeze_time
 
 import core.config
