@@ -97,9 +97,6 @@ class BandwidthInfo(object):
         """Return default active network adapter"""
         gateway = netifaces.gateways()["default"]
 
-        if not gateway:
-            raise "No default gateway found"
-
         return gateway[netifaces.AF_INET][1]
 
     @classmethod
