@@ -7,6 +7,8 @@ import core.input
 import core.widget
 import modules.core.date
 
+pytest.importorskip("datetime")
+
 def build_module(args = []):
     config = core.config.Config(args)
     return modules.core.date.Module(config=config, theme=None)
