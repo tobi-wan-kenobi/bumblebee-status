@@ -9,7 +9,7 @@ before_install:
   - sudo apt-get -qq update
 install:
   - sudo apt-get install python-dbus
-  - pip install -U coverage==4.3 pytest pytest-mock
+  - pip install -U coverage==4.3 pytest pytest-mock freezegun
   - pip install codeclimate-test-reporter
   - pip install i3-py Pillow Babel DateTime python-dateutil
   - pip install docker feedparser i3ipc
