@@ -89,3 +89,15 @@ class TestNetworkTrafficUnit(TestCase):
 
         assert download_widget(module).full_text() == '30.00MiB/s'
         assert upload_widget(module).full_text() == '512.00KiB/s'
+
+    def test_widget_states(self):
+        module = build_module()
+
+        assert module.state(download_widget(module)) == 'rx'
+        assert module.state(upload_widget(module)) == 'tx'
+
+    def test_invalid_widget_state(self):
+        module = build_module()
+        invalid_widget = core.widget.Widget(name='invalid')
+
+        assert module.state(invalid_widget) == None
