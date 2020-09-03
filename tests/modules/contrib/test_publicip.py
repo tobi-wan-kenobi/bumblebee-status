@@ -35,10 +35,7 @@ class PublicIPTest(TestCase):
 
         assert widget(module).full_text() == 'n/a'
 
-    @mock.patch('util.location.public_ip')
-    def test_interval_seconds(self, public_ip_mock):
-        public_ip_mock.side_effect = Exception
-
+    def test_interval_seconds(self):
         module = build_module()
 
         assert module.parameter('interval') == 3600
