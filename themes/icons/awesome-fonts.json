@@ -293,5 +293,8 @@
   "speedtest": {
     "running": { "prefix": ["\uf251", "\uf252", "\uf253"] },
 	"not-running": { "prefix": "\uf144" }
+  },
+  "thunderbird": {
+    "prefix": ""
   }
 }
