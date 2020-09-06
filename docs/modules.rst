@@ -278,6 +278,7 @@ Parameters:
     * vault.location: Location of the password store (defaults to ~/.password-store)
     * vault.offx: x-axis offset of popup menu (defaults to 0)
     * vault.offy: y-axis offset of popup menu (defaults to 0)
+    * vault.text: Text to display on the widget (defaults to <click-for-password>)
 
 Many thanks to `bbernhard <https://github.com/bbernhard>`_ for the idea!
 
@@ -294,6 +295,9 @@ Parameters:
       and appending a file '~/.config/i3/config.<screen name>' for every screen.
     * xrandr.autoupdate: If set to 'false', does *not* invoke xrandr automatically. Instead, the
       module will only refresh when displays are enabled or disabled (defaults to true)
+    * xrandr.exclude: Comma-separated list of display name prefixes to exclude
+    * xrandr.autotoggle: Boolean flag to automatically enable new displays (defaults to false)
+    * xrandr.autotoggle_side: Which side to put autotoggled displays on ('right' or 'left', defaults to 'right')
 
 Requires the following python module:
     * (optional) i3 - if present, the need for updating the widget list is auto-detected
@@ -636,9 +640,6 @@ Displays DNF package update information (<security>/<bugfixes>/<enhancements>/<o
 Requires the following executable:
     * dnf
 
-Parameters:
-    * dnf.interval: Time in minutes between two consecutive update checks (defaults to 30 minutes)
-
 .. image:: ../screenshots/dnf.png
 
 docker_ps
@@ -659,6 +660,19 @@ Toggle dunst notifications.
 contributed by `eknoes <https://github.com/eknoes>`_ - many thanks!
 
 .. image:: ../screenshots/dunst.png
+
+dunstctl
+~~~~~~~~
+
+Toggle dunst notifications using dunstctl.
+
+When notifications are paused using this module dunst doesn't get killed and you'll keep getting notifications on the background that will be displayed when unpausing.
+This is specially useful if you're using dunst's scripting (https://wiki.archlinux.org/index.php/Dunst#Scripting), which requires dunst to be running. Scripts will be executed when dunst gets unpaused.
+
+Requires:
+    * dunst v1.5.0+
+
+contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
 
 getcrypto
 ~~~~~~~~~
@@ -1302,6 +1316,22 @@ Parameters:
 contributed by `chdorb <https://github.com/chdorb>`_ - many thanks!
 
 .. image:: ../screenshots/taskwarrior.png
+
+thunderbird
+~~~~~~~~~~~
+
+Displays the unread emails count for one or more Thunderbird inboxes
+
+Parameters:
+    * thunderbird.home: Absolute path of your .thunderbird directory (e.g.: /home/pi/.thunderbird)
+    * thunderbird.inboxes: Comma separated values for all MSF inboxes and their parent directory (account) (e.g.: imap.gmail.com/INBOX.msf,outlook.office365.com/Work.msf)
+
+Tips:
+    * You can run the following command in order to list all your Thunderbird inboxes
+
+        find ~/.thunderbird -name '*.msf' | awk -F '/' '{print $(NF-1)"/"$(NF)}'
+
+contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
 
 timetz
 ~~~~~~
