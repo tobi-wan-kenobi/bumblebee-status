@@ -25,7 +25,6 @@ import core.input
 import core.decorators
 import util.format
 
-
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
@@ -42,6 +41,39 @@ class Module(core.module.Module):
 
         self.__cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
                 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
+
+        widget_map = {}
+        for widget_name in self.__layout:
+            widget = self.add_widget(name=widget_name)
+            if widget_name == "spotify.prev":
+                widget_map[widget] = {
+                    "button": core.input.LEFT_MOUSE,
+                    "cmd": self.__cmd + "Previous",
+                }
+                widget.set("state", "prev")
+            elif widget_name == "spotify.pause":
+                widget_map[widget] = {
+                    "button": core.input.LEFT_MOUSE,
+                    "cmd": self.__cmd + "PlayPause",
+                }
+            elif widget_name == "spotify.next":
+                widget_map[widget] = {
+                    "button": core.input.LEFT_MOUSE,
+                    "cmd": self.__cmd + "Next",
+                }
+                widget.set("state", "next")
+            elif widget_name == "spotify.song":
+                widget.set("state", "song")
+                widget.full_text(self.__song)
+            else:
+                raise KeyError(
+                    "The spotify module does not have a {widget_name!r} widget".format(
+                        widget_name=widget_name
+                    )
+                )
+        for widget, callback_options in widget_map.items():
+            core.input.register(widget, **callback_options)
+
 
     def hidden(self):
         return self.string_song == ""
@@ -62,23 +94,10 @@ class Module(core.module.Module):
 
     def update(self):
         try:
-            self.clear_widgets()
             self.__get_song()
 
-            widget_map = {}
-            for widget_name in self.__layout:
-                widget = self.add_widget(name=widget_name)
-                if widget_name == "spotify.prev":
-                    widget_map[widget] = {
-                        "button": core.input.LEFT_MOUSE,
-                        "cmd": self.__cmd + "Previous",
-                    }
-                    widget.set("state", "prev")
-                elif widget_name == "spotify.pause":
-                    widget_map[widget] = {
-                        "button": core.input.LEFT_MOUSE,
-                        "cmd": self.__cmd + "PlayPause",
-                    }
+            for widget in self.widgets():
+                if widget.name == "spotify.pause":
                     playback_status = str(
                         dbus.Interface(
                             dbus.SessionBus().get_object(
@@ -92,25 +111,8 @@ class Module(core.module.Module):
                         widget.set("state", "playing")
                     else:
                         widget.set("state", "paused")
-                elif widget_name == "spotify.next":
-                    widget_map[widget] = {
-                        "button": core.input.LEFT_MOUSE,
-                        "cmd": self.__cmd + "Next",
-                    }
-                    widget.set("state", "next")
-                elif widget_name == "spotify.song":
-                    widget.set("state", "song")
-                    widget.full_text(self.__song)
-                else:
-                    raise KeyError(
-                        "The spotify module does not have a {widget_name!r} widget".format(
-                            widget_name=widget_name
-                        )
-                    )
-            for widget, callback_options in widget_map.items():
-                core.input.register(widget, **callback_options)
 
-        except Exception:
+        except Exception as e:
             self.__song = ""
 
     @property
