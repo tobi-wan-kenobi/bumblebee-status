@@ -31,6 +31,8 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
 
+        self.background = True
+
         self.__layout = util.format.aslist(
             self.parameter(
                 "layout", "spotify.song,spotify.prev,spotify.pause,spotify.next",
