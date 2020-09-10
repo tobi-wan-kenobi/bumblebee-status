@@ -1335,6 +1335,8 @@ Tips:
 
 contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
 
+.. image:: ../screenshots/thunderbird.png
+
 timetz
 ~~~~~~
 
