@@ -674,6 +674,8 @@ Requires:
 
 contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
 
+.. image:: ../screenshots/dunstctl.png
+
 getcrypto
 ~~~~~~~~~
 
