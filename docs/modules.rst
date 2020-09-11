@@ -674,6 +674,8 @@ Requires:
 
 contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
 
+.. image:: ../screenshots/dunstctl.png
+
 getcrypto
 ~~~~~~~~~
 
@@ -1332,6 +1334,8 @@ Tips:
         find ~/.thunderbird -name '*.msf' | awk -F '/' '{print $(NF-1)"/"$(NF)}'
 
 contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
+
+.. image:: ../screenshots/thunderbird.png
 
 timetz
 ~~~~~~
