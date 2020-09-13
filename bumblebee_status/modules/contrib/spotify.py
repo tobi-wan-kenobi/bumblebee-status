@@ -39,6 +39,7 @@ class Module(core.module.Module):
             )
         )
 
+        self.__bus = dbus.SessionBus()
         self.__song = ""
         self.__pause = ""
         self.__format = self.parameter("format", "{artist} - {title}")
@@ -82,7 +83,7 @@ class Module(core.module.Module):
         return self.string_song == ""
 
     def __get_song(self):
-        bus = dbus.SessionBus()
+        bus = self.__bus
         spotify = bus.get_object(
             "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"
         )
@@ -103,7 +104,7 @@ class Module(core.module.Module):
                 if widget.name == "spotify.pause":
                     playback_status = str(
                         dbus.Interface(
-                            dbus.SessionBus().get_object(
+                            self.__bus.get_object(
                                 "org.mpris.MediaPlayer2.spotify",
                                 "/org/mpris/MediaPlayer2",
                             ),
