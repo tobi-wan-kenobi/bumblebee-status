@@ -68,10 +68,10 @@ def handle_input(output, update_lock):
                         modules[event["name"]] = True
                 except ValueError:
                     pass
-            update_lock.acquire()
-            core.event.trigger("update", modules.keys())
-            core.event.trigger("draw")
-            update_lock.release()
+            if update_lock.acquire(blocking=False) == True:
+                core.event.trigger("update", modules.keys(), force=True)
+                core.event.trigger("draw")
+                update_lock.release()
 
         poll.unregister(sys.stdin.fileno())
 
