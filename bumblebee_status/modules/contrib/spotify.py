@@ -68,8 +68,7 @@ class Module(core.module.Module):
                 }
                 widget.set("state", "next")
             elif widget_name == "spotify.song":
-                widget.set("state", "song")
-                widget.full_text(self.__song)
+                pass
             else:
                 raise KeyError(
                     "The spotify module does not have a {widget_name!r} widget".format(
@@ -116,6 +115,9 @@ class Module(core.module.Module):
                         widget.set("state", "playing")
                     else:
                         widget.set("state", "paused")
+                elif widget.name == "spotify.song":
+                    widget.set("state", "song")
+                    widget.full_text(self.__song)
 
         except Exception as e:
             logging.exception(e)
