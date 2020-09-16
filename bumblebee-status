@@ -40,7 +40,7 @@ class CommandSocket(object):
         os.unlink(self.__name)
 
 
-def handle_input(output, update_lock):
+def handle_input(output, config, update_lock):
     with CommandSocket() as cmdsocket:
         poll = select.poll()
         poll.register(sys.stdin.fileno(), select.POLLIN)
@@ -69,7 +69,9 @@ def handle_input(output, update_lock):
                 except ValueError:
                     pass
 
-            time.sleep(0.2)
+            delay = float(config.get("engine.input_delay", 0.2))
+            if delay > 0:
+                time.sleep(delay)
             if update_lock.acquire(blocking=False) == True:
                 core.event.trigger("update", modules.keys(), force=True)
                 core.event.trigger("draw")
@@ -102,7 +104,7 @@ def main():
     core.input.register(None, core.input.WHEEL_DOWN, "i3-msg workspace next_on_output")
 
     update_lock = threading.Lock()
-    input_thread = threading.Thread(target=handle_input, args=(output, update_lock, ))
+    input_thread = threading.Thread(target=handle_input, args=(output, config, update_lock, ))
     input_thread.daemon = True
     input_thread.start()
 
