@@ -1,1 +1,1 @@
-feedparser
+feedparser==6.0.0b1

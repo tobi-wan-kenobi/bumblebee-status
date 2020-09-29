@@ -12,7 +12,7 @@ install:
   - pip install -U coverage==4.3 pytest pytest-mock freezegun
   - pip install codeclimate-test-reporter
   - pip install i3-py Pillow Babel DateTime python-dateutil
-  - pip install docker feedparser i3ipc
+  - pip install docker feedparser==6.0.0b1 i3ipc
   - pip install netifaces power
   - pip install psutil pytz
   - pip install requests simplejson
