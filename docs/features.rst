@@ -87,6 +87,19 @@ attention, it will remain hidden. Note that this parameter is specified
 *in addition* to ``-m`` (i.e. to autohide the CPU module, you would use
 ``bumblebee-status -m cpu memory traffic -a cpu``).
 
+Scrolling widget text
+-----------------------
+Some widgets support scrolling for long text (e.g. most music player
+widgets, rss, etc.). Those have some additional settings for customizing
+the scrolling behaviour, in particular:
+
+  - ``scrolling.width``: Desired width of the scrolling panel
+  - ``scrolling.makewide``: If set to true, extends texts shorter than
+    ``scrolling.width`` to that width
+  - ``scrolling.bounce``: If set to true, bounces the text when it reaches
+    the end, otherwise, it behaves like marquee (scroll-through) text
+  - ``scrolling.speed``: Defines the scroll speed, in characters per update
+
 Additional widget theme settings
 --------------------------------
 
