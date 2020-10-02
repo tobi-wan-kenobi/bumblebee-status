@@ -33,7 +33,7 @@ Supported Python versions: 3.4, 3.5, 3.6, 3.7, 3.8
 Supported FontAwesome version: 4 (free version of 5 doesn't include some of the icons)
 
 ---
-**NOTE**
+***NOTE***
 
 The default branch for this project is `main` - I'm keeping `master` around for backwards compatibility (I do not want to break anybody's setup), but the default branch is now `main`!
 
