@@ -11,6 +11,7 @@ Adding a new module to ``bumblebee-status`` is straight-forward:
    ``bumblebee-status`` (i.e. a module called
    ``bumblebee_status/modules/contrib/test.py`` will be loaded using
    ``bumblebee-status -m test``)
+-  The module name must follow the `Python Naming Conventions <https://www.python.org/dev/peps/pep-0008/#package-and-module-names>`_
 -  See below for how to actually write the module
 -  Test (run ``bumblebee-status`` in the CLI)
 -  Make sure your changes don’t break anything: ``./coverage.sh``
