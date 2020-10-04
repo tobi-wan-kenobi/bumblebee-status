@@ -8,6 +8,8 @@ Parameters:
       Available values are: {album}, {title}, {artist}, {trackNumber}
     * spotify.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
       Widget names are: spotify.song, spotify.prev, spotify.pause, spotify.next
+    * spotify.concise_controls: When enabled, allows spotify to be controlled from just the spotify.song widget.
+      Concise controls are:     Left Click: Toggle Pause; Wheel Up: Next; Wheel Down; Previous.
 
 contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 
@@ -68,15 +70,33 @@ class Module(core.module.Module):
                 }
                 widget.set("state", "next")
             elif widget_name == "spotify.song":
-                pass
+                if util.format.asbool(self.parameter("concise_controls", "false")):
+                    widget_map[widget] = [
+                        {
+                            "button": core.input.LEFT_MOUSE,
+                            "cmd": self.__cmd + "PlayPause",
+                        }, {
+                            "button": core.input.WHEEL_UP,
+                            "cmd": self.__cmd + "Next",
+                        }, {
+                            "button": core.input.WHEEL_DOWN,
+                            "cmd": self.__cmd + "Previous",
+                        }
+                    ]
             else:
                 raise KeyError(
                     "The spotify module does not have a {widget_name!r} widget".format(
                         widget_name=widget_name
                     )
                 )
+        # is there any reason the inputs can't be directly registered above?
         for widget, callback_options in widget_map.items():
-            core.input.register(widget, **callback_options)
+            if isinstance(callback_options, dict):
+                core.input.register(widget, **callback_options)
+
+            elif isinstance(callback_options, list): # used by concise_controls
+                for opts in callback_options:
+                    core.input.register(widget, **opts)
 
 
     def hidden(self):
