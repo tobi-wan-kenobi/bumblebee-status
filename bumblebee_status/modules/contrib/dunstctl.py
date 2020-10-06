@@ -27,6 +27,7 @@ class Module(core.module.Module):
 
     def toggle_status(self, event):
         self._paused = self.__isPaused()
+
         if self._paused:
             util.cli.execute("dunstctl set-paused false")
         else:
