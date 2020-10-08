@@ -19,13 +19,13 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.current_layout))
 
-        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.__next_keymap)
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.next_keymap)
         self.__current_layout = self.__get_current_layout()
 
     def current_layout(self, _):
         return self.__current_layout
 
-    def __next_keymap(self, event):
+    def next_keymap(self, event):
         util.cli.execute("xkb-switch -n", ignore_errors=True)
 
     def __get_current_layout(self):
