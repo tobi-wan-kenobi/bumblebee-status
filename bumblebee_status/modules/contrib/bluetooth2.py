@@ -69,7 +69,7 @@ class Module(core.module.Module):
         )
 
         logging.debug("bt: toggling bluetooth")
-        core.util.execute(cmd)
+        util.cli.execute(cmd)
 
     def state(self, widget):
         """Get current state."""
