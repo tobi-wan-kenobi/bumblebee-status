@@ -101,7 +101,7 @@ class Module(core.module.Module):
         return val
 
     def update(self):
-        if self.__thread is not None and self.__thread.isAlive():
+        if self.__thread is not None and self.__thread.is_alive():
             return
         self.__thread = threading.Thread(target=get_redshift_value, args=(self,))
         self.__thread.start()

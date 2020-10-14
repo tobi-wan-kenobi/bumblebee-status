@@ -123,7 +123,7 @@ class Module(core.input.Object):
 
     def update_wrapper(self):
         if self.background == True:
-            if self.__thread and self.__thread.isAlive():
+            if self.__thread and self.__thread.is_alive():
                 return # skip this update interval
             self.__thread = threading.Thread(target=self.internal_update, args=(True,))
             self.__thread.start()
