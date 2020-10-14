@@ -65,7 +65,7 @@ class Module(core.module.Module):
         )
 
     def update(self):
-        if self.__thread and self.__thread.isAlive():
+        if self.__thread and self.__thread.is_alive():
             return
 
         self.__thread = threading.Thread(target=get_apt_check_info, args=(self,))
