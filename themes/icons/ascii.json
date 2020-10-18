@@ -355,6 +355,17 @@
       "prefix": "dunst"
     }
   },
+  "dunstctl": {
+    "muted": {
+      "prefix": "dunst(muted)"
+    },
+    "unmuted": {
+      "prefix": "dunst"
+    },
+    "unknown": {
+      "prefix": "dunst(unknown)"
+    }
+  },
   "twmn": {
     "muted": {
       "prefix": "twmn"
