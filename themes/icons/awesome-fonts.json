@@ -259,7 +259,8 @@
   },
   "dunstctl": {
     "muted": { "prefix": "" },
-    "unmuted": { "prefix": "" }
+    "unmuted": { "prefix": "" },
+    "unknown": { "prefix": "" }
   },
   "twmn": {
     "muted": { "prefix": "" },

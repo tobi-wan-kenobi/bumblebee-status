@@ -187,6 +187,11 @@
     "muted": { "prefix": "\uf39a" },
     "unmuted": { "prefix": "\uf39b" }
   },
+  "dunstctl": {
+    "muted": { "prefix": "\uf39a" },
+    "unmuted": { "prefix": "\uf39b" },
+    "unknown": { "prefix": "\uf142" }
+  },
   "twmn": {
     "muted": { "prefix": "\uf1f6" },
     "unmuted": { "prefix": "\uf0f3" }
