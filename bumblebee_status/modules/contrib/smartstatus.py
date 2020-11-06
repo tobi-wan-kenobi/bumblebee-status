@@ -10,7 +10,7 @@ Requires the following executables:
     * smartctl
 
 Parameters:
-    * smartstatus.display: how to display (defaults to 'combined', other choices: 'seperate' or 'singles')
+    * smartstatus.display: how to display (defaults to 'combined', other choices: 'combined_singles', 'seperate' or 'singles')
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
     * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
 """
@@ -38,7 +38,7 @@ class Module(core.module.Module):
         self.create_widgets()
 
     def create_widgets(self):
-        if self.display == "combined":
+        if self.display == "combined" or self.display == "combined_singles":
             widget = self.add_widget()
             widget.set("device", "combined")
             widget.set("assessment", self.combined())
@@ -81,6 +81,8 @@ class Module(core.module.Module):
 
     def combined(self):
         for device in self.devices:
+            if self.display == "combined_singles" and device not in self.drives:
+                    continue
             result = self.smart(device)
             if result == "Fail":
                 return "Fail"
