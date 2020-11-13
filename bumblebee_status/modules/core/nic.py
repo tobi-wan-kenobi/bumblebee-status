@@ -7,6 +7,7 @@ Requires the following python module:
 
 Requires the following executable:
     * iw
+    * (until and including 2.0.5: iwgetid)
 
 Parameters:
     * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br')

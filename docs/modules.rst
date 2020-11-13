@@ -97,6 +97,20 @@ Parameters:
     * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
     * layout-xkb.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
 
+layout_xkb
+~~~~~~~~~~
+
+Displays the current keyboard layout using libX11
+
+Requires the following library:
+    * libX11.so.6
+and python module:
+    * xkbgroup
+
+Parameters:
+    * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
+    * layout-xkb.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
+
 load
 ~~~~
 
@@ -141,6 +155,7 @@ Requires the following python module:
 
 Requires the following executable:
     * iw
+    * (until and including 2.0.5: iwgetid)
 
 Parameters:
     * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br')
@@ -366,6 +381,16 @@ Requires the following executable:
 
 contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
 
+arch_update
+~~~~~~~~~~~
+
+Check updates to Arch Linux.
+
+Requires the following executable:
+    * checkupdates (from pacman-contrib)
+
+contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
+
 battery
 ~~~~~~~
 
@@ -385,6 +410,18 @@ Parameters:
 .. image:: ../screenshots/battery.png
 
 battery-upower
+~~~~~~~~~~~~~~
+
+Displays battery status, remaining percentage and charging information.
+
+Parameters:
+    * battery-upower.warning      : Warning threshold in % of remaining charge (defaults to 20)
+    * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)
+    * battery-upower.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
+
+contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
+
+battery_upower
 ~~~~~~~~~~~~~~
 
 Displays battery status, remaining percentage and charging information.
@@ -666,13 +703,17 @@ dunstctl
 
 Toggle dunst notifications using dunstctl.
 
-When notifications are paused using this module dunst doesn't get killed and you'll keep getting notifications on the background that will be displayed when unpausing.
-This is specially useful if you're using dunst's scripting (https://wiki.archlinux.org/index.php/Dunst#Scripting), which requires dunst to be running. Scripts will be executed when dunst gets unpaused.
+When notifications are paused using this module dunst doesn't get killed and
+you'll keep getting notifications on the background that will be displayed when
+unpausing. This is specially useful if you're using dunst's scripting
+(https://wiki.archlinux.org/index.php/Dunst#Scripting), which requires dunst to
+be running. Scripts will be executed when dunst gets unpaused.
 
 Requires:
     * dunst v1.5.0+
 
 contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
+contributed by `joachimmathes <https://github.com/joachimmathes>`_ - many thanks!
 
 .. image:: ../screenshots/dunstctl.png
 
@@ -795,6 +836,16 @@ contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
 .. image:: ../screenshots/layout.png
 
 layout-xkbswitch
+~~~~~~~~~~~~~~~~
+
+Displays and changes the current keyboard layout
+
+Requires the following executable:
+    * xkb-switch
+
+contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
+
+layout_xkbswitch
 ~~~~~~~~~~~~~~~~
 
 Displays and changes the current keyboard layout
@@ -1190,7 +1241,7 @@ Requires the following executables:
     * smartctl
 
 Parameters:
-    * smartstatus.display: how to display (defaults to 'combined', other choices: 'seperate' or 'singles')
+    * smartstatus.display: how to display (defaults to 'combined', other choices: 'combined_singles', 'seperate' or 'singles')
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
     * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
 
@@ -1234,6 +1285,8 @@ Parameters:
       Available values are: {album}, {title}, {artist}, {trackNumber}
     * spotify.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
       Widget names are: spotify.song, spotify.prev, spotify.pause, spotify.next
+    * spotify.concise_controls: When enabled, allows spotify to be controlled from just the spotify.song widget.
+      Concise controls are:     Left Click: Toggle Pause; Wheel Up: Next; Wheel Down; Previous.
 
 contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 
@@ -1376,6 +1429,15 @@ Parameters:
 contributed by `codingo <https://github.com/codingo>`_ - many thanks!
 
 .. image:: ../screenshots/todo.png
+
+todo_org
+~~~~~~~~
+
+Displays the number of todo items from an org-mode file
+Parameters:
+    * todo_org.file:      File to read TODOs from (defaults to ~/org/todo.org)
+    * todo_org.remaining: False by default. When true, will output the number of remaining todos instead of the number completed (i.e. 1/4 means 1 of 4 todos remaining, rather than 1 of 4 todos completed)
+Based on the todo module by `codingo <https://github.com/codingo>`
 
 traffic
 ~~~~~~~
