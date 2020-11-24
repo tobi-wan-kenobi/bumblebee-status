@@ -262,6 +262,9 @@
     "unmuted": { "prefix": "" },
     "unknown": { "prefix": "" }
   },
+  "rofication": {
+    "prefix":  ""
+  },
   "twmn": {
     "muted": { "prefix": "" },
     "unmuted": { "prefix": "" }
