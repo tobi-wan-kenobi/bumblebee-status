@@ -93,7 +93,8 @@ class Module(core.module.Module):
     def _update_widgets(self, widgets):
         self.clear_widgets()
         interfaces = [
-            i for i in netifaces.interfaces() if not i.startswith(self._exclude)
+            i for i in netifaces.interfaces()
+            if not i.startswith(self._exclude) and ":" not in i
         ]
         interfaces.extend([i for i in netifaces.interfaces() if i in self._include])
 
