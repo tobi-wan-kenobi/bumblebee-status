@@ -134,13 +134,15 @@ class Module(core.module.Module):
             widget.set("state", state)
 
     def get_ssid(self, intf):
-        if self._iswlan(intf) and not self._istunnel(intf) and self.iw:
-            ssid = util.cli.execute("{} dev {} link".format(self.iw, intf))
-            found_ssid = re.findall("SSID:\s(.+)", ssid)
-            if len(found_ssid) > 0:
-                return found_ssid[0]
-            else:
-                return ""
+        if not self._iswlan(intf) or self._istunnel(intf) or not self.iw:
+            return ""
+
+        iw_info = util.cli.execute("{} dev {} info".format(self.iw, intf))
+        for line in iw_info.split("\n"):
+            match = re.match("^\s+ssid\s(.+)$", line)
+            if match:
+                return match.group(1)
+
         return ""
 
 
