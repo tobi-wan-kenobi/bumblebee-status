@@ -158,7 +158,7 @@ Requires the following executable:
     * (until and including 2.0.5: iwgetid)
 
 Parameters:
-    * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br')
+    * nic.exclude: Comma-separated list of interface prefixes (supporting regular expressions) to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br,.*:avahi')
     * nic.include: Comma-separated list of interfaces to include
     * nic.states: Comma-separated list of states to show (prefix with '^' to invert - i.e. ^down -> show all devices that are not in state down)
     * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid}')
@@ -1136,6 +1136,17 @@ publicip
 ~~~~~~~~
 
 Displays public IP address
+
+rofication
+~~~~~~~~~~
+
+Rofication indicator
+
+https://github.com/DaveDavenport/Rofication
+simple module to show an icon + the number of notifications stored in rofication
+module will have normal highlighting if there are zero notifications,
+                 "warning" highlighting if there are nonzero notifications,
+                 "critical" highlighting if there are any critical notifications
 
 rotation
 ~~~~~~~~
