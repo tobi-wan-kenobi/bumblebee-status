@@ -28,7 +28,7 @@ Thanks a lot!
 
 Required i3wm version: 4.12+ (in earlier versions, blocks won't have background colors)
 
-Supported Python versions: 3.4, 3.5, 3.6, 3.7, 3.8
+Supported Python versions: 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
 
 Supported FontAwesome version: 4 (free version of 5 doesn't include some of the icons)
 
