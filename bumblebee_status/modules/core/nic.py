@@ -139,7 +139,7 @@ class Module(core.module.Module):
 
         iw_info = util.cli.execute("{} dev {} info".format(self.iw, intf))
         for line in iw_info.split("\n"):
-            match = re.match("^\s+ssid\s(.+)$", line)
+            match = re.match(r"^\s+ssid\s(.+)$", line)
             if match:
                 return match.group(1)
 
