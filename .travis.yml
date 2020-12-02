@@ -1,5 +1,9 @@
-sudo: false
+dist: xenial
+os: linux
 language: python
+env:
+  global:
+    - CC_TEST_REPORTER_ID=40cb00907f7a10e04868e856570bb997ab9c42fd3b63d980f2b2269433195fdf 
 python:
   - "3.4"
   - "3.5"
@@ -7,12 +11,15 @@ python:
   - "3.7"
   - "3.8"
   - "3.9"
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 before_install:
-  - sudo apt-get -qq update
+  - apt-get -qq update
 install:
-  - sudo apt-get install python-dbus
-  - pip install -U coverage==4.3 pytest pytest-mock freezegun
-  - pip install codeclimate-test-reporter
+  - apt-get install python-dbus
+  - pip install -U coverage pytest pytest-mock freezegun
   - pip install i3-py Pillow Babel DateTime python-dateutil
   - pip install docker feedparser==6.0.0b1 i3ipc
   - pip install netifaces power
@@ -22,7 +29,5 @@ install:
   - pip install tzlocal
 script:
   - coverage run --source=. -m pytest tests -v
-  - CODECLIMATE_REPO_TOKEN=40cb00907f7a10e04868e856570bb997ab9c42fd3b63d980f2b2269433195fdf codeclimate-test-reporter
-addons:
-  code_climate:
-    repo_token: 40cb00907f7a10e04868e856570bb997ab9c42fd3b63d980f2b2269433195fdf
+after_script:
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
