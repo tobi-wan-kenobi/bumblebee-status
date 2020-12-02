@@ -71,22 +71,33 @@ def astemperature(val, unit="metric"):
     return "{}°{}".format(int(val), __UNITS.get(unit.lower(), __UNITS["default"]))
 
 
-def byte(val, fmt="{:.2f}"):
+def byte(val, fmt="{:.2f}", sys="IEC"):
     """Returns a byte representation of the input value
 
     :param val: value to format, must be convertible into a float
     :param fmt: optional output format string, defaults to {:.2f}
+    :param sys: optional unit system specifier - SI (kilo, Mega, Giga, ...) or
+        IEC (kibi, Mebi, Gibi, ...) - defaults to IEC
 
     :return: byte representation (e.g. <X> KiB, GiB, etc.) of the input value
     :rtype: string
     """
 
+    if sys == "IEC":
+        div = 1024.0
+        units = ["", "Ki", "Mi", "Gi", "Ti"]
+        final = "TiB"
+    elif sys == "SI":
+        div = 1000.0
+        units = ["", "K", "M", "G", "T"]
+        final = "TB"
+
     val = float(val)
-    for unit in ["", "Ki", "Mi", "Gi"]:
-        if val < 1024.0:
+    for unit in units:
+        if val < div:
             return "{}{}B".format(fmt, unit).format(val)
-        val /= 1024.0
-    return "{}GiB".format(fmt).format(val * 1024.0)
+        val /= div
+    return "{}{}".format(fmt).format(val * div, final)
 
 
 __seconds_pattern = re.compile(r"(([\d\.?]+)h)?(([\d\.]+)m)?([\d\.]+)?s?")
