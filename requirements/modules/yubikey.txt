@@ -1,1 +1,1 @@
-yubico
+python-yubico
