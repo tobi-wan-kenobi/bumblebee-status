@@ -16,9 +16,9 @@ before_script:
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
 before_install:
-  - apt-get -qq update
+  - sudo apt-get -qq update
 install:
-  - apt-get install python-dbus
+  - sudo apt-get install python-dbus
   - pip install -U coverage pytest pytest-mock freezegun
   - pip install i3-py Pillow Babel DateTime python-dateutil
   - pip install docker feedparser==6.0.0b1 i3ipc
