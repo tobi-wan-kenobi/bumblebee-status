@@ -1,4 +1,3 @@
-dist: xenial
 os: linux
 language: python
 env:
@@ -15,10 +14,11 @@ before_script:
   - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
   - chmod +x ./cc-test-reporter
   - ./cc-test-reporter before-build
-before_install:
-  - sudo apt-get -qq update
+addons:
+  apt:
+    packages:
+      libdbus-1-dev
 install:
-  - sudo apt-get install python-dbus
   - pip install -U coverage pytest pytest-mock freezegun
   - pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u)
 script:
