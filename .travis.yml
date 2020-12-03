@@ -20,13 +20,7 @@ before_install:
 install:
   - sudo apt-get install python-dbus
   - pip install -U coverage pytest pytest-mock freezegun
-  - pip install i3-py Pillow Babel DateTime python-dateutil
-  - pip install docker feedparser==6.0.0b1 i3ipc
-  - pip install netifaces power
-  - pip install psutil pytz
-  - pip install requests simplejson
-  - pip install suntime
-  - pip install tzlocal
+  - pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u)
 script:
   - coverage run --source=. -m pytest tests -v
 after_script:
