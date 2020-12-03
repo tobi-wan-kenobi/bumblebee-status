@@ -20,7 +20,7 @@ addons:
       libdbus-1-dev
 install:
   - pip install -U coverage pytest pytest-mock freezegun
-  - pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u)
+  - pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u|grep -v dbus-python|grep -v libvirt-python)
 script:
   - coverage run --source=. -m pytest tests -v
 after_script:
