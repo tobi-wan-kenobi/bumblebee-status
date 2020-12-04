@@ -71,7 +71,7 @@ def test_byteformat():
     assert byte(1024 + 512) == "1.50KiB"
     assert byte(1024 * 1024 * 2 + 1024 * 512) == "2.50MiB"
     assert byte(1024 * 1024 * 1024 * 4 + 1024 * 1024 * 512) == "4.50GiB"
-    assert byte(1024 * 1024 * 1024 * 1024 * 2) == "2048.00GiB"
+    assert byte(1024 * 1024 * 1024 * 1024 * 2) in ["2048.00GiB", "2.00TiB"]
 
 
 def test_duration():
