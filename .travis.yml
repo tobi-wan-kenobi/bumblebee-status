@@ -19,6 +19,7 @@ addons:
     packages:
       libdbus-1-dev
       libffi-dev
+      python3-pygit2
 install:
   - pip install -U coverage pytest pytest-mock freezegun
   - pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u|grep -v dbus-python|grep -v libvirt-python|grep -v Pillow|grep -v pygit2)
