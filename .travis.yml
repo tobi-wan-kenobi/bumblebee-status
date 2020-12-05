@@ -18,10 +18,12 @@ addons:
   apt:
     packages:
       libdbus-1-dev
+      libgit2-dev
       taskwarrior
 install:
   - pip install -U coverage pytest pytest-mock freezegun
-  - pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u|grep -v dbus-python|grep -v libvirt-python|grep -v Pillow|grep -v pygit2)
+  - pip install 'pygit2<1' || true
+  - pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u)
 script:
   - coverage run --source=. -m pytest tests -v
 after_script:
