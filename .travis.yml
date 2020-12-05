@@ -23,7 +23,7 @@ addons:
       taskwarrior
 install:
   - pip install -U coverage pytest pytest-mock freezegun
-  - pip install 'pygit2<1' 'libvirt-python<6.3' || true
+  - pip install 'pygit2<1' 'libvirt-python<6.3' 'feedparser<6' || true
   - pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u)
 script:
   - coverage run --source=. -m pytest tests -v
