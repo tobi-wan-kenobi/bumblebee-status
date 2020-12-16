@@ -50,11 +50,11 @@ entering:
    $ ./bumblebee-status -l themes
    $ ./bumblebee-status -l modules
 
-To change the update interval, use:
+To change the update interval, use a value like ('5s' or '1m') use:
 
 .. code-block:: bash
 
-   $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
+   $ ./bumblebee-status -m <list of modules> -p interval=5s
 
 The update interval can also be changed on a per-module basis, like
 this:
