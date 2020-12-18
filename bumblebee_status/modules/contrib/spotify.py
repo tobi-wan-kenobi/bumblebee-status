@@ -10,6 +10,8 @@ Parameters:
       Widget names are: spotify.song, spotify.prev, spotify.pause, spotify.next
     * spotify.concise_controls: When enabled, allows spotify to be controlled from just the spotify.song widget.
       Concise controls are:     Left Click: Toggle Pause; Wheel Up: Next; Wheel Down; Previous.
+    * spotify.bus_name: String (defaults to `spotify`)
+      Available values: spotify, spotifyd
 
 contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 
@@ -35,6 +37,8 @@ class Module(core.module.Module):
 
         self.background = True
 
+        self.__bus_name = self.parameter("bus_name", "spotify")
+
         self.__layout = util.format.aslist(
             self.parameter(
                 "layout", "spotify.song,spotify.prev,spotify.pause,spotify.next",
@@ -46,7 +50,11 @@ class Module(core.module.Module):
         self.__pause = ""
         self.__format = self.parameter("format", "{artist} - {title}")
 
-        self.__cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
+        if self.__bus_name == "spotifyd":
+            self.__cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotifyd \
+                /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
+        else:
+            self.__cmd = "dbus-send --session --type=method_call --dest=org.mpris.MediaPlayer2.spotify \
                 /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player."
 
         widget_map = {}
@@ -104,9 +112,14 @@ class Module(core.module.Module):
 
     def __get_song(self):
         bus = self.__bus
-        spotify = bus.get_object(
-            "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"
-        )
+        if self.__bus_name == "spotifyd":
+            spotify = bus.get_object(
+                "org.mpris.MediaPlayer2.spotifyd", "/org/mpris/MediaPlayer2"
+            )
+        else:
+            spotify = bus.get_object(
+                "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"
+            )
         spotify_iface = dbus.Interface(spotify, "org.freedesktop.DBus.Properties")
         props = spotify_iface.Get("org.mpris.MediaPlayer2.Player", "Metadata")
         self.__song = self.__format.format(
@@ -120,14 +133,20 @@ class Module(core.module.Module):
         try:
             self.__get_song()
 
+            if self.__bus_name == "spotifyd":
+                bus = self.__bus.get_object(
+                    "org.mpris.MediaPlayer2.spotifyd", "/org/mpris/MediaPlayer2"
+                )
+            else:
+                bus = self.__bus.get_object(
+                    "org.mpris.MediaPlayer2.spotify", "/org/mpris/MediaPlayer2"
+                )
+
             for widget in self.widgets():
                 if widget.name == "spotify.pause":
                     playback_status = str(
                         dbus.Interface(
-                            self.__bus.get_object(
-                                "org.mpris.MediaPlayer2.spotify",
-                                "/org/mpris/MediaPlayer2",
-                            ),
+                            bus,
                             "org.freedesktop.DBus.Properties",
                         ).Get("org.mpris.MediaPlayer2.Player", "PlaybackStatus")
                     )
