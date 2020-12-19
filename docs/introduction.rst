@@ -56,8 +56,16 @@ To change the update interval, use:
 
    $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
 
+Note that some modules define their own intervals (e.g. most modules that query
+an online service), such as to not cause a storm of "once every second" queries.
+
+For such modules, the "global" interval defined here effectively defines the
+highest possible "resolution". If you have a global interval of 10s, for example,
+any other module can update at 10s, 20s, 30s, etc., but not every 25s. The status
+bar will internally always align to the next future time slot.
+
 The update interval can also be changed on a per-module basis, like
-this:
+this (overriding the default module interval indicated above):
 
 .. code-block:: bash
 
