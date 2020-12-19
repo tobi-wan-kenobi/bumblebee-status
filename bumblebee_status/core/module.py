@@ -33,20 +33,20 @@ def load(module_name, config=core.config.Config([]), theme=None):
     error = None
     module_short, alias = (module_name.split(":") + [module_name])[0:2]
     config.set("__alias__", alias)
-    for namespace in ["core", "contrib"]:
+
+    try:
+        mod = importlib.import_module("modules.core.{}".format(module_short))
+        log.debug("importing {} from core".format(module_short))
+        return getattr(mod, "Module")(config, theme)
+    except ImportError as e:
         try:
-            mod = importlib.import_module(
-                "modules.{}.{}".format(namespace, module_short)
-            )
-            log.debug(
-                "importing {} from {}.{}".format(module_short, namespace, module_short)
-            )
+            log.warning("failed to import {} from core: {}".format(module_short, e))
+            mod = importlib.import_module("modules.contrib.{}".format(module_short))
+            log.debug("importing {} from contrib".format(module_short))
             return getattr(mod, "Module")(config, theme)
         except ImportError as e:
-            log.debug("failed to import {}: {}".format(module_name, e))
-            error = e
-    log.fatal("failed to import {}: {}".format(module_name, error))
-    return Error(config=config, module=module_name, error=error)
+            log.fatal("failed to import {} from contrib: {}".format(module_short, e))
+    return Error(config=config, module=module_name, error="unable to load module")
 
 
 class Module(core.input.Object):
