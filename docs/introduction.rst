@@ -56,20 +56,15 @@ To change the update interval, use:
 
    $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
 
+The update interval is the global "refresh" interval of the modules (i.e. how often
+the bar will be updated with new data). The default interval is one second. It is
+possible to use suffixes such as "m" (for minutes), or "h" for hours (e.g.
+``-p interval=5m`` to update once every 5 minutes.
+
 Note that some modules define their own intervals (e.g. most modules that query
 an online service), such as to not cause a storm of "once every second" queries.
 
-For such modules, the "global" interval defined here effectively defines the
-highest possible "resolution". If you have a global interval of 10s, for example,
-any other module can update at 10s, 20s, 30s, etc., but not every 25s. The status
-bar will internally always align to the next future time slot.
-
-The update interval can also be changed on a per-module basis, like
-this (overriding the default module interval indicated above):
-
-.. code-block:: bash
-
-   $ ./bumblebee-status -m cpu memory -p cpu.interval=5s memory.interval=1m
+For more details on that, please refer to :doc:`features`.
 
 All modules can be given “aliases” using ``<module name>:<alias>``, by
 which they can be parametrized, for example:

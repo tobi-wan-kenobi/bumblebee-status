@@ -1,6 +1,25 @@
 Advanced usage
 ===========================
 
+Intervals
+---------
+
+Some modules define their own update intervals (e.g. most modules that query
+an online service), such as to not cause a storm of "once every second" queries.
+
+For such modules, the "global" interval defined via the ``interval`` parameter effectively defines the
+highest possible "resolution". If you have a global interval of 10s, for example,
+any other module can update at 10s, 20s, 30s, etc., but not every 25s. The status
+bar will internally always align to the next future time slot.
+
+The update interval can also be changed on a per-module basis, like
+this (overriding the default module interval indicated above):
+
+.. code-block:: bash
+
+   $ ./bumblebee-status -m cpu memory -p cpu.interval=5s memory.interval=1m
+
+
 Events
 ------
 
