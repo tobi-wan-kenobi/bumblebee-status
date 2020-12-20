@@ -17,6 +17,7 @@ PATHS = [
     os.path.join(THEME_BASE_DIR, "../../themes"),
     os.path.expanduser("~/.config/bumblebee-status/themes"),
     os.path.expanduser("~/.local/share/bumblebee-status/themes"),  # PIP
+    "/usr/share/bumblebee-status/themes",
 ]
 
 
