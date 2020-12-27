@@ -113,5 +113,5 @@ class Module(core.module.Module):
             album = album,
             title = title,
             artist = artist,
-            track_number = track_number
+            trackNumber = track_number
         )
