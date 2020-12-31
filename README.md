@@ -76,6 +76,8 @@ makepkg -sicr
 pip install --user bumblebee-status
 ```
 
+There is also a SlackBuild available here: [slackbuilds:bumblebee-status](http://slackbuilds.org/repository/14.2/desktop/bumblebee-status/) - many thanks to [@Tonus1](https://github.com/Tonus1)!
+
 # Dependencies
 [Available modules](https://bumblebee-status.readthedocs.io/en/main/modules.html) lists the dependencies (Python modules and external executables)
 for each module. If you are not using a module, you don't need the dependencies.

@@ -19,6 +19,9 @@ Installation
    # will install bumblebee-status into ~/.local/bin/bumblebee-status
    pip install --user bumblebee-status
 
+
+There is also a SlackBuild available here: [slackbuilds:bumblebee-status](http://slackbuilds.org/repository/14.2/desktop/bumblebee-status/) - many thanks to [@Tonus1](https://github.com/Tonus1)!
+
 Dependencies
 ------------
 
