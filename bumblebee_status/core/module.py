@@ -17,8 +17,6 @@ except Exception as e:
 
 log = logging.getLogger(__name__)
 
-import sys
-
 """Loads a module by name
 
 :param module_name: Name of the module to load
@@ -47,16 +45,16 @@ def load(module_name, config=core.config.Config([]), theme=None):
             return getattr(mod, "Module")(config, theme)
         except ImportError as e:
             usermod = os.path.expanduser("~/.config/bumblebee-status/modules/{}.py".format(module_short))
-            if not os.path.exists(usermod):
-                raise e
-            try:
-                log.warning("failed to import {} from system: {}".format(module_short, e))
-                mod = importlib.machinery.SourceFileLoader("modules.{}".format(module_short),
-                    os.path.expanduser(usermod)).load_module()
-                log.debug("importing {} from user".format(module_short))
-                return getattr(mod, "Module")(config, theme)
-            except ImportError as e:
-                log.fatal("failed to import {}: {}".format(module_short, e))
+            if os.path.exists(usermod):
+                try:
+                    log.warning("failed to import {} from system: {}".format(module_short, e))
+                    mod = importlib.machinery.SourceFileLoader("modules.{}".format(module_short),
+                        os.path.expanduser(usermod)).load_module()
+                    log.debug("importing {} from user".format(module_short))
+                    return getattr(mod, "Module")(config, theme)
+                except ImportError as e:
+                    log.fatal("import failed: {}".format(e))
+        log.fatal("failed to import {}".format(module_short))
     return Error(config=config, module=module_name, error="unable to load module")
 
 
