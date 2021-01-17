@@ -46,10 +46,13 @@ def load(module_name, config=core.config.Config([]), theme=None):
             log.debug("importing {} from contrib".format(module_short))
             return getattr(mod, "Module")(config, theme)
         except ImportError as e:
+            usermod = os.path.expanduser("~/.config/bumblebee-status/modules/{}.py".format(module_short))
+            if not os.path.exists(usermod):
+                raise e
             try:
                 log.warning("failed to import {} from system: {}".format(module_short, e))
                 mod = importlib.machinery.SourceFileLoader("modules.{}".format(module_short),
-                    os.path.expanduser("~/.config/bumblebee-status/modules/{}.py".format(module_short))).load_module()
+                    os.path.expanduser(usermod)).load_module()
                 log.debug("importing {} from user".format(module_short))
                 return getattr(mod, "Module")(config, theme)
             except ImportError as e:
