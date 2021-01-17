@@ -216,6 +216,8 @@ class i3(object):
                     continue
             if module.hidden():
                 continue
+            if "critical" in widget.state() and self.__config.errorhide(widget.module.name):
+                continue
             blocks.extend(self.separator_block(module, widget))
             blocks.append(self.__content_block(module, widget))
             core.event.trigger("next-widget")

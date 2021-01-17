@@ -173,6 +173,13 @@ class Config(util.store.Store):
             help="Specify a list of modules to hide when not in warning/error state",
         )
         parser.add_argument(
+            "-e",
+            "--errorhide",
+            nargs="+",
+            default=[],
+            help="Specify a list of modules that are hidden when in state error"
+        )
+        parser.add_argument(
             "-d", "--debug", action="store_true", help="Add debug fields to i3 output"
         )
         parser.add_argument(
@@ -302,14 +309,21 @@ class Config(util.store.Store):
     def iconset(self):
         return self.__args.iconset
 
-    """Returns which modules should be hidden if their state is not warning/critical
+    """Returns whether a module should be hidden if their state is not warning/critical
 
-    :return: list of modules to hide automatically
-    :rtype: list of strings
+    :return: True if module should be hidden automatically, False otherwise
+    :rtype: bool
     """
 
     def autohide(self, name):
         return name in self.__args.autohide
 
+    """Returns which modules should be hidden if they are in state error
+
+    :return: returns True if name should be hidden, False otherwise
+    :rtype: bool
+    """
+    def errorhide(self, name):
+        return name in self.__args.errorhide
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
