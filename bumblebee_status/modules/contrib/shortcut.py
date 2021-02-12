@@ -4,7 +4,7 @@
 when clicking on it.
 
 For more than one shortcut, the commands and labels are strings separated by
-a demiliter (; semicolon by default).
+a delimiter (; semicolon by default).
 
 For example in order to create two shortcuts labeled A and B with commands
 cmdA and cmdB you could do:
