@@ -63,6 +63,7 @@ Parameters:
     * disk.path: Path to calculate disk usage from (defaults to /)
     * disk.open: Which application / file manager to launch (default xdg-open)
     * disk.format: Format string, tags {path}, {used}, {left}, {size} and {percent} (defaults to '{path} {used}/{size} ({percent:05.02f}%)')
+    * disk.system: Unit system to use - SI (KB, MB, ...) or IEC (KiB, MiB, ...) (defaults to 'IEC')
 
 .. image:: ../screenshots/disk.png
 
@@ -620,8 +621,6 @@ some media control bindings.
 Left click toggles pause, scroll up skips the current song, scroll
 down returns to the previous song.
 
-Requires the following library:
-    * subprocess
 Parameters:
     * deadbeef.format:    Format string (defaults to '{artist} - {title}')
       Available values are: {artist}, {title}, {album}, {length},
@@ -772,7 +771,7 @@ contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks
 hddtemp
 ~~~~~~~
 
-Fetch hard drive temeperature data from a hddtemp daemon
+Fetch hard drive temperature data from a hddtemp daemon
 that runs on localhost and default port (7634)
 
 contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
@@ -1051,6 +1050,14 @@ Displays information about the current song in vlc, audacious, bmp, xmms2, spoti
 Requires the following executable:
     * playerctl
 
+Parameters:
+    * playerctl.format:   Format string (defaults to '{artist} - {title}')
+      Available values are: {album}, {title}, {artist}, {trackNumber}
+    * playerctl.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
+      Widget names are: playerctl.song, playerctl.prev, playerctl.pause, playerctl.next
+
+Parameters are inherited from `spotify` module, many thanks to its developers!
+
 contributed by `smitajit <https://github.com/smitajit>`_ - many thanks!
 
 .. image:: ../screenshots/playerctl.png
@@ -1225,7 +1232,7 @@ Shows a widget per user-defined shortcut and allows to define the behaviour
 when clicking on it.
 
 For more than one shortcut, the commands and labels are strings separated by
-a demiliter (; semicolon by default).
+a delimiter (; semicolon by default).
 
 For example in order to create two shortcuts labeled A and B with commands
 cmdA and cmdB you could do:
@@ -1265,7 +1272,6 @@ an example.
 
 Requires the following libraries:
     * requests
-    * regex
 
 Parameters:
     * spaceapi.url: String representation of the api endpoint
@@ -1298,6 +1304,8 @@ Parameters:
       Widget names are: spotify.song, spotify.prev, spotify.pause, spotify.next
     * spotify.concise_controls: When enabled, allows spotify to be controlled from just the spotify.song widget.
       Concise controls are:     Left Click: Toggle Pause; Wheel Up: Next; Wheel Down; Previous.
+    * spotify.bus_name: String (defaults to `spotify`)
+      Available values: spotify, spotifyd
 
 contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 
