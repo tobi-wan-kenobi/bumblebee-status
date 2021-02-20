@@ -148,6 +148,13 @@ class Config(util.store.Store):
             description="bumblebee-status is a modular, theme-able status line generator for the i3 window manager. https://github.com/tobi-wan-kenobi/bumblebee-status/wiki"
         )
         parser.add_argument(
+            "-c",
+            "--config-file",
+            action="store",
+            default=None,
+            help="Specify a configuration file to use"
+        )
+        parser.add_argument(
             "-m", "--modules", nargs="+", action="append", default=[], help=MODULE_HELP
         )
         parser.add_argument(
@@ -203,13 +210,18 @@ class Config(util.store.Store):
 
         self.__args = parser.parse_args(args)
 
-        for cfg in [
-            "~/.bumblebee-status.conf",
-            "~/.config/bumblebee-status.conf",
-            "~/.config/bumblebee-status/config",
-        ]:
+        if self.__args.config_file:
+            cfg = self.__args.config_file
             cfg = os.path.expanduser(cfg)
             self.load_config(cfg)
+        else:
+            for cfg in [
+                "~/.bumblebee-status.conf",
+                "~/.config/bumblebee-status.conf",
+                "~/.config/bumblebee-status/config",
+            ]:
+                cfg = os.path.expanduser(cfg)
+                self.load_config(cfg)
 
         parameters = [item for sub in self.__args.parameters for item in sub]
         for param in parameters:
