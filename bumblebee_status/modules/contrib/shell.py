@@ -54,6 +54,7 @@ class Module(core.module.Module):
     def set_output(self, value):
         self.__output = value
 
+    @core.decorators.scrollable
     def get_output(self, _):
         return self.__output
 
