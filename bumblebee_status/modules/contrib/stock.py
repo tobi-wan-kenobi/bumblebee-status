@@ -3,9 +3,6 @@
 
 """Display a stock quote from finance.yahoo.com
 
-Requires the following python packages:
-    * requests
-
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
     * stock.change : Should we fetch change in stock value (defaults to True)
