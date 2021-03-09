@@ -17,6 +17,22 @@ except Exception as e:
 
 log = logging.getLogger(__name__)
 
+def import_user(module_short, config, theme):
+    usermod = os.path.expanduser("~/.config/bumblebee-status/modules/{}.py".format(module_short))
+    if os.path.exists(usermod):
+        if hasattr(importlib, "machinery"):
+            log.debug("importing {} from user via machinery".format(module_short))
+            mod = importlib.machinery.SourceFileLoader("modules.{}".format(module_short),
+                os.path.expanduser(usermod)).load_module()
+            return getattr(mod, "Module")(config, theme)
+        else:
+            log.debug("importing {} from user via importlib.util".format(module_short))
+            spec = importlib.util.spec_from_file_location("modules.{}".format(module_short), usermod)
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            return mod.Module(config, theme)
+    raise ImportError("not found")
+
 """Loads a module by name
 
 :param module_name: Name of the module to load
@@ -44,16 +60,11 @@ def load(module_name, config=core.config.Config([]), theme=None):
             log.debug("importing {} from contrib".format(module_short))
             return getattr(mod, "Module")(config, theme)
         except ImportError as e:
-            usermod = os.path.expanduser("~/.config/bumblebee-status/modules/{}.py".format(module_short))
-            if os.path.exists(usermod):
-                try:
-                    log.warning("failed to import {} from system: {}".format(module_short, e))
-                    mod = importlib.machinery.SourceFileLoader("modules.{}".format(module_short),
-                        os.path.expanduser(usermod)).load_module()
-                    log.debug("importing {} from user".format(module_short))
-                    return getattr(mod, "Module")(config, theme)
-                except ImportError as e:
-                    log.fatal("import failed: {}".format(e))
+            try:
+                log.warning("failed to import {} from system: {}".format(module_short, e))
+                return import_user(module_short, config, theme)
+            except ImportError as e:
+                log.fatal("import failed: {}".format(e))
         log.fatal("failed to import {}".format(module_short))
     return Error(config=config, module=module_name, error="unable to load module")
 
