@@ -10,12 +10,13 @@ log = logging.getLogger(__name__)
 
 
 class Widget(util.store.Store, core.input.Object):
-    def __init__(self, full_text="", name=None, widget_id=None):
+    def __init__(self, full_text="", name=None, widget_id=None, hidden=False):
         super(Widget, self).__init__()
         self.__full_text = full_text
         self.module = None
         self.name = name
         self.id = widget_id or self.id
+        self.hidden = hidden
 
     @property
     def module(self):
