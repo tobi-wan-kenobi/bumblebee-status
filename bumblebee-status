@@ -6,7 +6,6 @@ import json
 import time
 import signal
 import socket
-import select
 import logging
 import threading
 
@@ -39,45 +38,40 @@ class CommandSocket(object):
         self.__socket.close()
         os.unlink(self.__name)
 
+def process_event(event_line, config, update_lock):
+    modules = {}
+    try:
+        event = json.loads(event_line)
+        core.input.trigger(event)
+        if "name" in event:
+            modules[event["name"]] = True
+    except ValueError:
+        pass
 
-def handle_input(output, config, update_lock):
+    delay = float(config.get("engine.input_delay", 0.0))
+    if delay > 0:
+        time.sleep(delay)
+    if update_lock.acquire(blocking=False) == True:
+        core.event.trigger("update", modules.keys(), force=True)
+        core.event.trigger("draw")
+        update_lock.release()
+
+def handle_commands(config, update_lock):
     with CommandSocket() as cmdsocket:
-        poll = select.poll()
-        poll.register(sys.stdin.fileno(), select.POLLIN)
-        poll.register(cmdsocket, select.POLLIN)
-
         while True:
-            events = poll.poll()
+            tmp, _ = cmdsocket.accept()
+            line = tmp.recv(4096).decode()
+            tmp.close()
+            logging.debug("socket event  {}".format(line))
+            process_event(line, config, update_lock)
 
-            modules = {}
-            for fileno, event in events:
-                if fileno == cmdsocket.fileno():
-                    tmp, _ = cmdsocket.accept()
-                    line = tmp.recv(4096).decode()
-                    tmp.close()
-                    logging.debug("socket event  {}".format(line))
-                else:
-                    line = "["
-                    while line.startswith("["):
-                        line = sys.stdin.readline().strip(",").strip()
-                    logging.info("input event: {}".format(line))
-                try:
-                    event = json.loads(line)
-                    core.input.trigger(event)
-                    if "name" in event:
-                        modules[event["name"]] = True
-                except ValueError:
-                    pass
 
-            delay = float(config.get("engine.input_delay", 0.2))
-            if delay > 0:
-                time.sleep(delay)
-            if update_lock.acquire(blocking=False) == True:
-                core.event.trigger("update", modules.keys(), force=True)
-                core.event.trigger("draw")
-                update_lock.release()
-
-        poll.unregister(sys.stdin.fileno())
+def handle_events(config, update_lock):
+    while True:
+        line = sys.stdin.readline().strip(",").strip()
+        if line == "[": continue
+        logging.info("input event: {}".format(line))
+        process_event(line, config, update_lock)
 
 
 def main():
@@ -104,9 +98,13 @@ def main():
     core.input.register(None, core.input.WHEEL_DOWN, "i3-msg workspace next_on_output")
 
     update_lock = threading.Lock()
-    input_thread = threading.Thread(target=handle_input, args=(output, config, update_lock, ))
-    input_thread.daemon = True
-    input_thread.start()
+    event_thread = threading.Thread(target=handle_events, args=(config, update_lock, ))
+    event_thread.daemon = True
+    event_thread.start()
+
+    cmd_thread = threading.Thread(target=handle_commands, args=(config, update_lock, ))
+    cmd_thread.daemon = True
+    cmd_thread.start()
 
     def sig_USR1_handler(signum,stack):
         if update_lock.acquire(blocking=False) == True:

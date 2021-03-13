@@ -8,6 +8,13 @@ def register(event, callback, *args, **kwargs):
 
     __callbacks.setdefault(event, []).append(cb)
 
+def register_exclusive(event, callback, *args, **kwargs):
+    cb = callback
+    if args or kwargs:
+        cb = lambda: callback(*args, **kwargs)
+
+    __callbacks[event] = [cb]
+
 def unregister(event):
     if event in __callbacks:
         del __callbacks[event]
