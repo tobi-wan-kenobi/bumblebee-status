@@ -50,10 +50,6 @@ class Module(core.module.Module):
         if self.parameter("scrolling.makewide") is None:
             self.set("scrolling.makewide", False)
 
-        # LMB and RMB will update output regardless of timer
-        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.update)
-        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.update)
-
     def set_output(self, value):
         self.__output = value
 
