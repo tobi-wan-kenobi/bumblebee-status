@@ -47,6 +47,9 @@ class Module(core.module.Module):
             self.__output = "please wait..."
             self.__current_thread = threading.Thread()
 
+        if self.parameter("scrolling.makewide") is None:
+            self.set("scrolling.makewide", False)
+
         # LMB and RMB will update output regardless of timer
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.update)
         core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.update)
