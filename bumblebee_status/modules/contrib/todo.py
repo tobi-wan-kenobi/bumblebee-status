@@ -21,9 +21,10 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.output))
 
         self.__doc = os.path.expanduser(self.parameter("file", "~/Documents/todo.txt"))
+        self.__editor = self.parameter("editor", "xdg-open")
         self.__todos = self.count_items()
         core.input.register(
-            self, button=core.input.LEFT_MOUSE, cmd="xdg-open {}".format(self.__doc)
+            self, button=core.input.LEFT_MOUSE, cmd="{} {}".format(self.__editor, self.__doc)
         )
 
     def output(self, widget):
