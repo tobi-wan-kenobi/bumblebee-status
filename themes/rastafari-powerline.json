@@ -1,0 +1,21 @@
+{
+	"icons": [ "awesome-fonts" ],
+	"defaults": {
+		"separator-block-width": 0,
+		"warning": {
+			"fg": "#000000",
+			"bg": "#FFFFFF"
+		},
+		"critical": {
+			"fg": "#000000",
+			"bg": "#FFFFFF"
+		}
+	},
+	"cycle": [
+		{"fg": "#FFFFFF", "bg": "#008000"},
+		{"fg": "#000000", "bg": "#ffff00"},
+		{"fg": "#000000", "bg": "#ff0000"}
+		
+	]
+
+}
