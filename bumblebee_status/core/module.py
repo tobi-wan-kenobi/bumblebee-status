@@ -27,10 +27,16 @@ def import_user(module_short, config, theme):
             return getattr(mod, "Module")(config, theme)
         else:
             log.debug("importing {} from user via importlib.util".format(module_short))
-            spec = importlib.util.spec_from_file_location("modules.{}".format(module_short), usermod)
-            mod = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(mod)
-            return mod.Module(config, theme)
+            try:
+                spec = importlib.util.spec_from_file_location("modules.{}".format(module_short), usermod)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                return mod.Module(config, theme)
+            except Exception as e:
+                spec = importlib.util.find_spec("modules.{}".format(module_short), usermod)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                return mod.Module(config, theme)
     raise ImportError("not found")
 
 """Loads a module by name
