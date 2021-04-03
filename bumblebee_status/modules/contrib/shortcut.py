@@ -9,7 +9,7 @@ a delimiter (; semicolon by default).
 For example in order to create two shortcuts labeled A and B with commands
 cmdA and cmdB you could do:
 
- ./bumblebee-status -m shortcut -p shortcut.cmd='ls;ps' shortcut.label='A;B'
+ ./bumblebee-status -m shortcut -p shortcut.cmd='firefox https://www.google.com;google-chrome https://google.com' shortcut.label='Google (Firefox);Google (Chrome)'
 
 Parameters:
     * shortcut.cmds  : List of commands to execute
