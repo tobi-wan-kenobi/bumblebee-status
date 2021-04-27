@@ -57,6 +57,9 @@ class block(object):
     def set(self, key, value):
         self.__attributes[key] = value
 
+    def get(self, key, default=None):
+        return self.__attributes.get(key, default)
+
     def is_pango(self, attr):
         if isinstance(attr, dict) and "pango" in attr:
             return True
@@ -91,8 +94,16 @@ class block(object):
             assign(self.__attributes, result, "background", "bg")
 
         if "full_text" in self.__attributes:
+            prefix = self.__pad(self.pangoize(self.__attributes.get("prefix")))
+            suffix = self.__pad(self.pangoize(self.__attributes.get("suffix")))
+            self.set("_prefix", prefix)
+            self.set("_suffix", suffix)
+            self.set("_raw", self.get("full_text"))
             result["full_text"] = self.pangoize(result["full_text"])
             result["full_text"] = self.__format(self.__attributes["full_text"])
+
+        if "min-width" in self.__attributes and "padding" in self.__attributes:
+            self.set("min-width", self.__format(self.get("min-width")))
 
         for k in [
             "name",
@@ -123,11 +134,8 @@ class block(object):
     def __format(self, text):
         if text is None:
             return None
-        prefix = self.__pad(self.pangoize(self.__attributes.get("prefix")))
-        suffix = self.__pad(self.pangoize(self.__attributes.get("suffix")))
-        self.set("_prefix", prefix)
-        self.set("_suffix", suffix)
-        self.set("_raw", text)
+        prefix = self.get("_prefix")
+        suffix = self.get("_suffix")
         return "{}{}{}".format(prefix, text, suffix)
 
 
