@@ -7,8 +7,9 @@ import modules.core.cpu
 
 pytest.importorskip("psutil")
 
-def build_module():
-    config = core.config.Config([])
+def build_module(percpu=False):
+    config = core.config.Config(["-p", "percpu={}".format(percpu)])
+    config.set("cpu.percpu", percpu)
     return modules.core.cpu.Module(config=config, theme=None)
 
 def cpu_widget(module):
@@ -42,21 +43,47 @@ class TestCPU(TestCase):
         cpu_percent_mock.return_value = 50
         module = build_module()
 
-        assert module.state(None) == None
+        assert module.state(module.widget()) == None
 
     @mock.patch('psutil.cpu_percent')
     def test_warning_state(self, cpu_percent_mock):
         cpu_percent_mock.return_value = 75
         module = build_module()
 
-        assert module.state(None) == 'warning'
+        assert module.state(module.widget()) == 'warning'
 
     @mock.patch('psutil.cpu_percent')
     def test_critical_state(self, cpu_percent_mock):
         cpu_percent_mock.return_value = 82
         module = build_module()
 
-        assert module.state(None) == 'critical'
+        assert module.state(module.widget()) == 'critical'
+
+    @mock.patch('psutil.cpu_percent')
+    def test_healthy_state_percpu(self, cpu_percent_mock):
+        cpu_percent_mock.return_value = [50,42,47]
+        module = build_module(percpu=True)
+
+        for widget in module.widgets():
+            assert module.state(widget) == None
+
+    @mock.patch('psutil.cpu_percent')
+    def test_warning_state_percpu(self, cpu_percent_mock):
+        cpu_percent_mock.return_value = [50,72,47]
+        module = build_module(percpu=True)
+
+        assert module.state(module.widgets()[0]) == None
+        assert module.state(module.widgets()[1]) == "warning"
+        assert module.state(module.widgets()[2]) == None
+
+    @mock.patch('psutil.cpu_percent')
+    def test_warning_state_percpu(self, cpu_percent_mock):
+        cpu_percent_mock.return_value = [50,72,99]
+        module = build_module(percpu=True)
+
+        assert module.state(module.widgets()[0]) == None
+        assert module.state(module.widgets()[1]) == "warning"
+        assert module.state(module.widgets()[2]) == "critical" 
 
     @mock.patch('core.input.register')
     def test_register_left_mouse_action(self, input_register_mock):
