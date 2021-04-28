@@ -22,6 +22,7 @@ Parameters:
     * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
     * cpu.critical: Critical threshold in % of CPU usage (defaults to 80%)
     * cpu.format  : Format string (defaults to '{:.01f}%')
+    * cpu.percpu  : If set to true, show each individual cpu (defaults to false)
 
 .. image:: ../screenshots/cpu.png
 
