@@ -12,6 +12,7 @@ button = {
     "right-mouse": 3,
     "wheel-up": 4,
     "wheel-down": 5,
+    "update": -1,
 }
 
 
@@ -20,7 +21,7 @@ def main():
     parser.add_argument(
         "-b",
         "--button",
-        choices=["left-mouse", "right-mouse", "middle-mouse", "wheel-up", "wheel-down"],
+        choices=["left-mouse", "right-mouse", "middle-mouse", "wheel-up", "wheel-down", "update"],
         help="button to emulate",
         default="left-mouse",
     )

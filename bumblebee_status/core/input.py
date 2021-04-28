@@ -10,6 +10,7 @@ MIDDLE_MOUSE = 2
 RIGHT_MOUSE = 3
 WHEEL_UP = 4
 WHEEL_DOWN = 5
+UPDATE = -1
 
 
 def button_name(button):
@@ -23,6 +24,8 @@ def button_name(button):
         return "wheel-up"
     if button == WHEEL_DOWN:
         return "wheel-down"
+    if button == UPDATE:
+        return "update"
     return "n/a"
 
 
