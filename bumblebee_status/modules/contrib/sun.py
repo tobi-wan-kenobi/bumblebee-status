@@ -8,8 +8,8 @@ Requires the following python packages:
     * python-dateutil
 
 Parameters:
-    * cpu.lat : Latitude of your location
-    * cpu.lon : Longitude of your location
+    * sun.lat : Latitude of your location
+    * sun.lon : Longitude of your location
 
 (if none of those are set, location is determined automatically via location APIs)
 
