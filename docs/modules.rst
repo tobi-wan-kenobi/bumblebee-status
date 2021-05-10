@@ -85,6 +85,14 @@ Requires:
 
 .. image:: ../screenshots/git.png
 
+keys
+~~~~
+
+Shows when a key is pressed
+
+Parameters:
+    * keys.keys: Comma-separated list of keys to monitor (defaults to "")
+
 layout-xkb
 ~~~~~~~~~~
 
@@ -1238,7 +1246,7 @@ a delimiter (; semicolon by default).
 For example in order to create two shortcuts labeled A and B with commands
 cmdA and cmdB you could do:
 
- ./bumblebee-status -m shortcut -p shortcut.cmd='ls;ps' shortcut.label='A;B'
+ ./bumblebee-status -m shortcut -p shortcut.cmd='firefox https://www.google.com;google-chrome https://google.com' shortcut.label='Google (Firefox);Google (Chrome)'
 
 Parameters:
     * shortcut.cmds  : List of commands to execute
@@ -1321,9 +1329,6 @@ stock
 
 Display a stock quote from finance.yahoo.com
 
-Requires the following python packages:
-    * requests
-
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
     * stock.change : Should we fetch change in stock value (defaults to True)
@@ -1344,8 +1349,8 @@ Requires the following python packages:
     * python-dateutil
 
 Parameters:
-    * cpu.lat : Latitude of your location
-    * cpu.lon : Longitude of your location
+    * sun.lat : Latitude of your location
+    * sun.lon : Longitude of your location
 
 (if none of those are set, location is determined automatically via location APIs)
 
