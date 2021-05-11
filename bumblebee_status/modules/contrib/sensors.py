@@ -98,7 +98,7 @@ class Module(core.module.Module):
             try:
                 temperature = open(
                     self.parameter("path", "/sys/class/thermal/thermal_zone0/temp")
-                ).read()[:2]
+                ).read().strip()
                 log.debug("retrieved temperature from /sys/class/")
                 # TODO: Iterate through all thermal zones to determine the correct one and use its value
                 # https://unix.stackexchange.com/questions/304845/discrepancy-between-number-of-cores-and-thermal-zones-in-sys-class-thermal
