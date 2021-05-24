@@ -21,7 +21,6 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.full_text))
 
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd="calendar")
-        self._fmt = self.parameter("format", self.default_format())
         l = locale.getdefaultlocale()
         if not l or l == (None, None):
             l = ("en_US", "UTF-8")
@@ -36,7 +35,8 @@ class Module(core.module.Module):
 
     def full_text(self, widget):
         enc = locale.getpreferredencoding()
-        retval = datetime.datetime.now().strftime(self._fmt)
+        fmt = self.parameter("format", self.default_format())
+        retval = datetime.datetime.now().strftime(fmt)
         if hasattr(retval, "decode"):
             return retval.decode(enc)
         return retval

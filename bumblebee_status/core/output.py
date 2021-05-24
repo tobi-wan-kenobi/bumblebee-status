@@ -166,6 +166,12 @@ class i3(object):
     def toggle_minimize(self, event):
         widget_id = event["instance"]
 
+        for module in self.__modules:
+            if module.widget(widget_id=widget_id) and util.format.asbool(module.parameter("minimize", False)) == True:
+                # this module can customly minimize
+                module.minimized = not module.minimized
+                return
+
         if widget_id in self.__content:
             self.__content[widget_id]["minimized"] = not self.__content[widget_id]["minimized"]
 
@@ -216,6 +222,10 @@ class i3(object):
 
     def blocks(self, module):
         blocks = []
+        if module.minimized:
+            blocks.extend(self.separator_block(module, module.widgets()[0]))
+            blocks.append(self.__content_block(module, module.widgets()[0]))
+            return blocks
         for widget in module.widgets():
             if widget.module and self.__config.autohide(widget.module.name):
                 if not any(

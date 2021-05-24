@@ -95,6 +95,8 @@ class Module(core.input.Object):
         self.alias = self.__config.get("__alias__", None)
         self.id = self.alias if self.alias else self.name
         self.next_update = None
+        self.minimized = False
+        self.minimized = self.parameter("start-minimized", False)
 
         self.theme = theme
 
@@ -126,6 +128,8 @@ class Module(core.input.Object):
 
         for prefix in [self.name, self.module_name, self.alias]:
             value = self.__config.get("{}.{}".format(prefix, key), value)
+            if self.minimized:
+                value = self.__config.get("{}.minimized.{}".format(prefix, key), value)
         return value
 
     """Set a parameter for this module
