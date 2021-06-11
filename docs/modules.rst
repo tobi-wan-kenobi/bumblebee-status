@@ -1060,12 +1060,14 @@ Requires the following executable:
     * playerctl
 
 Parameters:
-    * playerctl.format:   Format string (defaults to '{artist} - {title}')
-      Available values are: {album}, {title}, {artist}, {trackNumber}
+    * playerctl.format:   Format string (defaults to '{{artist}} - {{title}}  {{duration(position)}}/{{duration(mpris:length)}}')
+      The format string is passed to 'playerctl -f' as an argument. See the 'Format Strings' section of 'man playerctl' for more information.
     * playerctl.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
       Widget names are: playerctl.song, playerctl.prev, playerctl.pause, playerctl.next
+    * playerctl.args:     The arguments added to playerctl.
+      You can check 'playerctl --help' or `its readme <https://github.com/altdesktop/playerctl#using-the-cli>`_. For example, it could be '-p vlc,%any'.
 
-Parameters are inherited from `spotify` module, many thanks to its developers!
+Parameters are inspired by the `spotify` module, many thanks to its developers!
 
 contributed by `smitajit <https://github.com/smitajit>`_ - many thanks!
 
