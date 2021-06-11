@@ -6,8 +6,8 @@ Requires the following executable:
     * playerctl
 
 Parameters:
-    * playerctl.format:   Format string (defaults to '{{artist}} - {{title}}  {{duration(position)}}/{{duration(mpris:length)}}')
-      The format string is passed to 'playerctl -f' as an argument. See the 'Format Strings' section of 'man playerctl' for more information.
+    * playerctl.format:   Format string (defaults to '{{artist}} - {{title}}  {{duration(position)}}/{{duration(mpris:length)}}').
+      The format string is passed to 'playerctl -f' as an argument. Read `the README <https://github.com/altdesktop/playerctl#printing-properties-and-metadata>`_ for more information.
     * playerctl.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
       Widget names are: playerctl.song, playerctl.prev, playerctl.pause, playerctl.next
     * playerctl.args:     The arguments added to playerctl.
