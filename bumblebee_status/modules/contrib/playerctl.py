@@ -96,6 +96,8 @@ class Module(core.module.Module):
                         widget.set("state", "playing")
                     elif playback_status == "Paused":
                         widget.set("state", "paused")
+                    elif playback_status == "Stopped":
+                        widget.set("state", "stopped")
                     else:
                         widget.set("state", "")
                 elif widget.name == "playerctl.next":
