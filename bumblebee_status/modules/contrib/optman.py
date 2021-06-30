@@ -5,11 +5,10 @@ Requires the following packages:
 
 """
 
-import subprocess
-
 import core.module
 import core.widget
 
+import util.cli
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
@@ -20,13 +19,8 @@ class Module(core.module.Module):
         return "GPU: {}".format(self.__gpumode)
 
     def update(self):
-        cmd = ["optimus-manager", "--print-mode"]
-        output = (
-            subprocess.Popen(cmd, stdout=subprocess.PIPE)
-            .communicate()[0]
-            .decode("utf-8")
-            .lower()
-        )
+        cmd = "optimus-manager --print-mode"
+        output = util.cli.execute(cmd).strip()
 
         if "intel" in output:
             self.__gpumode = "Intel"
