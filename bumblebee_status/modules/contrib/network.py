@@ -9,15 +9,20 @@ import util.format
 
 import core.module
 import core.widget
+import core.input
 
 
 class Module(core.module.Module):
+    @core.decorators.every(seconds=10)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.network))
         self._is_wireless = True
         self._interface = None
         self._message = None
         self.__signal = -110
+
+        # Set up event handler for left mouse click
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd="nm-connection-editor")
 
     def network(self, widgets):
         # run ip route command, tokenize output
@@ -71,12 +76,7 @@ class Module(core.module.Module):
 
     def __generate_wireless_message(self, ssid, strength):
         computed_strength = 100 * ((strength + 100) / 70.0)
-        if computed_strength < 30:
-            return ssid + " poor"
-        if computed_strength < 50:
-            return ssid + " fair"
-        if computed_strength < 75:
-            return ssid + " good"
+        return " {} {}%".format(ssid, int(computed_strength))
 
-        return ssid + " excellent"
+
 
