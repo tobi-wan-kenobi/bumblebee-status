@@ -17,6 +17,7 @@ class Module(core.module.Module):
         self._is_wireless = True
         self._interface = None
         self._message = None
+        self.__signal = -110
 
     def network(self, widgets):
         # run ip route command, tokenize output
@@ -51,19 +52,27 @@ class Module(core.module.Module):
             config_dat = " ".join(util.cli.execute(cmd).split())
             config_tokens = config_dat.replace("=", " ").split()
             strength = config_tokens[config_tokens.index("level") + 1]
-            strength = util.format.asint(strength, minimum=-110, maximum=-30)
+            self.__signal = util.format.asint(strength, minimum=-110, maximum=-30)
 
-            self._message = self.__generate_wireless_message(ssid, strength)
+            self._message = self.__generate_wireless_message(ssid, self.__signal)
         else:
             self._message = self._message
 
         return self._message
 
 
+    def state(self, widget):
+        if self.__signal < -65:
+            return "warning"
+        if self.__signal < -80:
+            return "critical"
+        return None
+
+
     def __generate_wireless_message(self, ssid, strength):
-        computed_strength = 100 * (strength + 110) / 70.0
-        if computed_strength < 25:
-            return ssid + " poor" 
+        computed_strength = 100 * ((strength + 100) / 70.0)
+        if computed_strength < 30:
+            return ssid + " poor"
         if computed_strength < 50:
             return ssid + " fair"
         if computed_strength < 75:
