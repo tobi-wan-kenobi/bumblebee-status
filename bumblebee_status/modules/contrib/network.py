@@ -33,7 +33,7 @@ class Module(core.module.Module):
         try:
             socket.create_connection(("1.1.1.1", 53))
             self.__is_connected = True
-        except OSError:
+        except:
             self.__is_connected = False
 
         # Attempt to extract a valid network interface device
