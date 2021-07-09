@@ -32,11 +32,7 @@ class Module(core.module.Module):
     # Get network information to display to the user
     def network(self, widgets):
         # Determine whether there is an internet connection
-        try:
-            socket.create_connection(("1.1.1.1", 53))
-            self.__is_connected = True
-        except Exception:
-            self.__is_connected = False
+        self.__is_connected = self.__attempt_connection()
 
         # Attempt to extract a valid network interface device
         try:
@@ -46,12 +42,7 @@ class Module(core.module.Module):
 
         # Check to see if the interface (if connected to the internet) is wireless
         if self.__is_connected and self.__interface:
-            try:
-                with open("/proc/net/wireless", "r") as f:
-                    self.__is_wireless = self.__interface in f.read()
-                f.close()
-            except Exception:
-                self.__is_wireless = False
+            self.__is_wireless = self.__interface_is_wireless(self.__interface)
 
         # setup message to send to the user
         if not self.__is_connected or not self.__interface:
@@ -113,3 +104,25 @@ class Module(core.module.Module):
             signal = None
 
         return signal
+
+    def __attempt_connection(self):
+        can_connect = False
+        try:
+            socket.create_connection(("1.1.1.1", 53))
+            can_connect = True
+        except Exception:
+            can_connect = False
+
+        return can_connect
+
+    def __interface_is_wireless(self, interface):
+        is_wireless = False
+        try:
+            with open("/proc/net/wireless", "r") as f:
+                is_wireless = interface in f.read()
+                f.close()
+        except Exception:
+            is_wireless = False
+
+        return is_wireless
+
