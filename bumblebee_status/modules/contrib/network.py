@@ -1,8 +1,6 @@
 """
 A module to show currently active network connection (ethernet or wifi) and connection strength if the connection is wireless.
 
-Dependencies: nm-connection-editor if users would like a graphical
-network manager when left-clicking the module
 """
 
 
@@ -18,7 +16,7 @@ import socket
 
 
 class Module(core.module.Module):
-    @core.decorators.every(seconds=10)
+    @core.decorators.every(seconds=5)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.network))
         self.__is_wireless = False
@@ -33,20 +31,26 @@ class Module(core.module.Module):
         try:
             socket.create_connection(("1.1.1.1", 53))
             self.__is_connected = True
-        except:
+        except Exception:
             self.__is_connected = False
 
         # Attempt to extract a valid network interface device
-        self.__interface = netifaces.gateways()["default"][netifaces.AF_INET][1]
+        try:
+            self.__interface = netifaces.gateways()["default"][netifaces.AF_INET][1]
+        except Exception:
+            self.__interface = None
 
         # Check to see if the interface (if connected to the internet) is wireless
-        if self.__is_connected:
-            with open("/proc/net/wireless", "r") as f:
-                self.__is_wireless = self.__interface in f.read()
-            f.close()
+        if self.__is_connected and self.__interface:
+            try:
+                with open("/proc/net/wireless", "r") as f:
+                    self.__is_wireless = self.__interface in f.read()
+                f.close()
+            except Exception:
+                self.__is_wireless = False
 
         # setup message to send to the user
-        if not self.__is_connected:
+        if not self.__is_connected or not self.__interface:
             self.__message = "No connection"
         elif not self.__is_wireless:
             # Assuming that if user is connected via non-wireless means that it will be ethernet
@@ -57,7 +61,11 @@ class Module(core.module.Module):
             iw_dat = util.cli.execute("iwgetid")
             has_ssid = "ESSID" in iw_dat
             signal = self.__compute_signal(self.__interface)
-            self.__signal = util.format.asint(signal, minimum=-110, maximum=-30)
+
+            # If signal is None, that means that we can't compute the default interface's signal strength
+            self.__signal = (
+                util.format.asint(signal, minimum=-110, maximum=-30) if signal else None
+            )
 
             ssid = (
                 iw_dat[iw_dat.index(":") + 1 :].replace('"', "").strip()
@@ -80,10 +88,12 @@ class Module(core.module.Module):
     # manually done for better granularity / ease of parsing strength data
     def __generate_wireles_message(self, ssid, signal):
         computed_strength = self.__compute_strength(signal)
-        return "{} {}%".format(ssid, int(computed_strength))
+        strength_str = str(computed_strength) if computed_strength else "?"
+
+        return "{} {}%".format(ssid, strength_str)
 
     def __compute_strength(self, signal):
-        return 100 * ((signal + 100) / 70.0)
+        return int(100 * ((signal + 100) / 70.0)) if signal else None
 
     # get signal strength in decibels/milliwat
     def __compute_signal(self, interface):
@@ -91,6 +101,11 @@ class Module(core.module.Module):
         cmd = "iwconfig {}".format(interface)
         config_dat = " ".join(util.cli.execute(cmd).split())
         config_tokens = config_dat.replace("=", " ").split()
-        signal = config_tokens[config_tokens.index("level") + 1]
+
+        # handle weird output
+        try:
+            signal = config_tokens[config_tokens.index("level") + 1]
+        except Exception:
+            signal = None
 
         return signal
