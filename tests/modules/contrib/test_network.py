@@ -39,8 +39,9 @@ class TestNetworkUnit(TestCase):
     def test_load_module(self):
         __import__("modules.contrib.network")
 
-    @pytest.mark.allow_hosts(["127.0.0.1"])
-    def test_no_internet(self):
+    @mock.patch("socket.create_connection")
+    def test_no_internet(self, socket_mock):
+        socket_mock.side_effect = Exception()
         module = build_module()
         assert module.widgets()[0].full_text() == "No connection"
 
