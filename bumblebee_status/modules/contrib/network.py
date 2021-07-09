@@ -1,5 +1,9 @@
 """
-A module to show currently active network connection (ethernet or wifi) and connection strength if the connection is wireless.
+A module to show the currently active network connection (ethernet or wifi) and connection strength if the connection is wireless.
+
+Requires the Python netifaces package and iw installed on Linux.
+
+A simpler take on nic and network_traffic. No extra config necessary!
 
 """
 
