@@ -4,7 +4,7 @@
 
 Parameters:
    * nvidiagpu.format: Format string (defaults to '{name}: {temp}°C %{usedmem}/{totalmem} MiB')
-     Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem}
+     Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem} {gpu_usage_pct} {mem_usage_pct}
 
 Requires nvidia-smi
 
@@ -41,6 +41,8 @@ class Module(core.module.Module):
         clockMem = ""
         clockGpu = ""
         fanspeed = ""
+        gpuUsagePct = ""
+        memPct = ""
         for item in sp.split("\n"):
             try:
                 key, val = item.split(":")
@@ -61,6 +63,11 @@ class Module(core.module.Module):
                     name = val
                 elif key == "Fan Speed":
                     fanspeed = val.split(" ")[0]
+                elif title == "Utilization":
+                    if key == "Gpu":
+                        gpuUsagePct = val.split(" ")[0]
+                    elif key == "Memory":
+                        memPct = val.split(" ")[0]
 
             except:
                 title = item.strip()
@@ -76,6 +83,8 @@ class Module(core.module.Module):
             clock_gpu=clockGpu,
             clock_mem=clockMem,
             fanspeed=fanspeed,
+            gpu_usage_pct=gpuUsagePct,
+            mem_usage_pct=memPct,
         )
 
 
