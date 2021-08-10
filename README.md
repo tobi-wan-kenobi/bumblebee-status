@@ -83,6 +83,8 @@ There is also a SlackBuild available here: [slackbuilds:bumblebee-status](http:/
 [Available modules](https://bumblebee-status.readthedocs.io/en/main/modules.html) lists the dependencies (Python modules and external executables)
 for each module. If you are not using a module, you don't need the dependencies.
 
+Some themes (e.g. all ‘powerline’ themes) require Font Awesome http://fontawesome.io/ and a powerline-compatible font (powerline-fonts) https://github.com/powerline/fonts
+
 # Usage
 ## Normal usage
 In your i3wm configuration, modify the *status_command* for your i3bar like this:
