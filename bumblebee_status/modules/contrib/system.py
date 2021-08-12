@@ -21,6 +21,9 @@ Parameters:
         * system.suspend: specify a command for suspending (defaults to 'i3exit suspend')
         * system.hibernate: specify a command for hibernating (defaults to 'i3exit hibernate')
 
+Requirements:
+	tkinter (python3-tk package on debian based systems either you can install it as python package)
+
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 """
 
