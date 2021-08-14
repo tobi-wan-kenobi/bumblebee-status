@@ -25,7 +25,7 @@ class Module(core.module.Module):
         self.__todos = self.count_items()
         core.input.register(
             self, button=core.input.LEFT_MOUSE, cmd="{} {}".format(self.__editor, self.__doc)
-        )      
+        )
 
     def output(self, widget):
         return str(self.__todos)
