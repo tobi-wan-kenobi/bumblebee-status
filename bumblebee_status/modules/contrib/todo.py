@@ -40,11 +40,12 @@ class Module(core.module.Module):
 
     def count_items(self):
         try:
-            i = -1
+            i = 0
             with open(self.__doc) as f:
-                for i, l in enumerate(f):
-                    pass
-            return i + 1
+                for l in f.readlines():
+                    if l.strip() != '':
+                        i += 1
+            return i
         except Exception:
             return 0
 
