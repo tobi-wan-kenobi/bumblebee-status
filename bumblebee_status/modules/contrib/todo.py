@@ -25,7 +25,7 @@ class Module(core.module.Module):
         self.__todos = self.count_items()
         core.input.register(
             self, button=core.input.LEFT_MOUSE, cmd="{} {}".format(self.__editor, self.__doc)
-        )
+        )      
 
     def output(self, widget):
         return str(self.__todos)
@@ -40,11 +40,12 @@ class Module(core.module.Module):
 
     def count_items(self):
         try:
-            i = -1
+            i = 0
             with open(self.__doc) as f:
-                for i, l in enumerate(f):
-                    pass
-            return i + 1
+                for l in f.readlines():
+                    if l.strip() != '':
+                        i += 1
+            return i
         except Exception:
             return 0
 
