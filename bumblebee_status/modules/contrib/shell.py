@@ -40,6 +40,7 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.get_output))
 
+        self.__unit= self.parameter("unit", 'echo "no unit configured"')
         self.__command = self.parameter("command", 'echo "no command configured"')
         self.__async = util.format.asbool(self.parameter("async"))
 
@@ -55,7 +56,7 @@ class Module(core.module.Module):
         self.__output = value
 
     def get_output(self, _):
-        return self.__output
+        return self.__output + str(self.parameter("unit"))
 
     def update(self):
         # if requested then run not async version and just execute command in this thread
@@ -77,8 +78,25 @@ class Module(core.module.Module):
         self.__current_thread.start()
 
     def state(self, _):
-        if self.__output == "no command configured":
-            return "warning"
+        if self.parameter("unit") is None:
+            if self.__output == "no command configured":
+                return "critical"
+        else:
+            if self.parameter("warning") is None:
+                warning_threshold = 75
+            else:
+                warning_threshold = float(self.parameter("warning"))
+
+            if self.parameter("critical") is None:
+                critical_threshold = 90
+            else:
+                critical_threshold = float(self.parameter("critical"))
+
+            if float(self.__output) > critical_threshold:
+                return "critical"
+
+            if float(self.__output) > warning_threshold:
+                return "warning"
 
 
 # vim: tabstop=4 expandtab shiftwidth=4 softtabstop=4
