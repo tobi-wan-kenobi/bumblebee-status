@@ -328,7 +328,7 @@ class Config(util.store.Store):
     """
 
     def autohide(self, name):
-        return name in self.__args.autohide
+        return name in self.__args.autohide or self.get("autohide")
 
     """Returns which modules should be hidden if they are in state error
 
