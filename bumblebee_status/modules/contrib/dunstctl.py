@@ -24,12 +24,12 @@ import util.cli
 class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(""))
-        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.__toggle_state)
+        core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.toggle_state)
         self.__states = {"unknown": ["unknown", "critical"],
                          "true": ["muted", "warning"],
                          "false": ["unmuted"]}
 
-    def __toggle_state(self, event):
+    def toggle_state(self, event):
         util.cli.execute("dunstctl set-paused toggle", ignore_errors=True)
 
     def state(self, widget):
