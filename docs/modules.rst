@@ -1195,8 +1195,9 @@ sensors
 Displays sensor temperature
 
 Parameters:
-    * sensors.use_sensors (True/False): whether to use the 'sensors' command.
-      If set to 'False', the sysfs-interface at '/sys/class/thermal' is used
+    * sensors.use_sensors: whether to use the 'sensors' command.
+      If set to 'false', the sysfs-interface at '/sys/class/thermal' is used.
+      If not set, 'sensors' will be used if available.
     * sensors.path: path to temperature file (default /sys/class/thermal/thermal_zone0/temp).
     * sensors.json: if set to 'true', interpret sensors.path as JSON 'path' in the output
       of 'sensors -j' (i.e. <key1>/<key2>/.../<value>), for example, path could
