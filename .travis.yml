@@ -4,8 +4,6 @@ env:
   global:
     - CC_TEST_REPORTER_ID=40cb00907f7a10e04868e856570bb997ab9c42fd3b63d980f2b2269433195fdf 
 python:
-  - "3.4"
-  - "3.5"
   - "3.6"
   - "3.7"
   - "3.8"
