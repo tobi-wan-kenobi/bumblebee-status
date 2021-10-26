@@ -23,6 +23,10 @@ class Module(core.module.Module):
         self.background = True
         self.__battery_status = ""
         self.__error = False
+        if self.__battery != "":
+            self.__cmd = f"solaar show '{self.__battery}'"
+        else:
+            self.__cmd = "solaar show"
 
     @property
     def __format(self):
@@ -33,12 +37,8 @@ class Module(core.module.Module):
 
     def update(self):
         self.__error = False
-        if self.__battery != "":
-            cmd = f"solaar show '{self.__battery}'"
-        else:
-            cmd = "solaar show"
         code, result = util.cli.execute(
-            cmd, ignore_errors=True, return_exitcode=True
+            self.__cmd, ignore_errors=True, return_exitcode=True
         )
 
         if code == 0:
