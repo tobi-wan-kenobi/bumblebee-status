@@ -101,7 +101,7 @@ class Module(core.module.Module):
 
     def state(self, widget):
         if self.__active:
-            return "copying"
+            return ["copying", "no-autohide"]
         return "pending"
 
 
