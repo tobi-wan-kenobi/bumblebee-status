@@ -229,7 +229,7 @@ class i3(object):
         for widget in module.widgets():
             if widget.module and self.__config.autohide(widget.module.name):
                 if not any(
-                    state in widget.state() for state in ["warning", "critical", "mayhide"]
+                    state in widget.state() for state in ["warning", "critical"]
                 ):
                     continue
             if module.hidden():

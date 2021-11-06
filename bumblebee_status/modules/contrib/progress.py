@@ -102,7 +102,7 @@ class Module(core.module.Module):
     def state(self, widget):
         if self.__active:
             return "copying"
-        return ["pending", "mayhide"]
+        return "pending"
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
