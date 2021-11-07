@@ -36,9 +36,7 @@ Supported FontAwesome version: 4 (free version of 5 doesn't include some of the 
 ---
 ***NOTE***
 
-The default branch for this project is `main` - I'm keeping `master` around for backwards compatibility (I do not want to break anybody's setup), but the default branch is now `main`!
-
-If you are curious why: [ZDNet:github-master-alternative](https://www.zdnet.com/article/github-to-replace-master-with-alternative-term-to-avoid-slavery-references/)
+The default branch for this project is `main`. If you are curious why: [ZDNet:github-master-alternative](https://www.zdnet.com/article/github-to-replace-master-with-alternative-term-to-avoid-slavery-references/)
 
 ---
 
