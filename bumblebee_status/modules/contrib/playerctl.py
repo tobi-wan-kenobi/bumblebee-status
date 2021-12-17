@@ -85,7 +85,9 @@ class Module(core.module.Module):
 
     def update(self):
         try:
-            playback_status = str(util.cli.execute(self.__cmd + "status")).strip()
+            playback_status = str(util.cli.execute(self.__cmd + "status 2>&1 || true", shell = True)).strip()
+            if playback_status == "No players found":
+                playback_status = None
         except Exception as e:
             logging.exception(e)
             playback_status = None
