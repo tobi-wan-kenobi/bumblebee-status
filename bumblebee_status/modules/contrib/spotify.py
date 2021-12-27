@@ -159,7 +159,6 @@ class Module(core.module.Module):
                     widget.full_text(self.__song)
 
         except Exception as e:
-            logging.exception(e)
             self.__song = ""
 
     @property
