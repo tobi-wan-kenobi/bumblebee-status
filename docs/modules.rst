@@ -725,6 +725,21 @@ contributed by `joachimmathes <https://github.com/joachimmathes>`_ - many thanks
 
 .. image:: ../screenshots/dunstctl.png
 
+emerge_status
+~~~~~~~~~~~~~
+
+Display information about the currently running emerge process.
+
+Requires the following executable:
+    * emerge
+
+Parameters:
+    * emerge_status.format: Format string (defaults to '{current}/{total} {action} {category}/{pkg}')
+
+This code is based on `emerge_status module from p3status <https://github.com/ultrabug/py3status/blob/master/py3status/modules/emerge_status.py>`_ original created by `AnwariasEu <https://github.com/AnwariasEu>`_.
+
+.. image:: ../screenshots/emerge_status.png
+
 getcrypto
 ~~~~~~~~~
 
