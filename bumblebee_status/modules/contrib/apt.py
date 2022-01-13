@@ -14,6 +14,7 @@ import threading
 import core.module
 import core.widget
 import core.decorators
+import core.input
 
 import util.cli
 
@@ -56,6 +57,8 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.updates))
         self.__thread = None
+        core.input.register(self, button=core.input.RIGHT_MOUSE,
+                            cmd=self.updates)
 
     def updates(self, widget):
         if widget.get("error"):
