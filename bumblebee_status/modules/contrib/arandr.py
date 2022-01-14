@@ -54,7 +54,7 @@ class Module(core.module.Module):
     def activate_layout(layout_path):
         log.debug("activating layout")
         log.debug(layout_path)
-        execute(layout_path)
+        execute(layout_path, ignore_errors=True)
 
     def popup(self, widget):
         """Create Popup that allows the user to control their displays in one
@@ -64,7 +64,7 @@ class Module(core.module.Module):
         menu = popup.menu()
         menu.add_menuitem(
             "arandr",
-            callback=partial(execute, self.manager)
+            callback=partial(execute, self.manager, ignore_errors=True)
         )
         menu.add_separator()
 
@@ -105,11 +105,12 @@ class Module(core.module.Module):
             if count_on == 1:
                 log.info("attempted to turn off last display")
                 return
-            execute("{} --output {} --off".format(self.toggle_cmd, display))
+            execute("{} --output {} --off".format(self.toggle_cmd, display), ignore_errors=True)
         else:
             log.debug("toggling on {}".format(display))
             execute(
-                "{} --output {} --auto".format(self.toggle_cmd, display)
+                "{} --output {} --auto".format(self.toggle_cmd, display),
+                ignore_errors=True
             )
 
     @staticmethod
@@ -120,7 +121,7 @@ class Module(core.module.Module):
         connected).
         """
         displays = {}
-        for line in execute("xrandr -q").split("\n"):
+        for line in execute("xrandr -q", ignore_errors=True).split("\n"):
             if "connected" not in line:
                 continue
             is_on = bool(re.search(r"\d+x\d+\+(\d+)\+\d+", line))

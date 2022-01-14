@@ -49,6 +49,7 @@ class menu(object):
         return self._menu
 
     def __on_focus_out(self, event=None):
+        self.running = False
         self._root.destroy()
 
     def __on_click(self, callback):
