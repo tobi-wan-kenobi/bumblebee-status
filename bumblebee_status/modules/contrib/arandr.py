@@ -136,16 +136,19 @@ class Module(core.module.Module):
     def _get_layouts():
         """Loads and parses the arandr screen layout scripts."""
         layouts = {}
-        for filename in os.listdir(__screenlayout_dir__):
-            if fnmatch.fnmatch(filename, '*.sh'):
-                fullpath = os.path.join(__screenlayout_dir__, filename)
-                with open(fullpath, "r") as file:
-                    for line in file:
-                        s_line = line.strip()
-                        if "xrandr" not in s_line:
-                            continue
-                        displays_in_file = Module._parse_layout(line)
-                        layouts[filename] = displays_in_file
+        try:
+            for filename in os.listdir(__screenlayout_dir__):
+                if fnmatch.fnmatch(filename, '*.sh'):
+                    fullpath = os.path.join(__screenlayout_dir__, filename)
+                    with open(fullpath, "r") as file:
+                        for line in file:
+                            s_line = line.strip()
+                            if "xrandr" not in s_line:
+                                continue
+                            displays_in_file = Module._parse_layout(line)
+                            layouts[filename] = displays_in_file
+        except Exception as e:
+            log.error(str(e))
         return layouts
 
     @staticmethod
