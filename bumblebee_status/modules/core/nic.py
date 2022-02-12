@@ -177,7 +177,7 @@ class Module(core.module.Module):
                     # Remove trailing . by slicing it off ;)
                     strength_dbm = line.split()[3][:-1]
                     return util.format.asint(strength_dbm,
-                                minium=self.__strength_dbm_lower_bound,
+                                minimum=self.__strength_dbm_lower_bound,
                                 maximum=self.__strength_dbm_upper_bound)
 
         return None
