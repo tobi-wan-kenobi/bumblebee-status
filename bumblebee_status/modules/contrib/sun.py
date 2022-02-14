@@ -39,7 +39,11 @@ class Module(core.module.Module):
         self.__sun = None
 
         if not lat or not lon:
-            lat, lon = util.location.coordinates()
+            try:
+                lat, lon = util.location.coordinates()
+            except Exception:
+                pass
+
         if lat and lon:
             self.__sun = Sun(float(lat), float(lon))
 
@@ -55,6 +59,10 @@ class Module(core.module.Module):
         return "n/a"
 
     def __calculate_times(self):
+        if not self.__sun:
+            self.__sunset = self.__sunrise = None
+            return
+
         self.__isup = False
 
         order_matters = True
