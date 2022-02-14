@@ -16,13 +16,13 @@ class Module(core.module.Module):
         self.__ip = ""
 
     def public_ip(self, widget):
-        return self.__ip
+        return self.__ip or "n/a"
 
     def update(self):
         try:
             self.__ip = util.location.public_ip()
         except Exception:
-            self.__ip = "n/a"
+            self.__ip = None
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
