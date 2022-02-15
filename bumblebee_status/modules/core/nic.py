@@ -75,10 +75,11 @@ class Module(core.module.Module):
         iftype = "tunnel" if self._istunnel(intf) else iftype
 
         # "strength" is none if interface type is not wlan
-        if self._iswlan(intf):
-            if widget.get("strength") < self._strength_threshold_critical:
+        strength = widget.get("strength")
+        if self._iswlan(intf) and strength:
+            if strength < self._strength_threshold_critical:
                 states.append("critical")
-            elif widget.get("strength") < self._strength_threshold_warning:
+            elif strength < self._strength_threshold_warning:
                 states.append("warning")
 
         states.append("{}-{}".format(iftype, widget.get("state")))
