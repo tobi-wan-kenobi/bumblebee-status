@@ -93,7 +93,6 @@ class Module(core.module.Module):
 
     def __sink(self, internal_sink_name):
         for sink in self.__sinks:
-            logging.info(sink.internal_name)
             if internal_sink_name == sink.internal_name:
                 return sink
         return None
