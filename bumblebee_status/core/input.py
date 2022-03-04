@@ -54,8 +54,11 @@ def register(obj, button=None, cmd=None, wait=False):
     event_id = __event_id(obj.id if obj is not None else "", button)
     logging.debug("registering callback {}".format(event_id))
     core.event.unregister(event_id) # make sure there's always only one input event
+
     if callable(cmd):
         core.event.register_exclusive(event_id, cmd)
+    elif obj and hasattr(obj, cmd) and callable(getattr(obj, cmd)):
+        core.event.register_exclusive(event_id, lambda event: getattr(obj, cmd)(event))
     else:
         core.event.register_exclusive(event_id, lambda event: __execute(event, cmd, wait))
 
