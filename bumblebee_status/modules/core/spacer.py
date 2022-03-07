@@ -9,7 +9,7 @@ Parameters:
 import core.module
 import core.widget
 import core.decorators
-
+import core.input
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=60)
@@ -19,6 +19,9 @@ class Module(core.module.Module):
 
     def text(self, _):
         return self.__text
+
+    def update_text(self, event):
+        self.__text = core.input.button_name(event["button"])
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

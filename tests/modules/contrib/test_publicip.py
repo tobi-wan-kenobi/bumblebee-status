@@ -27,6 +27,15 @@ class PublicIPTest(TestCase):
         assert widget(module).full_text() == '5.12.220.2'
 
     @mock.patch('util.location.public_ip')
+    def test_public_ip(self, public_ip_mock):
+        public_ip_mock.return_value = None
+
+        module = build_module()
+        module.update()
+
+        assert widget(module).full_text() == 'n/a'
+
+    @mock.patch('util.location.public_ip')
     def test_public_ip_with_exception(self, public_ip_mock):
         public_ip_mock.side_effect = Exception
 

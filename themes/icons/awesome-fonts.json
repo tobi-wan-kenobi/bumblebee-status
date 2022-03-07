@@ -7,6 +7,7 @@
     "default-separators": false
   },
   "date": { "prefix": "" },
+  "persian_date": { "prefix": "" },
   "time": { "prefix": "" },
   "datetime": { "prefix": "" },
   "datetz": { "prefix": "" },
