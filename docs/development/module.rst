@@ -11,10 +11,12 @@ Adding a new module to ``bumblebee-status`` is straight-forward:
    ``bumblebee-status`` (i.e. a module called
    ``bumblebee_status/modules/contrib/test.py`` will be loaded using
    ``bumblebee-status -m test``)
+-  Alternatively, you can put your module in ``~/.config/bumblebee-status/modules/``
+-  The module name must follow the `Python Naming Conventions <https://www.python.org/dev/peps/pep-0008/#package-and-module-names>`_
 -  See below for how to actually write the module
 -  Test (run ``bumblebee-status`` in the CLI)
 -  Make sure your changes don’t break anything: ``./coverage.sh``
--  If you want to do me favour, run your module through
+-  If you want to do me a favour, run your module through
    ``black -t py34`` before submitting
 
 Pull requests
@@ -22,7 +24,7 @@ Pull requests
 
 The project **gladly** accepts PRs for bugfixes, new functionality, new
 modules, etc. When you feel comfortable with what you’ve developed,
-please just open a PR, somebody will look at it eventually :) Thanks!
+please just open a PR. Somebody will look at it eventually :) Thanks!
 
 Coding guidelines
 -----------------
@@ -65,7 +67,7 @@ Of modules and widgets
 
 There are two important concepts for module writers: - A module is
 something that offers a single set of coherent functionality - A module
-has 1 to n “widgets”, which translates to individual blocks in the i3bar
+has 1 to n “widgets”, which translates to individual blocks in the i3bar.
 
 Very often, this is a 1:1 relationship, and a single module has a single
 widget. If that’s the case for you, you can stop reading now :)

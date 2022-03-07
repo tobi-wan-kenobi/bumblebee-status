@@ -1,0 +1,59 @@
+{
+    "icons": [ "awesome-fonts" ],
+    "colors": [{
+        "red": "#BF616A",
+        "orange": "#D08770",
+        "yellow": "#EBCB8B",
+        "green": "#A3BE8C"
+    }],
+    "defaults": {
+        "separator-block-width": 0,
+        "warning": {
+            "fg": "#2E3440",
+            "bg": "#D08770"
+        },
+        "critical": {
+            "fg": "#2E3440",
+            "bg": "#BF616A"
+        }
+    },
+    "cycle": [
+        { "fg": "#000000", "bg": "#8FBCBB"},
+        { "fg": "#000000", "bg": "#A3BE8C"},
+        { "fg": "#000000", "bg": "#EBCB8B"},
+        { "fg": "#000000", "bg": "#BF616A"},
+        { "fg": "#000000", "bg": "#B48EAD"}
+    ],
+    "dnf": {
+        "good": {
+            "fg": "#A3BE8C",
+            "bg": "#2E3440"
+        }
+    },
+    "apt": {
+        "good": {
+            "fg": "#A3BE8C",
+            "bg": "#2E3440"
+        }
+    },
+    "pacman": {
+        "good": {
+            "fg": "#A3BE8C",
+            "bg": "#2E3440"
+        }
+    },
+    "pomodoro": {
+        "paused": {
+            "fg": "#2E3440",
+            "bg": "#D08770"
+        },
+        "work": {
+            "fg": "#2E3440",
+            "bg": "#EBCB8B"
+        },
+        "break": {
+            "fg": "#A3BE8C",
+            "bg": "#2E3440"
+        }
+    }
+}

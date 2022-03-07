@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Setup file for bumbleestatus bar to allow pip install of full package"""
 # -*- coding: utf8 - *-
-from setuptools import setup
+from setuptools import setup, find_packages
 import versioneer
 
 with open("requirements/base.txt") as f:
@@ -20,11 +20,9 @@ EXTRAS_REQUIREMENTS_MAP = {
     "cpu2": read_module("cpu2"),
     "currency": read_module("currency"),
     "docker_ps": read_module("docker_ps"),
-    "dunst": read_module("dunst"),
     "getcrypto": read_module("getcrypto"),
     "git": read_module("git"),
     "github": read_module("github"),
-    "hddtemp": read_module("hddtemp"),
     "layout-xkb": read_module("layout_xkb"),
     "memory": read_module("memory"),
     "network_traffic": read_module("network_traffic"),
@@ -59,4 +57,5 @@ setup(
         ("share/bumblebee-status/themes/icons", glob.glob("themes/icons/*.json")),
         ("share/bumblebee-status/utility", glob.glob("bin/*")),
     ],
+    packages=find_packages(exclude=["tests", "tests.*"])
 )

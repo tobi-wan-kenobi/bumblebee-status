@@ -148,6 +148,13 @@ class Config(util.store.Store):
             description="bumblebee-status is a modular, theme-able status line generator for the i3 window manager. https://github.com/tobi-wan-kenobi/bumblebee-status/wiki"
         )
         parser.add_argument(
+            "-c",
+            "--config-file",
+            action="store",
+            default=None,
+            help="Specify a configuration file to use"
+        )
+        parser.add_argument(
             "-m", "--modules", nargs="+", action="append", default=[], help=MODULE_HELP
         )
         parser.add_argument(
@@ -173,6 +180,13 @@ class Config(util.store.Store):
             help="Specify a list of modules to hide when not in warning/error state",
         )
         parser.add_argument(
+            "-e",
+            "--errorhide",
+            nargs="+",
+            default=[],
+            help="Specify a list of modules that are hidden when in state error"
+        )
+        parser.add_argument(
             "-d", "--debug", action="store_true", help="Add debug fields to i3 output"
         )
         parser.add_argument(
@@ -196,13 +210,18 @@ class Config(util.store.Store):
 
         self.__args = parser.parse_args(args)
 
-        for cfg in [
-            "~/.bumblebee-status.conf",
-            "~/.config/bumblebee-status.conf",
-            "~/.config/bumblebee-status/config",
-        ]:
+        if self.__args.config_file:
+            cfg = self.__args.config_file
             cfg = os.path.expanduser(cfg)
             self.load_config(cfg)
+        else:
+            for cfg in [
+                "~/.bumblebee-status.conf",
+                "~/.config/bumblebee-status.conf",
+                "~/.config/bumblebee-status/config",
+            ]:
+                cfg = os.path.expanduser(cfg)
+                self.load_config(cfg)
 
         parameters = [item for sub in self.__args.parameters for item in sub]
         for param in parameters:
@@ -302,14 +321,21 @@ class Config(util.store.Store):
     def iconset(self):
         return self.__args.iconset
 
-    """Returns which modules should be hidden if their state is not warning/critical
+    """Returns whether a module should be hidden if their state is not warning/critical
 
-    :return: list of modules to hide automatically
-    :rtype: list of strings
+    :return: True if module should be hidden automatically, False otherwise
+    :rtype: bool
     """
 
     def autohide(self, name):
-        return name in self.__args.autohide
+        return name in self.__args.autohide or name in util.format.aslist(self.get("autohide", []))
 
+    """Returns which modules should be hidden if they are in state error
+
+    :return: returns True if name should be hidden, False otherwise
+    :rtype: bool
+    """
+    def errorhide(self, name):
+        return name in self.__args.errorhide
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

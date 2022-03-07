@@ -10,6 +10,7 @@ MIDDLE_MOUSE = 2
 RIGHT_MOUSE = 3
 WHEEL_UP = 4
 WHEEL_DOWN = 5
+UPDATE = -1
 
 
 def button_name(button):
@@ -23,6 +24,8 @@ def button_name(button):
         return "wheel-up"
     if button == WHEEL_DOWN:
         return "wheel-down"
+    if button == UPDATE:
+        return "update"
     return "n/a"
 
 
@@ -51,10 +54,13 @@ def register(obj, button=None, cmd=None, wait=False):
     event_id = __event_id(obj.id if obj is not None else "", button)
     logging.debug("registering callback {}".format(event_id))
     core.event.unregister(event_id) # make sure there's always only one input event
+
     if callable(cmd):
-        core.event.register(event_id, cmd)
+        core.event.register_exclusive(event_id, cmd)
+    elif obj and hasattr(obj, cmd) and callable(getattr(obj, cmd)):
+        core.event.register_exclusive(event_id, lambda event: getattr(obj, cmd)(event))
     else:
-        core.event.register(event_id, lambda event: __execute(event, cmd, wait))
+        core.event.register_exclusive(event_id, lambda event: __execute(event, cmd, wait))
 
 
 def trigger(event):

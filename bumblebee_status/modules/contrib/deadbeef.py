@@ -5,8 +5,6 @@ some media control bindings.
 Left click toggles pause, scroll up skips the current song, scroll
 down returns to the previous song.
 
-Requires the following library:
-    * subprocess
 Parameters:
     * deadbeef.format:    Format string (defaults to '{artist} - {title}')
       Available values are: {artist}, {title}, {album}, {length},

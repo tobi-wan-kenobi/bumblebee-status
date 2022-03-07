@@ -27,6 +27,7 @@ class Module(core.module.Module):
             self._cpus = multiprocessing.cpu_count()
         except NotImplementedError as e:
             self._cpus = 1
+
         core.input.register(
             self, button=core.input.LEFT_MOUSE, cmd="gnome-system-monitor"
         )

@@ -26,6 +26,7 @@ def module_a(mocker):
     widget = mocker.MagicMock()
     widget.full_text.return_value = "test"
     widget.id = "a"
+    widget.hidden = False
     return SampleModule(config=core.config.Config([]), widgets=[widget, widget, widget])
 
 @pytest.fixture

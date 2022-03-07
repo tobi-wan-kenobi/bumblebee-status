@@ -7,6 +7,7 @@ import glob
 
 import core.event
 import util.algorithm
+import util.xresources
 
 log = logging.getLogger(__name__)
 
@@ -16,6 +17,7 @@ PATHS = [
     os.path.join(THEME_BASE_DIR, "../../themes"),
     os.path.expanduser("~/.config/bumblebee-status/themes"),
     os.path.expanduser("~/.local/share/bumblebee-status/themes"),  # PIP
+    "/usr/share/bumblebee-status/themes",
 ]
 
 
@@ -89,13 +91,21 @@ class Theme(object):
         try:
             if isinstance(name, dict):
                 return name
+
+            result = {}
             if name.lower() == "wal":
                 wal = self.__load_json("~/.cache/wal/colors.json")
-                result = {}
                 for field in ["special", "colors"]:
                     for key in wal.get(field, {}):
                         result[key] = wal[field][key]
-                return result
+            if name.lower() == "xresources":
+                for key in ("background", "foreground"):
+                    result[key] = xresources.query(key)
+                for i in range(16):
+                    key = color + str(i)
+                    result[key] = xresources.query(key)
+
+            return result
         except Exception as e:
             log.error("failed to load colors: {}", e)
 

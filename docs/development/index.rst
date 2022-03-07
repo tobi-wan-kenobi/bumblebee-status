@@ -8,4 +8,5 @@ Developer's Guide
    general
    module
    theme
+   testing
 

@@ -59,11 +59,11 @@ def __load():
     __next = time.time() + 60 * 30  # error - try again every 30m
 
 
-def __get(name, default=None):
+def __get(name):
     global __data
     if not __data or __expired():
         __load()
-    return __data.get(name, default)
+    return __data[name]
 
 
 def reset():

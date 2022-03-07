@@ -22,6 +22,7 @@ Parameters:
     * cpu.warning : Warning threshold in % of CPU usage (defaults to 70%)
     * cpu.critical: Critical threshold in % of CPU usage (defaults to 80%)
     * cpu.format  : Format string (defaults to '{:.01f}%')
+    * cpu.percpu  : If set to true, show each individual cpu (defaults to false)
 
 .. image:: ../screenshots/cpu.png
 
@@ -63,6 +64,7 @@ Parameters:
     * disk.path: Path to calculate disk usage from (defaults to /)
     * disk.open: Which application / file manager to launch (default xdg-open)
     * disk.format: Format string, tags {path}, {used}, {left}, {size} and {percent} (defaults to '{path} {used}/{size} ({percent:05.02f}%)')
+    * disk.system: Unit system to use - SI (KB, MB, ...) or IEC (KiB, MiB, ...) (defaults to 'IEC')
 
 .. image:: ../screenshots/disk.png
 
@@ -83,7 +85,29 @@ Requires:
 
 .. image:: ../screenshots/git.png
 
+keys
+~~~~
+
+Shows when a key is pressed
+
+Parameters:
+    * keys.keys: Comma-separated list of keys to monitor (defaults to "")
+
 layout-xkb
+~~~~~~~~~~
+
+Displays the current keyboard layout using libX11
+
+Requires the following library:
+    * libX11.so.6
+and python module:
+    * xkbgroup
+
+Parameters:
+    * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
+    * layout-xkb.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
+
+layout_xkb
 ~~~~~~~~~~
 
 Displays the current keyboard layout using libX11
@@ -141,9 +165,10 @@ Requires the following python module:
 
 Requires the following executable:
     * iw
+    * (until and including 2.0.5: iwgetid)
 
 Parameters:
-    * nic.exclude: Comma-separated list of interface prefixes to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br')
+    * nic.exclude: Comma-separated list of interface prefixes (supporting regular expressions) to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br,.*:avahi')
     * nic.include: Comma-separated list of interfaces to include
     * nic.states: Comma-separated list of states to show (prefix with '^' to invert - i.e. ^down -> show all devices that are not in state down)
     * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid}')
@@ -278,6 +303,7 @@ Parameters:
     * vault.location: Location of the password store (defaults to ~/.password-store)
     * vault.offx: x-axis offset of popup menu (defaults to 0)
     * vault.offy: y-axis offset of popup menu (defaults to 0)
+    * vault.text: Text to display on the widget (defaults to <click-for-password>)
 
 Many thanks to `bbernhard <https://github.com/bbernhard>`_ for the idea!
 
@@ -294,6 +320,9 @@ Parameters:
       and appending a file '~/.config/i3/config.<screen name>' for every screen.
     * xrandr.autoupdate: If set to 'false', does *not* invoke xrandr automatically. Instead, the
       module will only refresh when displays are enabled or disabled (defaults to true)
+    * xrandr.exclude: Comma-separated list of display name prefixes to exclude
+    * xrandr.autotoggle: Boolean flag to automatically enable new displays (defaults to false)
+    * xrandr.autotoggle_side: Which side to put autotoggled displays on ('right' or 'left', defaults to 'right')
 
 Requires the following python module:
     * (optional) i3 - if present, the need for updating the widget list is auto-detected
@@ -362,6 +391,16 @@ Requires the following executable:
 
 contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
 
+arch_update
+~~~~~~~~~~~
+
+Check updates to Arch Linux.
+
+Requires the following executable:
+    * checkupdates (from pacman-contrib)
+
+contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
+
 battery
 ~~~~~~~
 
@@ -381,6 +420,18 @@ Parameters:
 .. image:: ../screenshots/battery.png
 
 battery-upower
+~~~~~~~~~~~~~~
+
+Displays battery status, remaining percentage and charging information.
+
+Parameters:
+    * battery-upower.warning      : Warning threshold in % of remaining charge (defaults to 20)
+    * battery-upower.critical     : Critical threshold in % of remaining charge (defaults to 10)
+    * battery-upower.showremaining : If set to true (default) shows the remaining time until the batteries are completely discharged
+
+contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
+
+battery_upower
 ~~~~~~~~~~~~~~
 
 Displays battery status, remaining percentage and charging information.
@@ -579,8 +630,6 @@ some media control bindings.
 Left click toggles pause, scroll up skips the current song, scroll
 down returns to the previous song.
 
-Requires the following library:
-    * subprocess
 Parameters:
     * deadbeef.format:    Format string (defaults to '{artist} - {title}')
       Available values are: {artist}, {title}, {album}, {length},
@@ -636,9 +685,6 @@ Displays DNF package update information (<security>/<bugfixes>/<enhancements>/<o
 Requires the following executable:
     * dnf
 
-Parameters:
-    * dnf.interval: Time in minutes between two consecutive update checks (defaults to 30 minutes)
-
 .. image:: ../screenshots/dnf.png
 
 docker_ps
@@ -659,6 +705,40 @@ Toggle dunst notifications.
 contributed by `eknoes <https://github.com/eknoes>`_ - many thanks!
 
 .. image:: ../screenshots/dunst.png
+
+dunstctl
+~~~~~~~~
+
+Toggle dunst notifications using dunstctl.
+
+When notifications are paused using this module dunst doesn't get killed and
+you'll keep getting notifications on the background that will be displayed when
+unpausing. This is specially useful if you're using dunst's scripting
+(https://wiki.archlinux.org/index.php/Dunst#Scripting), which requires dunst to
+be running. Scripts will be executed when dunst gets unpaused.
+
+Requires:
+    * dunst v1.5.0+
+
+contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
+contributed by `joachimmathes <https://github.com/joachimmathes>`_ - many thanks!
+
+.. image:: ../screenshots/dunstctl.png
+
+emerge_status
+~~~~~~~~~~~~~
+
+Display information about the currently running emerge process.
+
+Requires the following executable:
+    * emerge
+
+Parameters:
+    * emerge_status.format: Format string (defaults to '{current}/{total} {action} {category}/{pkg}')
+
+This code is based on `emerge_status module from p3status <https://github.com/ultrabug/py3status/blob/master/py3status/modules/emerge_status.py>`_ original created by `AnwariasEu <https://github.com/AnwariasEu>`_.
+
+.. image:: ../screenshots/emerge_status.png
 
 getcrypto
 ~~~~~~~~~
@@ -715,7 +795,7 @@ contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks
 hddtemp
 ~~~~~~~
 
-Fetch hard drive temeperature data from a hddtemp daemon
+Fetch hard drive temperature data from a hddtemp daemon
 that runs on localhost and default port (7634)
 
 contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
@@ -779,6 +859,16 @@ contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
 .. image:: ../screenshots/layout.png
 
 layout-xkbswitch
+~~~~~~~~~~~~~~~~
+
+Displays and changes the current keyboard layout
+
+Requires the following executable:
+    * xkb-switch
+
+contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
+
+layout_xkbswitch
 ~~~~~~~~~~~~~~~~
 
 Displays and changes the current keyboard layout
@@ -984,6 +1074,16 @@ Displays information about the current song in vlc, audacious, bmp, xmms2, spoti
 Requires the following executable:
     * playerctl
 
+Parameters:
+    * playerctl.format:   Format string (defaults to '{{artist}} - {{title}}  {{duration(position)}}/{{duration(mpris:length)}}').
+      The format string is passed to 'playerctl -f' as an argument. Read `the README <https://github.com/altdesktop/playerctl#printing-properties-and-metadata>`_ for more information.
+    * playerctl.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
+      Widget names are: playerctl.song, playerctl.prev, playerctl.pause, playerctl.next
+    * playerctl.args:     The arguments added to playerctl.
+      You can check 'playerctl --help' or `its readme <https://github.com/altdesktop/playerctl#using-the-cli>`_. For example, it could be '-p vlc,%any'.
+
+Parameters are inspired by the `spotify` module, many thanks to its developers!
+
 contributed by `smitajit <https://github.com/smitajit>`_ - many thanks!
 
 .. image:: ../screenshots/playerctl.png
@@ -1070,6 +1170,17 @@ publicip
 
 Displays public IP address
 
+rofication
+~~~~~~~~~~
+
+Rofication indicator
+
+https://github.com/DaveDavenport/Rofication
+simple module to show an icon + the number of notifications stored in rofication
+module will have normal highlighting if there are zero notifications,
+                 "warning" highlighting if there are nonzero notifications,
+                 "critical" highlighting if there are any critical notifications
+
 rotation
 ~~~~~~~~
 
@@ -1099,6 +1210,9 @@ sensors
 Displays sensor temperature
 
 Parameters:
+    * sensors.use_sensors: whether to use the 'sensors' command.
+      If set to 'false', the sysfs-interface at '/sys/class/thermal' is used.
+      If not set, 'sensors' will be used if available.
     * sensors.path: path to temperature file (default /sys/class/thermal/thermal_zone0/temp).
     * sensors.json: if set to 'true', interpret sensors.path as JSON 'path' in the output
       of 'sensors -j' (i.e. <key1>/<key2>/.../<value>), for example, path could
@@ -1147,12 +1261,12 @@ Shows a widget per user-defined shortcut and allows to define the behaviour
 when clicking on it.
 
 For more than one shortcut, the commands and labels are strings separated by
-a demiliter (; semicolon by default).
+a delimiter (; semicolon by default).
 
 For example in order to create two shortcuts labeled A and B with commands
 cmdA and cmdB you could do:
 
- ./bumblebee-status -m shortcut -p shortcut.cmd='ls;ps' shortcut.label='A;B'
+ ./bumblebee-status -m shortcut -p shortcut.cmd='firefox https://www.google.com;google-chrome https://google.com' shortcut.label='Google (Firefox);Google (Chrome)'
 
 Parameters:
     * shortcut.cmds  : List of commands to execute
@@ -1174,7 +1288,7 @@ Requires the following executables:
     * smartctl
 
 Parameters:
-    * smartstatus.display: how to display (defaults to 'combined', other choices: 'seperate' or 'singles')
+    * smartstatus.display: how to display (defaults to 'combined', other choices: 'combined_singles', 'seperate' or 'singles')
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
     * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
 
@@ -1187,7 +1301,6 @@ an example.
 
 Requires the following libraries:
     * requests
-    * regex
 
 Parameters:
     * spaceapi.url: String representation of the api endpoint
@@ -1218,6 +1331,10 @@ Parameters:
       Available values are: {album}, {title}, {artist}, {trackNumber}
     * spotify.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
       Widget names are: spotify.song, spotify.prev, spotify.pause, spotify.next
+    * spotify.concise_controls: When enabled, allows spotify to be controlled from just the spotify.song widget.
+      Concise controls are:     Left Click: Toggle Pause; Wheel Up: Next; Wheel Down; Previous.
+    * spotify.bus_name: String (defaults to `spotify`)
+      Available values: spotify, spotifyd
 
 contributed by `yvesh <https://github.com/yvesh>`_ - many thanks!
 
@@ -1231,9 +1348,6 @@ stock
 ~~~~~
 
 Display a stock quote from finance.yahoo.com
-
-Requires the following python packages:
-    * requests
 
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
@@ -1255,8 +1369,8 @@ Requires the following python packages:
     * python-dateutil
 
 Parameters:
-    * cpu.lat : Latitude of your location
-    * cpu.lon : Longitude of your location
+    * sun.lat : Latitude of your location
+    * sun.lon : Longitude of your location
 
 (if none of those are set, location is determined automatically via location APIs)
 
@@ -1284,6 +1398,9 @@ Parameters:
         * system.lock: specify a command for locking the screen (defaults to 'i3exit lock')
         * system.suspend: specify a command for suspending (defaults to 'i3exit suspend')
         * system.hibernate: specify a command for hibernating (defaults to 'i3exit hibernate')
+        
+Requirements:
+        tkinter (python3-tk package on debian based systems either you can install it as python package)
 
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 
@@ -1302,6 +1419,24 @@ Parameters:
 contributed by `chdorb <https://github.com/chdorb>`_ - many thanks!
 
 .. image:: ../screenshots/taskwarrior.png
+
+thunderbird
+~~~~~~~~~~~
+
+Displays the unread emails count for one or more Thunderbird inboxes
+
+Parameters:
+    * thunderbird.home: Absolute path of your .thunderbird directory (e.g.: /home/pi/.thunderbird)
+    * thunderbird.inboxes: Comma separated values for all MSF inboxes and their parent directory (account) (e.g.: imap.gmail.com/INBOX.msf,outlook.office365.com/Work.msf)
+
+Tips:
+    * You can run the following command in order to list all your Thunderbird inboxes
+
+        find ~/.thunderbird -name '*.msf' | awk -F '/' '{print $(NF-1)"/"$(NF)}'
+
+contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
+
+.. image:: ../screenshots/thunderbird.png
 
 timetz
 ~~~~~~
@@ -1342,6 +1477,15 @@ Parameters:
 contributed by `codingo <https://github.com/codingo>`_ - many thanks!
 
 .. image:: ../screenshots/todo.png
+
+todo_org
+~~~~~~~~
+
+Displays the number of todo items from an org-mode file
+Parameters:
+    * todo_org.file:      File to read TODOs from (defaults to ~/org/todo.org)
+    * todo_org.remaining: False by default. When true, will output the number of remaining todos instead of the number completed (i.e. 1/4 means 1 of 4 todos remaining, rather than 1 of 4 todos completed)
+Based on the todo module by `codingo <https://github.com/codingo>`
 
 traffic
 ~~~~~~~

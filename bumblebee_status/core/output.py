@@ -57,6 +57,9 @@ class block(object):
     def set(self, key, value):
         self.__attributes[key] = value
 
+    def get(self, key, default=None):
+        return self.__attributes.get(key, default)
+
     def is_pango(self, attr):
         if isinstance(attr, dict) and "pango" in attr:
             return True
@@ -91,8 +94,16 @@ class block(object):
             assign(self.__attributes, result, "background", "bg")
 
         if "full_text" in self.__attributes:
+            prefix = self.__pad(self.pangoize(self.__attributes.get("prefix")))
+            suffix = self.__pad(self.pangoize(self.__attributes.get("suffix")))
+            self.set("_prefix", prefix)
+            self.set("_suffix", suffix)
+            self.set("_raw", self.get("full_text"))
             result["full_text"] = self.pangoize(result["full_text"])
             result["full_text"] = self.__format(self.__attributes["full_text"])
+
+        if "min-width" in self.__attributes and "padding" in self.__attributes:
+            self.set("min-width", self.__format(self.get("min-width")))
 
         for k in [
             "name",
@@ -123,11 +134,8 @@ class block(object):
     def __format(self, text):
         if text is None:
             return None
-        prefix = self.__pad(self.pangoize(self.__attributes.get("prefix")))
-        suffix = self.__pad(self.pangoize(self.__attributes.get("suffix")))
-        self.set("_prefix", prefix)
-        self.set("_suffix", suffix)
-        self.set("_raw", text)
+        prefix = self.get("_prefix")
+        suffix = self.get("_suffix")
         return "{}{}{}".format(prefix, text, suffix)
 
 
@@ -157,6 +165,12 @@ class i3(object):
 
     def toggle_minimize(self, event):
         widget_id = event["instance"]
+
+        for module in self.__modules:
+            if module.widget(widget_id=widget_id) and util.format.asbool(module.parameter("minimize", False)) == True:
+                # this module can customly minimize
+                module.minimized = not module.minimized
+                return
 
         if widget_id in self.__content:
             self.__content[widget_id]["minimized"] = not self.__content[widget_id]["minimized"]
@@ -208,13 +222,21 @@ class i3(object):
 
     def blocks(self, module):
         blocks = []
+        if module.minimized:
+            blocks.extend(self.separator_block(module, module.widgets()[0]))
+            blocks.append(self.__content_block(module, module.widgets()[0]))
+            return blocks
         for widget in module.widgets():
             if widget.module and self.__config.autohide(widget.module.name):
                 if not any(
-                    state in widget.state() for state in ["warning", "critical"]
+                    state in widget.state() for state in ["warning", "critical", "no-autohide"]
                 ):
                     continue
             if module.hidden():
+                continue
+            if widget.hidden:
+                continue
+            if "critical" in widget.state() and self.__config.errorhide(widget.module.name):
                 continue
             blocks.extend(self.separator_block(module, widget))
             blocks.append(self.__content_block(module, widget))

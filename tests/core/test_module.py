@@ -55,7 +55,8 @@ def test_importerror(mocker):
     module = core.module.load(module_name="test", config=config)
 
     assert module.__class__.__name__ == "Error"
-    assert module.widget().full_text() == "test: some-error"
+    assert module.widget().full_text() == "test: some-error" or \
+        module.widget().full_text() == "test: unable to load module"
 
 
 def test_loadvalid_module():

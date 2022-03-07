@@ -4,11 +4,15 @@
 
 Parameters:
    * nvidiagpu.format: Format string (defaults to '{name}: {temp}°C %{usedmem}/{totalmem} MiB')
-     Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem}
+     Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem} {gpu_usage_pct} {mem_usage_pct} {mem_io_pct}
 
 Requires nvidia-smi
 
 contributed by `RileyRedpath <https://github.com/RileyRedpath>`_ - many thanks!
+
+Note: mem_io_pct is (from `man nvidia-smi`):
+> Percent of time over the past sample period during which global (device)
+> memory was being read or written.
 """
 
 import core.module
@@ -41,6 +45,9 @@ class Module(core.module.Module):
         clockMem = ""
         clockGpu = ""
         fanspeed = ""
+        gpuUsagePct = ""
+        memIoPct = ""
+        memUsage = "not found"
         for item in sp.split("\n"):
             try:
                 key, val = item.split(":")
@@ -61,9 +68,17 @@ class Module(core.module.Module):
                     name = val
                 elif key == "Fan Speed":
                     fanspeed = val.split(" ")[0]
+                elif title == "Utilization":
+                    if key == "Gpu":
+                        gpuUsagePct = val.split(" ")[0]
+                    elif key == "Memory":
+                        memIoPct = val.split(" ")[0]
 
             except:
                 title = item.strip()
+
+        if totalMem and usedMem:
+            memUsage = int(int(usedMem) / int(totalMem) * 100)
 
         str_format = self.parameter(
             "format", "{name}: {temp}°C {mem_used}/{mem_total} MiB"
@@ -76,6 +91,9 @@ class Module(core.module.Module):
             clock_gpu=clockGpu,
             clock_mem=clockMem,
             fanspeed=fanspeed,
+            gpu_usage_pct=gpuUsagePct,
+            mem_io_pct=memIoPct,
+            mem_usage_pct=memUsage,
         )
 
 

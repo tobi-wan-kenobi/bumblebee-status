@@ -40,7 +40,7 @@ class Module(core.module.Module):
         )
 
         if code == 0:
-            self.__packages = len(result.split("\n"))
+            self.__packages = len(result.strip().split("\n"))
         elif code == 2:
             self.__packages = 0
         else:

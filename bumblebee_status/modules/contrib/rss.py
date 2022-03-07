@@ -55,7 +55,7 @@ class Module(core.module.Module):
 
         self._state = []
 
-        self._newspaper_filename = tempfile.mktemp(".html")
+        self._newspaper_file = tempfile.NamedTemporaryFile(mode="w", suffix=".html")
 
         self._last_refresh = 0
         self._last_update = 0
@@ -308,10 +308,11 @@ class Module(core.module.Module):
 
         while newspaper_items:
             content += self._create_news_section(newspaper_items)
-        open(self._newspaper_filename, "w").write(
+        self._newspaper_file.write(
             HTML_TEMPLATE.replace("[[CONTENT]]", content)
         )
-        webbrowser.open("file://" + self._newspaper_filename)
+        self._newspaper_file.flush()
+        webbrowser.open("file://" + self._newspaper_file.name)
         self._update_history("newspaper")
         self._save_history()
 

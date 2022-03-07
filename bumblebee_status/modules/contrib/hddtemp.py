@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Fetch hard drive temeperature data from a hddtemp daemon
+"""Fetch hard drive temperature data from a hddtemp daemon
 that runs on localhost and default port (7634)
 
 contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!

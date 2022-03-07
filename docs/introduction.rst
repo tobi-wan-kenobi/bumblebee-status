@@ -19,6 +19,9 @@ Installation
    # will install bumblebee-status into ~/.local/bin/bumblebee-status
    pip install --user bumblebee-status
 
+
+There is also a SlackBuild available here: [slackbuilds:bumblebee-status](http://slackbuilds.org/repository/14.2/desktop/bumblebee-status/) - many thanks to [@Tonus1](https://github.com/Tonus1)!
+
 Dependencies
 ------------
 
@@ -56,12 +59,15 @@ To change the update interval, use:
 
    $ ./bumblebee-status -m <list of modules> -p interval=<interval in seconds>
 
-The update interval can also be changed on a per-module basis, like
-this:
+The update interval is the global "refresh" interval of the modules (i.e. how often
+the bar will be updated with new data). The default interval is one second. It is
+possible to use suffixes such as "m" (for minutes), or "h" for hours (e.g.
+``-p interval=5m`` to update once every 5 minutes.
 
-.. code-block:: bash
+Note that some modules define their own intervals (e.g. most modules that query
+an online service), such as to not cause a storm of "once every second" queries.
 
-   $ ./bumblebee-status -m cpu memory -p cpu.interval=5s memory.interval=1m
+For more details on that, please refer to :doc:`features`.
 
 All modules can be given “aliases” using ``<module name>:<alias>``, by
 which they can be parametrized, for example:

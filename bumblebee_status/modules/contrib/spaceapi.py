@@ -9,7 +9,6 @@ an example.
 
 Requires the following libraries:
     * requests
-    * regex
 
 Parameters:
     * spaceapi.url: String representation of the api endpoint

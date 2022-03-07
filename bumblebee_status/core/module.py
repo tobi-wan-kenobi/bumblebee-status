@@ -17,6 +17,27 @@ except Exception as e:
 
 log = logging.getLogger(__name__)
 
+def import_user(module_short, config, theme):
+    usermod = os.path.expanduser("~/.config/bumblebee-status/modules/{}.py".format(module_short))
+    if os.path.exists(usermod):
+        if hasattr(importlib, "machinery"):
+            log.debug("importing {} from user via machinery".format(module_short))
+            mod = importlib.machinery.SourceFileLoader("modules.{}".format(module_short),
+                os.path.expanduser(usermod)).load_module()
+            return getattr(mod, "Module")(config, theme)
+        else:
+            log.debug("importing {} from user via importlib.util".format(module_short))
+            try:
+                spec = importlib.util.spec_from_file_location("modules.{}".format(module_short), usermod)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                return mod.Module(config, theme)
+            except Exception as e:
+                spec = importlib.util.find_spec("modules.{}".format(module_short), usermod)
+                mod = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(mod)
+                return mod.Module(config, theme)
+    raise ImportError("not found")
 
 """Loads a module by name
 
@@ -33,20 +54,25 @@ def load(module_name, config=core.config.Config([]), theme=None):
     error = None
     module_short, alias = (module_name.split(":") + [module_name])[0:2]
     config.set("__alias__", alias)
-    for namespace in ["core", "contrib"]:
+
+    try:
+        mod = importlib.import_module("modules.core.{}".format(module_short))
+        log.debug("importing {} from core".format(module_short))
+        return getattr(mod, "Module")(config, theme)
+    except ImportError as e:
         try:
-            mod = importlib.import_module(
-                "modules.{}.{}".format(namespace, module_short)
-            )
-            log.debug(
-                "importing {} from {}.{}".format(module_short, namespace, module_short)
-            )
+            log.warning("failed to import {} from core: {}".format(module_short, e))
+            mod = importlib.import_module("modules.contrib.{}".format(module_short))
+            log.debug("importing {} from contrib".format(module_short))
             return getattr(mod, "Module")(config, theme)
         except ImportError as e:
-            log.debug("failed to import {}: {}".format(module_name, e))
-            error = e
-    log.fatal("failed to import {}: {}".format(module_name, error))
-    return Error(config=config, module=module_name, error=error)
+            try:
+                log.warning("failed to import {} from system: {}".format(module_short, e))
+                return import_user(module_short, config, theme)
+            except ImportError as e:
+                log.fatal("import failed: {}".format(e))
+        log.fatal("failed to import {}".format(module_short))
+    return Error(config=config, module=module_name, error="unable to load module")
 
 
 class Module(core.input.Object):
@@ -69,6 +95,8 @@ class Module(core.input.Object):
         self.alias = self.__config.get("__alias__", None)
         self.id = self.alias if self.alias else self.name
         self.next_update = None
+        self.minimized = False
+        self.minimized = self.parameter("start-minimized", False)
 
         self.theme = theme
 
@@ -100,6 +128,8 @@ class Module(core.input.Object):
 
         for prefix in [self.name, self.module_name, self.alias]:
             value = self.__config.get("{}.{}".format(prefix, key), value)
+            if self.minimized:
+                value = self.__config.get("{}.minimized.{}".format(prefix, key), value)
         return value
 
     """Set a parameter for this module
@@ -123,7 +153,7 @@ class Module(core.input.Object):
 
     def update_wrapper(self):
         if self.background == True:
-            if self.__thread and self.__thread.isAlive():
+            if self.__thread and self.__thread.is_alive():
                 return # skip this update interval
             self.__thread = threading.Thread(target=self.internal_update, args=(True,))
             self.__thread.start()
@@ -170,9 +200,9 @@ class Module(core.input.Object):
     :rtype: bumblebee_status.widget.Widget
     """
 
-    def add_widget(self, full_text="", name=None):
+    def add_widget(self, full_text="", name=None, hidden=False):
         widget_id = "{}::{}".format(self.name, len(self.widgets()))
-        widget = core.widget.Widget(full_text=full_text, name=name, widget_id=widget_id)
+        widget = core.widget.Widget(full_text=full_text, name=name, widget_id=widget_id, hidden=hidden)
         self.widgets().append(widget)
         widget.module = self
         return widget

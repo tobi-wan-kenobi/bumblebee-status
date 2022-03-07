@@ -31,14 +31,13 @@ class Module(core.module.Module):
                     orientation = curr_orient
                     break
 
-            widget = self.widget(display)
+            widget = self.widget(name=display)
             if not widget:
                 widget = self.add_widget(full_text=display, name=display)
                 core.input.register(
                     widget, button=core.input.LEFT_MOUSE, cmd=self.__toggle
                 )
             widget.set("orientation", orientation)
-            widgets.append(widget)
 
     def state(self, widget):
         return widget.get("orientation", "normal")

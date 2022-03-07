@@ -4,6 +4,7 @@
 """Displays sensor temperature
 
 Parameters:
+    * sensors.use_sensors: whether to use the sensors command
     * sensors.path: path to temperature file (default /sys/class/thermal/thermal_zone0/temp).
     * sensors.json: if set to 'true', interpret sensors.path as JSON 'path' in the output
       of 'sensors -j' (i.e. <key1>/<key2>/.../<value>), for example, path could
@@ -18,6 +19,7 @@ contributed by `mijoharas <https://github.com/mijoharas>`_ - many thanks!
 """
 
 import re
+import os
 import json
 import logging
 
@@ -46,22 +48,25 @@ class Module(core.module.Module):
         self._json = util.format.asbool(self.parameter("json", False))
         self._freq = util.format.asbool(self.parameter("show_freq", True))
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd="xsensors")
-        self.determine_method()
+        self.use_sensors = self.determine_method()
 
     def determine_method(self):
+        if util.format.asbool(self.parameter("use_sensors")) == True:
+            return True
+        if util.format.asbool(self.parameter("use_sensors")) == False:
+            return False
         if self.parameter("path") != None and self._json == False:
-            self.use_sensors = False  # use thermal zone
-        else:
-            # try to use output of sensors -u
-            try:
-                output = util.cli.execute("sensors -u")
-                self.use_sensors = True
-                log.debug("Sensors command available")
-            except FileNotFoundError as e:
-                log.info(
-                    "Sensors command not available, using /sys/class/thermal/thermal_zone*/"
-                )
-                self.use_sensors = False
+            return False
+        # try to use output of sensors -u
+        try:
+            _ = util.cli.execute("sensors -u")
+            log.debug("Sensors command available")
+            return True
+        except FileNotFoundError as e:
+            log.info(
+                "Sensors command not available, using /sys/class/thermal/thermal_zone*/"
+            )
+            return False
 
     def _get_temp_from_sensors(self):
         if self._json == True:
@@ -92,22 +97,31 @@ class Module(core.module.Module):
 
     def get_temp(self):
         if self.use_sensors:
-            temperature = self._get_temp_from_sensors()
             log.debug("Retrieve temperature from sensors -u")
-        else:
-            try:
-                temperature = open(
-                    self.parameter("path", "/sys/class/thermal/thermal_zone0/temp")
-                ).read()[:2]
-                log.debug("retrieved temperature from /sys/class/")
-                # TODO: Iterate through all thermal zones to determine the correct one and use its value
-                # https://unix.stackexchange.com/questions/304845/discrepancy-between-number-of-cores-and-thermal-zones-in-sys-class-thermal
-
-            except IOError:
-                temperature = "unknown"
-                log.info("Can not determine temperature, please install lm-sensors")
-
-        return temperature
+            return self._get_temp_from_sensors()
+        try:
+            path = None
+            # use path provided by the user
+            if self.parameter("path") is not None:
+                path = self.parameter("path")
+            # find the thermal zone that provides cpu temperature
+            else:
+                for zone in os.listdir("/sys/class/thermal"):
+                    if not zone.startswith("thermal_zone"):
+                        continue
+                    if open(f"/sys/class/thermal/{zone}/type").read().strip() != "x86_pkg_temp":
+                        continue
+                    path = f"/sys/class/thermal/{zone}/temp"
+            # use zone 0 as fallback
+            if path is None:
+                log.info("Can not determine temperature path, using thermal_zone0")
+                path = "/sys/class/thermal/thermal_zone0/temp"
+            log.debug(f"retrieving temperature from {path}")
+            # the values are t°C * 1000, so divide by 1000
+            return str(int(open(path).read()) / 1000)
+        except IOError:
+            log.info("Can not determine temperature, please install lm-sensors")
+            return "unknown"
 
     def get_mhz(self):
         mhz = None

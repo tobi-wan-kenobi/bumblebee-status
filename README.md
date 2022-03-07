@@ -1,6 +1,6 @@
 # bumblebee-status
 
-[![Build Status](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status.svg?branch=main)](https://travis-ci.org/tobi-wan-kenobi/bumblebee-status)
+[![Build Status](https://app.travis-ci.com/tobi-wan-kenobi/bumblebee-status.svg?branch=main)](https://app.travis-ci.com/tobi-wan-kenobi/bumblebee-status)
 [![Documentation Status](https://readthedocs.org/projects/bumblebee-status/badge/?version=main)](https://bumblebee-status.readthedocs.io/en/main/?badge=main)
 ![AUR version (release)](https://img.shields.io/aur/version/bumblebee-status)
 ![AUR version (git)](https://img.shields.io/aur/version/bumblebee-status-git)
@@ -8,6 +8,8 @@
 [![Code Climate](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/gpa.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
 [![Test Coverage](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/coverage.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/coverage)
 [![Issue Count](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/issue_count.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
+[![CodeQL](https://github.com/tobi-wan-kenobi/bumblebee-status/actions/workflows/codeql-analysis.yml/badge.svg?branch=main)](https://github.com/tobi-wan-kenobi/bumblebee-status/actions/workflows/codeql-analysis.yml)
+![License](https://img.shields.io/github/license/tobi-wan-kenobi/bumblebee-status)
 
 **Many, many thanks to all contributors! I am still amazed by and deeply grateful for how many PRs this project gets.**
 
@@ -28,16 +30,14 @@ Thanks a lot!
 
 Required i3wm version: 4.12+ (in earlier versions, blocks won't have background colors)
 
-Supported Python versions: 3.4, 3.5, 3.6, 3.7, 3.8
+Supported Python versions: 3.4, 3.5, 3.6, 3.7, 3.8, 3.9
 
 Supported FontAwesome version: 4 (free version of 5 doesn't include some of the icons)
 
 ---
-**NOTE**
+***NOTE***
 
-The default branch for this project is `main` - I'm keeping `master` around for backwards compatibility (I do not want to break anybody's setup), but the default branch is now `main`!
-
-If you are curious why: [ZDNet:github-master-alternative](https://www.zdnet.com/article/github-to-replace-master-with-alternative-term-to-avoid-slavery-references/)
+The default branch for this project is `main`. If you are curious why: [ZDNet:github-master-alternative](https://www.zdnet.com/article/github-to-replace-master-with-alternative-term-to-avoid-slavery-references/)
 
 ---
 
@@ -76,9 +76,15 @@ makepkg -sicr
 pip install --user bumblebee-status
 ```
 
+There is also a SlackBuild available here: [slackbuilds:bumblebee-status](http://slackbuilds.org/repository/14.2/desktop/bumblebee-status/) - many thanks to [@Tonus1](https://github.com/Tonus1)!
+
+An ebuild, for Gentoo Linux, is available on [gallifrey overlay](https://github.com/fedeliallalinea/gallifrey/tree/master/x11-misc/bumblebee-status). Instructions for adding the overlay can be found [here](https://github.com/fedeliallalinea/gallifrey/blob/master/README.md).
+
 # Dependencies
 [Available modules](https://bumblebee-status.readthedocs.io/en/main/modules.html) lists the dependencies (Python modules and external executables)
 for each module. If you are not using a module, you don't need the dependencies.
+
+Some themes (e.g. all ‘powerline’ themes) require Font Awesome http://fontawesome.io/ and a powerline-compatible font (powerline-fonts) https://github.com/powerline/fonts
 
 # Usage
 ## Normal usage

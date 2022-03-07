@@ -54,7 +54,7 @@ def get_redshift_value(module):
     for line in res.split("\n"):
         line = line.lower()
         if "temperature" in line:
-            widget.set("temp", line.split(" ")[2])
+            widget.set("temp", line.split(" ")[2].upper())
         if "period" in line:
             state = line.split(" ")[1]
             if "day" in state:
@@ -101,7 +101,7 @@ class Module(core.module.Module):
         return val
 
     def update(self):
-        if self.__thread is not None and self.__thread.isAlive():
+        if self.__thread is not None and self.__thread.is_alive():
             return
         self.__thread = threading.Thread(target=get_redshift_value, args=(self,))
         self.__thread.start()

@@ -8,6 +8,7 @@ Parameters:
     * disk.path: Path to calculate disk usage from (defaults to /)
     * disk.open: Which application / file manager to launch (default xdg-open)
     * disk.format: Format string, tags {path}, {used}, {left}, {size} and {percent} (defaults to '{path} {used}/{size} ({percent:05.02f}%)')
+    * disk.system: Unit system to use - SI (KB, MB, ...) or IEC (KiB, MiB, ...) (defaults to 'IEC')
 """
 
 import os
@@ -25,6 +26,7 @@ class Module(core.module.Module):
 
         self._path = self.parameter("path", "/")
         self._format = self.parameter("format", "{used}/{size} ({percent:05.02f}%)")
+        self._system = self.parameter("system", "IEC")
 
         self._used = 0
         self._left = 0
@@ -38,9 +40,9 @@ class Module(core.module.Module):
         )
 
     def diskspace(self, widget):
-        used_str = util.format.byte(self._used)
-        size_str = util.format.byte(self._size)
-        left_str = util.format.byte(self._left)
+        used_str = util.format.byte(self._used, sys=self._system)
+        size_str = util.format.byte(self._size, sys=self._system)
+        left_str = util.format.byte(self._left, sys=self._system)
         percent_str = self._percent
 
         return self._format.format(
