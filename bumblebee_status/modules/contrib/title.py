@@ -9,6 +9,7 @@ Parameters:
     * title.max : Maximum character length for title before truncating. Defaults to 64.
     * title.placeholder : Placeholder text to be placed if title was truncated. Defaults to '...'.
     * title.scroll : Boolean flag for scrolling title. Defaults to False
+    * title.short : Boolean flag for short title. Defaults to False
 
 
 contributed by `UltimatePancake <https://github.com/UltimatePancake>`_ - many thanks!
@@ -35,6 +36,7 @@ class Module(core.module.Module):
 
         # parsing of parameters
         self.__scroll = util.format.asbool(self.parameter("scroll", False))
+        self.__short = util.format.asbool(self.parameter("short", False))
         self.__max = int(self.parameter("max", 64))
         self.__placeholder = self.parameter("placeholder", "...")
         self.__title = ""
@@ -66,7 +68,9 @@ class Module(core.module.Module):
     def __pollTitle(self):
         """Updating current title."""
         try:
-            self.__full_title = self.__i3.get_tree().find_focused().name
+            focused = self.__i3.get_tree().find_focused().name
+            self.__full_title = focused.split(
+                "-")[-1].strip() if self.__short else focused
         except:
             self.__full_title = no_title
         if self.__full_title is None:
