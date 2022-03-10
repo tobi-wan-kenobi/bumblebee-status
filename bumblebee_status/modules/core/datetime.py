@@ -17,26 +17,33 @@ import core.input
 
 
 class Module(core.module.Module):
-    def __init__(self, config, theme):
+    def __init__(self, config, theme, dtlibrary=None):
         super().__init__(config, theme, core.widget.Widget(self.full_text))
 
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd="calendar")
-        l = locale.getdefaultlocale()
+        self.dtlibrary = dtlibrary or datetime
+
+    def set_locale(self):
+        l = self.default_locale()
         if not l or l == (None, None):
             l = ("en_US", "UTF-8")
         lcl = self.parameter("locale", ".".join(l))
         try:
-            locale.setlocale(locale.LC_TIME, lcl.split("."))
+            locale.setlocale(locale.LC_ALL, lcl.split("."))
         except Exception as e:
-            locale.setlocale(locale.LC_TIME, ("en_US", "UTF-8"))
+            locale.setlocale(locale.LC_ALL, ("en_US", "UTF-8"))
 
     def default_format(self):
         return "%x %X"
 
+    def default_locale(self):
+        return locale.getdefaultlocale()
+
     def full_text(self, widget):
+        self.set_locale()
         enc = locale.getpreferredencoding()
         fmt = self.parameter("format", self.default_format())
-        retval = datetime.datetime.now().strftime(fmt)
+        retval = self.dtlibrary.datetime.now().strftime(fmt)
         if hasattr(retval, "decode"):
             return retval.decode(enc)
         return retval

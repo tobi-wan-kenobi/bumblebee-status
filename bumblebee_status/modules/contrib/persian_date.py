@@ -10,36 +10,22 @@ Parameters:
     * datetime.locale: locale to use. default: "fa_IR"
 """
 
-from __future__ import absolute_import
 import jdatetime
-import locale
 
-import core.module
-import core.widget
-import core.input
+import core.decorators
+from modules.core.datetime import Module as dtmodule
 
 
-class Module(core.module.Module):
+class Module(dtmodule):
+    @core.decorators.every(minutes=1)
     def __init__(self, config, theme):
-        super().__init__(config, theme, core.widget.Widget(self.full_text))
-
-        l = ("fa_IR", "UTF-8")
-        lcl = self.parameter("locale", ".".join(l))
-        try:
-            locale.setlocale(locale.LC_ALL, lcl.split("."))
-        except Exception as e:
-            locale.setlocale(locale.LC_ALL, ("fa_IR", "UTF-8"))
+        super().__init__(config, theme, dtlibrary=jdatetime)
 
     def default_format(self):
         return "%A %d %B"
 
-    def full_text(self, widget):
-        enc = locale.getpreferredencoding()
-        fmt = self.parameter("format", self.default_format())
-        retval = jdatetime.datetime.now().strftime(fmt)
-        if hasattr(retval, "decode"):
-            return retval.decode(enc)
-        return retval
+    def default_locale(self):
+        return ("fa_IR", "UTF-8")
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
