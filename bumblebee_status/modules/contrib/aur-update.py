@@ -1,16 +1,7 @@
 """Check updates for AUR.
 
 Requires the following packages:
-    * yay (used as default)
-
-Note - You can replace yay by changing the "yay -Qum"
-command for your preferred AUR helper. Few examples:
-
-paru -Qum
-pikaur -Qua
-rua upgrade --printonly
-trizen -Su --aur --quiet
-yay -Qum
+    * yay (https://github.com/Jguer/yay)
 
 contributed by `ishaanbhimwal <https://github.com/ishaanbhimwal>`_ - many thanks!
 """
@@ -49,12 +40,13 @@ class Module(core.module.Module):
         )
 
         if code == 0:
-            self.__packages = len(result.strip().split("\n"))
-        elif code == 2:
-            self.__packages = 0
+            if result == "":
+                self.__packages = 0
+            else:
+                self.__packages = len(result.strip().split("\n"))
         else:
             self.__error = True
-            logging.error("yay -Qum exited with {}: {}".format(code, result))
+            logging.error("aur-update exited with {}: {}".format(code, result))
 
     def state(self, widget):
         if self.__error:
