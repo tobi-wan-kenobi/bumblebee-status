@@ -401,6 +401,20 @@ Requires the following executable:
 
 contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
 
+.. image:: ../screenshots/arch-update.png
+
+aur-update
+~~~~~~~~~~~
+
+Check updates for AUR.
+
+Requires the following executable:
+    * yay (https://github.com/Jguer/yay)
+
+contributed by `ishaanbhimwal <https://github.com/ishaanbhimwal>`_ - many thanks!
+
+.. image:: ../screenshots/aur-update.png
+
 battery
 ~~~~~~~
 

@@ -1,6 +1,6 @@
 """Check updates for AUR.
 
-Requires the following packages:
+Requires the following executable:
     * yay (https://github.com/Jguer/yay)
 
 contributed by `ishaanbhimwal <https://github.com/ishaanbhimwal>`_ - many thanks!
