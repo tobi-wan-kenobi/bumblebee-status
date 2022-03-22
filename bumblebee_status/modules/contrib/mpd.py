@@ -94,6 +94,12 @@ class Module(core.module.Module):
                     "cmd": "mpc toggle" + self._hostcmd,
                 }
                 widget.full_text(self.description)
+            elif widget_name == "mpd.toggle":
+                widget_map[widget] = {
+                    "button": core.input.LEFT_MOUSE,
+                    "cmd": "mpc toggle" + self._hostcmd,
+                }
+                widget.full_text(self.toggle)
             elif widget_name == "mpd.next":
                 widget_map[widget] = {
                     "button": core.input.LEFT_MOUSE,
@@ -126,6 +132,9 @@ class Module(core.module.Module):
     @core.decorators.scrollable
     def description(self, widget):
         return string.Formatter().vformat(self._fmt, (), self._tags)
+
+    def toggle(self, widget):
+        return str(util.cli.execute("mpc status %currenttime%/%totaltime%", ignore_errors=True)).strip()
 
     def update(self):
         self._load_song()
