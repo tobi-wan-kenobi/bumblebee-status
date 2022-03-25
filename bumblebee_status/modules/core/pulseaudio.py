@@ -43,8 +43,11 @@ import core.input
 import util.cli
 import util.graph
 import util.format
-import util.popup
 
+try:
+    import util.popup
+except ImportError as e:
+    logging.warning("Couldn't import util.popup: %s. Popups won't work!", e)
 
 class Module(core.module.Module):
     def __init__(self, config, theme, channel):
