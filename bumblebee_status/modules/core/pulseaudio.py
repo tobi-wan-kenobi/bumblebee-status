@@ -11,6 +11,20 @@ Parameters:
       Note: If the left and right channels have different volumes, the limit might not be reached exactly.
     * pulseaudio.showbars: 1 for showing volume bars, requires --markup=pango;
       0 for not showing volume bars (default)
+    * pulseaudio.showdevicename: If set to 'true' (default is 'false'), the currently selected default device is shown.
+      Per default, the sink/source name returned by "pactl list sinks short" is used as display name.
+
+      As this name is usually not particularly nice (e.g "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo"),
+      its possible to map the name to more a user friendly name.
+
+      e.g to map "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" to the name "Headset", add the following
+      bumblebee-status config entry: pulseaudio.alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo=Headset
+
+      Furthermore its possible to specify individual (unicode) icons for all sinks/sources. e.g in order to use the icon 🎧 for the
+      "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" sink, add the following bumblebee-status config entry:
+      pulseaudio.icon.alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo=🎧
+    * Per default a left mouse button click mutes/unmutes the device. In case you want to open a dropdown menu to change the current
+      default device add the following config entry to your bumblebee-status config: pulseaudio.left-click=select_default_device_popup
 
 Requires the following executable:
     * pulseaudio
@@ -20,6 +34,7 @@ Requires the following executable:
 
 import re
 import logging
+import functools
 
 import core.module
 import core.widget
@@ -29,10 +44,14 @@ import util.cli
 import util.graph
 import util.format
 
+try:
+    import util.popup
+except ImportError as e:
+    logging.warning("Couldn't import util.popup: %s. Popups won't work!", e)
 
 class Module(core.module.Module):
     def __init__(self, config, theme, channel):
-        super().__init__(config, theme, core.widget.Widget(self.volume))
+        super().__init__(config, theme, core.widget.Widget(self.display))
 
         if util.format.asbool(self.parameter("autostart", False)):
             util.cli.execute("pulseaudio --start", ignore_errors=True)
@@ -48,7 +67,11 @@ class Module(core.module.Module):
         self._mute = False
         self._failed = False
         self._channel = channel
+        self.__selected_default_device = None
         self._showbars = util.format.asbool(self.parameter("showbars", 0))
+        self.__show_device_name = util.format.asbool(
+            self.parameter("showdevicename", False)
+        )
 
         self._patterns = [
             {"expr": "Name:", "callback": (lambda line: False)},
@@ -138,19 +161,19 @@ class Module(core.module.Module):
         logging.error("no pulseaudio device found")
         return "n/a"
 
-    def volume(self, widget):
+    def display(self, widget):
         if self._failed == True:
             return "n/a"
+
+        vol = None
         if int(self._mono) > 0:
             vol = "{}%".format(self._mono)
             if self._showbars:
                 vol = "{} {}".format(vol, util.graph.hbar(float(self._mono)))
-            return vol
         elif self._left == self._right:
             vol = "{}%".format(self._left)
             if self._showbars:
                 vol = "{} {}".format(vol, util.graph.hbar(float(self._left)))
-            return vol
         else:
             vol = "{}%/{}%".format(self._left, self._right)
             if self._showbars:
@@ -159,19 +182,31 @@ class Module(core.module.Module):
                     util.graph.hbar(float(self._left)),
                     util.graph.hbar(float(self._right)),
                 )
-            return vol
+
+        output = vol
+        if self.__show_device_name:
+            friendly_name = self.parameter(
+                self.__selected_default_device, self.__selected_default_device
+            )
+            icon = self.parameter("icon." + self.__selected_default_device, "")
+            output = (
+                icon + " " + friendly_name + " | " + vol
+                if icon != ""
+                else friendly_name + " | " + vol
+            )
+        return output
 
     def update(self):
         try:
             self._failed = False
             channel = "sinks" if self._channel == "sink" else "sources"
-            device = self._default_device()
+            self.__selected_default_device = self._default_device()
 
             result = util.cli.execute("pactl list {}".format(channel))
             found = False
 
             for line in result.split("\n"):
-                if "Name: {}".format(device) in line:
+                if "Name: {}".format(self.__selected_default_device) in line:
                     found = True
                     continue
                 if found is False:
@@ -188,6 +223,29 @@ class Module(core.module.Module):
                 util.cli.execute("pulseaudio --start", ignore_errors=True)
             else:
                 raise e
+
+    def __on_sink_selected(self, sink_name):
+        util.cli.execute("pactl set-default-{} {}".format(self._channel, sink_name))
+
+    def select_default_device_popup(self, widget):
+        channel = "sinks" if self._channel == "sink" else "sources"
+        result = util.cli.execute("pactl list {} short".format(channel))
+
+        menu = util.popup.menu()
+        lines = result.splitlines()
+        for line in lines:
+            info = line.split("\t")
+            try:
+                friendly_name = self.parameter(info[1], info[1])
+                menu.add_menuitem(
+                    friendly_name,
+                    callback=functools.partial(self.__on_sink_selected, info[1]),
+                )
+            except:
+                logging.exception("Couldn't parse {}".format(channel))
+                pass
+
+        menu.show(widget)
 
     def state(self, widget):
         if self._mute:
