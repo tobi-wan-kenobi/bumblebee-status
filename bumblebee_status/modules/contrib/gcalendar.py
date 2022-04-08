@@ -36,18 +36,21 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+
 class Module(core.module.Module):
     @core.decorators.every(minutes=15)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.first_event))
         self.__time_format = self.parameter("time_format", "%H:%M")
         self.__date_format = self.parameter("date_format", "%d.%m.%y")
-        self.__credentials_path = os.path.expanduser(self.parameter("credentials_path", "~/"))
-        self.__credentials = os.path.join(self.__credentials_path, 'credentials.json')
-        self.__token = os.path.join(self.__credentials_path, '.gcalendar_token.json')
+        self.__credentials_path = os.path.expanduser(
+            self.parameter("credentials_path", "~/")
+        )
+        self.__credentials = os.path.join(self.__credentials_path, "credentials.json")
+        self.__token = os.path.join(self.__credentials_path, ".gcalendar_token.json")
 
     def first_event(self, widget):
-        SCOPES = ['https://www.googleapis.com/auth/calendar.readonly']
+        SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 
         """Shows basic usage of the Google Calendar API.
         Prints the start and name of the next 10 events on the user's calendar.
@@ -64,50 +67,83 @@ class Module(core.module.Module):
                 creds.refresh(Request())
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(
-                    self.__credentials, SCOPES)
+                    self.__credentials, SCOPES
+                )
                 creds = flow.run_local_server(port=0)
             # Save the credentials for the next run
-            with open(self.__token, 'w') as token:
+            with open(self.__token, "w") as token:
                 token.write(creds.to_json())
 
         try:
-            service = build('calendar', 'v3', credentials=creds)
+            service = build("calendar", "v3", credentials=creds)
 
             # Call the Calendar API
-            now = datetime.datetime.utcnow().isoformat() + 'Z'  # 'Z' indicates UTC time
-            end = (datetime.datetime.utcnow() + datetime.timedelta(days=7)).isoformat() + 'Z'  # 'Z' indicates UTC time
+            now = datetime.datetime.utcnow().isoformat() + "Z"  # 'Z' indicates UTC time
+            end = (
+                datetime.datetime.utcnow() + datetime.timedelta(days=7)
+            ).isoformat() + "Z"  # 'Z' indicates UTC time
             # Get all calendars
             calendar_list = service.calendarList().list().execute()
             event_list = []
-            for calendar_list_entry in calendar_list['items']:
-                calendar_id = calendar_list_entry['id']
-                events_result = service.events().list(calendarId=calendar_id, timeMin=now,
-                                                      timeMax=end,
-                                                      singleEvents=True,
-                                                      orderBy='startTime').execute()
-                events = events_result.get('items', [])
+            for calendar_list_entry in calendar_list["items"]:
+                calendar_id = calendar_list_entry["id"]
+                events_result = (
+                    service.events()
+                    .list(
+                        calendarId=calendar_id,
+                        timeMin=now,
+                        timeMax=end,
+                        singleEvents=True,
+                        orderBy="startTime",
+                    )
+                    .execute()
+                )
+                events = events_result.get("items", [])
 
                 if not events:
-                    return 'No upcoming events found.'
+                    return "No upcoming events found."
 
                 for event in events:
-                    start = dtparse(event['start'].get('dateTime', event['start'].get('date')))
+                    start = dtparse(
+                        event["start"].get("dateTime", event["start"].get("date"))
+                    )
                     # Only add to list if not an whole day event
                     if start.tzinfo:
-                        event_list.append({'date': start,
-                            'summary': event['summary'],
-                            'type': event['eventType']})
-            sorted_list = sorted(event_list, key=lambda t: t['date'])
+                        event_list.append(
+                            {
+                                "date": start,
+                                "summary": event["summary"],
+                                "type": event["eventType"],
+                            }
+                        )
+            sorted_list = sorted(event_list, key=lambda t: t["date"])
 
             for gevent in sorted_list:
-                if gevent['date'] >= datetime.datetime.now(datetime.timezone.utc):
-                    if gevent['date'].date() == datetime.datetime.utcnow().date():
-                        return str('%s %s' % (gevent['date'].astimezone().strftime(f'{self.__time_format}'), gevent['summary']))
+                if gevent["date"] >= datetime.datetime.now(datetime.timezone.utc):
+                    if gevent["date"].date() == datetime.datetime.utcnow().date():
+                        return str(
+                            "%s %s"
+                            % (
+                                gevent["date"]
+                                .astimezone()
+                                .strftime(f"{self.__time_format}"),
+                                gevent["summary"],
+                            )
+                        )
                     else:
-                        return str('%s %s' % (gevent['date'].astimezone().strftime(f'{self.__date_format} {__time_format}'), gevent['summary']))
-            return 'No upcoming events found.'
+                        return str(
+                            "%s %s"
+                            % (
+                                gevent["date"]
+                                .astimezone()
+                                .strftime(f"{self.__date_format} {__time_format}"),
+                                gevent["summary"],
+                            )
+                        )
+            return "No upcoming events found."
 
         except:
             return None
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
