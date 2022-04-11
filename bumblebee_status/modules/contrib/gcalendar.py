@@ -136,7 +136,7 @@ class Module(core.module.Module):
                             % (
                                 gevent["date"]
                                 .astimezone()
-                                .strftime(f"{self.__date_format} {__time_format}"),
+                                .strftime(f"{self.__date_format} {self.__time_format}"),
                                 gevent["summary"],
                             )
                         )
