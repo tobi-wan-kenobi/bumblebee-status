@@ -1095,6 +1095,7 @@ Parameters:
       Widget names are: playerctl.song, playerctl.prev, playerctl.pause, playerctl.next
     * playerctl.args:     The arguments added to playerctl.
       You can check 'playerctl --help' or `its readme <https://github.com/altdesktop/playerctl#using-the-cli>`_. For example, it could be '-p vlc,%any'.
+    * playerctl.hide:   Hide the widgets when no players are found. Defaults to "false".
 
 Parameters are inspired by the `spotify` module, many thanks to its developers!
 
