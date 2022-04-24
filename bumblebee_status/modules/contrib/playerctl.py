@@ -100,6 +100,7 @@ class Module(core.module.Module):
             return None
 
     def update(self):
+        playback_status = self.status()
         for widget in self.widgets():
             if playback_status:
                 if widget.name == "playerctl.pause":
