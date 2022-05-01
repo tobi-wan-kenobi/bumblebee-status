@@ -7,6 +7,7 @@ contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
 """
 
 import logging
+from time import sleep
 
 import core.module
 import core.widget
@@ -35,6 +36,7 @@ class Module(core.module.Module):
 
     def update(self):
         self.__error = False
+        sleep(1)
         code, result = util.cli.execute(
             "checkupdates", ignore_errors=True, return_exitcode=True
         )
