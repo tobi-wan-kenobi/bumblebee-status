@@ -96,7 +96,7 @@ class Module(core.module.Module):
         menu.add_menuitem(
             "log out",
             callback=functools.partial(
-                self.__on_command, "Log out", "Log out?", "i3exit logout"
+                self.__on_command, "Log out", "Log out?", logout_cmd
             ),
         )
         # don't ask for these
