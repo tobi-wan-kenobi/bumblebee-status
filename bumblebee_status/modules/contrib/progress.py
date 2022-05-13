@@ -29,6 +29,9 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.get_progress_text))
         self.__active = False
 
+    def hidden(self):
+        return not self.__active
+
     def get_progress_text(self, widget):
         if self.update_progress_info(widget):
             width = util.format.asint(self.parameter("barwidth", 8))
