@@ -29,9 +29,9 @@ didn’t have background color support for the status bar.
 Some of the icons don’t render correctly
 ----------------------------------------
 
-Please check that you have |Font Awesome| installed (version 4).
+Please check that you have `Font Awesome`_ installed (version 4).
 
-.. note:: The |Font Awesome| is required for all themes that
+.. note:: The `Font Awesome`_ is required for all themes that
     contain icons (because that is the font that includes these icons).
     Please refer to your distribution’s package management on how to install
     them, or get them from their website directly. Also, please note that
@@ -52,4 +52,4 @@ Please check that you have |Font Awesome| installed (version 4).
    # Other
    # see https://github.com/gabrielelana/awesome-terminal-fonts
 
-.. |Font Awesome| image:: https://fontawesome.com/
+.. _Font Awesome: https://fontawesome.com/
