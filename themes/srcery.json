@@ -1,0 +1,44 @@
+{
+    "icons": [ ],
+    "colors": [
+        {
+            "white": "#D0BFA1",
+            "bright_white": "#FCE8C3",
+            "black": "#1C1B19",
+            "black_l": "#918175",
+            "red": "#EF2F27",
+            "green_d": "#519F50",
+            "green_l": "#98BC37",
+            "yellow_d": "#FBB829",
+            "yellow_l": "#FED06E",
+            "blue_d": "#2C78BF",
+            "blue_l": "#68A8E4",
+            "magenta_d": "#E02C6D",
+            "magenta_l": "#FF5C8F",
+            "cyan_d": "#0AAEB3",
+            "cyan_l": "#53FDE9",
+            "orange": "#D75F00",
+            "bright_orange": "#FF8700",
+            "xgray1": "#262626",
+            "xgray2": "#303030",
+            "xgray3": "#3A3A3A",
+            "xgray4": "#444444",
+            "xgray5": "#4E4E4E",
+            "hard_black": "#121212"
+        }
+    ],
+    "defaults": {
+        "separator-block-width": 0,
+        "urgent": true,
+        "fg": "white",
+        "bg": "black",
+        "warning": {
+            "bg": "orange",
+            "fg": "hard_black"
+        },
+        "critical": {
+            "bg": "red",
+            "fg": "hard_black"
+        }
+    }
+}
