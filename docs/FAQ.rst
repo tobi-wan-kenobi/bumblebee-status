@@ -52,4 +52,15 @@ Please check that you have `Font Awesome`_ installed (version 4).
    # Other
    # see https://github.com/gabrielelana/awesome-terminal-fonts
 
+You might also need to add it to the `font` directive in your i3 configuration, for example:
+
+.. code-block::
+
+    bar {
+        font pango:FontAwesome, Fira mono 10
+        status_command bumblebee-status -m title pasink pasource cpu memory battery datetime --iconset awesome-fonts
+    }
+
+If you are unsure about how the font is named, you can use the ``pango-list`` command line tool to look at the fonts installed on your computer. Also note how you can specify multiple fonts, separated by commas, in the above example.
+
 .. _Font Awesome: https://fontawesome.com/
