@@ -1,0 +1,58 @@
+.TH BUMBLEBEE-STATUS "1" "June 2022" "bumblebee-status"
+.SH NAME
+bumblebee-status \- status line generator for the i3 window manager
+.SH SYNOPSIS
+.B bumblebee-status
+[\fIoptions\fR]
+.SH DESCRIPTION
+.B bumblebee-status
+is a modular, themeable status line generator for the i3 window manager.
+.SH OPTIONS
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+show this help message and exit
+.TP
+\fB\-c\fR, \fB\-\-config\-file\fR <config\-file>
+specify a configuration file to use
+.TP
+\fB\-m\fR, \fB\-\-modules\fR MODULES <modules>
+Specify a space\-separated list of modules to load. The order of the list
+determines their order in the i3bar (from left to right). Use
+<module>:<alias> to provide an alias in case you want to load the same
+module multiple times, but specify different parameters.
+.TP
+\fB\-p\fR, \fB\-\-parameters\fR PARAMETERS <parameters>
+provide configuration parameters in the form of <module>.<key>=<value>
+.TP
+\fB\-t\fR, \fB\-\-theme\fR <theme>
+specify the theme to use for drawing modules
+.TP
+\fB\-i\fR, \fB\-\-iconset\fR <iconset>
+specify the name of an iconset to use (overrides theme default)
+.TP
+\fB\-a\fR, \fB\-\-autohide\fR AUTOHIDE <modules>
+specify a list of modules to hide when not in warning/error state
+.TP
+\fB\-e\fR, \fB\-\-errorhide\fR ERRORHIDE <modules>
+specify a list of modules that are hidden when in state error
+.TP
+\fB\-d\fR, \fB\-\-debug\fR
+add debug fields to i3 output
+.TP
+\fB\-f\fR, \fB\-\-logfile\fR <logfile>
+destination for the debug log file, if \fB\-d\fR or \fB\-\-debug\fR
+is specified; defaults to stderr
+.TP
+\fB\-r\fR, \fB\-\-right\-to\-left\fR
+draw widgets from right to left, rather than left to right
+(which is the default)
+.TP
+\fB\-l\fR, \fB\-\-list\fR <\fImodules\fR,\fIthemes\fR,\fImodules\-rst\fR>
+display a list of available themes or available modules,
+along with their parameters
+.SH COPYRIGHT
+Copyright \(co 2016\-2022 tobi\-wan\-kenobi.
+.PP
+.br
+This is free software; see the source for copying conditions.
+There is NO WARRANTY, to the extent permitted by law.

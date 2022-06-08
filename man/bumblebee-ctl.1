@@ -1,0 +1,29 @@
+.TH BUMBLEBEE-CTL "1" "June 2022" "bumblebee-status"
+.SH NAME
+bumblebee-ctl \- Send commands to bumblebee-status
+.SH SYNOPSIS
+.B bumblebee-ctl
+[\fB\-h\fR] [\fB\-b\fR \fIbutton\fR] [\fB\-i\fR \fIID\fR] \fB-m\fR \fImodule\fR
+.SH DESCRIPTION
+.B bumblebee-ctl
+can be used to send commands to bumblebee-status.
+.SH OPTIONS
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+show this help message and exit
+.TP
+\fB\-b\fR, \fB\-\-button\fR <button>
+Button to emulate. Buttons can be any of left\-mouse, right\-mouse,
+middle\-mouse, wheel\-up, wheel\-down, or update.
+.TP
+\fB\-i\fR, \fB\-\-id\fR <ID>
+ID of widget to trigger
+.TP
+\fB\-m\fR, \fB\-\-module\fR <module>
+name of module to trigger
+.SH COPYRIGHT
+Copyright \(co 2016\-2022 tobi\-wan\-kenobi.
+.PP
+.br
+This is free software; see the source for copying conditions.
+There is NO WARRANTY, to the extent permitted by law.
