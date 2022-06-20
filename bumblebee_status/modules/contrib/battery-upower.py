@@ -207,6 +207,12 @@ class UPowerManager:
         data = upower_interface.GetTotal()
         return data
 
+    def is_battery_present(self, battery):
+        battery_proxy = self.bus.get_object(self.UPOWER_NAME, battery)
+        battery_proxy_interface = dbus.Interface(battery_proxy, self.DBUS_PROPERTIES)
+
+        return bool(battery_proxy_interface.Get(self.UPOWER_NAME + ".Device", "IsPresent"))
+
     def is_loading(self, battery):
         battery_proxy = self.bus.get_object(self.UPOWER_NAME, battery)
         battery_proxy_interface = dbus.Interface(battery_proxy, self.DBUS_PROPERTIES)
@@ -259,6 +265,11 @@ class Module(core.module.Module):
         widget.set("capacity", -1)
         widget.set("ac", False)
         output = "n/a"
+        if not self.power.is_battery_present(self.device):
+            widget.set("ac", True)
+            widget.set("capacity", 100)
+            output = "ac"
+            return output
         try:
             capacity = int(self.power.get_device_percentage(self.device))
             capacity = capacity if capacity < 100 else 100
