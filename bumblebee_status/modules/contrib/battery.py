@@ -134,6 +134,9 @@ class Module(core.module.Module):
             if util.format.asbool(self.parameter("decorate", True)) == False:
                 widget.set("theme.exclude", "suffix")
 
+    def hidden(self):
+        return len(self._batteries) == 0
+
     def ac(self, widget):
         return "ac"
 
