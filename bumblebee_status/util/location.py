@@ -3,8 +3,10 @@ service and caches it for 12h (retries are done every
 30m in case of problems)
 
 Right now, it uses (in order of preference):
-    - http://free.ipwhois.io/
-    - http://ipapi.co/
+    - http://free.ipwhois.io/ - 10k free requests/month
+    - http://ipapi.co/ - 30k free requests/month
+    - http://ip-api.com/ - ~2m free requests/month
+
 """
 
 
@@ -21,7 +23,9 @@ __sources = [
         "mapping": {
             "latitude": "latitude",
             "longitude": "longitude",
-            "country_name": "country",
+            "country_name": "country_name",
+            "country_code": "country_code",
+            "city": "city_name",
             "ip": "public_ip",
         },
     },
@@ -30,8 +34,21 @@ __sources = [
         "mapping": {
             "latitude": "latitude",
             "longitude": "longitude",
-            "country": "country",
+            "country": "country_name",
+            "country_code": "country_code",
+            "city": "city_name",
             "ip": "public_ip",
+        },
+    },
+    {
+        "url": "http://ip-api.com/json",
+        "mapping": {
+            "latitude": "lat",
+            "longitude": "lon",
+            "country": "country_name",
+            "countryCode": "country_code",
+            "city": "city_name",
+            "query": "public_ip",
         },
     }
 ]
@@ -63,7 +80,10 @@ def __get(name):
     global __data
     if not __data or __expired():
         __load()
-    return __data[name]
+    if name in __data:
+        return __data[name]
+    else:
+        return None
 
 
 def reset():
@@ -82,14 +102,29 @@ def coordinates():
     return __get("latitude"), __get("longitude")
 
 
-def country():
+def country_name():
     """Returns the current country name
 
     :return: country name
     :rtype: string
     """
-    return __get("country")
+    return __get("country_name")
 
+def country_code():
+    """Returns the current country code
+
+    :return: country code
+    :rtype: string
+    """
+    return __get("country_code")
+
+def city_name():
+    """Returns the current city name
+
+    :return: city name
+    :rtype: string
+    """
+    return __get("city_name")
 
 def public_ip():
     """Returns the current public IP
