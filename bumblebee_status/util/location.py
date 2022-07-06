@@ -50,7 +50,7 @@ __sources = [
             "city": "city_name",
             "query": "public_ip",
         },
-    }
+    },
 ]
 
 
@@ -87,8 +87,7 @@ def __get(name):
 
 
 def reset():
-    """Resets the location library, ensuring that a new query will be started
-    """
+    """Resets the location library, ensuring that a new query will be started"""
     global __next
     __next = 0
 
@@ -102,13 +101,14 @@ def coordinates():
     return __get("latitude"), __get("longitude")
 
 
-def country_name():
+def country():
     """Returns the current country name
 
     :return: country name
     :rtype: string
     """
     return __get("country_name")
+
 
 def country_code():
     """Returns the current country code
@@ -118,6 +118,7 @@ def country_code():
     """
     return __get("country_code")
 
+
 def city_name():
     """Returns the current city name
 
@@ -126,6 +127,7 @@ def city_name():
     """
     return __get("city_name")
 
+
 def public_ip():
     """Returns the current public IP
 
@@ -133,6 +135,22 @@ def public_ip():
     :rtype: string
     """
     return __get("public_ip")
+
+
+def location_info():
+    """Returns the current location information
+
+    :return: public IP, country name, country code, city name & coordinates
+    :rtype: dictionary
+    """
+    return {
+        "public_ip": __get("public_ip"),
+        "country": __get("country_name"),
+        "country_code": __get("country_code"),
+        "city_name": __get("city_name"),
+        "latitude": __get("latitude"),
+        "longitude": __get("longitude"),
+    }
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

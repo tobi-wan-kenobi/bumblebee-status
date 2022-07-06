@@ -37,7 +37,7 @@ import util.location
 
 
 class Module(core.module.Module):
-    @core.decorators.every(minutes=5)
+    @core.decorators.every(minutes=60)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.public_ip))
 
@@ -48,7 +48,7 @@ class Module(core.module.Module):
         self.__country_name = ""  # Country name associated with public IP address
         self.__country_code = ""  # Country code associated with public IP address
         self.__city_name = ""  # City name associated with public IP address
-        self.__coordinates = ""  # Coordinated assoicated with public IP address
+        self.__coordinates = ""  # Coordinates assoicated with public IP address
 
         # By default show: <ip> (<2 letter country code>)
         self._format = self.parameter("format", "{ip} ({country_code})")
@@ -70,11 +70,13 @@ class Module(core.module.Module):
 
     def update(self):
         try:
-            self.__ip = util.location.public_ip()
-            self.__country_name = util.location.country_name()
-            self.__country_code = util.location.country_code()
-            self.__city_name = util.location.city_name()
-            __lat, __lon = util.location.coordinates()
+            __info = util.location.location_info()
+            self.__ip = __info["public_ip"]
+            self.__country_name = __info["country"]
+            self.__country_code = __info["country_code"]
+            self.__city_name = __info["city_name"]
+            __lat = __info["latitude"]  
+            __lon = __info["longitude"]  
             __lat = "{:.2f}".format(__lat)
             __lon = "{:.2f}".format(__lon)
             __output = __lat + "°N" + "," + " " + __lon + "°E"
