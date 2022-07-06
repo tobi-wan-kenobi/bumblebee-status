@@ -3,8 +3,10 @@ service and caches it for 12h (retries are done every
 30m in case of problems)
 
 Right now, it uses (in order of preference):
-    - http://free.ipwhois.io/
-    - http://ipapi.co/
+    - http://free.ipwhois.io/ - 10k free requests/month
+    - http://ipapi.co/ - 30k free requests/month
+    - http://ip-api.com/ - ~2m free requests/month
+
 """
 
 
@@ -21,7 +23,9 @@ __sources = [
         "mapping": {
             "latitude": "latitude",
             "longitude": "longitude",
-            "country_name": "country",
+            "country_name": "country_name",
+            "country_code": "country_code",
+            "city": "city_name",
             "ip": "public_ip",
         },
     },
@@ -30,10 +34,23 @@ __sources = [
         "mapping": {
             "latitude": "latitude",
             "longitude": "longitude",
-            "country": "country",
+            "country": "country_name",
+            "country_code": "country_code",
+            "city": "city_name",
             "ip": "public_ip",
         },
-    }
+    },
+    {
+        "url": "http://ip-api.com/json",
+        "mapping": {
+            "latitude": "lat",
+            "longitude": "lon",
+            "country": "country_name",
+            "countryCode": "country_code",
+            "city": "city_name",
+            "query": "public_ip",
+        },
+    },
 ]
 
 
@@ -63,12 +80,14 @@ def __get(name):
     global __data
     if not __data or __expired():
         __load()
-    return __data[name]
+    if name in __data:
+        return __data[name]
+    else:
+        return None
 
 
 def reset():
-    """Resets the location library, ensuring that a new query will be started
-    """
+    """Resets the location library, ensuring that a new query will be started"""
     global __next
     __next = 0
 
@@ -88,7 +107,25 @@ def country():
     :return: country name
     :rtype: string
     """
-    return __get("country")
+    return __get("country_name")
+
+
+def country_code():
+    """Returns the current country code
+
+    :return: country code
+    :rtype: string
+    """
+    return __get("country_code")
+
+
+def city_name():
+    """Returns the current city name
+
+    :return: city name
+    :rtype: string
+    """
+    return __get("city_name")
 
 
 def public_ip():
@@ -98,6 +135,22 @@ def public_ip():
     :rtype: string
     """
     return __get("public_ip")
+
+
+def location_info():
+    """Returns the current location information
+
+    :return: public IP, country name, country code, city name & coordinates
+    :rtype: dictionary
+    """
+    return {
+        "public_ip": __get("public_ip"),
+        "country": __get("country_name"),
+        "country_code": __get("country_code"),
+        "city_name": __get("city_name"),
+        "latitude": __get("latitude"),
+        "longitude": __get("longitude"),
+    }
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
