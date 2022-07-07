@@ -27,7 +27,7 @@ contributed by `tfwiii <https://github.com/tfwiii>`_ - many thanks!
 import re
 import threading
 import netifaces
-import time 
+import time
 
 import core.module
 import core.widget
@@ -42,11 +42,11 @@ def update_publicip_information(module):
     widget = module.widget()
     __previous_default_route = None
     __current_default_route = None
-    __interval = 5 # Interval between default route change checks
+    __interval = 5  # Interval between default route change checks
 
     while True:
         __current_default_route = netifaces.gateways()["default"][2]
-        
+
         # Updates public ip information if a change to default route is detected
         if __current_default_route != __previous_default_route:
             # Sets __previous_default_route in preparation for next change check
@@ -57,7 +57,7 @@ def update_publicip_information(module):
 
             # Fetch fresh location information
             __info = util.location.location_info()
-            
+
             # Contstruct coordinates string
             __lat = "{:.2f}".format(__info["latitude"])
             __lon = "{:.2f}".format(__info["longitude"])
@@ -69,12 +69,13 @@ def update_publicip_information(module):
             widget.set("country_code", __info["country_code"])
             widget.set("city_name", __info["city_name"])
             widget.set("coordinates", __coords)
-            
+
             # Update widget values
             core.event.trigger("update", [widget.module.id], redraw_only=True)
-            
+
             # Wait __interval seconds before checking for default route changes again
             time.sleep(__interval)
+
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=60)
@@ -91,12 +92,12 @@ class Module(core.module.Module):
 
     def publicip(self, widget):
         return self._format.format(
-                ip = widget.get("public_ip", "-"),
-                country_name = widget.get("country_name", "-"),
-                country_code = widget.get("country_code", "-"),
-                city_name = widget.get("city_name", "-"),
-                coordinates = widget.get("coordinates", "-")
-            )
+            ip=widget.get("public_ip", "-"),
+            country_name=widget.get("country_name", "-"),
+            country_code=widget.get("country_code", "-"),
+            city_name=widget.get("city_name", "-"),
+            coordinates=widget.get("coordinates", "-"),
+        )
 
     def __click_update(self, event):
         util.location.reset()
@@ -104,7 +105,9 @@ class Module(core.module.Module):
     def update(self):
         if self.__thread is not None and self.__thread.is_alive():
             return
-        self.__thread = threading.Thread(target=update_publicip_information, args=(self,))
+        self.__thread = threading.Thread(
+            target=update_publicip_information, args=(self,)
+        )
         self.__thread.start()
 
     def state(self, widget):
