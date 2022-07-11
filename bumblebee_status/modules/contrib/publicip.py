@@ -73,9 +73,8 @@ def update_publicip_information(module):
             # Update widget values
             core.event.trigger("update", [widget.module.id], redraw_only=True)
 
-            # Wait __interval seconds before checking for default route changes again
-            time.sleep(__interval)
-
+        # Wait __interval seconds before checking for default route changes again
+        time.sleep(__interval)
 
 class Module(core.module.Module):
     @core.decorators.every(minutes=60)
