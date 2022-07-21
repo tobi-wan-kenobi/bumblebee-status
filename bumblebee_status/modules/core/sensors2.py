@@ -11,7 +11,7 @@ Parameters:
     * sensors2.showother: Enable or display 'other' sensor readings (default: false)
     * sensors2.showname: Enable or disable show of sensor name (default: false)
     * sensors2.chip_include: Comma-separated list of chip to include (defaults to '' will include all by default, example: 'coretemp,bat')
-    * sensors2.chip_exclude:Comma separated list of chip to exclude (defaults to '' will exlude none by default)
+    * sensors2.chip_exclude:Comma separated list of chip to exclude (defaults to '' will exclude none by default)
     * sensors2.field_include: Comma separated list of chip to include (defaults to '' will include all by default, example: 'temp,fan')
     * sensors2.field_exclude: Comma separated list of chip to exclude (defaults to '' will exclude none by default)
     * sensors2.chip_field_exclude: Comma separated list of chip field to exclude (defaults to '' will exclude none by default, example: 'coretemp-isa-0000.temp1,coretemp-isa-0000.fan1')

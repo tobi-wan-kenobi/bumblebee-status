@@ -24,9 +24,9 @@ Parameters:
          * cpu2.fanspeed
     * cpu2.colored: 1 for colored per core load graph, 0 for mono (default)
     * cpu2.temp_pattern: pattern to look for in the output of 'sensors -u';
-      required if cpu2.temp widged is used
+      required if cpu2.temp widget is used
     * cpu2.fan_pattern: pattern to look for in the output of 'sensors -u';
-      required if cpu2.fanspeed widged is used
+      required if cpu2.fanspeed widget is used
 
 Note: if you are getting 'n/a' for CPU temperature / fan speed, then you're
 lacking the aforementioned pattern settings or they have wrong values.

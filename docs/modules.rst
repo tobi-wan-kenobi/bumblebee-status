@@ -60,7 +60,7 @@ Shows free diskspace, total diskspace and the percentage of free disk space.
 
 Parameters:
     * disk.warning: Warning threshold in % of disk space (defaults to 80%)
-    * disk.critical: Critical threshold in % of disk space (defaults ot 90%)
+    * disk.critical: Critical threshold in % of disk space (defaults to 90%)
     * disk.path: Path to calculate disk usage from (defaults to /)
     * disk.open: Which application / file manager to launch (default xdg-open)
     * disk.format: Format string, tags {path}, {used}, {left}, {size} and {percent} (defaults to '{path} {used}/{size} ({percent:05.02f}%)')
@@ -246,7 +246,7 @@ Parameters:
     * sensors2.showother: Enable or display 'other' sensor readings (default: false)
     * sensors2.showname: Enable or disable show of sensor name (default: false)
     * sensors2.chip_include: Comma-separated list of chip to include (defaults to '' will include all by default, example: 'coretemp,bat')
-    * sensors2.chip_exclude:Comma separated list of chip to exclude (defaults to '' will exlude none by default)
+    * sensors2.chip_exclude:Comma separated list of chip to exclude (defaults to '' will exclude none by default)
     * sensors2.field_include: Comma separated list of chip to include (defaults to '' will include all by default, example: 'temp,fan')
     * sensors2.field_exclude: Comma separated list of chip to exclude (defaults to '' will exclude none by default)
     * sensors2.chip_field_exclude: Comma separated list of chip field to exclude (defaults to '' will exclude none by default, example: 'coretemp-isa-0000.temp1,coretemp-isa-0000.fan1')
@@ -574,9 +574,9 @@ Parameters:
          * cpu2.fanspeed
     * cpu2.colored: 1 for colored per core load graph, 0 for mono (default)
     * cpu2.temp_pattern: pattern to look for in the output of 'sensors -u';
-      required if cpu2.temp widged is used
+      required if cpu2.temp widget is used
     * cpu2.fan_pattern: pattern to look for in the output of 'sensors -u';
-      required if cpu2.fanspeed widged is used
+      required if cpu2.fanspeed widget is used
 
 Note: if you are getting 'n/a' for CPU temperature / fan speed, then you're
 lacking the aforementioned pattern settings or they have wrong values.
@@ -907,7 +907,7 @@ messagereceiver
 
 Displays the message that's received via unix socket.
 
-Parameteres:
+Parameters:
     * messagereceiver   : Unix socket address (e.g: /tmp/bumblebee_messagereceiver.sock)
 
 Example:
@@ -1059,7 +1059,7 @@ pacman
 Displays update information per repository for pacman.
 
 Parameters:
-    * pacman.sum: If you prefere displaying updates with a single digit (defaults to 'False')
+    * pacman.sum: If you prefer displaying updates with a single digit (defaults to 'False')
 
 Requires the following executables:
     * fakeroot
@@ -1119,7 +1119,7 @@ Parameters:
       Example: 'notify-send 'Time up!''. If you want to chain multiple commands,
       please use an external wrapper script and invoke that. The module itself does
       not support command chaining (see https://github.com/tobi-wan-kenobi/bumblebee-status/issues/532
-      for a detailled explanation)
+      for a detailed explanation)
 
 contributed by `martindoublem <https://github.com/martindoublem>`_, inspired by `karthink <https://github.com/karthink>`_ - many thanks!
 
@@ -1303,7 +1303,7 @@ Requires the following executables:
     * smartctl
 
 Parameters:
-    * smartstatus.display: how to display (defaults to 'combined', other choices: 'combined_singles', 'seperate' or 'singles')
+    * smartstatus.display: how to display (defaults to 'combined', other choices: 'combined_singles', 'separate' or 'singles')
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
     * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
 
@@ -1323,7 +1323,7 @@ Parameters:
 
 Format Strings:
     * Format strings are indicated by double %%
-    * They represent a leaf in the JSON tree, layers seperated by '.'
+    * They represent a leaf in the JSON tree, layers separated by '.'
     * Boolean values can be overwritten by appending '%true%false'
       in the format string
     * Example: to reference 'open' in '{'state':{'open': true}}'
@@ -1514,7 +1514,7 @@ Parameters:
     * traffic.showname: If set to False, hide network interface name (defaults to True)
     * traffic.format: Format string for download/upload speeds.
       Defaults to '{:.2f}'
-    * traffic.graphlen: Graph lenth in seconds. Positive even integer. Each
+    * traffic.graphlen: Graph length in seconds. Positive even integer. Each
       char shows 2 seconds. If set, enables up/down traffic
       graphs
 

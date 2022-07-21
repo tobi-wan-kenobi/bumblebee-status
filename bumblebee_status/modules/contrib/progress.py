@@ -56,7 +56,7 @@ class Module(core.module.Module):
             return self.parameter("placeholder", "n/a")
 
     def update_progress_info(self, widget):
-        """Update widget's informations about the copy"""
+        """Update widget's information about the copy"""
         if not self.__active:
             return
 
@@ -64,8 +64,8 @@ class Module(core.module.Module):
         #  1. pid
         #  2. command
         #  3. arguments
-        #  4. progress (xx.x formated)
-        #  5. quantity (.. unit / .. unit formated)
+        #  4. progress (xx.x formatted)
+        #  5. quantity (.. unit / .. unit formatted)
         #  6. speed
         #  7. time remaining
         extract_nospeed = re.compile(
@@ -80,7 +80,7 @@ class Module(core.module.Module):
             result = extract_wtspeed.match(raw)
 
             if not result:
-                # Abord speed measures
+                # Abort speed measures
                 raw = util.cli.execute("progress -q")
                 result = extract_nospeed.match(raw)
 

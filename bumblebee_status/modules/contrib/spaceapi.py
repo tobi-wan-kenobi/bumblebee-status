@@ -16,7 +16,7 @@ Parameters:
 
 Format Strings:
     * Format strings are indicated by double %%
-    * They represent a leaf in the JSON tree, layers seperated by '.'
+    * They represent a leaf in the JSON tree, layers separated by '.'
     * Boolean values can be overwritten by appending '%true%false'
       in the format string
     * Example: to reference 'open' in '{'state':{'open': true}}'

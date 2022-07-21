@@ -4,7 +4,7 @@
 
 Parameters:
     * disk.warning: Warning threshold in % of disk space (defaults to 80%)
-    * disk.critical: Critical threshold in % of disk space (defaults ot 90%)
+    * disk.critical: Critical threshold in % of disk space (defaults to 90%)
     * disk.path: Path to calculate disk usage from (defaults to /)
     * disk.open: Which application / file manager to launch (default xdg-open)
     * disk.format: Format string, tags {path}, {used}, {left}, {size} and {percent} (defaults to '{path} {used}/{size} ({percent:05.02f}%)')
