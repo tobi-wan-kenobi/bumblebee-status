@@ -1,6 +1,6 @@
 """Displays temperature of blugon and Controls it.
 
-Use wheel up and down to change temperature, middle click to toggle and right click to reset temprature.
+Use wheel up and down to change temperature, middle click to toggle and right click to reset temperature.
 
 Default Values:
     * Minimum temperature: 1000 (red)

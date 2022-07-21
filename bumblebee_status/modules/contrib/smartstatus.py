@@ -10,7 +10,7 @@ Requires the following executables:
     * smartctl
 
 Parameters:
-    * smartstatus.display: how to display (defaults to 'combined', other choices: 'combined_singles', 'seperate' or 'singles')
+    * smartstatus.display: how to display (defaults to 'combined', other choices: 'combined_singles', 'separate' or 'singles')
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
     * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
 """

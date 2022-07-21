@@ -3,7 +3,7 @@
 """Displays update information per repository for pacman.
 
 Parameters:
-    * pacman.sum: If you prefere displaying updates with a single digit (defaults to 'False')
+    * pacman.sum: If you prefer displaying updates with a single digit (defaults to 'False')
 
 Requires the following executables:
     * fakeroot

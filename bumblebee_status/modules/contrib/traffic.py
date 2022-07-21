@@ -8,7 +8,7 @@ Parameters:
     * traffic.showname: If set to False, hide network interface name (defaults to True)
     * traffic.format: Format string for download/upload speeds.
       Defaults to '{:.2f}'
-    * traffic.graphlen: Graph lenth in seconds. Positive even integer. Each
+    * traffic.graphlen: Graph length in seconds. Positive even integer. Each
       char shows 2 seconds. If set, enables up/down traffic
       graphs
 

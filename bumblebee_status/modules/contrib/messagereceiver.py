@@ -3,7 +3,7 @@
 """
 Displays the message that's received via unix socket.
 
-Parameteres:
+Parameters:
     * messagereceiver   : Unix socket address (e.g: /tmp/bumblebee_messagereceiver.sock)
 
 Example:

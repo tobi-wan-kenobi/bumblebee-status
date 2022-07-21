@@ -68,7 +68,7 @@ class UPowerManager:
         isPresent = battery_proxy_interface.Get(
             self.UPOWER_NAME + ".Device", "IsPresent"
         )
-        isRechargable = battery_proxy_interface.Get(
+        isRechargeable = battery_proxy_interface.Get(
             self.UPOWER_NAME + ".Device", "IsRechargeable"
         )
         online = battery_proxy_interface.Get(self.UPOWER_NAME + ".Device", "Online")
@@ -128,7 +128,7 @@ class UPowerManager:
             "HasHistory": hasHistory,
             "HasStatistics": hasStatistics,
             "IsPresent": isPresent,
-            "IsRechargeable": isRechargable,
+            "IsRechargeable": isRechargeable,
             "Online": online,
             "PowerSupply": powersupply,
             "Capacity": capacity,

@@ -295,7 +295,7 @@ class Error(Module):
     def full_text(self, widget):
         return "{}: {}".format(self.__module, self.__error)
 
-    """Overriden state, always returns critical (it *is* an error, after all"""
+    """Overridden state, always returns critical (it *is* an error, after all"""
 
     def state(self, widget):
         return ["critical"]
