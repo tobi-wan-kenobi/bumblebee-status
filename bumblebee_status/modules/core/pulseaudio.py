@@ -146,9 +146,12 @@ class Module(core.module.Module):
             m = re.search(r"mono:.*\s*\/\s*(\d+)%", line)
             if m:
                 self._mono = m.group(1)
+                self._left = 0
+                self._right = 0
         else:
             m = re.search(r"left:.*\s*\/\s*(\d+)%.*right:.*\s*\/\s*(\d+)%", line)
             if m:
+                self._mono = 0
                 self._left = m.group(1)
                 self._right = m.group(2)
 
