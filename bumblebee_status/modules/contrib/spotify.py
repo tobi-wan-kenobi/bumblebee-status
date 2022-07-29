@@ -110,7 +110,8 @@ class Module(core.module.Module):
     def hidden(self):
         return self.string_song == ""
 
-    def __get_song(self):
+    @core.decorators.scrollable
+    def __get_song(self, widget):
         bus = self.__bus
         if self.__bus_name == "spotifyd":
             spotify = bus.get_object(
@@ -128,11 +129,10 @@ class Module(core.module.Module):
             artist=",".join(props.get("xesam:artist")),
             trackNumber=str(props.get("xesam:trackNumber")),
         )
+        return self.__song
 
     def update(self):
         try:
-            self.__get_song()
-
             if self.__bus_name == "spotifyd":
                 bus = self.__bus.get_object(
                     "org.mpris.MediaPlayer2.spotifyd", "/org/mpris/MediaPlayer2"
@@ -156,7 +156,7 @@ class Module(core.module.Module):
                         widget.set("state", "paused")
                 elif widget.name == "spotify.song":
                     widget.set("state", "song")
-                    widget.full_text(self.__song)
+                    widget.full_text(self.__get_song(widget))
 
         except Exception as e:
             self.__song = ""
