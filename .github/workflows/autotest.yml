@@ -1,0 +1,42 @@
+name: Run tests
+
+on:
+  pull_request:
+    types: [ opened, reopened, edited ]
+  push:
+
+env:
+  CC_TEST_REPORTER_ID: 40cb00907f7a10e04868e856570bb997ab9c42fd3b63d980f2b2269433195fdf
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: 'pip'
+      - name: Install Ubuntu dependencies
+        run: apt install libdbus-1-dev libgit2-dev libvirt-dev taskwarrior
+      - name: Install Python dependencies 
+        run: |
+          python -m pip install --upgrade pip
+          pip install -U coverage pytest pytest-mock freezegun
+          pip install 'pygit2<1' 'libvirt-python<6.3' 'feedparser<6' || true
+          pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u)
+      - name: Install Code Climate dependency
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+          chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+      - name: Run tests
+        run: |
+          RESULT=coverage run --source=. -m pytest tests -v
+          coverage xml
+          ./cc-test-reporter after-build --exit-status $RESULT
