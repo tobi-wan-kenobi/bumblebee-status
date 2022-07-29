@@ -37,7 +37,7 @@ jobs:
           ./cc-test-reporter before-build
       - name: Run tests
         run: |
-          RESULT=coverage3 run --source=. -m pytest tests -v
+          coverage run --source=. -m pytest tests -v
       - name: Report coverage 
         uses: paambaati/codeclimate-action@v3.0.0
         with:
