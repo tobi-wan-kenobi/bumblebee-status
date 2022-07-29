@@ -38,5 +38,8 @@ jobs:
       - name: Run tests
         run: |
           RESULT=coverage run --source=. -m pytest tests -v
-          coverage xml
-          ./cc-test-reporter -d after-build --exit-status $RESULT
+      - name: Report coverage 
+        uses: paambaati/codeclimate-action@v3.0.0
+        with:
+          coverageCommand: coverage xml
+          debug: true
