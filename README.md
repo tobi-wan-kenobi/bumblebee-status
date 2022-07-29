@@ -1,6 +1,5 @@
 # bumblebee-status
 
-[![Build Status](https://app.travis-ci.com/tobi-wan-kenobi/bumblebee-status.svg?branch=main)](https://app.travis-ci.com/tobi-wan-kenobi/bumblebee-status)
 [![Documentation Status](https://readthedocs.org/projects/bumblebee-status/badge/?version=main)](https://bumblebee-status.readthedocs.io/en/main/?badge=main)
 ![AUR version (release)](https://img.shields.io/aur/version/bumblebee-status)
 ![AUR version (git)](https://img.shields.io/aur/version/bumblebee-status-git)
