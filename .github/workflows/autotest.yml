@@ -39,4 +39,4 @@ jobs:
         run: |
           RESULT=coverage run --source=. -m pytest tests -v
           coverage xml
-          ./cc-test-reporter after-build --exit-status $RESULT
+          ./cc-test-reporter -d after-build --exit-status $RESULT
