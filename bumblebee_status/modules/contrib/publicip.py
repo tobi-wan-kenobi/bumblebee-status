@@ -53,6 +53,18 @@ class Module(core.module.Module):
         # By default show: <ip> (<2 letter country code>)
         self._format = self.parameter("format", "{ip} ({country_code})")
 
+        self.__monitor = threading.Thread(target=self.monitor, args=())
+        self.__monitor.start()
+
+    def monitor(self):
+        current_default_route = None
+        default_route = None
+        while threading.main_thread().is_alive():
+            current_default_route = netifaces.gateways()["default"][2]
+            if current_default_route != default_route:
+                self.update()
+            time.sleep(1)
+
     def publicip(self, widget):
         if widget.get("public_ip") == None:
             return "n/a"
@@ -70,34 +82,25 @@ class Module(core.module.Module):
     def update(self):
         widget = self.widget()
 
-        self.__current_default_route = netifaces.gateways()["default"][2]
-
         try:
-            # Updates public ip information if a change to default route is detected
-            if self.__current_default_route != self.__previous_default_route:
-                # Sets __previous_default_route in preparation for next change check
-                self.__previous_default_route = self.__current_default_route
+            util.location.reset()
+            # Fetch fresh location information
+            __info = util.location.location_info()
 
-                # Refresh location information
-                util.location.reset()
+            # Contstruct coordinates string
+            __lat = "{:.2f}".format(__info["latitude"])
+            __lon = "{:.2f}".format(__info["longitude"])
+            __coords = __lat + "°N" + "," + " " + __lon + "°E"
 
-                # Fetch fresh location information
-                __info = util.location.location_info()
+            # Set widget values
+            widget.set("public_ip", __info["public_ip"])
+            widget.set("country_name", __info["country"])
+            widget.set("country_code", __info["country_code"])
+            widget.set("city_name", __info["city_name"])
+            widget.set("coordinates", __coords)
 
-                # Contstruct coordinates string
-                __lat = "{:.2f}".format(__info["latitude"])
-                __lon = "{:.2f}".format(__info["longitude"])
-                __coords = __lat + "°N" + "," + " " + __lon + "°E"
-
-                # Set widget values
-                widget.set("public_ip", __info["public_ip"])
-                widget.set("country_name", __info["country"])
-                widget.set("country_code", __info["country_code"])
-                widget.set("city_name", __info["city_name"])
-                widget.set("coordinates", __coords)
-
-                # Update widget values
-                core.event.trigger("update", [widget.module.id], redraw_only=True)
+            # Update widget values
+            core.event.trigger("update", [widget.module.id], redraw_only=True)
         except:
             widget.set("public_ip", None)
 
