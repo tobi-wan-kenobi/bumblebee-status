@@ -93,6 +93,22 @@ Shows when a key is pressed
 Parameters:
     * keys.keys: Comma-separated list of keys to monitor (defaults to "")
 
+layout
+~~~~~~
+
+Displays the current keyboard layout using libX11
+
+Requires the following library:
+    * libX11.so.6
+and python module:
+    * xkbgroup
+
+Parameters:
+    * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
+    * layout-xkb.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
+
+.. image:: ../screenshots/layout.png
+
 layout-xkb
 ~~~~~~~~~~
 
@@ -171,7 +187,9 @@ Parameters:
     * nic.exclude: Comma-separated list of interface prefixes (supporting regular expressions) to exclude (defaults to 'lo,virbr,docker,vboxnet,veth,br,.*:avahi')
     * nic.include: Comma-separated list of interfaces to include
     * nic.states: Comma-separated list of states to show (prefix with '^' to invert - i.e. ^down -> show all devices that are not in state down)
-    * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid}')
+    * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid} {strength}')
+    * nic.strength_warning: Integer to set the threshold for warning state (defaults to 50)
+    * nic.strength_critical: Integer to set the threshold for critical state (defaults to 30)
 
 .. image:: ../screenshots/nic.png
 
@@ -206,6 +224,20 @@ Parameters:
       Note: If the left and right channels have different volumes, the limit might not be reached exactly.
     * pulseaudio.showbars: 1 for showing volume bars, requires --markup=pango;
       0 for not showing volume bars (default)
+    * pulseaudio.showdevicename: If set to 'true' (default is 'false'), the currently selected default device is shown.
+      Per default, the sink/source name returned by "pactl list sinks short" is used as display name.
+
+      As this name is usually not particularly nice (e.g "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo"),
+      its possible to map the name to more a user friendly name.
+
+      e.g to map "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" to the name "Headset", add the following
+      bumblebee-status config entry: pulseaudio.alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo=Headset
+
+      Furthermore its possible to specify individual (unicode) icons for all sinks/sources. e.g in order to use the icon 🎧 for the
+      "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" sink, add the following bumblebee-status config entry:
+      pulseaudio.icon.alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo=🎧
+    * Per default a left mouse button click mutes/unmutes the device. In case you want to open a dropdown menu to change the current
+      default device add the following config entry to your bumblebee-status config: pulseaudio.left-click=select_default_device_popup
 
 Requires the following executable:
     * pulseaudio
@@ -391,6 +423,8 @@ Requires the following executable:
 
 contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
 
+.. image:: ../screenshots/arch-update.png
+
 arch_update
 ~~~~~~~~~~~
 
@@ -401,10 +435,8 @@ Requires the following executable:
 
 contributed by `lucassouto <https://github.com/lucassouto>`_ - many thanks!
 
-.. image:: ../screenshots/arch-update.png
-
 aur-update
-~~~~~~~~~~~
+~~~~~~~~~~
 
 Check updates for AUR.
 
@@ -485,6 +517,26 @@ Parameters:
     * bluetooth.manager : application to launch on click (blueman-manager)
 
 contributed by `martindoublem <https://github.com/martindoublem>`_ - many thanks!
+
+blugon
+~~~~~~
+
+Displays temperature of blugon and Controls it.
+
+Use wheel up and down to change temperature, middle click to toggle and right click to reset temperature.
+
+Default Values:
+    * Minimum temperature: 1000 (red)
+    * Maximum temperature: 20000 (blue)
+    * Default temperature: 6600
+
+Requires the following executable:
+    * blugon
+
+Parameters:
+    * blugon.step: The amount of increase/decrease on scroll (default: 200)
+
+contributed by `DTan13 <https://github.com/DTan13>`
 
 brightness
 ~~~~~~~~~~
@@ -750,9 +802,33 @@ Requires the following executable:
 Parameters:
     * emerge_status.format: Format string (defaults to '{current}/{total} {action} {category}/{pkg}')
 
-This code is based on `emerge_status module from p3status <https://github.com/ultrabug/py3status/blob/master/py3status/modules/emerge_status.py>`_ original created by `AnwariasEu <https://github.com/AnwariasEu>`_.
+This code is based on emerge_status module from p3status [1] original created by AnwariasEu.
+
+[1] https://github.com/ultrabug/py3status/blob/master/py3status/modules/emerge_status.py 
 
 .. image:: ../screenshots/emerge_status.png
+
+gcalendar
+~~~~~~~~~
+
+Displays first upcoming event in google calendar.
+
+Events that are set as 'all-day' will not be shown.
+
+Requires credentials.json from a google api application where the google calendar api is installed.
+On first time run the browser will open and google will ask for permission for this app to access the google calendar and then save a .gcalendar_token.json file to the credentials_path directory which stores this permission.
+
+A refresh is done every 15 minutes.
+
+Parameters:
+    * gcalendar.time_format: Format time output. Defaults to "%H:%M".
+    * gcalendar.date_format: Format date output. Defaults to "%d.%m.%y".
+    * gcalendar.credentials_path: Path to credentials.json. Defaults to "~/".
+
+Requires these pip packages:
+   * google-api-python-client 
+   * google-auth-httplib2 
+   * google-auth-oauthlib
 
 getcrypto
 ~~~~~~~~~
@@ -859,18 +935,6 @@ Shows Linux kernel version information
 contributed by `pierre87 <https://github.com/pierre87>`_ - many thanks!
 
 .. image:: ../screenshots/kernel.png
-
-layout
-~~~~~~
-
-Displays and changes the current keyboard layout
-
-Requires the following executable:
-    * setxkbmap
-
-contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
-
-.. image:: ../screenshots/layout.png
 
 layout-xkbswitch
 ~~~~~~~~~~~~~~~~
@@ -998,6 +1062,15 @@ contributed by `alrayyes <https://github.com/alrayyes>`_ - many thanks!
 
 .. image:: ../screenshots/mpd.png
 
+network
+~~~~~~~
+
+A module to show the currently active network connection (ethernet or wifi) and connection strength if the connection is wireless.
+
+Requires the Python netifaces package and iw installed on Linux.
+
+A simpler take on nic and network_traffic. No extra config necessary!
+
 network_traffic
 ~~~~~~~~~~~~~~~
 
@@ -1030,11 +1103,15 @@ Displays GPU name, temperature and memory usage.
 
 Parameters:
    * nvidiagpu.format: Format string (defaults to '{name}: {temp}°C %{usedmem}/{totalmem} MiB')
-     Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem}
+     Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem} {gpu_usage_pct} {mem_usage_pct} {mem_io_pct}
 
 Requires nvidia-smi
 
 contributed by `RileyRedpath <https://github.com/RileyRedpath>`_ - many thanks!
+
+Note: mem_io_pct is (from `man nvidia-smi`):
+> Percent of time over the past sample period during which global (device)
+> memory was being read or written.
 
 octoprint
 ~~~~~~~~~
@@ -1053,6 +1130,14 @@ Parameters:
 
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 
+optman
+~~~~~~
+
+Displays currently active gpu by optimus-manager
+Requires the following packages:
+
+    * optimus-manager
+
 pacman
 ~~~~~~
 
@@ -1068,6 +1153,31 @@ Requires the following executables:
 contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
 
 .. image:: ../screenshots/pacman.png
+
+pamixer
+~~~~~~~
+
+get volume level or control it
+
+Requires the following executable:
+    * pamixer
+
+Parameters:
+    * pamixer.percent_change: How much to change volume by when scrolling on the module (default is 4%)
+
+heavily based on amixer module
+
+persian_date
+~~~~~~~~~~~~
+
+Displays the current date and time in Persian(Jalali) Calendar.
+
+Requires the following python packages:
+    * jdatetime
+
+Parameters:
+    * datetime.format: strftime()-compatible formatting string. default: "%A %d %B" e.g., "جمعه ۱۳ اسفند"
+    * datetime.locale: locale to use. default: "fa_IR"
 
 pihole
 ~~~~~~
@@ -1094,7 +1204,7 @@ Parameters:
     * playerctl.layout:   Comma-separated list to change order of widgets (defaults to song, previous, pause, next)
       Widget names are: playerctl.song, playerctl.prev, playerctl.pause, playerctl.next
     * playerctl.args:     The arguments added to playerctl.
-      You can check 'playerctl --help' or `its readme <https://github.com/altdesktop/playerctl#using-the-cli>`_. For example, it could be '-p vlc,%any'.
+      You can check 'playerctl --help' or `its README <https://github.com/altdesktop/playerctl#using-the-cli>`_. For example, it could be '-p vlc,%any'.
     * playerctl.hide:   Hide the widgets when no players are found. Defaults to "false".
 
 Parameters are inspired by the `spotify` module, many thanks to its developers!
@@ -1183,7 +1293,29 @@ contributed by `remi-dupre <https://github.com/remi-dupre>`_ - many thanks!
 publicip
 ~~~~~~~~
 
-Displays public IP address
+Displays information about the public IP address associated with the default route:
+    * Public IP address
+    * Country Name
+    * Country Code
+    * City Name
+    * Geographic Coordinates
+
+Left mouse click on the widget forces immediate update
+Any change to the default route will cause the widget to update
+
+Requirements:
+    * netifaces
+
+Parameters:
+    * publicip.format: Format string (defaults to ‘{ip} ({country_code})’)
+    * Available format strings - ip, country_name, country_code, city_name, coordinates
+
+Examples:
+    * bumblebee-status -m publicip -p publicip.format="{ip} ({country_code})"
+    * bumblebee-status -m publicip -p publicip.format="{ip} which is in {city_name}"
+    * bumblebee-status -m publicip -p publicip.format="Your packets are right here: {coordinates}"
+
+contributed by `tfwiii <https://github.com/tfwiii>`_ - many thanks!
 
 rofication
 ~~~~~~~~~~
@@ -1225,9 +1357,7 @@ sensors
 Displays sensor temperature
 
 Parameters:
-    * sensors.use_sensors: whether to use the 'sensors' command.
-      If set to 'false', the sysfs-interface at '/sys/class/thermal' is used.
-      If not set, 'sensors' will be used if available.
+    * sensors.use_sensors: whether to use the sensors command
     * sensors.path: path to temperature file (default /sys/class/thermal/thermal_zone0/temp).
     * sensors.json: if set to 'true', interpret sensors.path as JSON 'path' in the output
       of 'sensors -j' (i.e. <key1>/<key2>/.../<value>), for example, path could
@@ -1306,6 +1436,16 @@ Parameters:
     * smartstatus.display: how to display (defaults to 'combined', other choices: 'combined_singles', 'separate' or 'singles')
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
     * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
+
+solaar
+~~~~~~
+
+Shows status and load percentage of logitech's unifying device
+
+Requires the following executable:
+    * solaar (from community)
+
+contributed by `cambid <https://github.com/cambid>`_ - many thanks!
 
 spaceapi
 ~~~~~~~~
@@ -1413,8 +1553,7 @@ Parameters:
         * system.lock: specify a command for locking the screen (defaults to 'i3exit lock')
         * system.suspend: specify a command for suspending (defaults to 'i3exit suspend')
         * system.hibernate: specify a command for hibernating (defaults to 'i3exit hibernate')
-        * system.popupcmd: specify a command to run instead of opening the default menu
-        
+
 Requirements:
         tkinter (python3-tk package on debian based systems either you can install it as python package)
 
@@ -1475,6 +1614,7 @@ Parameters:
     * title.max : Maximum character length for title before truncating. Defaults to 64.
     * title.placeholder : Placeholder text to be placed if title was truncated. Defaults to '...'.
     * title.scroll : Boolean flag for scrolling title. Defaults to False
+    * title.short : Boolean flag for short title. Defaults to False
 
 
 contributed by `UltimatePancake <https://github.com/UltimatePancake>`_ - many thanks!
