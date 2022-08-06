@@ -60,8 +60,13 @@ class Module(core.module.Module):
         current_default_route = None
         default_route = None
         while threading.main_thread().is_alive():
-            current_default_route = netifaces.gateways()["default"][2]
+            try:
+                current_default_route = netifaces.gateways()["default"][2]
+            except:
+                # error reading out default gw -> assume none exists
+                current_default_route = None
             if current_default_route != default_route:
+                default_route = current_default_route
                 self.update()
             time.sleep(1)
 
