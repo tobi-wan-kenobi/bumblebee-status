@@ -12,6 +12,7 @@ Parameters:
     * redshift.lat : latitude if location is set to 'manual'
     * redshift.lon : longitude if location is set to 'manual'
     * redshift.show_transition: information about the transitions (x% day) defaults to True
+    * redshift.adjust: set this to 'true' (defaults to false) to let bumblebee-status adjust color temperature, instead of just showing the current settings
 """
 
 import re
@@ -38,7 +39,13 @@ def get_redshift_value(module):
     if location == "manual" and (lat is None or lon is None):
         location = "geoclue2"
 
-    command = ["redshift", "-p"]
+    command = ["redshift"]
+
+    if util.format.asbool(module.parameter("adjust", "false")) == True:
+        command.extend(["-o", "-v"])
+    else:
+        command.append("-p")
+
     if location == "manual":
         command.extend(["-l", "{}:{}".format(lat, lon)])
     if location == "geoclue2":
