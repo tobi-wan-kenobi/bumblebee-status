@@ -102,9 +102,6 @@ class Module(core.module.Module):
                 )
                 events = events_result.get("items", [])
 
-                if not events:
-                    return "No upcoming events found."
-
                 for event in events:
                     start = dtparse(
                         event["start"].get("dateTime", event["start"].get("date"))
