@@ -11,9 +11,10 @@ Parameters:
     * gcalendar.time_format: Format time output. Defaults to "%H:%M".
     * gcalendar.date_format: Format date output. Defaults to "%d.%m.%y".
     * gcalendar.credentials_path: Path to credentials.json. Defaults to "~/".
+    * gcalendar.locale: locale to use rather than the system default.
 
 Requires these pip packages:
-   * google-api-python-client 
+   * google-api-python-client >= 1.8.0
    * google-auth-httplib2 
    * google-auth-oauthlib
 """
@@ -29,6 +30,7 @@ import core.decorators
 
 import datetime
 import os.path
+import locale
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -48,6 +50,15 @@ class Module(core.module.Module):
         )
         self.__credentials = os.path.join(self.__credentials_path, "credentials.json")
         self.__token = os.path.join(self.__credentials_path, ".gcalendar_token.json")
+
+        l = locale.getdefaultlocale()
+        if not l or l == (None, None):
+            l = ("en_US", "UTF-8")
+        lcl = self.parameter("locale", ".".join(l))
+        try:
+            locale.setlocale(locale.LC_TIME, lcl.split("."))
+        except Exception:
+            locale.setlocale(locale.LC_TIME, ("en_US", "UTF-8"))
 
     def first_event(self, widget):
         SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
@@ -99,9 +110,6 @@ class Module(core.module.Module):
                     .execute()
                 )
                 events = events_result.get("items", [])
-
-                if not events:
-                    return "No upcoming events found."
 
                 for event in events:
                     start = dtparse(
