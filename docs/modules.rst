@@ -261,6 +261,7 @@ Parameters:
     * redshift.lat : latitude if location is set to 'manual'
     * redshift.lon : longitude if location is set to 'manual'
     * redshift.show_transition: information about the transitions (x% day) defaults to True
+    * redshift.adjust: set this to 'true' (defaults to false) to let bumblebee-status adjust color temperature, instead of just showing the current settings
 
 .. image:: ../screenshots/redshift.png
 
