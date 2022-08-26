@@ -253,8 +253,6 @@ class Module(core.module.Module):
     def state(self, widget):
         if self._mute:
             return ["warning", "muted"]
-        if int(self._left) > int(100):
-            return ["critical", "unmuted"]
         return ["unmuted"]
 
 
