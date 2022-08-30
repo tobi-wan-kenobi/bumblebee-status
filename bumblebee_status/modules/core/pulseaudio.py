@@ -33,17 +33,12 @@ Requires the following executable:
 """
 
 import re
-import os
 import logging
 import functools
-import threading
-import subprocess
-import select
 
 import core.module
 import core.widget
 import core.input
-import core.event
 
 import util.cli
 import util.graph
@@ -107,42 +102,6 @@ class Module(core.module.Module):
 
         for event in events:
             core.input.register(self, button=event["button"], cmd=event["action"])
-
-        self.__monitor = threading.Thread(target=self.__subscribe, args=())
-        self.__monitor.start()
-
-    def __subscribe(self):
-        self.update2()
-        core.event.trigger("update", [self.id], redraw_only=True)
-        core.event.trigger("draw")
-        try:
-            proc = subprocess.Popen("pactl subscribe",
-                stdout = subprocess.PIPE,
-                stderr = subprocess.PIPE,
-                shell = True
-            )
-        except:
-            return
-        os.set_blocking(proc.stdout.fileno(), False)
-        while threading.main_thread().is_alive():
-            r, w, e = select.select([proc.stdout], [], [], 1)
-
-            if not (r or w or e):
-                continue # timeout
-
-            line = 'test'
-            update = False
-            while line:
-                line = proc.stdout.readline().decode("ascii", errors="ignore")
-                if "client" in line:
-                    update = True
-
-            if update:
-                self.update2()
-                core.event.trigger("update", [self.id], redraw_only=True)
-                core.event.trigger("draw")
-                while proc.stdout.readline().decode("ascii", errors="ignore"):
-                    pass
 
     def set_volume(self, amount):
         util.cli.execute(
@@ -241,11 +200,6 @@ class Module(core.module.Module):
         return output
 
     def update(self):
-        if self.__monitor.is_alive():
-            return
-        self.update2()
-
-    def update2(self):
         try:
             self._failed = False
             channel = "sinks" if self._channel == "sink" else "sources"
