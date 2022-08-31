@@ -113,16 +113,12 @@ class Module(core.module.Module):
 
     def __click_update(self, event):
         util.location.reset()
-        # pause to allow reset time to complete
-        time.sleep(2)
 
     def update(self):
         widget = self.widget()
 
         try:
             util.location.reset()
-            # pause to allow reset time to complete
-            time.sleep(2)
 
             # Fetch fresh location information
             __info = util.location.location_info()

@@ -89,6 +89,9 @@ def __get(name):
 def reset():
     """Resets the location library, ensuring that a new query will be started"""
     global __next
+    global __data
+
+    __data = None
     __next = 0
 
 
