@@ -113,36 +113,27 @@ class Module(core.module.Module):
 
     def __subscribe(self):
         self.update2()
-        core.event.trigger("update", [self.id], redraw_only=True)
-        core.event.trigger("draw")
+        core.event.trigger("update", [self.id], redraw_only=False)
         try:
             proc = subprocess.Popen("pactl subscribe",
                 stdout = subprocess.PIPE,
-                stderr = subprocess.PIPE,
+                stderr = subprocess.STDOUT,
                 shell = True
             )
         except:
             return
-        os.set_blocking(proc.stdout.fileno(), False)
         while threading.main_thread().is_alive():
             r, w, e = select.select([proc.stdout], [], [], 1)
 
             if not (r or w or e):
                 continue # timeout
-
-            line = 'test'
-            update = False
-            while line:
-                line = proc.stdout.readline().decode("ascii", errors="ignore")
-                if "client" in line:
-                    update = True
-
-            if update:
-                self.update2()
-                core.event.trigger("update", [self.id], redraw_only=True)
-                core.event.trigger("draw")
-                while proc.stdout.readline().decode("ascii", errors="ignore"):
-                    pass
+            # whateve we got, use it
+            self.update2()
+            core.event.trigger("update", [self.id], redraw_only=True)
+            core.event.trigger("draw")
+            os.set_blocking(proc.stdout.fileno(), False)
+            proc.stdout.read()
+            os.set_blocking(proc.stdout.fileno(), True)
 
     def set_volume(self, amount):
         util.cli.execute(
