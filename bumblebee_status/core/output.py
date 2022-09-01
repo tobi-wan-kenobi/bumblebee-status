@@ -1,6 +1,7 @@
 import sys
 import json
 import time
+import datetime
 
 import core.theme
 import core.event
@@ -145,6 +146,7 @@ class i3(object):
         self.__content = {}
         self.__theme = theme
         self.__config = config
+        self.__previous_draw = datetime.datetime.min
         core.event.register("update", self.update)
         core.event.register("start", self.draw, "start")
         core.event.register("draw", self.draw, "statusline")
@@ -176,6 +178,14 @@ class i3(object):
             self.__content[widget_id]["minimized"] = not self.__content[widget_id]["minimized"]
 
     def draw(self, what, args=None):
+
+        if what == "statusline":
+            now = datetime.datetime.now()
+            prev = self.__previous_draw
+            self.__previous_draw = now
+            if (now - prev).total_seconds() < 0.03:
+                return
+
         cb = getattr(self, what)
         data = cb(args) if args else cb()
         if "blocks" in data:
