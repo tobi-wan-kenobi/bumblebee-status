@@ -113,7 +113,7 @@ class Module(core.module.Module):
 
     def __subscribe(self):
         self.update2()
-        core.event.trigger("update", [self.id], redraw_only=False)
+        core.event.trigger("update", [self.id], redraw_only=True)
         try:
             proc = subprocess.Popen("pactl subscribe",
                 stdout = subprocess.PIPE,
