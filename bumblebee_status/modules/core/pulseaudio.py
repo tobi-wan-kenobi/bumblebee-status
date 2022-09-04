@@ -34,6 +34,7 @@ Requires the following executable:
 
 import re
 import os
+import time
 import logging
 import functools
 import threading
@@ -126,12 +127,16 @@ class Module(core.module.Module):
             r, w, e = select.select([proc.stdout], [], [], 1)
 
             if not (r or w or e):
+                self.update2()
+                core.event.trigger("update", [self.id], redraw_only=True)
+                core.event.trigger("draw")
                 continue # timeout
             # whateve we got, use it
             self.update2()
             core.event.trigger("update", [self.id], redraw_only=True)
             core.event.trigger("draw")
             os.set_blocking(proc.stdout.fileno(), False)
+            time.sleep(0.5)
             proc.stdout.read()
             os.set_blocking(proc.stdout.fileno(), True)
 
