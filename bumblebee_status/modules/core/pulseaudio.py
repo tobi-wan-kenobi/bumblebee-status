@@ -136,7 +136,6 @@ class Module(core.module.Module):
             core.event.trigger("update", [self.id], redraw_only=True)
             core.event.trigger("draw")
             os.set_blocking(proc.stdout.fileno(), False)
-            time.sleep(0.5)
             proc.stdout.read()
             os.set_blocking(proc.stdout.fileno(), True)
 
