@@ -49,7 +49,7 @@ class Module(core.module.Module):
             core.input.register(self, button=event["button"], cmd=event["action"])
 
     def toggle(self, event):
-        self.set_parameter("--set-level 0")
+        self.set_parameter("--toggle-mute")
 
     def increase_volume(self, event):
         self.set_parameter("--increase {}".format(self.__change))
