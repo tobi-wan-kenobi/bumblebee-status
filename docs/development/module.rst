@@ -250,5 +250,5 @@ module using ``self.set()`` or via the CLI using the ``--parameter`` flag:
 
 - ``scrolling.width``: Integer, defaults to 30, determines the minimum width of the widgets, if ``makewide`` is specified
 - ``scrolling.makewide``: Boolean, defaults to true,  determines whether the widgets should be expanded to their minwidth
-  ``scrolling.bounce``: Boolean, defaults to true, determines whether the content should change directions when a scroll is completed, or just marquee through
+- ``scrolling.bounce``: Boolean, defaults to true, determines whether the content should change directions when a scroll is completed, or just marquee through
 
