@@ -1,7 +1,6 @@
 import sys
 import json
 import time
-import threading
 
 import core.theme
 import core.event
@@ -146,7 +145,6 @@ class i3(object):
         self.__content = {}
         self.__theme = theme
         self.__config = config
-        self.__lock = threading.Lock()
         core.event.register("update", self.update)
         core.event.register("start", self.draw, "start")
         core.event.register("draw", self.draw, "statusline")
@@ -178,15 +176,14 @@ class i3(object):
             self.__content[widget_id]["minimized"] = not self.__content[widget_id]["minimized"]
 
     def draw(self, what, args=None):
-        with self.__lock:
-            cb = getattr(self, what)
-            data = cb(args) if args else cb()
-            if "blocks" in data:
-                sys.stdout.write(json.dumps(data["blocks"], default=dump_json))
-            if "suffix" in data:
-                sys.stdout.write(data["suffix"])
-            sys.stdout.write("\n")
-            sys.stdout.flush()
+        cb = getattr(self, what)
+        data = cb(args) if args else cb()
+        if "blocks" in data:
+            sys.stdout.write(json.dumps(data["blocks"], default=dump_json))
+        if "suffix" in data:
+            sys.stdout.write(data["suffix"])
+        sys.stdout.write("\n")
+        sys.stdout.flush()
 
     def start(self):
         return {
@@ -247,10 +244,6 @@ class i3(object):
         return blocks
 
     def update(self, affected_modules=None, redraw_only=False, force=False):
-        with self.__lock:
-            self.update2(affected_modules, redraw_only, force)
-
-    def update2(self, affected_modules=None, redraw_only=False, force=False):
         now = time.time()
         for module in self.__modules:
             if affected_modules and not module.id in affected_modules:
