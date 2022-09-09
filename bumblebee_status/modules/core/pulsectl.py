@@ -50,12 +50,12 @@ class Module(core.module.Module):
 
     def toggle_mute(self, _):
         with pulsectl.Pulse(self.id + "vol") as pulse:
-            dev = pulse.sink_list()[0] if self.__type == "sink" else pulse.source_list()[1]
+            dev = self.get_device(pulse)
             pulse.mute(dev, not self.__muted)
 
     def change_volume(self, amount):
         with pulsectl.Pulse(self.id + "vol") as pulse:
-            dev = pulse.sink_list()[0] if self.__type == "sink" else pulse.source_list()[1]
+            dev = self.get_device(pulse)
             vol = dev.volume
             vol.value_flat += amount
             pulse.volume_set(dev, vol)
@@ -66,9 +66,20 @@ class Module(core.module.Module):
     def decrease_volume(self, _):
         self.change_volume(-self.__change/100.0)
 
+    def get_device(self, pulse):
+        devs = pulse.sink_list() if self.__type == "sink" else pulse.source_list()
+        default = pulse.server_info().default_sink_name if self.__type == "sink" else pulse.server_info().default_source_name
+
+        for dev in devs:
+            if dev.name == default:
+                return dev
+        return devs[0] # fallback
+
+
+
     def process(self, _):
         with pulsectl.Pulse(self.id + "proc") as pulse:
-            dev = pulse.sink_list()[0] if self.__type == "sink" else pulse.source_list()[1]
+            dev = self.get_device(pulse)
             self.__volume = dev.volume.value_flat
             self.__muted = dev.mute
         core.event.trigger("update", [self.id], redraw_only=True)
