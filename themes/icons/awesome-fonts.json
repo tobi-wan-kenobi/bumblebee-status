@@ -197,6 +197,14 @@
       "prefix": ""
     }
   },
+  "pulseout": {
+    "muted": {
+      "prefix": ""
+    },
+    "unmuted": {
+      "prefix": ""
+    }
+  },
   "amixer": {
     "muted": {
       "prefix": ""
@@ -206,6 +214,14 @@
     }
   },
   "pasource": {
+    "muted": {
+      "prefix": ""
+    },
+    "unmuted": {
+      "prefix": ""
+    }
+  },
+  "pulsein": {
     "muted": {
       "prefix": ""
     },
