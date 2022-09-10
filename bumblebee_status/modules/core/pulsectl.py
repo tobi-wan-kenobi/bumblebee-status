@@ -18,8 +18,12 @@ class Module(core.module.Module):
 
         self.__type = type
         self.__volume = "n/a"
+        self.__devicename = "n/a"
         self.__muted = False
         self.__showbars = util.format.asbool(self.parameter("showbars", False))
+        self.__show_device_name = util.format.asbool(
+            self.parameter("showdevicename", False)
+        )
 
         self.__change = util.format.asint(
             self.parameter("percent_change", "2%").strip("%"), 0, 100
@@ -56,6 +60,15 @@ class Module(core.module.Module):
         res = f"{int(self.__volume*100)}%"
         if self.__showbars:
             res = f"{res} {util.graph.hbar(self.__volume*100)}"
+
+        if self.__show_device_name:
+            friendly_name = self.__devicename
+            icon = self.parameter("icon." + self.__devicename, "")
+            res = (
+                icon + " " + friendly_name + " | " + res
+                if icon != ""
+                else friendly_name + " | " + res
+            )
         return res
 
     def toggle_mute(self, _):
@@ -94,6 +107,7 @@ class Module(core.module.Module):
             dev = self.get_device(pulse)
             self.__volume = dev.volume.value_flat
             self.__muted = dev.mute
+            self.__devicename = dev.name
         core.event.trigger("update", [self.id], redraw_only=True)
         core.event.trigger("draw")
 
