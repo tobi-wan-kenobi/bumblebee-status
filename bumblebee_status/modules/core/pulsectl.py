@@ -8,6 +8,7 @@ import core.input
 import core.event
 
 import util.cli
+import util.graph
 import util.format
 
 class Module(core.module.Module):
@@ -18,6 +19,7 @@ class Module(core.module.Module):
         self.__type = type
         self.__volume = "n/a"
         self.__muted = False
+        self.__showbars = util.format.asbool(self.parameter("showbars", False))
 
         self.__change = util.format.asint(
             self.parameter("percent_change", "2%").strip("%"), 0, 100
@@ -51,7 +53,10 @@ class Module(core.module.Module):
         self.process(None)
 
     def display(self, _):
-        return f"{int(self.__volume*100)}%"
+        res = f"{int(self.__volume*100)}%"
+        if self.__showbars:
+            res = f"{res} {util.graph.hbar(self.__volume*100)}"
+        return res
 
     def toggle_mute(self, _):
         with pulsectl.Pulse(self.id + "vol") as pulse:
@@ -63,7 +68,7 @@ class Module(core.module.Module):
             dev = self.get_device(pulse)
             vol = dev.volume
             vol.value_flat += amount
-            if vol.value_flat > self.__limit/100:
+            if self.__limit > 0 and vol.value_flat > self.__limit/100:
                 vol.value_flat = self.__limit/100
             pulse.volume_set(dev, vol)
 
