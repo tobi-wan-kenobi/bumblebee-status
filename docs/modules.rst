@@ -215,6 +215,8 @@ pulseaudio
 
 Displays volume and mute status and controls for PulseAudio devices. Use wheel up and down to change volume, left click mutes, right click opens pavucontrol.
 
+!!! This module will eventually be deprecated (since it has bad performance and high CPU load) and be replaced with "pulsectl", which is a much better drop-in replacement !!!
+
 Aliases: pasink (use this to control output instead of input), pasource
 
 Parameters:
@@ -245,6 +247,42 @@ Requires the following executable:
     * pavucontrol
 
 .. image:: ../screenshots/pulseaudio.png
+
+pulsectl
+~~~~~~~~
+
+Displays volume and mute status and controls for PulseAudio devices. Use wheel up and down to change volume, left click mutes, right click opens pavucontrol.
+
+**Please prefer this module over the "pulseaudio" module, which will eventually be deprecated
+
+Aliases: pulseout (for outputs, such as headsets, speakers), pulsein (for microphones)
+
+NOTE: Do **not** use this module directly, but rather use either pulseout or pulsein!
+NOTE2: For the parameter names below, please also use pulseout or pulsein, instead of pulsectl
+
+Parameters:
+    * pulsectl.autostart: If set to 'true' (default is 'false'), automatically starts the pulsectl daemon if it is not running
+    * pulsectl.percent_change: How much to change volume by when scrolling on the module (default is 2%)
+    * pulsectl.limit: Upper limit for setting the volume (default is 0%, which means 'no limit')
+    * pulsectl.showbars: 'true' for showing volume bars, requires --markup=pango;
+      'false' for not showing volume bars (default)
+    * pulsectl.showdevicename: If set to 'true' (default is 'false'), the currently selected default device is shown.
+      Per default, the sink/source name returned by "pactl list sinks short" is used as display name.
+
+      As this name is usually not particularly nice (e.g "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo"),
+      its possible to map the name to more a user friendly name.
+
+      e.g to map "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" to the name "Headset", add the following
+      bumblebee-status config entry: pulsectl.alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo=Headset
+
+      Furthermore its possible to specify individual (unicode) icons for all sinks/sources. e.g in order to use the icon 🎧 for the
+      "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" sink, add the following bumblebee-status config entry:
+      pulsectl.icon.alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo=🎧
+    * Per default a left mouse button click mutes/unmutes the device. In case you want to open a dropdown menu to change the current
+      default device add the following config entry to your bumblebee-status config: pulsectl.left-click=select_default_device_popup
+
+Requires the following Python module:
+    * pulsectl
 
 redshift
 ~~~~~~~~
@@ -825,9 +863,10 @@ Parameters:
     * gcalendar.time_format: Format time output. Defaults to "%H:%M".
     * gcalendar.date_format: Format date output. Defaults to "%d.%m.%y".
     * gcalendar.credentials_path: Path to credentials.json. Defaults to "~/".
+    * gcalendar.locale: locale to use rather than the system default.
 
 Requires these pip packages:
-   * google-api-python-client 
+   * google-api-python-client >= 1.8.0
    * google-auth-httplib2 
    * google-auth-oauthlib
 
@@ -1301,8 +1340,8 @@ Displays information about the public IP address associated with the default rou
     * City Name
     * Geographic Coordinates
 
-Left mouse click on the widget forces immediate update
-Any change to the default route will cause the widget to update
+Left mouse click on the widget forces immediate update.
+Any change to the default route will cause the widget to update.
 
 Requirements:
     * netifaces
@@ -1316,7 +1355,7 @@ Examples:
     * bumblebee-status -m publicip -p publicip.format="{ip} which is in {city_name}"
     * bumblebee-status -m publicip -p publicip.format="Your packets are right here: {coordinates}"
 
-contributed by `tfwiii <https://github.com/tfwiii>`_ - many thanks!
+contributed by `tfwiii <https://github.com/tfwiii>` - many thanks!
 
 rofication
 ~~~~~~~~~~
@@ -1328,6 +1367,9 @@ simple module to show an icon + the number of notifications stored in rofication
 module will have normal highlighting if there are zero notifications,
                  "warning" highlighting if there are nonzero notifications,
                  "critical" highlighting if there are any critical notifications
+
+Parameters:
+* rofication.regolith: Switch to regolith fork of rofication, see <https://github.com/regolith-linux/regolith-rofication>.
 
 rotation
 ~~~~~~~~
