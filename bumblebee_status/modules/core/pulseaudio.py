@@ -2,6 +2,8 @@
 
 """Displays volume and mute status and controls for PulseAudio devices. Use wheel up and down to change volume, left click mutes, right click opens pavucontrol.
 
+!!! This module will eventually be deprecated (since it has bad performance and high CPU load) and be replaced with "pulsectl", which is a much better drop-in replacement !!!
+
 Aliases: pasink (use this to control output instead of input), pasource
 
 Parameters:

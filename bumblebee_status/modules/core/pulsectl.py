@@ -2,6 +2,8 @@
 
 """Displays volume and mute status and controls for PulseAudio devices. Use wheel up and down to change volume, left click mutes, right click opens pavucontrol.
 
+**Please prefer this module over the "pulseaudio" module, which will eventually be deprecated
+
 Aliases: pulseout (for outputs, such as headsets, speakers), pulsein (for microphones)
 
 NOTE: Do **not** use this module directly, but rather use either pulseout or pulsein!
