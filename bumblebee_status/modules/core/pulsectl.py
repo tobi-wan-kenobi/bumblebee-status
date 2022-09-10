@@ -1,5 +1,37 @@
 # pylint: disable=C0111,R0903
 
+"""Displays volume and mute status and controls for PulseAudio devices. Use wheel up and down to change volume, left click mutes, right click opens pavucontrol.
+
+Aliases: pulseout (for outputs, such as headsets, speakers), pulsein (for microphones)
+
+NOTE: Do **not** use this module directly, but rather use either pulseout or pulsein!
+NOTE2: For the parameter names below, please also use pulseout or pulsein, instead of pulsectl
+
+Parameters:
+    * pulsectl.autostart: If set to 'true' (default is 'false'), automatically starts the pulsectl daemon if it is not running
+    * pulsectl.percent_change: How much to change volume by when scrolling on the module (default is 2%)
+    * pulsectl.limit: Upper limit for setting the volume (default is 0%, which means 'no limit')
+    * pulsectl.showbars: 'true' for showing volume bars, requires --markup=pango;
+      'false' for not showing volume bars (default)
+    * pulsectl.showdevicename: If set to 'true' (default is 'false'), the currently selected default device is shown.
+      Per default, the sink/source name returned by "pactl list sinks short" is used as display name.
+
+      As this name is usually not particularly nice (e.g "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo"),
+      its possible to map the name to more a user friendly name.
+
+      e.g to map "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" to the name "Headset", add the following
+      bumblebee-status config entry: pulsectl.alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo=Headset
+
+      Furthermore its possible to specify individual (unicode) icons for all sinks/sources. e.g in order to use the icon 🎧 for the
+      "alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo" sink, add the following bumblebee-status config entry:
+      pulsectl.icon.alsa_output.usb-Logitech_Logitech_USB_Headset-00.analog-stereo=🎧
+    * Per default a left mouse button click mutes/unmutes the device. In case you want to open a dropdown menu to change the current
+      default device add the following config entry to your bumblebee-status config: pulsectl.left-click=select_default_device_popup
+
+Requires the following Python module:
+    * pulsectl
+"""
+
 import pulsectl
 
 import core.module
