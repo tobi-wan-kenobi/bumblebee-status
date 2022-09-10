@@ -7,6 +7,7 @@ import core.widget
 import core.input
 import core.event
 
+import util.cli
 import util.format
 
 class Module(core.module.Module):
@@ -42,6 +43,9 @@ class Module(core.module.Module):
 
         for event in events:
             core.input.register(self, button=event["button"], cmd=event["action"])
+
+        if util.format.asbool(self.parameter("autostart", False)):
+            util.cli.execute("pulseaudio --start", ignore_errors=True)
 
         self.process(None)
 
