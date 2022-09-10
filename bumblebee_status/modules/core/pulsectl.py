@@ -22,6 +22,7 @@ class Module(core.module.Module):
         self.__change = util.format.asint(
             self.parameter("percent_change", "2%").strip("%"), 0, 100
         )
+        self.__limit = util.format.asint(self.parameter("limit", "0%").strip("%"), 0)
 
         events = [
             {
@@ -62,6 +63,8 @@ class Module(core.module.Module):
             dev = self.get_device(pulse)
             vol = dev.volume
             vol.value_flat += amount
+            if vol.value_flat > self.__limit/100:
+                vol.value_flat = self.__limit/100
             pulse.volume_set(dev, vol)
 
     def increase_volume(self, _):
