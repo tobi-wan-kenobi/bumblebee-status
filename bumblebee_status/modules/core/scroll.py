@@ -1,6 +1,9 @@
 # pylint: disable=C0111,R0903
 
-"""
+"""Displays two widgets that can be used to scroll the whole status bar
+
+Parameters:
+    * scroll.width: Width (in number of widgets) to display
 """
 
 import core.module
