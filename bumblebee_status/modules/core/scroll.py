@@ -46,7 +46,7 @@ class Module(core.module.Module):
         if widget.id == self.widgets()[0].id:
             if self.__offset == 0:
                 return ["warning"]
-        if self.__offset + self.__width >= self.__widgetcount:
+        elif self.__offset + self.__width >= self.__widgetcount:
             return ["warning"]
         return []
 
