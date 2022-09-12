@@ -24,7 +24,12 @@ class Module(core.module.Module):
         self.__pending_tasks = "0"
 
     def update(self):
-        """Return a string with the number of pending tasks from TaskWarrior."""
+        """Return a string with the number of pending tasks from TaskWarrior
+        or the descripton of an active task.
+
+        if show.active is set in the config, show the description of the
+        current active task, otherwise the number of pending tasks will be displayed.
+        """
         try:
             taskrc = self.parameter("taskrc", "~/.taskrc")
             show_active = self.parameter("show_active", False)
@@ -33,6 +38,8 @@ class Module(core.module.Module):
                 w.filter_tasks({"start.any": "", "status": "pending"}) or None
             )
             if show_active and active_tasks:
+                # this is using the first element of the list, if there happen
+                # to be other active tasks, they won't be displayed.
                 reporting_tasks = (
                     f"{active_tasks[0]['id']} - {active_tasks[0]['description']}"
                 )
