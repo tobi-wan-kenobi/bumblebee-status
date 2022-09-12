@@ -24,15 +24,32 @@ class Module(core.module.Module):
         self.__pending_tasks = "0"
 
     def update(self):
-        """Return a string with the number of pending tasks from TaskWarrior."""
+        """Return a string with the number of pending tasks from TaskWarrior
+        or the descripton of an active task.
+
+        if show.active is set in the config, show the description of the
+        current active task, otherwise the number of pending tasks will be displayed.
+        """
         try:
             taskrc = self.parameter("taskrc", "~/.taskrc")
+            show_active = self.parameter("show_active", False)
             w = TaskWarrior(config_filename=taskrc)
-            pending_tasks = w.filter_tasks({"status": "pending"})
-            self.__pending_tasks = str(len(pending_tasks))
+            active_tasks = (
+                w.filter_tasks({"start.any": "", "status": "pending"}) or None
+            )
+            if show_active and active_tasks:
+                # this is using the first element of the list, if there happen
+                # to be other active tasks, they won't be displayed.
+                reporting_tasks = (
+                    f"{active_tasks[0]['id']} - {active_tasks[0]['description']}"
+                )
+            else:
+                reporting_tasks = len(w.filter_tasks({"status": "pending"}))
+            self.__pending_tasks = reporting_tasks
         except:
             self.__pending_tasks = "n/a"
 
+    @core.decorators.scrollable
     def output(self, _):
         """Format the task counter to output in bumblebee."""
         return "{}".format(self.__pending_tasks)

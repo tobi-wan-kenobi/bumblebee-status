@@ -1612,6 +1612,7 @@ Requires the following library:
 
 Parameters:
     * taskwarrior.taskrc : path to the taskrc file (defaults to ~/.taskrc)
+    * taskwarrior.show_active: true/false(default) to show the active task ID and description when one is active, otherwise show the total number pending.
 
 
 contributed by `chdorb <https://github.com/chdorb>`_ - many thanks!
