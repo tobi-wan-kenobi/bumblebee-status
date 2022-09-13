@@ -9,6 +9,8 @@ Welcome to bumblebee-status's documentation!
 bumblebee-status is a modular, theme-able status line generator for the
 `i3 window manager <https://i3wm.org/>`__.
 
+Logo courtesy of [kellya](https://github.com/kellya) - thank you!
+
 Focus is on:
 
  - ease of use, sane defaults (no mandatory configuration file)
