@@ -1,0 +1,79 @@
+{
+	"icons": [ "paxy97", "awesome-fonts" ],
+	"defaults": {
+		"warning": {
+			"bg": "#353839",
+			"fg": "#b38a32"
+		},
+		"critical": {
+			"bg": "#353839",
+			"fg": "#d94070"
+		},
+		"default-separators": false,
+    "separator": "",
+		"separator-block-width": 2
+	},
+	"bg": "#353839",
+	"fg": "#c4b6a3",
+    "dnf": {
+        "good": {
+            "bg": "#353839",
+            "fg": "#378c5d"
+        }
+    },
+    "apt": {
+        "good": {
+            "bg": "#353839",
+            "fg": "#378c5d"
+        }
+    },
+    "battery": {
+        "charged": {
+            "bg": "#353839",
+            "fg": "#378c5d"
+        },
+        "AC": {
+            "bg": "#353839",
+            "fg": "#378c5d"
+        }
+    },
+    "bluetooth": {
+        "ON": {
+            "bg": "#353839",
+            "fg": "#378c5d"
+        }
+    },
+    "git": {
+        "modified": { "fg": "#174572" },
+        "deleted": { "fg": "#ba1d58" },
+        "new": { "fg": "#967117" }
+    },
+    "pomodoro": {
+        "paused": {
+            "bg": "#353839",
+            "fg": "#d79921"
+        },
+        "work": {
+            "bg": "#353839",
+            "fg": "#378c5d"
+        },
+        "break": {
+            "bg": "#353839",
+            "fg": "#378c5d"
+        }
+    },
+	"keys": {
+		"Key.cmd": {
+			"fg": "#477ab7"
+		},
+		"Key.shift": {
+			"fg": "#b38a32"
+		},
+		"Key.ctrl": {
+			"fg": "#377c8b"
+		},
+		"Key.alt": {
+			"fg": "#e05b1f"
+		}
+	}
+}
