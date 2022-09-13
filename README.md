@@ -1,7 +1,8 @@
-<img src="https://github.com/kellya/bumblebee-status-icon/blob/main/img/bumblebee_status_rtl.svg" width="100">
-(logo courtesy of [kellya](https://github.com/kellya) - thank you!)
+<img src="https://github.com/kellya/bumblebee-status-icon/blob/main/img/bumblebee_status_rtl.svg" width="100" style="display:inline">
 
 # bumblebee-status
+
+logo courtesy of [kellya](https://github.com/kellya) - thank you!
 
 [![Documentation Status](https://readthedocs.org/projects/bumblebee-status/badge/?version=main)](https://bumblebee-status.readthedocs.io/en/main/?badge=main)
 ![AUR version (release)](https://img.shields.io/aur/version/bumblebee-status)
