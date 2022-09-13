@@ -1,7 +1,5 @@
-<img src="https://github.com/kellya/bumblebee-status-icon/blob/main/img/bumblebee_status_rtl.svg" width="100" style="display:inline-block">bumblebee-status
+<img src="https://github.com/kellya/bumblebee-status-icon/blob/main/img/bumblebee_status_rtl.svg" width="50" style="display:inline-block">bumblebee-status
 =====================================================
-
-# bumblebee-status
 
 logo courtesy of [kellya](https://github.com/kellya) - thank you!
 
