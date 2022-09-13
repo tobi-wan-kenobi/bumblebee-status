@@ -1,3 +1,6 @@
+![bumblebee-status logo](https://github.com/kellya/bumblebee-status-icon/blob/main/img/bumblebee_status_rtl.svg | width=100)
+(logo courtesy of [kellya](https://github.com/kellya) - thank you!)
+
 # bumblebee-status
 
 [![Documentation Status](https://readthedocs.org/projects/bumblebee-status/badge/?version=main)](https://bumblebee-status.readthedocs.io/en/main/?badge=main)
