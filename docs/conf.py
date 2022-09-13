@@ -49,8 +49,8 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
-html_logo = "https://raw.githubusercontent.com/kellya/bumblebee-status-icon/main/img/bumblebee_status_rtl.svg"
-html_favicon = "https://raw.githubusercontent.com/kellya/bumblebee-status-icon/main/img/favicon/favicon.ico"
+html_logo = "logo.png"
+html_favicon = "favicon.ico"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
