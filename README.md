@@ -1,5 +1,7 @@
 <img src="https://github.com/kellya/bumblebee-status-icon/blob/main/img/bumblebee_status_rtl.svg" width="100" style="display:inline">
 
+<h1 style="display:inline">bumblebee-status</h1>
+
 # bumblebee-status
 
 logo courtesy of [kellya](https://github.com/kellya) - thank you!
