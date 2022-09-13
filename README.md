@@ -1,4 +1,4 @@
-![bumblebee-status logo](https://github.com/kellya/bumblebee-status-icon/blob/main/img/bumblebee_status_rtl.svg | width=100)
+![bumblebee-status logo](https://github.com/kellya/bumblebee-status-icon/blob/main/img/bumblebee_status_rtl.svg)
 (logo courtesy of [kellya](https://github.com/kellya) - thank you!)
 
 # bumblebee-status
