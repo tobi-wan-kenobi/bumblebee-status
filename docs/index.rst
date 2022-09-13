@@ -3,8 +3,10 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to bumblebee-status's documentation!
+<img src="https://github.com/kellya/bumblebee-status-icon/blob/main/img/bumblebee_status_rtl.svg" width="50" style="display:inline-block">Welcome to bumblebee-status's documentation!
 ============================================
+
+logo courtesy of [kellya](https://github.com/kellya) - thank you!
 
 bumblebee-status is a modular, theme-able status line generator for the
 `i3 window manager <https://i3wm.org/>`__.
