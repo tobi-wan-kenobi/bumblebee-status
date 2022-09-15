@@ -22,6 +22,7 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.output))
 
         self.__pending_tasks = "0"
+        self.__status = "stopped"
 
     def update(self):
         """Return a string with the number of pending tasks from TaskWarrior
@@ -43,16 +44,23 @@ class Module(core.module.Module):
                 reporting_tasks = (
                     f"{active_tasks[0]['id']} - {active_tasks[0]['description']}"
                 )
+                self.__status = "active"
             else:
                 reporting_tasks = len(w.filter_tasks({"status": "pending"}))
+                self.__status = "stopped"
             self.__pending_tasks = reporting_tasks
         except:
             self.__pending_tasks = "n/a"
+            self.__status = "stopped"
 
     @core.decorators.scrollable
     def output(self, _):
         """Format the task counter to output in bumblebee."""
         return "{}".format(self.__pending_tasks)
+
+    def state(self, widget):
+        """Return the set status to reflect state"""
+        return self.__status
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
