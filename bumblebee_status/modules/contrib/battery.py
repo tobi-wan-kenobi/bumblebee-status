@@ -180,11 +180,6 @@ class Module(core.module.Module):
             log.debug("battery state: {}".format(state))
             return ["critical", "unknown"]
 
-        if capacity < int(self.parameter("critical", 10)):
-            state.append("critical")
-        elif capacity < int(self.parameter("warning", 20)):
-            state.append("warning")
-
         if widget.get("ac"):
             state.append("AC")
         else:
@@ -209,6 +204,18 @@ class Module(core.module.Module):
                     state.append("charged")
                 else:
                     state.append("charging")
+
+        if (
+            capacity < int(self.parameter("critical", 10))
+            and self.__manager.charge_any(self._batteries) == "Discharging"
+        ):
+            state.append("critical")
+        elif (
+            capacity < int(self.parameter("warning", 20))
+            and self.__manager.charge_any(self._batteries) == "Discharging"
+        ):
+            state.append("warning")
+
         return state
 
 
