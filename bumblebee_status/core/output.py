@@ -146,11 +146,14 @@ class i3(object):
         self.__content = {}
         self.__theme = theme
         self.__config = config
+        self.__offset = 0
         self.__lock = threading.Lock()
         core.event.register("update", self.update)
         core.event.register("start", self.draw, "start")
         core.event.register("draw", self.draw, "statusline")
         core.event.register("stop", self.draw, "stop")
+        core.event.register("output.scroll-left", self.scroll_left)
+        core.event.register("output.scroll-right", self.scroll_right)
 
     def content(self):
         return self.__content
@@ -182,7 +185,7 @@ class i3(object):
             cb = getattr(self, what)
             data = cb(args) if args else cb()
             if "blocks" in data:
-                sys.stdout.write(json.dumps(data["blocks"], default=dump_json))
+                sys.stdout.write(json.dumps(data, default=dump_json))
             if "suffix" in data:
                 sys.stdout.write(data["suffix"])
             sys.stdout.write("\n")
@@ -223,13 +226,29 @@ class i3(object):
             blk.set("__state", state)
         return blk
 
+    def scroll_left(self):
+        if self.__offset > 0:
+            self.__offset -= 1
+
+    def scroll_right(self):
+        self.__offset += 1
+
     def blocks(self, module):
         blocks = []
         if module.minimized:
             blocks.extend(self.separator_block(module, module.widgets()[0]))
             blocks.append(self.__content_block(module, module.widgets()[0]))
+            self.__widgetcount += 1
             return blocks
+
+        width = self.__config.get("output.width", 0)
         for widget in module.widgets():
+            if module.scroll() == True and width > 0:
+                self.__widgetcount += 1
+                if self.__widgetcount-1 < self.__offset:
+                    continue
+                if self.__widgetcount-1 >= self.__offset + width:
+                    continue
             if widget.module and self.__config.autohide(widget.module.name):
                 if not any(
                     state in widget.state() for state in ["warning", "critical", "no-autohide"]
@@ -244,6 +263,7 @@ class i3(object):
             blocks.extend(self.separator_block(module, widget))
             blocks.append(self.__content_block(module, widget))
             core.event.trigger("next-widget")
+        core.event.trigger("output.done", self.__offset, self.__widgetcount)
         return blocks
 
     def update(self, affected_modules=None, redraw_only=False, force=False):
@@ -274,6 +294,7 @@ class i3(object):
 
     def statusline(self):
         blocks = []
+        self.__widgetcount = 0
         for module in self.__modules:
             blocks.extend(self.blocks(module))
         return {"blocks": blocks, "suffix": ","}

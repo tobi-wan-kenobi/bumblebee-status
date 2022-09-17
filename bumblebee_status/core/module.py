@@ -112,6 +112,15 @@ class Module(core.input.Object):
     def hidden(self):
         return False
 
+    """Override this to show the module even if it normally would be scrolled away
+
+    :return: True if the module should be hidden, False otherwise
+    :rtype: boolean
+    """
+
+    def scroll(self):
+        return True
+
     """Retrieve CLI/configuration parameters for this module. For example, if
     the module is called "test" and the user specifies "-p test.x=123" on the
     commandline, using self.parameter("x") retrieves the value 123.
