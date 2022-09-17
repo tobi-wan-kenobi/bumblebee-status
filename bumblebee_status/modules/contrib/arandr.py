@@ -8,6 +8,9 @@ saved screen layout as well as toggle on/off individual connected displays.
 Parameters:
     * No configuration parameters
 
+Requires the following python modules:
+    * tkinter
+
 Requires the following executable:
     * arandr
     * xrandr
