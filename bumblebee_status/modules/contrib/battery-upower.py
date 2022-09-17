@@ -211,7 +211,9 @@ class UPowerManager:
         battery_proxy = self.bus.get_object(self.UPOWER_NAME, battery)
         battery_proxy_interface = dbus.Interface(battery_proxy, self.DBUS_PROPERTIES)
 
-        return bool(battery_proxy_interface.Get(self.UPOWER_NAME + ".Device", "IsPresent"))
+        return bool(
+            battery_proxy_interface.Get(self.UPOWER_NAME + ".Device", "IsPresent")
+        )
 
     def is_loading(self, battery):
         battery_proxy = self.bus.get_object(self.UPOWER_NAME, battery)
@@ -309,11 +311,6 @@ class Module(core.module.Module):
         if capacity < 0:
             return ["critical", "unknown"]
 
-        if capacity < int(self.parameter("critical", 10)):
-            state.append("critical")
-        elif capacity < int(self.parameter("warning", 20)):
-            state.append("warning")
-
         if widget.get("ac"):
             state.append("AC")
         else:
@@ -339,6 +336,16 @@ class Module(core.module.Module):
                     state.append("charged")
                 else:
                     state.append("charging")
+        if (
+            capacity < int(self.parameter("critical", 10))
+            and self.power.get_state(self.device) == "Discharging"
+        ):
+            state.append("critical")
+        elif (
+            capacity < int(self.parameter("warning", 20))
+            and self.power.get_state(self.device) == "Discharging"
+        ):
+            state.append("warning")
         return state
 
 
