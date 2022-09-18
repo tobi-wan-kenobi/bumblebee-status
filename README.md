@@ -4,11 +4,11 @@
 logo courtesy of [kellya](https://github.com/kellya) - thank you!
 
 [![Documentation Status](https://readthedocs.org/projects/bumblebee-status/badge/?version=main)](https://bumblebee-status.readthedocs.io/en/main/?badge=main)
-![Contributors](https://img.shields.io/github/contributors-anon/tobi-wan-kenobi/bumblebee-status)
 ![Commits since release](https://img.shields.io/github/commits-since/tobi-wan-kenobi/bumblebee-status/latest)
 ![AUR version (release)](https://img.shields.io/aur/version/bumblebee-status)
 ![AUR version (git)](https://img.shields.io/aur/version/bumblebee-status-git)
 ![PyPI version](https://img.shields.io/pypi/v/bumblebee-status)
+![Contributors](https://img.shields.io/github/contributors-anon/tobi-wan-kenobi/bumblebee-status)
 [![Tests](https://github.com/tobi-wan-kenobi/bumblebee-status/actions/workflows/autotest.yml/badge.svg?branch=main)](https://github.com/tobi-wan-kenobi/bumblebee-status/actions/workflows/autotest.yml)
 
 [![Code Climate](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status/badges/gpa.svg)](https://codeclimate.com/github/tobi-wan-kenobi/bumblebee-status)
