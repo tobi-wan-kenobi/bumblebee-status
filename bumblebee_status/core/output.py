@@ -185,7 +185,7 @@ class i3(object):
             cb = getattr(self, what)
             data = cb(args) if args else cb()
             if "blocks" in data:
-                sys.stdout.write(json.dumps(data, default=dump_json))
+                sys.stdout.write(json.dumps(data["blocks"], default=dump_json))
             if "suffix" in data:
                 sys.stdout.write(data["suffix"])
             sys.stdout.write("\n")
