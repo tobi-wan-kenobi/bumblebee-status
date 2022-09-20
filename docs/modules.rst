@@ -1126,7 +1126,9 @@ network_traffic
 ~~~~~~~~~~~~~~~
 
 Displays network traffic
-   * No extra configuration needed
+
+Requires the following library:
+    * netifaces
 
 contributed by `izn <https://github.com/izn>`_ - many thanks!
 
