@@ -56,7 +56,7 @@ setup(
         ("share/bumblebee-status/themes", glob.glob("themes/*.json")),
         ("share/bumblebee-status/themes/icons", glob.glob("themes/icons/*.json")),
         ("share/bumblebee-status/utility", glob.glob("bin/*")),
-        ("usr/share/man/man1", glob.glob("man/*.1")),
+        ("share/man/man1", glob.glob("man/*.1")),
     ],
     packages=find_packages(exclude=["tests", "tests.*"])
 )
