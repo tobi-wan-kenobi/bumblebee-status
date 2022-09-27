@@ -97,3 +97,8 @@ List of available themes
    :alt: Default
 
    Default (nothing or -t default)
+
+.. figure:: ../screenshots/themes/moonlight-powerline.png
+   :alt: Moonlight Powerline
+
+   Moonlight Powerline (-t moonlight-powerline) (contributed by `Ramon Saraiva <https://github.com/ramonsaraiva>`__)
