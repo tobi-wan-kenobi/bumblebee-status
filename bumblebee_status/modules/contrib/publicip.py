@@ -154,8 +154,6 @@ class Module(core.module.Module):
             core.event.trigger("update", [widget.module.id], redraw_only=True)
         except Exception as ex:
             widget.set("public_ip", None)
-            print("OH NOES!")
-            print(__info)
             logging.error(str(ex))
 
     def state(self, widget):
