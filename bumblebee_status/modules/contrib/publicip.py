@@ -116,6 +116,8 @@ class Module(core.module.Module):
 
     def update(self):
         widget = self.widget()
+        __lat = None
+        __lon = None
 
         try:
             util.location.reset()
@@ -123,10 +125,23 @@ class Module(core.module.Module):
             # Fetch fresh location information
             __info = util.location.location_info()
 
-            # Contstruct coordinates string
-            __lat = "{:.2f}".format(__info["latitude"])
-            __lon = "{:.2f}".format(__info["longitude"])
-            __coords = __lat + "°N" + "," + " " + __lon + "°E"
+            # Contstruct coordinates string if util.location has provided required info
+            if __lat and __lon:
+                __lat = "{:.2f}".format(__info["latitude"])
+                __lon = "{:.2f}".format(__info["longitude"])
+                if __lat < 0:
+                    __coords = __lat + "°S"
+                else:
+                    __coords = __lat + "°N"
+                __coords += ","
+                if __lon < 0:
+                    __coords += __lon + "°W"
+                else:
+                    __coords += __lon + "°E"
+            else:
+                __lat = "Unknown"
+                __lon = "Unknown"
+                __coords = "Unknown" 
 
             # Set widget values
             widget.set("public_ip", __info["public_ip"])
@@ -139,6 +154,8 @@ class Module(core.module.Module):
             core.event.trigger("update", [widget.module.id], redraw_only=True)
         except Exception as ex:
             widget.set("public_ip", None)
+            print("OH NOES!")
+            print(__info)
             logging.error(str(ex))
 
     def state(self, widget):
