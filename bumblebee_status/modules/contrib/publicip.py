@@ -60,43 +60,34 @@ class Module(core.module.Module):
         self.__monitor.start()
 
     def monitor(self):
-        default_route = None
-        interfaces = None
+        __previous_ips = set()
+        __current_ips = set()
         # Initially set to True to force an info update on first pass
-        information_changed = True
+        __information_changed = True
 
         self.update()
 
         while threading.main_thread().is_alive():
-            # Look for any changes in the netifaces default route information
+            __current_ips.clear()
+            # Look for any changes to IP addresses
             try:
-                current_default_route = netifaces.gateways()["default"][2]
+                for interface in netifaces.interfaces():
+                    __current_ips.add(netifaces.ifaddresses(interface)[2][0]['addr'])
+                    
             except:
-                # error reading out default gw -> assume none exists
-                current_default_route = None
-            if current_default_route != default_route:
-                default_route = current_default_route
-                information_changed = True
+            # If not ip address information found clear __current_ips
+                __current_ips.clear()
+            
+            # If a change of any interfaces' IP then flag change
+            if __current_ips.symmetric_difference(__previous_ips):
+                __previous_ips = __current_ips.copy()
+                __information_changed = True
 
-            # netifaces does not check ALL routing tables which might lead to false negatives
-            # (ref: http://linux-ip.net/html/routing-tables.html) so additionally... look for
-            # any changes in the netifaces interfaces information which might also be an inticator
-            # of a change of route/external IP
-            if not information_changed: # Only check if no routing table change found
-                try:
-                    current_interfaces = netifaces.interfaces()
-                except:
-                    # error reading interfaces information -> assume none exists
-                    current_interfaces = None
-                if current_interfaces != interfaces:
-                    interfaces = current_interfaces
-                    information_changed = True
-
-            # Update either routing or interface information has changed
-            if information_changed:
-                information_changed = False
+            # Update if change is flagged
+            if __information_changed:
+                __information_changed = False
                 self.update()
-
+            
             # Throttle the calls to netifaces
             time.sleep(1)
 
@@ -104,11 +95,11 @@ class Module(core.module.Module):
         if widget.get("public_ip") is None:
             return "n/a"
         return self._format.format(
-            ip=widget.get("public_ip", "-"),
-            country_name=widget.get("country_name", "-"),
-            country_code=widget.get("country_code", "-"),
-            city_name=widget.get("city_name", "-"),
-            coordinates=widget.get("coordinates", "-"),
+            ip = widget.get("public_ip", "-"),
+            country_name = widget.get("country_name", "-"),
+            country_code = widget.get("country_code", "-"),
+            city_name = widget.get("city_name", "-"),
+            coordinates = widget.get("coordinates", "-"),
         )
 
     def __click_update(self, event):
@@ -116,31 +107,30 @@ class Module(core.module.Module):
 
     def update(self):
         widget = self.widget()
-        __lat = None
-        __lon = None
 
         try:
             util.location.reset()
+            time.sleep(5) # wait for reset to complete before querying results
 
             # Fetch fresh location information
             __info = util.location.location_info()
+            __raw_lat = __info["latitude"]
+            __raw_lon = __info["longitude"]
 
             # Contstruct coordinates string if util.location has provided required info
-            if __lat and __lon:
-                __lat = "{:.2f}".format(__info["latitude"])
-                __lon = "{:.2f}".format(__info["longitude"])
+            if isinstance(__raw_lat, float) and isinstance(__raw_lon, float):
+                __lat = float("{:.2f}".format(__raw_lat))
+                __lon = float("{:.2f}".format(__raw_lon))
                 if __lat < 0:
-                    __coords = __lat + "°S"
+                    __coords = str(__lat) + "°S"
                 else:
-                    __coords = __lat + "°N"
+                    __coords = str(__lat) + "°N"
                 __coords += ","
                 if __lon < 0:
-                    __coords += __lon + "°W"
+                    __coords += str(__lon) + "°W"
                 else:
-                    __coords += __lon + "°E"
+                    __coords += str(__lon) + "°E"
             else:
-                __lat = "Unknown"
-                __lon = "Unknown"
                 __coords = "Unknown" 
 
             # Set widget values
