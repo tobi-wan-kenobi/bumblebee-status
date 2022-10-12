@@ -72,8 +72,10 @@ class Module(core.module.Module):
             # Look for any changes to IP addresses
             try:
                 for interface in netifaces.interfaces():
-                    __current_ips.add(netifaces.ifaddresses(interface)[2][0]['addr'])
-                    
+                    try:
+                        __current_ips.add(netifaces.ifaddresses(interface)[2][0]['addr'])
+                    except:
+                        pass
             except:
             # If not ip address information found clear __current_ips
                 __current_ips.clear()
