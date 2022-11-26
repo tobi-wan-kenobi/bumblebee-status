@@ -32,8 +32,8 @@ __sources = [
     {
         "url": "http://ip-api.com/json",
         "mapping": {
-            "latitude": "lat",
-            "longitude": "lon",
+            "lat": "latitude",
+            "lon": "longitude",
             "country": "country_name",
             "countryCode": "country_code",
             "city": "city_name",
