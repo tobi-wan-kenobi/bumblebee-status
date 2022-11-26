@@ -39,7 +39,7 @@ jobs:
         run: |
           coverage run --source=. -m pytest tests -v
       - name: Report coverage
-        uses: paambaati/codeclimate-action@v3.0.0
+        uses: paambaati/codeclimate-action@v3.2.0
         with:
           coverageCommand: coverage3 xml
           debug: true
