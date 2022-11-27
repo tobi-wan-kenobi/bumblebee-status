@@ -149,6 +149,7 @@ if __name__ == "__main__":
         main()
     except Exception as e:
         # really basic errors -> make sure these are shown in the status bar by minimal config
+        logging.exception(e)
         if not started:
             print("{\"version\":1}")
             print("[")
