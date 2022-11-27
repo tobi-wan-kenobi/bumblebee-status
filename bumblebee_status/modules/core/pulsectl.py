@@ -51,7 +51,7 @@ class Module(core.module.Module):
         self.background = True
 
         self.__type = type
-        self.__volume = "n/a"
+        self.__volume = 0
         self.__devicename = "n/a"
         self.__muted = False
         self.__showbars = util.format.asbool(self.parameter("showbars", False))
@@ -108,11 +108,15 @@ class Module(core.module.Module):
     def toggle_mute(self, _):
         with pulsectl.Pulse(self.id + "vol") as pulse:
             dev = self.get_device(pulse)
+            if not dev:
+                return
             pulse.mute(dev, not self.__muted)
 
     def change_volume(self, amount):
         with pulsectl.Pulse(self.id + "vol") as pulse:
             dev = self.get_device(pulse)
+            if not dev:
+                return
             vol = dev.volume
             vol.value_flat += amount
             if self.__limit > 0 and vol.value_flat > self.__limit/100:
@@ -132,16 +136,22 @@ class Module(core.module.Module):
         for dev in devs:
             if dev.name == default:
                 return dev
-        return devs[0] # fallback
+        if len(devs) == 0:
+            return None
 
+        return devs[0] # fallback
 
 
     def process(self, _):
         with pulsectl.Pulse(self.id + "proc") as pulse:
             dev = self.get_device(pulse)
-            self.__volume = dev.volume.value_flat
-            self.__muted = dev.mute
-            self.__devicename = dev.name
+            if not dev:
+                self.__volume = 0
+                self.__devicename = "n/a"
+            else:
+                self.__volume = dev.volume.value_flat
+                self.__muted = dev.mute
+                self.__devicename = dev.name
         core.event.trigger("update", [self.id], redraw_only=True)
         core.event.trigger("draw")
 
