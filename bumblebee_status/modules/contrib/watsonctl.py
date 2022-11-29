@@ -7,6 +7,7 @@ origional module contributed by `bendardenne <https://github.com/bendardenne>`_ 
 extended by `dale-muccignat <https://github.com/dale-muccignat>`_
 """
 
+
 import logging
 import re
 import functools
@@ -30,17 +31,12 @@ class Module(core.module.Module):
 
         self.__project_key = {}
         self.__project_list = []
-        self.get_list()
 
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.toggle)
         core.input.register(self, button=core.input.WHEEL_UP, cmd=self.change_project)
         core.input.register(self, button=core.input.WHEEL_DOWN, cmd=self.change_project)
 
-    def get_list(self):
-        # updates the list of current projects and creats a key dictionary
-        self.__project_list = util.cli.execute("watson projects").split()
-        for n in range(len(self.__project_list)):
-            self.__project_key[self.__project_list[n]] = n
+    # def get_list(self):
 
     def toggle(self, widget):
         # on click, starts the timer if the project is slected
@@ -77,13 +73,16 @@ class Module(core.module.Module):
         if re.match(r"No project started", output):
             self.__tracking = False
             self.__status = "Paused"
-            return
+        else:
+            self.__tracking = True
+            m = re.search(r"Project (.+) started", output)
+            self.__project = m.group(1)
+            self.__status = "Tracking"
 
-        self.__tracking = True
-        m = re.search(r"Project (.+) started", output)
-        self.__project = m.group(1)
-        self.__status = "Tracking"
-        self.get_list()
+        # updates the list of current projects and creats a key dictionary
+        self.__project_list = util.cli.execute("watson projects").split()
+        for n in range(len(self.__project_list)):
+            self.__project_key[self.__project_list[n]] = n
 
     def state(self, widget):
         return "on" if self.__tracking else "off"
