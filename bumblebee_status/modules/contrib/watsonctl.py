@@ -21,7 +21,7 @@ import util.cli
 
 
 class Module(core.module.Module):
-    # @core.decorators.every(minutes=1)
+    @core.decorators.every(minutes=5)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.text))
 
@@ -35,8 +35,6 @@ class Module(core.module.Module):
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.toggle)
         core.input.register(self, button=core.input.WHEEL_UP, cmd=self.change_project)
         core.input.register(self, button=core.input.WHEEL_DOWN, cmd=self.change_project)
-
-    # def get_list(self):
 
     def toggle(self, widget):
         # on click, starts the timer if the project is slected
@@ -82,6 +80,8 @@ class Module(core.module.Module):
         # updates the list of current projects and creats a key dictionary
         self.__project_list = util.cli.execute("watson projects").split()
         for n in range(len(self.__project_list)):
+            if n == 0 and self.__project == "Select Project":
+                self.__project = self.__project_list[n]
             self.__project_key[self.__project_list[n]] = n
 
     def state(self, widget):
