@@ -50,7 +50,7 @@ class Module(core.module.Module):
                 self.__status = "Paused"
             else:
                 util.cli.execute("watson start " + self.__project)
-                self.__status = "Play"
+                self.__status = "Tracking"
             self.__tracking = not self.__tracking
 
     def change_project(self, event):
@@ -82,7 +82,7 @@ class Module(core.module.Module):
         self.__tracking = True
         m = re.search(r"Project (.+) started", output)
         self.__project = m.group(1)
-        self.__status = "Play"
+        self.__status = "Tracking"
         self.get_list()
 
     def state(self, widget):
