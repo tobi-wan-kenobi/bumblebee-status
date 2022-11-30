@@ -19,9 +19,11 @@ import core.decorators
 
 import util.cli
 
+from easygui import *
+
 
 class Module(core.module.Module):
-    @core.decorators.every(minutes=5)
+    # @core.decorators.every(minutes=5)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.text))
 
@@ -33,8 +35,21 @@ class Module(core.module.Module):
         self.__project_list = []
 
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.toggle)
+        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.new_project)
         core.input.register(self, button=core.input.WHEEL_UP, cmd=self.change_project)
         core.input.register(self, button=core.input.WHEEL_DOWN, cmd=self.change_project)
+
+    def new_project(self, widget):
+        # on right-click, open dialog to enter the name of a new project
+        # TODO: enable entering a new tag in a second dialog box
+        if self.__tracking:
+            return
+        text = "Enter the name of a new project to start"
+        title = "Watson"
+        output = enterbox(text,title,self.__project)
+        if output:
+            self.__project = output
+            util.cli.execute("watson start " + self.__project)
 
     def toggle(self, widget):
         # on click, starts the timer if the project is slected
@@ -46,6 +61,7 @@ class Module(core.module.Module):
                 util.cli.execute("watson start " + self.__project)
                 self.__status = "Tracking"
             self.__tracking = not self.__tracking
+            self.update()
 
     def change_project(self, event):
         # on scroll, cycles the currently selected project
@@ -59,6 +75,7 @@ class Module(core.module.Module):
                 self.__project = self.__project_list[n + 1]
             else:
                 self.__project = self.__project_list[0]
+        self.update()
 
     def text(self, widget):
         if self.__tracking:
