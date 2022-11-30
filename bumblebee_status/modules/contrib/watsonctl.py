@@ -36,8 +36,8 @@ class Module(core.module.Module):
 
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.toggle)
         core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.new_project)
-        core.input.register(self, button=core.input.WHEEL_UP, cmd=self.change_project)
-        core.input.register(self, button=core.input.WHEEL_DOWN, cmd=self.change_project)
+        core.input.register(self, button=core.input.WHEEL_UP, cmd=self.change_project_up)
+        core.input.register(self, button=core.input.WHEEL_DOWN, cmd=self.change_project_down)
 
     def new_project(self, widget):
         # on right-click, open dialog to enter the name of a new project
@@ -63,18 +63,30 @@ class Module(core.module.Module):
             self.__tracking = not self.__tracking
             self.update()
 
-    def change_project(self, event):
-        # on scroll, cycles the currently selected project
+    def change_project_up(self, event):
+        # on scroll up, cycles the currently selected project up
         if self.__tracking:
             return
         if self.__project == "Select Project":
-            self.__project = self.__project_list[0]
+            return
+        n = self.__project_key[self.__project]
+        if n < len(self.__project_list) - 1:
+            self.__project = self.__project_list[n + 1]
         else:
-            n = self.__project_key[self.__project]
-            if n < len(self.__project_list) - 1:
-                self.__project = self.__project_list[n + 1]
-            else:
-                self.__project = self.__project_list[0]
+            self.__project = self.__project_list[0]
+        self.update()
+
+    def change_project_down(self, event):
+        # on scroll down, cycles the currently selected project down
+        if self.__tracking:
+            return
+        if self.__project == "Select Project":
+            return
+        n = self.__project_key[self.__project]
+        if n > 0:
+            self.__project = self.__project_list[n - 1]
+        else:
+            self.__project = self.__project_list[-1]
         self.update()
 
     def text(self, widget):
