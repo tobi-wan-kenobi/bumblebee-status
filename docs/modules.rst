@@ -1155,7 +1155,7 @@ nvidiagpu
 Displays GPU name, temperature and memory usage.
 
 Parameters:
-   * nvidiagpu.format: Format string (defaults to '{name}: {temp}°C %{usedmem}/{totalmem} MiB')
+   * nvidiagpu.format: Format string (defaults to '{name}: {temp}°C %{mem_used}/{mem_total} MiB')
      Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem} {gpu_usage_pct} {mem_usage_pct} {mem_io_pct}
 
 Requires nvidia-smi
