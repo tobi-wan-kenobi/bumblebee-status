@@ -23,9 +23,9 @@ from easygui import *
 
 
 class Module(core.module.Module):
-    # @core.decorators.every(minutes=5)
+    @core.decorators.every(seconds=0.05)
     def __init__(self, config, theme):
-        super().__init__(config, theme, core.widget.Widget(self.text))
+        super().__init__(config, theme, core.widget.Widget(self.full_text))
 
         self.__tracking = False
         self.__status = ""
@@ -39,6 +39,17 @@ class Module(core.module.Module):
         core.input.register(self, button=core.input.WHEEL_UP, cmd=self.change_project_up)
         core.input.register(self, button=core.input.WHEEL_DOWN, cmd=self.change_project_down)
 
+        self.update_list()
+
+    def update_list(self):
+        # updates the list of current projects and creats a key dictionary
+        self.__project_list = util.cli.execute("watson projects").split()
+        for n in range(len(self.__project_list)):
+            if n == 0 and self.__project == "Select Project":
+                self.__project = self.__project_list[n]
+            if self.__project_list[n] not in self.__project_key:
+                self.__project_key[self.__project_list[n]] = n
+
     def new_project(self, widget):
         # on right-click, open dialog to enter the name of a new project
         # TODO: enable entering a new tag in a second dialog box
@@ -50,18 +61,17 @@ class Module(core.module.Module):
         if output:
             self.__project = output
             util.cli.execute("watson start " + self.__project)
+            self.update_list()
 
     def toggle(self, widget):
         # on click, starts the timer if the project is slected
         if self.__project != "Select Project":
             if self.__tracking:
                 util.cli.execute("watson stop")
-                self.__status = "Paused"
             else:
                 util.cli.execute("watson start " + self.__project)
-                self.__status = "Tracking"
             self.__tracking = not self.__tracking
-            self.update()
+
 
     def change_project_up(self, event):
         # on scroll up, cycles the currently selected project up
@@ -74,7 +84,6 @@ class Module(core.module.Module):
             self.__project = self.__project_list[n + 1]
         else:
             self.__project = self.__project_list[0]
-        self.update()
 
     def change_project_down(self, event):
         # on scroll down, cycles the currently selected project down
@@ -87,31 +96,22 @@ class Module(core.module.Module):
             self.__project = self.__project_list[n - 1]
         else:
             self.__project = self.__project_list[-1]
-        self.update()
 
-    def text(self, widget):
+    def full_text(self, widget):
         if self.__tracking:
-            return self.__project + ": " + self.__status
+            return self.__project + ": Tracking" + self.__status
         else:
-            return self.__project + ": " + self.__status
+            return self.__project + ": Paused" + self.__status
 
     def update(self):
         output = util.cli.execute("watson status")
         if re.match(r"No project started", output):
             self.__tracking = False
-            self.__status = "Paused"
         else:
             self.__tracking = True
             m = re.search(r"Project (.+) started", output)
             self.__project = m.group(1)
-            self.__status = "Tracking"
 
-        # updates the list of current projects and creats a key dictionary
-        self.__project_list = util.cli.execute("watson projects").split()
-        for n in range(len(self.__project_list)):
-            if n == 0 and self.__project == "Select Project":
-                self.__project = self.__project_list[n]
-            self.__project_key[self.__project_list[n]] = n
 
     def state(self, widget):
         return "on" if self.__tracking else "off"
