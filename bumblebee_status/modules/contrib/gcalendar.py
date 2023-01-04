@@ -3,7 +3,9 @@
 Events that are set as 'all-day' will not be shown.
 
 Requires credentials.json from a google api application where the google calendar api is installed.
-On first time run the browser will open and google will ask for permission for this app to access the google calendar and then save a .gcalendar_token.json file to the credentials_path directory which stores this permission.
+On first time run the browser will open and google will ask for permission for this app to access
+the google calendar and then save a .gcalendar_token.json file to the credentials_path directory
+which stores this permission.
 
 A refresh is done every 15 minutes.
 
@@ -12,10 +14,11 @@ Parameters:
     * gcalendar.date_format: Format date output. Defaults to "%d.%m.%y".
     * gcalendar.credentials_path: Path to credentials.json. Defaults to "~/".
     * gcalendar.locale: locale to use rather than the system default.
+    * gcalendar.max_chars: Maximum of characters to display.
 
 Requires these pip packages:
    * google-api-python-client >= 1.8.0
-   * google-auth-httplib2 
+   * google-auth-httplib2
    * google-auth-oauthlib
 """
 
@@ -51,6 +54,13 @@ class Module(core.module.Module):
         self.__credentials = os.path.join(self.__credentials_path, "credentials.json")
         self.__token = os.path.join(self.__credentials_path, ".gcalendar_token.json")
 
+        self.__max_chars = self.parameter("max_chars", None)
+        try:
+            if self.__max_chars:
+                self.__max_chars = int(self.__max_chars)
+        except ValueError:
+            self.__max_chars = None
+
         l = locale.getdefaultlocale()
         if not l or l == (None, None):
             l = ("en_US", "UTF-8")
@@ -63,29 +73,26 @@ class Module(core.module.Module):
     def first_event(self, widget):
         SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 
-        """Shows basic usage of the Google Calendar API.
-        Prints the start and name of the next 10 events on the user's calendar.
-        """
         creds = None
-        # The file token.json stores the user's access and refresh tokens, and is
-        # created automatically when the authorization flow completes for the first
-        # time.
-        if os.path.exists(self.__token):
-            creds = Credentials.from_authorized_user_file(self.__token, SCOPES)
-        # If there are no (valid) credentials available, let the user log in.
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    self.__credentials, SCOPES
-                )
-                creds = flow.run_local_server(port=0)
-            # Save the credentials for the next run
-            with open(self.__token, "w") as token:
-                token.write(creds.to_json())
-
         try:
+            # The file token.json stores the user's access and refresh tokens, and is
+            # created automatically when the authorization flow completes for the first
+            # time.
+            if os.path.exists(self.__token):
+                creds = Credentials.from_authorized_user_file(self.__token, SCOPES)
+            # If there are no (valid) credentials available, let the user log in.
+            if not creds or not creds.valid:
+                if creds and creds.expired and creds.refresh_token:
+                    creds.refresh(Request())
+                else:
+                    flow = InstalledAppFlow.from_client_secrets_file(
+                        self.__credentials, SCOPES
+                    )
+                    creds = flow.run_local_server(port=0)
+                # Save the credentials for the next run
+                with open(self.__token, "w") as token:
+                    token.write(creds.to_json())
+
             service = build("calendar", "v3", credentials=creds)
 
             # Call the Calendar API
@@ -137,7 +144,7 @@ class Module(core.module.Module):
                                 .strftime(f"{self.__time_format}"),
                                 gevent["summary"],
                             )
-                        )
+                        )[: self.__max_chars]
                     else:
                         return str(
                             "%s %s"
@@ -147,7 +154,7 @@ class Module(core.module.Module):
                                 .strftime(f"{self.__date_format} {self.__time_format}"),
                                 gevent["summary"],
                             )
-                        )
+                        )[: self.__max_chars]
             return "No upcoming events found."
 
         except:
