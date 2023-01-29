@@ -14,7 +14,6 @@ Parameters:
     * gcalendar.date_format: Format date output. Defaults to "%d.%m.%y".
     * gcalendar.credentials_path: Path to credentials.json. Defaults to "~/".
     * gcalendar.locale: locale to use rather than the system default.
-    * gcalendar.max_chars: Maximum of characters to display.
 
 Requires these pip packages:
    * google-api-python-client >= 1.8.0
@@ -30,10 +29,12 @@ from dateutil.parser import parse as dtparse
 import core.module
 import core.widget
 import core.decorators
+import util.format
 
 import datetime
 import os.path
 import locale
+import time
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -41,11 +42,15 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
+# Minutes
+update_every = 15
+
 
 class Module(core.module.Module):
-    @core.decorators.every(minutes=15)
+    @core.decorators.every(minutes=update_every)
     def __init__(self, config, theme):
-        super().__init__(config, theme, core.widget.Widget(self.first_event))
+        super().__init__(config, theme, [core.widget.Widget(self.__datetime), core.widget.Widget(self.__summary)])
+        self.__error = False
         self.__time_format = self.parameter("time_format", "%H:%M")
         self.__date_format = self.parameter("date_format", "%d.%m.%y")
         self.__credentials_path = os.path.expanduser(
@@ -53,13 +58,6 @@ class Module(core.module.Module):
         )
         self.__credentials = os.path.join(self.__credentials_path, "credentials.json")
         self.__token = os.path.join(self.__credentials_path, ".gcalendar_token.json")
-
-        self.__max_chars = self.parameter("max_chars", None)
-        try:
-            if self.__max_chars:
-                self.__max_chars = int(self.__max_chars)
-        except ValueError:
-            self.__max_chars = None
 
         l = locale.getdefaultlocale()
         if not l or l == (None, None):
@@ -70,10 +68,25 @@ class Module(core.module.Module):
         except Exception:
             locale.setlocale(locale.LC_TIME, ("en_US", "UTF-8"))
 
-    def first_event(self, widget):
+        self.__last_update = time.time()
+        self.__gcalendar_date, self.__gcalendar_summary = self.__fetch_from_calendar()
+
+    def hidden(self):
+        return self.__error
+
+    def __datetime(self, _):
+        return self.__gcalendar_date
+
+    @core.decorators.scrollable
+    def __summary(self, _):
+        return self.__gcalendar_summary
+
+
+    def __fetch_from_calendar(self):
         SCOPES = ["https://www.googleapis.com/auth/calendar.readonly"]
 
         creds = None
+
         try:
             # The file token.json stores the user's access and refresh tokens, and is
             # created automatically when the authorization flow completes for the first
@@ -132,33 +145,27 @@ class Module(core.module.Module):
                             }
                         )
             sorted_list = sorted(event_list, key=lambda t: t["date"])
+            next_event = sorted_list[0]
 
-            for gevent in sorted_list:
-                if gevent["date"] >= datetime.datetime.now(datetime.timezone.utc):
-                    if gevent["date"].date() == datetime.datetime.utcnow().date():
-                        return str(
-                            "%s %s"
-                            % (
-                                gevent["date"]
-                                .astimezone()
-                                .strftime(f"{self.__time_format}"),
-                                gevent["summary"],
-                            )
-                        )[: self.__max_chars]
-                    else:
-                        return str(
-                            "%s %s"
-                            % (
-                                gevent["date"]
-                                .astimezone()
-                                .strftime(f"{self.__date_format} {self.__time_format}"),
-                                gevent["summary"],
-                            )
-                        )[: self.__max_chars]
-            return "No upcoming events found."
+            if next_event["date"] >= datetime.datetime.now(datetime.timezone.utc):
+                if next_event["date"].date() == datetime.datetime.utcnow().date():
+                    dt = next_event["date"].astimezone()\
+                            .strftime(f"{self.__time_format}")
+                else:
+                    dt = next_event["date"].astimezone()\
+                            .strftime(f"{self.__date_format} {self.__time_format}")
+                return (dt, next_event["summary"])
 
+            return (None, "No upcoming events.")
         except:
-            return None
+            self.__error = True
 
+    def update(self):
+        # Since scrolling runs the update command and therefore negates the
+        # every decorator, this need to be stopped
+        # to not break the API rules of google.
+        if self.__last_update+(update_every*60) < time.time():
+            self.__last_update = time.time()
+            self.__gcalendar_date, self.__gcalendar_summary = self.__fetch_from_calendar()
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
