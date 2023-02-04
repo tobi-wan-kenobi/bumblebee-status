@@ -229,6 +229,14 @@
       "prefix": ""
     }
   },
+  "pipewire": {
+    "muted": {
+      "prefix": ""
+    },
+    "unmuted": {
+      "prefix": ""
+    }
+  },
   "kernel": {
     "prefix": "\uf17c"
   },
