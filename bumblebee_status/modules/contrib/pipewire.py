@@ -68,6 +68,8 @@ class Module(core.module.Module):
         )
 
     def volume(self, widget):
+        if self.__level == "N/A":
+            return self.__level
         return "{}%".format(int(float(self.__level) * 100))
 
     def update(self):
