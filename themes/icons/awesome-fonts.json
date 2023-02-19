@@ -581,6 +581,9 @@
   "github": {
     "prefix": "  "
   },
+  "gitlab": {
+    "prefix": ""
+  },
   "deezer": {
     "prefix": "  "
   },
