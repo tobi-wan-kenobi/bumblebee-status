@@ -309,6 +309,9 @@
   "github": {
     "prefix": "github"
   },
+  "gitlab": {
+    "prefix": "gitlab"
+  },
   "deezer": {
     "prefix": ""
   },
