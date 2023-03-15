@@ -34,6 +34,7 @@ class Module(core.module.Module):
         self.background = True
 
         self.__hide = util.format.asbool(self.parameter("hide", "false"));
+        self.__hidden = self.__hide
 
         self.__layout = util.format.aslist(
             self.parameter(
@@ -87,7 +88,7 @@ class Module(core.module.Module):
                 core.input.register(widget, **callback_options)
 
     def hidden(self):
-        return self.__hide and self.status() == None
+        return self.__hidden
 
     def status(self):
         try:
@@ -101,6 +102,10 @@ class Module(core.module.Module):
 
     def update(self):
         playback_status = self.status()
+        if not playback_status:
+            self.__hidden = self.__hide
+        else:
+            self.__hidden = False
         for widget in self.widgets():
             if playback_status:
                 if widget.name == "playerctl.pause":
