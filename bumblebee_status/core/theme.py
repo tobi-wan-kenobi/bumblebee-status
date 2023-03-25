@@ -25,6 +25,7 @@ if os.environ.get("XDG_DATA_DIRS"):
 PATHS.extend([
     os.path.expanduser("~/.config/bumblebee-status/themes"),
     os.path.expanduser("~/.local/share/bumblebee-status/themes"),  # PIP
+    os.path.expanduser("~/.local/pipx/venvs/bumblebee-status/share/bumblebee-status/themes"),  # PIPX
     "/usr/share/bumblebee-status/themes",
 ])
 
