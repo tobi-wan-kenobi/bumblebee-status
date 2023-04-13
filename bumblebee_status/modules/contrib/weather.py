@@ -13,7 +13,7 @@ Parameters:
     * weather.unit: metric (default), kelvin, imperial
     * weather.showcity: If set to true, show location information, otherwise hide it (defaults to true)
     * weather.showminmax: If set to true, show the minimum and maximum temperature, otherwise hide it (defaults to false)
-    * weather.apikey: API key from http://api.openweathermap.org
+    * weather.apikey: API key from https://api.openweathermap.org
 
 
 contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
@@ -116,7 +116,7 @@ class Module(core.module.Module):
 
     def update(self):
         try:
-            weather_url = "http://api.openweathermap.org/data/2.5/weather?appid={}".format(
+            weather_url = "https://api.openweathermap.org/data/2.5/weather?appid={}".format(
                 self.__apikey
             )
             weather_url = "{}&units={}".format(weather_url, self.__unit)
