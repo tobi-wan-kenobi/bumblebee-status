@@ -584,6 +584,9 @@
   "gitlab": {
     "prefix": ""
   },
+  "wakatime": {
+    "prefix": "W"
+  },
   "deezer": {
     "prefix": "  "
   },
