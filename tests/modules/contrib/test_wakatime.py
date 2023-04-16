@@ -20,7 +20,7 @@ def build_wakatime_module(waka_format=None, waka_range=None):
     return modules.contrib.wakatime.Module(config=config, theme=None)
 
 
-def mock_todo_api_response():
+def mock_summaries_api_response():
     res = mock.Mock()
     res.json = lambda: {
         "cumulative_total": {
@@ -39,7 +39,7 @@ class TestWakatimeUnit(TestCase):
     def test_load_module(self):
         __import__("modules.contrib.wakatime")
 
-    @mock.patch.object(Session, "get", return_value=mock_todo_api_response())
+    @mock.patch.object(Session, "get", return_value=mock_summaries_api_response())
     def test_default_values(self, mock_get):
         module = build_wakatime_module()
         module.update()
@@ -47,7 +47,7 @@ class TestWakatimeUnit(TestCase):
 
         mock_get.assert_called_with('https://wakatime.com/api/v1/users/current/summaries?range=today')
 
-    @mock.patch.object(Session, "get", return_value=mock_todo_api_response())
+    @mock.patch.object(Session, "get", return_value=mock_summaries_api_response())
     def test_custom_configs(self, mock_get):
         module = build_wakatime_module(waka_format="text", waka_range="last 7 days")
         module.update()
