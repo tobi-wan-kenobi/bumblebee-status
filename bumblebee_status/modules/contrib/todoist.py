@@ -19,7 +19,6 @@ Parameters:
 """
 
 import shutil
-from typing import Final
 
 import requests
 
@@ -28,10 +27,10 @@ import core.input
 import core.module
 import core.widget
 
-HOST_API: Final[str] = "https://api.todoist.com"
-HOST_WEBSITE: Final[str] = "https://todoist.com/app/today"
+HOST_API = "https://api.todoist.com"
+HOST_WEBSITE = "https://todoist.com/app/today"
 
-TASKS_URL: Final[str] = f"{HOST_API}/rest/v2/tasks"
+TASKS_URL = f"{HOST_API}/rest/v2/tasks"
 
 
 class Module(core.module.Module):
