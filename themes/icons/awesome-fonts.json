@@ -587,6 +587,9 @@
   "wakatime": {
     "prefix": "\uF017"
   },
+  "todoist": {
+    "prefix": "\uF14A"
+  },
   "deezer": {
     "prefix": "  "
   },

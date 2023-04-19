@@ -28,7 +28,6 @@ Parameters:
 import base64
 import shutil
 import time
-from typing import Final, List
 
 import requests
 
@@ -37,10 +36,10 @@ import core.input
 import core.module
 import core.widget
 
-HOST_API: Final[str] = "https://wakatime.com"
-SUMMARIES_URL: Final[str] = f"{HOST_API}/api/v1/users/current/summaries"
-UTF8: Final[str] = "utf-8"
-FORMAT_PARAMETERS: Final[List[str]] = ["decimal", "digital", "seconds", "text"]
+HOST_API = "https://wakatime.com"
+SUMMARIES_URL = f"{HOST_API}/api/v1/users/current/summaries"
+UTF8 = "utf-8"
+FORMAT_PARAMETERS = ["decimal", "digital", "seconds", "text"]
 
 
 class Module(core.module.Module):
