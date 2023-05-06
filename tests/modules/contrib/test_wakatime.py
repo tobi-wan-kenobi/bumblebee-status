@@ -45,7 +45,7 @@ class TestWakatimeUnit(TestCase):
         module.update()
         assert module.widgets()[0].full_text() == "3:02"
 
-        mock_get.assert_called_with('https://wakatime.com/api/v1/users/current/summaries?range=today')
+        mock_get.assert_called_with('https://wakatime.com/api/v1/users/current/summaries?range=Today')
 
     @mock.patch.object(Session, "get", return_value=mock_summaries_api_response())
     def test_custom_configs(self, mock_get):
