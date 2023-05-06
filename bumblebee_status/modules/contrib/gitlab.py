@@ -20,15 +20,15 @@ Parameters:
     * gitlab.actions: Comma separated actions to be parsed (e.g.: gitlab.actions=assigned,approval_required)
 """
 
-import json
-import requests
 import shutil
-import util
 
-import core.module
-import core.widget
+import requests
+
 import core.decorators
 import core.input
+import core.module
+import core.widget
+import util
 
 
 class Module(core.module.Module):
@@ -74,5 +74,14 @@ class Module(core.module.Module):
         except Exception as e:
             self.__label = "n/a"
 
+    def state(self, widget):
+        state = []
+
+        try:
+            if int(self.__label) > 0:
+                state.append("warning")
+        except ValueError:
+            pass
+        return state
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
