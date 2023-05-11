@@ -68,10 +68,13 @@ def handle_commands(config, update_lock):
 
 def handle_events(config, update_lock):
     while True:
-        line = sys.stdin.readline().strip(",").strip()
-        if line == "[": continue
-        logging.info("input event: {}".format(line))
-        process_event(line, config, update_lock)
+        try:
+            line = sys.stdin.readline().strip(",").strip()
+            if line == "[": continue
+            logging.info("input event: {}".format(line))
+            process_event(line, config, update_lock)
+        except Exception as e:
+            logging.error(e)
 
 
 def main():

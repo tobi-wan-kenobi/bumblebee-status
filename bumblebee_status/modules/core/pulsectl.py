@@ -35,6 +35,8 @@ Requires the following Python module:
 """
 
 import pulsectl
+import logging
+import functools
 
 import core.module
 import core.widget
@@ -44,6 +46,11 @@ import core.event
 import util.cli
 import util.graph
 import util.format
+
+try:
+    import util.popup
+except ImportError as e:
+    logging.warning("Couldn't import util.popup: %s. Popups won't work!", e)
 
 class Module(core.module.Module):
     def __init__(self, config, theme, type):
@@ -160,6 +167,21 @@ class Module(core.module.Module):
             pulse.event_mask_set(self.__type)
             pulse.event_callback_set(self.process)
             pulse.event_listen()
+
+    def select_default_device_popup(self, widget):
+        with pulsectl.Pulse(self.id) as pulse:
+            devs = pulse.sink_list() if self.__type == "sink" else pulse.source_list()
+        menu = util.popup.menu()
+        for dev in devs:
+            menu.add_menuitem(
+                dev.description,
+                callback=functools.partial(self.__on_default_changed, dev),
+            )
+        menu.show(widget)
+
+    def __on_default_changed(self, dev):
+        with pulsectl.Pulse(self.id) as pulse:
+            pulse.default_set(dev)
 
     def state(self, _):
         if self.__muted:
