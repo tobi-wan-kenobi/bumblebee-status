@@ -4,13 +4,20 @@
 
 Parameters:
     * pihole.address     : pi-hole address (e.q: http://192.168.1.3)
-    * pihole.pwhash      : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
+
+
+    * pihole.apitoken    : pi-hole API token (can be obtained in the pi-hole webinterface (Settings -> API)
+
+    OR (deprecated!)
+
+    *  pihole.pwhash     : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
+
 
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 """
 
 import requests
-
+import logging
 import core.module
 import core.widget
 import core.input
@@ -22,7 +29,18 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.pihole_status))
 
         self._pihole_address = self.parameter("address", "")
-        self._pihole_pw_hash = self.parameter("pwhash", "")
+        pihole_pw_hash = self.parameter("pwhash", "")
+        pihole_api_token = self.parameter("apitoken", "")
+
+        self._pihole_secret = (
+            pihole_api_token if pihole_api_token != "" else pihole_pw_hash
+        )
+
+        if pihole_pw_hash != "":
+            logging.warn(
+                "pihole: The 'pwhash' parameter is deprecated - consider using the 'apitoken' parameter instead!"
+            )
+
         self._pihole_status = None
         self._ads_blocked_today = "-"
         self.update_pihole_status()
@@ -42,7 +60,11 @@ class Module(core.module.Module):
 
     def update_pihole_status(self):
         try:
-            data = requests.get(self._pihole_address + "/admin/api.php?summary").json()
+            data = requests.get(
+                self._pihole_address
+                + "/admin/api.php?summary&auth="
+                + self._pihole_secret
+            ).json()
             self._pihole_status = True if data["status"] == "enabled" else False
             self._ads_blocked_today = data["ads_blocked_today"]
         except Exception as e:
@@ -56,13 +78,13 @@ class Module(core.module.Module):
                     req = requests.get(
                         self._pihole_address
                         + "/admin/api.php?disable&auth="
-                        + self._pihole_pw_hash
+                        + self._pihole_secret
                     )
                 else:
                     req = requests.get(
                         self._pihole_address
                         + "/admin/api.php?enable&auth="
-                        + self._pihole_pw_hash
+                        + self._pihole_secret
                     )
                 if req is not None:
                     if req.status_code == 200:
