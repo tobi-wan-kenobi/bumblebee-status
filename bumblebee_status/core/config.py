@@ -276,6 +276,15 @@ class Config(util.store.Store):
     def interval(self, default=1):
         return util.format.seconds(self.get("interval", default))
 
+    """Returns the global popup menu font size
+
+    :return: popup menu font size
+    :rtype: int
+    """
+
+    def popup_font_size(self, default=12):
+        return util.format.asint(self.get("popup_font_size", default))
+
     """Returns whether debug mode is enabled
 
     :return: True if debug is enabled, False otherwise

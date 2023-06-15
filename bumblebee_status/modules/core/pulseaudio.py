@@ -236,7 +236,7 @@ class Module(core.module.Module):
         channel = "sinks" if self._channel == "sink" else "sources"
         result = util.cli.execute("pactl list {} short".format(channel))
 
-        menu = util.popup.menu()
+        menu = util.popup.menu(self.__config)
         lines = result.splitlines()
         for line in lines:
             info = line.split("\t")

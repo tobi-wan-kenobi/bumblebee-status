@@ -171,7 +171,7 @@ class Module(core.module.Module):
     def select_default_device_popup(self, widget):
         with pulsectl.Pulse(self.id) as pulse:
             devs = pulse.sink_list() if self.__type == "sink" else pulse.source_list()
-        menu = util.popup.menu()
+        menu = util.popup.menu(self.__config)
         for dev in devs:
             menu.add_menuitem(
                 dev.description,

@@ -3,6 +3,7 @@
 import logging
 
 import tkinter as tk
+import tkinter.font as tkFont
 
 import functools
 
@@ -10,11 +11,12 @@ import functools
 class menu(object):
     """Draws a hierarchical popup menu
 
+    :param config: Global config singleton, passed on from modules
     :param parent: If given, this menu is a leave of the "parent" menu
     :param leave: If set to True, close this menu when mouse leaves the area (defaults to True)
     """
 
-    def __init__(self, parent=None, leave=True):
+    def __init__(self, config, parent=None, leave=True):
         self.running = True
 
         self.parent = parent
@@ -23,6 +25,7 @@ class menu(object):
         self._root.withdraw()
         self._menu = tk.Menu(self._root, tearoff=0)
         self._menu.bind("<FocusOut>", self.__on_focus_out)
+        self._font_size = tkFont.Font(size=config.popup_font_size())
 
         if leave:
             self._menu.bind("<Leave>", self.__on_focus_out)
@@ -68,7 +71,7 @@ class menu(object):
     """
 
     def add_cascade(self, menuitem, submenu):
-        self._menu.add_cascade(label=menuitem, menu=submenu.menu())
+        self._menu.add_cascade(label=menuitem, menu=submenu.menu(), font=self._font_size)
 
     """Adds an item to the current menu
 
@@ -78,7 +81,7 @@ class menu(object):
 
     def add_menuitem(self, menuitem, callback):
         self._menu.add_command(
-            label=menuitem, command=functools.partial(self.__on_click, callback)
+            label=menuitem, command=functools.partial(self.__on_click, callback), font=self._font_size,
         )
 
     """Adds a separator to the menu in the current location"""
