@@ -4,12 +4,15 @@ Requires the following executable:
     * amixer
 
 Parameters:
+    * amixer.card: Sound Card to use (default is 0)
     * amixer.device: Device to use (default is Master,0)
     * amixer.percent_change: How much to change volume by when scrolling on the module (default is 4%)
 
 contributed by `zetxx <https://github.com/zetxx>`_ - many thanks!
 
 input handling contributed by `ardadem <https://github.com/ardadem>`_ - many thanks!
+
+multiple audio cards contributed by `hugoeustaquio <https://github.com/hugoeustaquio>`_ - many thanks!
 """
 import re
 
@@ -26,6 +29,7 @@ class Module(core.module.Module):
 
         self.__level = "n/a"
         self.__muted = True
+        self.__card = self.parameter("card", "0")
         self.__device = self.parameter("device", "Master,0")
         self.__change = util.format.asint(
             self.parameter("percent_change", "4%").strip("%"), 0, 100
@@ -62,7 +66,7 @@ class Module(core.module.Module):
         self.set_parameter("{}%-".format(self.__change))
 
     def set_parameter(self, parameter):
-        util.cli.execute("amixer -q set {} {}".format(self.__device, parameter))
+        util.cli.execute("amixer -c {} -q set {} {}".format(self.__card, self.__device, parameter))
 
     def volume(self, widget):
         if self.__level == "n/a":
@@ -79,7 +83,7 @@ class Module(core.module.Module):
     def update(self):
         try:
             self.__level = util.cli.execute(
-                "amixer get {}".format(self.__device)
+                "amixer -c {} get {}".format(self.__card, self.__device)
             )
         except Exception as e:
             self.__level = "n/a"
