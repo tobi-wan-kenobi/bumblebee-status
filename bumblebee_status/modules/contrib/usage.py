@@ -2,7 +2,22 @@
 
 """
 Module for ActivityWatch (https://activitywatch.net/)
-Displays the amount of time the system was used actively
+Displays the amount of time the system was used actively.
+
+Requirements:
+    * sqlite3 module for python
+    * ActivityWatch
+
+Errors:
+    * when you get 'error: unable to open database file', modify the parameter 'database' to your ActivityWatch database file
+    -> often found by running 'locate aw-server/peewee-sqlite.v2.db'
+
+Parameters:
+    * usage.database: path to your database file
+    * usage.format: Specify what gets printed to the bar
+    -> use 'HH', 'MM' or 'SS', they will get replaced by the number of hours, minutes and seconds, respectively
+
+contributed by lasnikr (https://github.com/lasnikr)
 """
 
 import sqlite3
