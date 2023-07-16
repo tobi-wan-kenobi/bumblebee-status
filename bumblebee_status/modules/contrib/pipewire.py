@@ -29,6 +29,8 @@ class Module(core.module.Module):
             / 100.0
         )  # divide by 100 because wpctl represents 100% volume as 1.00, 50% as 0.50, etc
 
+        self.__id = self.parameter("sink_id") or "@DEFAULT_AUDIO_SINK@"
+
         events = [
             {
                 "type": "mute",
@@ -51,20 +53,16 @@ class Module(core.module.Module):
             core.input.register(self, button=event["button"], cmd=event["action"])
 
     def toggle(self, event):
-        util.cli.execute("wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle")
+        util.cli.execute("wpctl set-mute {} toggle".format(self.__id))
 
     def increase_volume(self, event):
         util.cli.execute(
-            "wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ {}+".format(
-                self.__change
-            )
+            "wpctl set-volume --limit 1.0 {} {}+".format(self.__change, self.__id)
         )
 
     def decrease_volume(self, event):
         util.cli.execute(
-            "wpctl set-volume --limit 1.0 @DEFAULT_AUDIO_SINK@ {}-".format(
-                self.__change
-            )
+            "wpctl set-volume --limit 1.0 {} {}-".format(self.__change, self.__id)
         )
 
     def volume(self, widget):
@@ -75,7 +73,7 @@ class Module(core.module.Module):
     def update(self):
         try:
             # `wpctl get-volume` will return a string like "Volume: n.nn" or "Volume: n.nn [MUTED]"
-            volume = util.cli.execute("wpctl get-volume @DEFAULT_AUDIO_SINK@")
+            volume = util.cli.execute("wpctl get-volume {}".format(self.__id))
             v = re.search("\d\.\d+", volume)
             m = re.search("MUTED", volume)
             self.__level = v.group()
