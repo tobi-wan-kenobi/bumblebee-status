@@ -117,29 +117,29 @@ def test_toggle(module_mock, mocker):
     command = mocker.patch('util.cli.execute')
     module = module_mock()
     module.toggle(False)
-    command.assert_called_once_with('amixer -q set Master,0 toggle')
+    command.assert_called_once_with('amixer -c 0 -q set Master,0 toggle')
 
 def test_default_volume(module_mock, mocker):
     module = module_mock()
 
     command = mocker.patch('util.cli.execute')
     module.increase_volume(False)
-    command.assert_called_once_with('amixer -q set Master,0 4%+')
+    command.assert_called_once_with('amixer -c 0 -q set Master,0 4%+')
 
     command = mocker.patch('util.cli.execute')
     module.decrease_volume(False)
-    command.assert_called_once_with('amixer -q set Master,0 4%-')
+    command.assert_called_once_with('amixer -c 0 -q set Master,0 4%-')
 
 def test_custom_volume(module_mock, mocker):
     module = module_mock(['-p', 'amixer.percent_change=25'])
 
     command = mocker.patch('util.cli.execute')
     module.increase_volume(False)
-    command.assert_called_once_with('amixer -q set Master,0 25%+')
+    command.assert_called_once_with('amixer -c 0 -q set Master,0 25%+')
 
     command = mocker.patch('util.cli.execute')
     module.decrease_volume(False)
-    command.assert_called_once_with('amixer -q set Master,0 25%-')
+    command.assert_called_once_with('amixer -c 0 -q set Master,0 25%-')
 
 def test_custom_device(module_mock, mocker):
     mocker.patch('util.cli.execute')
@@ -147,13 +147,13 @@ def test_custom_device(module_mock, mocker):
 
     command = mocker.patch('util.cli.execute')
     module.toggle(False)
-    command.assert_called_once_with('amixer -q set CustomMaster toggle')
+    command.assert_called_once_with('amixer -c 0 -q set CustomMaster toggle')
 
     command = mocker.patch('util.cli.execute')
     module.increase_volume(False)
-    command.assert_called_once_with('amixer -q set CustomMaster 4%+')
+    command.assert_called_once_with('amixer -c 0 -q set CustomMaster 4%+')
 
     command = mocker.patch('util.cli.execute')
     module.decrease_volume(False)
-    command.assert_called_once_with('amixer -q set CustomMaster 4%-')
+    command.assert_called_once_with('amixer -c 0 -q set CustomMaster 4%-')
 
