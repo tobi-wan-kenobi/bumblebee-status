@@ -31,7 +31,7 @@ class Module(core.module.Module):
         return self.__format.format(self.__packages)
 
     def hidden(self):
-        return self.__packages == 0 and not self.__error
+        return self.__packages == 0
 
     def update(self):
         self.__error = False
