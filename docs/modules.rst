@@ -1243,6 +1243,19 @@ Parameters:
 
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 
+pipewire
+~~~~~~~
+
+get volume level or control it
+
+Requires the following executable:
+    * wpctl
+
+Parameters:
+    * wpctl.percent_change: How much to change volume by when scrolling on the module (default is 4%)
+
+heavily based on amixer module
+
 playerctl
 ~~~~~~~~~
 
