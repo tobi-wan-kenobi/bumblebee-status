@@ -57,12 +57,12 @@ class Module(core.module.Module):
 
     def increase_volume(self, event):
         util.cli.execute(
-            "wpctl set-volume --limit 1.0 {} {}+".format(self.__change, self.__id)
+            "wpctl set-volume --limit 1.0 {} {}+".format(self.__id, self.__change)
         )
 
     def decrease_volume(self, event):
         util.cli.execute(
-            "wpctl set-volume --limit 1.0 {} {}-".format(self.__change, self.__id)
+            "wpctl set-volume --limit 1.0 {} {}-".format(self.__id, self.__change)
         )
 
     def volume(self, widget):
