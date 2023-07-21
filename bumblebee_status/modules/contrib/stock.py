@@ -5,7 +5,9 @@
 
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
-    * stock.change : Should we fetch change in stock value (defaults to True)
+    * stock.apikey : API key created on https://alphavantage.co
+    * stock.url : URL to use, defaults to "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={apikey}"
+    * stock.fields : Fields from the response to show, defaults to "01. symbol,05. price,10. change percent"
 
 
 contributed by `msoulier <https://github.com/msoulier>`_ - many thanks!
@@ -22,6 +24,12 @@ import core.decorators
 
 import util.format
 
+def flatten(d, result):
+    for k, v in d.items():
+        if type(v) is dict:
+            flatten(v, result)
+        else:
+            result[k] = v
 
 class Module(core.module.Module):
     @core.decorators.every(hours=1)
@@ -29,41 +37,41 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.value))
 
         self.__symbols = self.parameter("symbols", "")
+        self.__apikey = self.parameter("apikey", None)
+        self.__fields = self.parameter("fields", "01. symbol,05. price,10. change percent").split(",")
+        self.__url = self.parameter("url", "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={apikey}")
         self.__change = util.format.asbool(self.parameter("change", True))
-        self.__value = None
+        self.__values = []
+
 
     def value(self, widget):
-        results = []
-        if not self.__value:
-            return "n/a"
-        data = json.loads(self.__value)
+        result = ""
 
-        for symbol in data["quoteResponse"]["result"]:
-            valkey = "regularMarketChange" if self.__change else "regularMarketPrice"
-            sym = symbol.get("symbol", "n/a")
-            currency = symbol.get("currency", "USD")
-            val = "n/a" if not valkey in symbol else "{:.2f}".format(symbol[valkey])
-            results.append("{} {} {}".format(sym, val, currency))
-        return " ".join(results)
+        for value in self.__values:
+            res = {}
+            flatten(value, res)
+            for field in self.__fields:
+                result += res.get(field, "n/a") + " "
+        result = result[:-1]
+        return result
 
     def fetch(self):
+        results = []
         if self.__symbols:
-            url = "https://query1.finance.yahoo.com/v7/finance/quote?symbols="
-            url += (
-                self.__symbols
-                + "&fields=regularMarketPrice,currency,regularMarketChange"
-            )
-            try:
-                return urllib.request.urlopen(url).read().strip()
-            except urllib.request.URLError:
-                logging.error("unable to open stock exchange url")
-                return None
+            for symbol in self.__symbols.split(","):
+                url = self.__url.format(symbol=symbol, apikey=self.__apikey)
+                try:
+                    results.append(json.loads(urllib.request.urlopen(url).read().strip()))
+                except urllib.request.URLError:
+                    logging.error("unable to open stock exchange url")
+                    return []
         else:
             logging.error("unable to retrieve stock exchange rate")
-            return None
+            return []
+        return results
 
     def update(self):
-        self.__value = self.fetch()
+        self.__values = self.fetch()
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
