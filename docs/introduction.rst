@@ -43,6 +43,7 @@ like this:
            -p <list of module parameters> \
            -t <theme>
    }
+Be careful with spaces in the code, because sometime it can cause an error, write all modules in one line.
 
 You can retrieve a list of modules (and their parameters) and themes by
 entering:
