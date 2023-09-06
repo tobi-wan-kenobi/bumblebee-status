@@ -52,7 +52,7 @@ def build_menu(parent, current_directory, callback):
                 )
 
             else:
-                submenu = util.popup.menu(parent, leave=False)
+                submenu = util.popup.menu(self.__config, parent, leave=False)
                 build_menu(
                     submenu, os.path.join(current_directory, entry.name), callback
                 )
@@ -73,7 +73,7 @@ class Module(core.module.Module):
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.popup)
 
     def popup(self, widget):
-        menu = util.popup.menu(leave=False)
+        menu = util.popup.menu(self.__config, leave=False)
 
         build_menu(menu, self.__path, self.__callback)
         menu.show(widget, offset_x=self.__offx, offset_y=self.__offy)

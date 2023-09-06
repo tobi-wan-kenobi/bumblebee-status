@@ -93,7 +93,7 @@ class Module(core.module.Module):
             self.__connected_vpn_profile = None
 
     def popup(self, widget):
-        menu = util.popup.menu()
+        menu = util.popup.menu(self.__config)
 
         if self.__connected_vpn_profile is not None:
             menu.add_menuitem("Disconnect", callback=self.__on_vpndisconnect)

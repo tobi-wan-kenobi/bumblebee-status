@@ -75,19 +75,15 @@ class Module(core.module.Module):
 
     def popup(self, widget):
         """Show a popup menu."""
-        menu = util.popup.PopupMenu()
+        menu = util.popup.menu(self.__config)
         if self._status == "On":
-            menu.add_menuitem("Disable Bluetooth")
+            menu.add_menuitem("Disable Bluetooth", callback=self._toggle)
         elif self._status == "Off":
-            menu.add_menuitem("Enable Bluetooth")
+            menu.add_menuitem("Enable Bluetooth", callback=self._toggle)
         else:
             return
 
-        # show menu and get return code
-        ret = menu.show(widget)
-        if ret == 0:
-            # first (and only) item selected.
-            self._toggle()
+        menu.show(widget)
 
     def _toggle(self, widget=None):
         """Toggle bluetooth state."""
