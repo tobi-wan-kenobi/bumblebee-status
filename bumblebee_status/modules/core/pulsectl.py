@@ -13,6 +13,8 @@ Parameters:
     * pulsectl.autostart: If set to 'true' (default is 'false'), automatically starts the pulsectl daemon if it is not running
     * pulsectl.percent_change: How much to change volume by when scrolling on the module (default is 2%)
     * pulsectl.limit: Upper limit for setting the volume (default is 0%, which means 'no limit')
+    * pulsectl.popup-filter: Comma-separated list of device strings (if the device name contains it) to exclude
+      from the default device popup menu (e.g. Monitor for sources)
     * pulsectl.showbars: 'true' for showing volume bars, requires --markup=pango;
       'false' for not showing volume bars (default)
     * pulsectl.showdevicename: If set to 'true' (default is 'false'), the currently selected default device is shown.
@@ -70,6 +72,11 @@ class Module(core.module.Module):
             self.parameter("percent_change", "2%").strip("%"), 0, 100
         )
         self.__limit = util.format.asint(self.parameter("limit", "0%").strip("%"), 0)
+        popup_filter_param = self.parameter("popup-filter", [])
+        if popup_filter_param == '':
+            self.__popup_filter = []
+        else:
+            self.__popup_filter = util.format.aslist(popup_filter_param)
 
         events = [
             {
@@ -103,8 +110,8 @@ class Module(core.module.Module):
             res = f"{res} {util.graph.hbar(self.__volume*100)}"
 
         if self.__show_device_name:
-            friendly_name = self.parameter(self.__devicename, self.__devicename)
-            icon = self.parameter("icon." + self.__devicename, "")
+            friendly_name = self.parameter(self.__devicename.lower(), self.__devicename)
+            icon = self.parameter("icon." + self.__devicename.lower(), "")
             res = (
                 icon + " " + friendly_name + " | " + res
                 if icon != ""
@@ -170,7 +177,12 @@ class Module(core.module.Module):
 
     def select_default_device_popup(self, widget):
         with pulsectl.Pulse(self.id) as pulse:
-            devs = pulse.sink_list() if self.__type == "sink" else pulse.source_list()
+            if self.__type == "sink":
+                devs = pulse.sink_list()
+            else:
+                devs = pulse.source_list()
+
+        devs = filter(lambda dev: not any(filter in dev.description for filter in self.__popup_filter), devs)
         menu = util.popup.menu(self.__config)
         for dev in devs:
             menu.add_menuitem(
