@@ -110,8 +110,8 @@ class Module(core.module.Module):
             res = f"{res} {util.graph.hbar(self.__volume*100)}"
 
         if self.__show_device_name:
-            friendly_name = self.parameter(self.__devicename.lower(), self.__devicename)
-            icon = self.parameter("icon." + self.__devicename.lower(), "")
+            friendly_name = self.parameter(self.__devicename, self.__devicename)
+            icon = self.parameter("icon." + self.__devicename, "")
             res = (
                 icon + " " + friendly_name + " | " + res
                 if icon != ""
