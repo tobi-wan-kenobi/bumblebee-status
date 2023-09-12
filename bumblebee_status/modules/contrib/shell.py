@@ -87,6 +87,7 @@ class Module(core.module.Module):
 
     def click_command(self, event, command=None):
         util.cli.execute(command, shell=True, ignore_errors=True, wait=True)
+        core.event.trigger("update", [self.id], redraw_only=True)
 
     @core.decorators.scrollable
     def get_output(self, _):
