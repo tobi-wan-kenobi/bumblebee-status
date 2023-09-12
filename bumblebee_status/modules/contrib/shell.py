@@ -15,6 +15,12 @@ Parameters:
       For example shell.command='echo $(date +'%H:%M:%S')'
       But NOT shell.command='echo $(date +'%H:%M:%S')'
       Second one will be evaluated only once at startup
+    * shell.left_click_command:  Command to execute on
+      left mouse button click. Clicked commands are always
+      executed synchronously.
+      Command formatting rules described above applies here
+    * shell.right_click_command:  Command to execute on
+      right mouse button click. See above.
     * shell.interval: Update interval in seconds
       (defaults to 1s == every bumblebee-status update)
     * shell.async:    Run update in async mode. Won't run next thread if
@@ -28,19 +34,30 @@ contributed by `rrhuffy <https://github.com/rrhuffy>`_ - many thanks!
 import os
 import subprocess
 import threading
+import functools
+import logging
+import sys
 
 import core.module
 import core.widget
 import core.input
+import core.event
 import util.format
 import util.cli
 
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
-        super().__init__(config, theme, core.widget.Widget(self.get_output))
+        self.widget = core.widget.Widget(self.get_output)
+        super().__init__(config, theme, self.widget)
 
         self.__command = self.parameter("command", 'echo "no command configured"')
+        self.__left_click_command = self.parameter(
+            "left_click_command",
+            'echo "no left_click_command configured"')
+        self.__right_click_command = self.parameter(
+            "right_click_command",
+            'echo "no right_click_command configured"')
         self.__async = util.format.asbool(self.parameter("async"))
 
         if self.__async:
@@ -50,8 +67,26 @@ class Module(core.module.Module):
         if self.parameter("scrolling.makewide") is None:
             self.set("scrolling.makewide", False)
 
+        if self.__left_click_command is not None:
+            core.input.register(
+                self.widget,
+                button=core.input.LEFT_MOUSE,
+                cmd=functools.partial(
+                    self.click_command,
+                    command=self.__left_click_command))
+        if self.__right_click_command is not None:
+            core.input.register(
+                self.widget,
+                button=core.input.RIGHT_MOUSE,
+                cmd=functools.partial(
+                    self.click_command,
+                    command=self.__right_click_command))
+
     def set_output(self, value):
         self.__output = value
+
+    def click_command(self, event, command=None):
+        util.cli.execute(command, shell=True, ignore_errors=True, wait=True)
 
     @core.decorators.scrollable
     def get_output(self, _):
@@ -60,7 +95,9 @@ class Module(core.module.Module):
     def update(self):
         # if requested then run not async version and just execute command in this thread
         if not self.__async:
-            self.__output = util.cli.execute(self.__command, shell=True, ignore_errors=True).strip()
+            self.set_output(
+                util.cli.execute(self.__command, shell=True, ignore_errors=True).strip()
+            )
             return
 
         # if previous thread didn't end yet then don't do anything
