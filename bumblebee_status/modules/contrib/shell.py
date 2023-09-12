@@ -35,8 +35,6 @@ import os
 import subprocess
 import threading
 import functools
-import logging
-import sys
 
 import core.module
 import core.widget
@@ -53,11 +51,11 @@ class Module(core.module.Module):
 
         self.__command = self.parameter("command", 'echo "no command configured"')
         self.__left_click_command = self.parameter(
-            "left_click_command",
-            'echo "no left_click_command configured"')
+            "left_click_command", 'echo "no left_click_command configured"'
+        )
         self.__right_click_command = self.parameter(
-            "right_click_command",
-            'echo "no right_click_command configured"')
+            "right_click_command", 'echo "no right_click_command configured"'
+        )
         self.__async = util.format.asbool(self.parameter("async"))
 
         if self.__async:
@@ -72,15 +70,17 @@ class Module(core.module.Module):
                 self.widget,
                 button=core.input.LEFT_MOUSE,
                 cmd=functools.partial(
-                    self.click_command,
-                    command=self.__left_click_command))
+                    self.click_command, command=self.__left_click_command
+                ),
+            )
         if self.__right_click_command is not None:
             core.input.register(
                 self.widget,
                 button=core.input.RIGHT_MOUSE,
                 cmd=functools.partial(
-                    self.click_command,
-                    command=self.__right_click_command))
+                    self.click_command, command=self.__right_click_command
+                ),
+            )
 
     def set_output(self, value):
         self.__output = value

@@ -56,12 +56,14 @@ def execute(
         try:
             out, _ = proc.communicate(timeout=timeout)
         except subprocess.TimeoutExpired as e:
-            logging.warning(f'''
+            logging.warning(
+                f"""
                 Communication with process pid={proc.pid} hangs for more
                 than {timeout} seconds.
                 If this is not expected, the process is stale, or
                 you might have run in stdout / stderr deadlock.
-            ''')
+            """
+            )
             out, _ = proc.communicate()
         if proc.returncode != 0:
             err = "{} exited with code {}".format(cmd, proc.returncode)
