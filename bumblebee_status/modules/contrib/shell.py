@@ -65,22 +65,16 @@ class Module(core.module.Module):
         if self.parameter("scrolling.makewide") is None:
             self.set("scrolling.makewide", False)
 
-        if self.__left_click_command is not None:
-            core.input.register(
-                self.widget,
-                button=core.input.LEFT_MOUSE,
-                cmd=functools.partial(
-                    self.click_command, command=self.__left_click_command
-                ),
-            )
-        if self.__right_click_command is not None:
-            core.input.register(
-                self.widget,
-                button=core.input.RIGHT_MOUSE,
-                cmd=functools.partial(
-                    self.click_command, command=self.__right_click_command
-                ),
-            )
+        for command, button in (
+            (self.__left_click_command, core.input.LEFT_MOUSE),
+            (self.__right_click_command, core.input.RIGHT_MOUSE),
+        ):
+            if command is not None:
+                core.input.register(
+                    self.widget,
+                    button=button,
+                    cmd=functools.partial(self.click_command, command=command),
+                )
 
     def set_output(self, value):
         self.__output = value
