@@ -50,8 +50,9 @@ class Module(core.module.Module):
 
         # create a connection with i3ipc
         self.__i3 = i3ipc.Connection()
-        # event is called both on focus change and title change
+        # event is called both on focus change and title change, and on workspace change
         self.__i3.on("window", lambda __p_i3, __p_e: self.__pollTitle())
+        self.__i3.on("workspace", lambda __p_i3, __p_e: self.__pollTitle())
         # begin listening for events
         threading.Thread(target=self.__i3.main).start()
 
