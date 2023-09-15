@@ -72,7 +72,6 @@ class Module(core.module.Module):
         self.__current_thread = threading.Thread(
             target=lambda obj, cmd: obj.set_output(
                 util.cli.execute(cmd, ignore_errors=True)
-                core.event.trigger("update", [self.id], redraw_only=True)
             ),
             args=(self, self.__command),
         )
