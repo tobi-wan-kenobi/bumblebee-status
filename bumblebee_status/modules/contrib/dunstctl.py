@@ -28,6 +28,8 @@ class Module(core.module.Module):
         self.__states = {"unknown": ["unknown", "critical"],
                          "true": ["muted", "warning"],
                          "false": ["unmuted"]}
+        if util.format.asbool(self.parameter("disabled", False)):
+            util.cli.execute("dunstctl set-paused true", ignore_errors=True)
 
     def toggle_state(self, event):
         util.cli.execute("dunstctl set-paused toggle", ignore_errors=True)
