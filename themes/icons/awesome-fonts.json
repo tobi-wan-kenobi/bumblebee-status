@@ -11,6 +11,9 @@
   "date": {
     "prefix": ""
   },
+  "calendar": {
+    "prefix": ""
+  },
   "persian_date": {
     "prefix": ""
   },
