@@ -264,6 +264,8 @@ Parameters:
     * pulsectl.autostart: If set to 'true' (default is 'false'), automatically starts the pulsectl daemon if it is not running
     * pulsectl.percent_change: How much to change volume by when scrolling on the module (default is 2%)
     * pulsectl.limit: Upper limit for setting the volume (default is 0%, which means 'no limit')
+    * pulsectl.popup-filter: Comma-separated list of device strings (if the device name contains it) to exclude
+      from the default device popup menu (e.g. Monitor for sources)
     * pulsectl.showbars: 'true' for showing volume bars, requires --markup=pango;
       'false' for not showing volume bars (default)
     * pulsectl.showdevicename: If set to 'true' (default is 'false'), the currently selected default device is shown.
@@ -424,12 +426,15 @@ Requires the following executable:
     * amixer
 
 Parameters:
+    * amixer.card: Sound Card to use (default is 0)
     * amixer.device: Device to use (default is Master,0)
     * amixer.percent_change: How much to change volume by when scrolling on the module (default is 4%)
 
 contributed by `zetxx <https://github.com/zetxx>`_ - many thanks!
 
 input handling contributed by `ardadem <https://github.com/ardadem>`_ - many thanks!
+
+multiple audio cards contributed by `hugoeustaquio <https://github.com/hugoeustaquio>`_ - many thanks!
 
 .. image:: ../screenshots/amixer.png
 
@@ -685,6 +690,49 @@ lacking the aforementioned pattern settings or they have wrong values.
 
 contributed by `somospocos <https://github.com/somospocos>`_ - many thanks!
 
+cpu3
+~~~~
+
+Multiwidget CPU module
+
+Can display any combination of:
+
+    * max CPU frequency
+    * total CPU load in percents (integer value)
+    * per-core CPU load as graph - either mono or colored
+    * CPU temperature (in Celsius degrees)
+    * CPU fan speed
+
+Requirements:
+
+    * the psutil Python module for the first three items from the list above
+    * sensors executable for the rest
+
+Parameters:
+    * cpu3.layout: Space-separated list of widgets to add.
+      Possible widgets are:
+
+         * cpu3.maxfreq
+         * cpu3.cpuload
+         * cpu3.coresload
+         * cpu3.temp
+         * cpu3.fanspeed
+    * cpu3.colored: 1 for colored per core load graph, 0 for mono (default)
+    * cpu3.temp_json: json path to look for in the output of 'sensors -j';
+      required if cpu3.temp widget is used
+    * cpu3.fan_json: json path to look for in the output of 'sensors -j';
+      required if cpu3.fanspeed widget is used
+
+Note: if you are getting 'n/a' for CPU temperature / fan speed, then you're
+lacking the aforementioned json path settings or they have wrong values.
+
+Example json paths:
+  * `cpu3.temp_json="coretemp-isa-0000.Package id 0.temp1_input"`
+  * `cpu3.fan_json="thinkpad-isa-0000.fan1.fan1_input"`
+
+contributed by `SuperQ <https://github.com/SuperQ>`
+based on cpu2 by `<somospocos <https://github.com/somospocos>`
+
 currency
 ~~~~~~~~
 
@@ -866,7 +914,9 @@ Displays first upcoming event in google calendar.
 Events that are set as 'all-day' will not be shown.
 
 Requires credentials.json from a google api application where the google calendar api is installed.
-On first time run the browser will open and google will ask for permission for this app to access the google calendar and then save a .gcalendar_token.json file to the credentials_path directory which stores this permission.
+On first time run the browser will open and google will ask for permission for this app to access
+the google calendar and then save a .gcalendar_token.json file to the credentials_path directory
+which stores this permission.
 
 A refresh is done every 15 minutes.
 
@@ -878,7 +928,7 @@ Parameters:
 
 Requires these pip packages:
    * google-api-python-client >= 1.8.0
-   * google-auth-httplib2 
+   * google-auth-httplib2
    * google-auth-oauthlib
 
 getcrypto
@@ -922,6 +972,29 @@ contributed by:
     * v2 - `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
 
 .. image:: ../screenshots/github.png
+
+gitlab
+~~~~~~
+
+Displays the GitLab todo count:
+
+    * https://docs.gitlab.com/ee/user/todos.html
+    * https://docs.gitlab.com/ee/api/todos.html
+
+Uses `xdg-open` or `x-www-browser` to open web-pages.
+
+Requires the following library:
+    * requests
+
+Errors:
+    if the GitLab todo query failed, the shown value is `n/a`
+
+Parameters:
+    * gitlab.token: GitLab personal access token, the token needs to have the "read_api" scope.
+    * gitlab.host: Host of the GitLab instance, default is "gitlab.com".
+    * gitlab.actions: Comma separated actions to be parsed (e.g.: gitlab.actions=assigned,approval_required)
+
+.. image:: ../screenshots/gitlab.png
 
 gpmdp
 ~~~~~
@@ -1107,6 +1180,7 @@ Parameters:
            if {file} = '/foo/bar.baz', then {file2} = 'bar'
 
     * mpd.host: MPD host to connect to. (mpc behaviour by default)
+    * mpd.port: MPD port to connect to. (mpc behaviour by default)
     * mpd.layout: Space-separated list of widgets to add. Possible widgets are the buttons/toggles mpd.prev, mpd.next, mpd.shuffle and mpd.repeat, and the main display with play/pause function mpd.main.
 
 contributed by `alrayyes <https://github.com/alrayyes>`_ - many thanks!
@@ -1126,9 +1200,7 @@ network_traffic
 ~~~~~~~~~~~~~~~
 
 Displays network traffic
-
-Requires the following library:
-    * netifaces
+   * No extra configuration needed
 
 contributed by `izn <https://github.com/izn>`_ - many thanks!
 
@@ -1155,7 +1227,7 @@ nvidiagpu
 Displays GPU name, temperature and memory usage.
 
 Parameters:
-   * nvidiagpu.format: Format string (defaults to '{name}: {temp}°C %{mem_used}/{mem_total} MiB')
+   * nvidiagpu.format: Format string (defaults to '{name}: {temp}°C %{usedmem}/{totalmem} MiB')
      Available values are: {name} {temp} {mem_used} {mem_total} {fanspeed} {clock_gpu} {clock_mem} {gpu_usage_pct} {mem_usage_pct} {mem_io_pct}
 
 Requires nvidia-smi
@@ -1239,12 +1311,19 @@ Displays the pi-hole status (up/down) together with the number of ads that were 
 
 Parameters:
     * pihole.address     : pi-hole address (e.q: http://192.168.1.3)
-    * pihole.pwhash      : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
+
+
+    * pihole.apitoken    : pi-hole API token (can be obtained in the pi-hole webinterface (Settings -> API)
+
+    OR (deprecated!)
+
+    *  pihole.pwhash     : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
+
 
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 
 pipewire
-~~~~~~~
+~~~~~~~~
 
 get volume level or control it
 
@@ -1575,7 +1654,9 @@ Display a stock quote from finance.yahoo.com
 
 Parameters:
     * stock.symbols : Comma-separated list of symbols to fetch
-    * stock.change : Should we fetch change in stock value (defaults to True)
+    * stock.apikey : API key created on https://alphavantage.co
+    * stock.url : URL to use, defaults to "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol={symbol}&apikey={apikey}"
+    * stock.fields : Fields from the response to show, defaults to "01. symbol,05. price,10. change percent"
 
 
 contributed by `msoulier <https://github.com/msoulier>`_ - many thanks!
@@ -1610,11 +1691,11 @@ adds the possibility to
         * reboot
 
 the system.
-        
+
 Per default a confirmation dialog is shown before the actual action is performed.
-        
+
 Parameters:
-        * system.confirm: show confirmation dialog before performing any action (default: true) 
+        * system.confirm: show confirmation dialog before performing any action (default: true)
         * system.reboot: specify a reboot command (defaults to 'reboot')
         * system.shutdown: specify a shutdown command (defaults to 'shutdown -h now')
         * system.logout: specify a logout command (defaults to 'i3exit logout')
@@ -1713,6 +1794,27 @@ Parameters:
     * todo_org.remaining: False by default. When true, will output the number of remaining todos instead of the number completed (i.e. 1/4 means 1 of 4 todos remaining, rather than 1 of 4 todos completed)
 Based on the todo module by `codingo <https://github.com/codingo>`
 
+todoist
+~~~~~~~
+
+Displays the nº of Todoist tasks that are due:
+
+    * https://developer.todoist.com/rest/v2/#get-active-tasks
+
+Uses `xdg-open` or `x-www-browser` to open web-pages.
+
+Requires the following library:
+    * requests
+
+Errors:
+    if the Todoist get active tasks query failed, the shown value is `n/a`
+
+Parameters:
+    * todoist.token: Todoist api token, you can get it in https://todoist.com/app/settings/integrations/developer.
+    * todoist.filter: a filter statement defined by Todoist (https://todoist.com/help/articles/introduction-to-filters), eg: "!assigned to: others & (Overdue | due: today)"
+
+.. image:: ../screenshots/todoist.png
+
 traffic
 ~~~~~~~
 
@@ -1751,6 +1853,27 @@ contributed by `ccoors <https://github.com/ccoors>`_ - many thanks!
 
 .. image:: ../screenshots/uptime.png
 
+usage
+~~~~~
+
+Module for ActivityWatch (https://activitywatch.net/)
+Displays the amount of time the system was used actively.
+
+Requirements:
+    * sqlite3 module for python
+    * ActivityWatch
+
+Errors:
+    * when you get 'error: unable to open database file', modify the parameter 'database' to your ActivityWatch database file
+    -> often found by running 'locate aw-server/peewee-sqlite.v2.db'
+
+Parameters:
+    * usage.database: path to your database file
+    * usage.format: Specify what gets printed to the bar
+    -> use 'HH', 'MM' or 'SS', they will get replaced by the number of hours, minutes and seconds, respectively
+
+contributed by lasnikr (https://github.com/lasnikr)
+
 vpn
 ~~~
 
@@ -1770,6 +1893,34 @@ Displays the VPN profile that is currently in use.
 
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 
+wakatime
+~~~~~~~~
+
+Displays the WakaTime daily/weekly/monthly times:
+
+    * https://wakatime.com/developers#stats
+
+Uses `xdg-open` or `x-www-browser` to open web-pages.
+
+Requires the following library:
+    * requests
+
+Errors:
+    if the Wakatime status query failed, the shown value is `n/a`
+
+Parameters:
+    * wakatime.token: Wakatime secret api key, you can get it in https://wakatime.com/settings/account.
+    * wakatime.range: Range of the output, default is "Today". Can be one of “Today”, “Yesterday”, “Last 7 Days”, “Last 7 Days from Yesterday”, “Last 14 Days”, “Last 30 Days”, “This Week”, “Last Week”, “This Month”, or “Last Month”.
+    * wakatime.format: Format of the output, default is "digital"
+        Valid inputs are:
+          * "decimal" -> 1.37
+          * "digital" -> 1:22
+          * "seconds" -> 4931.29
+          * "text" -> 1 hr 22 mins
+          * "%H:%M:%S" -> 01:22:31 (or any other valid format)
+
+.. image:: ../screenshots/wakatime.png
+
 watson
 ~~~~~~
 
@@ -1777,6 +1928,10 @@ Displays the status of watson (time-tracking tool)
 
 Requires the following executable:
     * watson
+
+Parameters:
+    * watson.format: Output format, defaults to "{project} [{tags}]"
+      Supported fields are: {project}, {tags}, {relative_start}, {absolute_start}
 
 contributed by `bendardenne <https://github.com/bendardenne>`_ - many thanks!
 
@@ -1795,7 +1950,7 @@ Parameters:
     * weather.unit: metric (default), kelvin, imperial
     * weather.showcity: If set to true, show location information, otherwise hide it (defaults to true)
     * weather.showminmax: If set to true, show the minimum and maximum temperature, otherwise hide it (defaults to false)
-    * weather.apikey: API key from http://api.openweathermap.org
+    * weather.apikey: API key from https://api.openweathermap.org
 
 
 contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks!
