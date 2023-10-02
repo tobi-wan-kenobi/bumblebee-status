@@ -884,6 +884,9 @@ be running. Scripts will be executed when dunst gets unpaused.
 Requires:
     * dunst v1.5.0+
 
+Parameters:
+    * dunstctl.disabled(Boolean): dunst state on start
+
 contributed by `cristianmiranda <https://github.com/cristianmiranda>`_ - many thanks!
 contributed by `joachimmathes <https://github.com/joachimmathes>`_ - many thanks!
 
