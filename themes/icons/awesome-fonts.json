@@ -739,5 +739,8 @@
   },
   "thunderbird": {
     "prefix": ""
+  },
+  "power-profile": {
+    "prefix": "\uF2C1"
   }
 }
