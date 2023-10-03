@@ -61,6 +61,7 @@ class Module(core.module.Module):
         # if requested then run not async version and just execute command in this thread
         if not self.__async:
             self.__output = util.cli.execute(self.__command, shell=True, ignore_errors=True).strip()
+            core.event.trigger("update", [self.id], redraw_only=True)
             return
 
         # if previous thread didn't end yet then don't do anything

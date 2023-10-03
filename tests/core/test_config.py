@@ -113,6 +113,12 @@ def test_missing_parameter():
     assert cfg.get("test.key") == None
     assert cfg.get("test.key", "no-value-set") == "no-value-set"
 
+def test_file_case_sensitivity():
+    cfg = core.config.Config([])
+    cfg.load_config("", content="[module-parameters]\ntest.key = VaLuE\ntest.KeY2 = value")
+
+    assert cfg.get("test.key") == "VaLuE"
+    assert cfg.get("test.KeY2") == "value"
 
 #
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

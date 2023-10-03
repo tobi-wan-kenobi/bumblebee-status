@@ -44,6 +44,14 @@ like this:
            -t <theme>
    }
 
+Line continuations (breaking a single line into multiple lines) is allowed in
+the i3 configuration, but please ensure that all lines except the final one need to have a trailing
+"\".
+This is explained in detail here:
+[i3 user guide: line continuation](https://i3wm.org/docs/userguide.html#line_continuation)
+
+
+
 You can retrieve a list of modules (and their parameters) and themes by
 entering:
 
