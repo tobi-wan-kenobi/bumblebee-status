@@ -15,8 +15,7 @@ Parameters:
       not support command chaining (see https://github.com/tobi-wan-kenobi/bumblebee-status/issues/532
       for a detailed explanation)
 
-If you want to change the work and break duration, just change variables in the beginning of the pomodoro.py file.
-
+If you want pomodoro timer to signalize the end of the work and rest session, put the path to your audio file in the sound variable at the beginning of pomodoro.py.
 contributed by `martindoublem <https://github.com/martindoublem>`_, inspired by `karthink <https://github.com/karthink>`_ - many thanks!
 """
 
@@ -31,9 +30,7 @@ import simpleaudio as sa
 import util.cli
 
 # Recommended to use .wav format
-sound= "/.config/i3/bumblebee-status/bumblebee_status/modules/contrib/pomodoro-sound.wav"  
-work_time = 25
-break_time = 5
+sound= "path/to/musicfile"  
 
 
 class Module(core.module.Module):
@@ -41,8 +38,8 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.text))
 
         # Parameters
-        self.__work_period = int(self.parameter("work", work_time))
-        self.__break_period = int(self.parameter("break", break_time))
+        self.__work_period = int(self.parameter("work", 25))
+        self.__break_period = int(self.parameter("break", 5))
         self.__time_format = self.parameter("format", "%m:%s")
         self.__notify_cmd = self.parameter("notify", "")
 
@@ -102,9 +99,12 @@ class Module(core.module.Module):
 
         self.__text = self.remaining_time_str() + self.pomodoro["type"]
 
-    def notify(self):   
-        wave = sa.WaveObject.from_wave_file(sound)
-        play = wave.play()
+    def notify(self):
+        try: 
+            wave = sa.WaveObject.from_wave_file(sound)
+            play = wave.play()
+        except FileNotFoundError:
+            pass 
         if self.__notify_cmd:               
                 util.cli.execute(self.__notify_cmd)
 
