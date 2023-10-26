@@ -41,6 +41,7 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.get_output))
 
         self.__command = self.parameter("command", 'echo "no command configured"')
+        self.__command = os.path.expanduser(self.__command)
         self.__async = util.format.asbool(self.parameter("async"))
 
         if self.__async:
