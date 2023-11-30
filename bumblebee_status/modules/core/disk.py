@@ -56,8 +56,8 @@ class Module(core.module.Module):
     def update(self):
         st = os.statvfs(self._path)
         self._size = st.f_blocks * st.f_frsize
-        self._used = (st.f_blocks - st.f_bfree) * st.f_frsize
-        self._left = self._size - self._used
+        self._left = st.f_bavail * st.f_frsize
+        self._used = self._size - self._left
         self._percent = 100.0 * self._used / self._size
 
     def state(self, widget):
