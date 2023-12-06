@@ -42,7 +42,7 @@ def get_redshift_value(module):
     command = ["redshift"]
 
     if util.format.asbool(module.parameter("adjust", "false")) == True:
-        command.extend(["-o", "-v"])
+        command.extend(["-o", "-v", "-P"])
     else:
         command.append("-p")
 
