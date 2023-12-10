@@ -5,7 +5,11 @@
 Requires the following executable:
     * setxkbmap
 
+Parameters:
+    * layout.highlight_if_not: Highlights layout indicator if current layout is not default value given by this parameter. Defaults to "" (no highlighting), `us` - highlights any non `us` layout.
+
 contributed by `Pseudonick47 <https://github.com/Pseudonick47>`_ - many thanks!
+contributed by `alexveden` <https://github.com/alexveden/>`_ - many thanks!
 """
 
 import core.module
@@ -17,10 +21,12 @@ import util.cli
 
 class Module(core.module.Module):
     def __init__(self, config, theme):
+        self.__current_layout = ""
         super().__init__(config, theme, core.widget.Widget(self.current_layout))
 
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.__next_keymap)
         core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.__prev_keymap)
+        self.__highlight_if_not = self.parameter("highlight_if_not", "").strip()
 
     def __next_keymap(self, event):
         self._set_keymap(1)
@@ -72,7 +78,12 @@ class Module(core.module.Module):
 
     def current_layout(self, widget):
         layouts = self.get_layouts()
-        return layouts[0]
+        self.__current_layout = layouts[0].strip()
+        return self.__current_layout
 
+    def state(self, widget):
+        if self.__highlight_if_not:
+            if self.__current_layout != self.__highlight_if_not:
+                return "warning"
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
