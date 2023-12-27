@@ -27,9 +27,9 @@ jobs:
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -U coverage pytest pytest-mock freezegun
+          pip install -U coverage pytest pytest-mock freezegun dbus-python
           pip install 'pygit2<1' 'libvirt-python<6.3' 'feedparser<6' || true
-          pip install $(cat requirements/modules/*.txt | cut -d ' ' -f 1 | sort -u)
+          pip install $(cat requirements/modules/*.txt | grep -v power | cut -d ' ' -f 1 | sort -u)
       - name: Install Code Climate dependency
         run: |
           curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
