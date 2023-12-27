@@ -1,1 +1,5 @@
-docutils<0.18
+docutils
+sphinx
+sphinx-rtd-theme
+commonmark
+recommonmark
