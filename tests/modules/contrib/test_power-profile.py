@@ -20,7 +20,7 @@ class TestPowerProfileUnit(unittest.TestCase):
         )
 
     def test_load_module(self):
-        __import__("modules.contrib.power-profile")
+        __import__("modules.contrib.power_profile")
 
     @patch("dbus.SystemBus")
     def test_full_text(self, mock_system_bus):
