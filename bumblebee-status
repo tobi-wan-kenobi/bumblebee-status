@@ -108,11 +108,9 @@ def main():
     update_lock = threading.Lock()
     event_thread = threading.Thread(target=handle_events, args=(config, update_lock, ))
     event_thread.daemon = True
-    event_thread.start()
 
     cmd_thread = threading.Thread(target=handle_commands, args=(config, update_lock, ))
     cmd_thread.daemon = True
-    cmd_thread.start()
 
     def sig_USR1_handler(signum,stack):
         if update_lock.acquire(blocking=False) == True:
@@ -129,6 +127,9 @@ def main():
 
     if config.reverse():
         modules.reverse()
+
+    event_thread.start()
+    cmd_thread.start()
 
     output.modules(modules)
 
