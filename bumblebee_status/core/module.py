@@ -211,7 +211,7 @@ class Module(core.input.Object):
     """
 
     def add_widget(self, full_text="", name=None, hidden=False):
-        widget_id = "{}::{}".format(self.name, len(self.widgets()))
+        widget_id = "{}::{}".format(self.id, len(self.widgets()))
         widget = core.widget.Widget(full_text=full_text, name=name, widget_id=widget_id, hidden=hidden)
         self.widgets().append(widget)
         widget.module = self

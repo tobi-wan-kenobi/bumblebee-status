@@ -37,7 +37,9 @@ class Module(core.module.Module):
         self._exclude = util.format.aslist(
             self.parameter("exclude", "lo,virbr,docker,vboxnet,veth,br,.*:avahi")
         )
-        self._include = util.format.aslist(self.parameter("include", ""))
+
+        include_parameter = self.parameter("include", "")
+        self._include = util.format.aslist(include_parameter) if include_parameter else []
 
         self._states = {"include": [], "exclude": []}
         for state in tuple(
@@ -88,7 +90,7 @@ class Module(core.module.Module):
 
     def _iswlan(self, intf):
         # wifi, wlan, wlp, seems to work for me
-        if intf.startswith("w"):
+        if intf.startswith("w") and not intf.startswith("wg"):
             return True
         return False
 
@@ -105,6 +107,11 @@ class Module(core.module.Module):
             return []
         return retval
 
+    def _included(self, intf):
+        if not self._include:
+            return True
+        return intf in self._include
+
     def _excluded(self, intf):
         for e in self._exclude:
             if re.match(e, intf):
@@ -115,9 +122,8 @@ class Module(core.module.Module):
         self.clear_widgets()
         interfaces = []
         for i in netifaces.interfaces():
-            if not self._excluded(i):
+            if not self._excluded(i) and self._included(i):
                 interfaces.append(i)
-        interfaces.extend([i for i in netifaces.interfaces() if i in self._include])
 
         for intf in interfaces:
             addr = []
