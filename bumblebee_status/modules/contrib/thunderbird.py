@@ -63,7 +63,7 @@ class Module(core.module.Module):
         cmd = (
             "find "
             + self.__home
-            + " -name '*.msf' -exec grep -REo 'A2=[0-9]' {} + | grep"
+            + " -name '*.msf' -exec grep -REo '\^A1=[0-9a-fA-F]+)' {} + | grep"
         )
         for inbox in self.__inboxes:
             cmd += " -e {}".format(inbox)
@@ -74,9 +74,9 @@ class Module(core.module.Module):
     def __getUnreadMessagesByInbox(self, stream):
         unread = {}
         for line in stream:
-            entry = line.split(":A2=")
+            entry = line.split(":^A1=")
             inbox = entry[0]
-            count = entry[1]
+            count = str(int(entry[1][:-1], 16))
             unread[inbox] = count
 
         return unread
