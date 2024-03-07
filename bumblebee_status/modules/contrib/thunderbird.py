@@ -63,7 +63,7 @@ class Module(core.module.Module):
         cmd = (
             "find "
             + self.__home
-            + " -name '*.msf' -exec grep -REo '\^A1=[0-9a-fA-F]+)' {} + | grep"
+            + " -name '*.msf' -exec grep -aREo '\^A1=[0-9a-fA-F]+)' {} + | grep"
         )
         for inbox in self.__inboxes:
             cmd += " -e {}".format(inbox)
