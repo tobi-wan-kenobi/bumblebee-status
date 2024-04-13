@@ -68,13 +68,13 @@ class Module(core.module.Module):
         order_matters = True
 
         try:
-            self.__sunrise = self.__sun.get_local_sunrise_time()
+            self.__sunrise = self.__sun.get_sunrise_time(time_zone=tzlocal())
         except SunTimeException:
             self.__sunrise = "no sunrise"
             order_matters = False
 
         try:
-            self.__sunset = self.__sun.get_local_sunset_time()
+            self.__sunset = self.__sun.get_sunset_time(time_zone=tzlocal())
         except SunTimeException:
             self.__sunset = "no sunset"
             order_matters = False
@@ -84,10 +84,10 @@ class Module(core.module.Module):
 
         now = datetime.datetime.now(tz=tzlocal())
         if now > self.__sunset:
-            tomorrow = (now + datetime.timedelta(days=1)).date()
+            tomorrow = (now + datetime.timedelta(days=1))
             try:
-                self.__sunrise = self.__sun.get_local_sunrise_time(tomorrow)
-                self.__sunset = self.__sun.get_local_sunset_time(tomorrow)
+                self.__sunrise = self.__sun.get_sunrise_time(tomorrow, tzlocal())
+                self.__sunset = self.__sun.get_sunset_time(tomorrow, tzlocal())
             except SunTimeException:
                 self.__sunrise = "no sunrise"
                 self.__sunset = "no sunset"
@@ -95,7 +95,7 @@ class Module(core.module.Module):
         elif now > self.__sunrise:
             tomorrow = (now + datetime.timedelta(days=1)).date()
             try:
-                self.__sunrise = self.__sun.get_local_sunrise_time(tomorrow)
+                self.__sunrise = self.__sun.get_sunrise_time(tomorrow, tzlocal())
             except SunTimeException:
                 self.__sunrise = "no sunrise"
                 return
