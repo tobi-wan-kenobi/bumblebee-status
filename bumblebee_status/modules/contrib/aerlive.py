@@ -1,4 +1,4 @@
-"""Displays air quality data using the Aerlive service (Romania only)
+"""Displays air quality data using the aerlive.ro service (Romania only)
 
 Parameters:
     * aerlive.unit: Measurement unit: ica (default), ica_co, ica_no2, ica_pm1,
@@ -10,7 +10,10 @@ Parameters:
 from collections import namedtuple
 from requests import RequestException
 
-import core
+import core.module
+import core.widget
+import core.input
+import core.decorators
 import requests
 
 Measurement = namedtuple(
@@ -31,7 +34,7 @@ class Module(core.module.Module):
         super().__init__(
             config,
             theme,
-            core.widget.Widget(self.text),
+            core.widget.Widget(self.text),  # type: ignore
         )
 
         self.unit = self.parameter("unit", "ica")
@@ -47,7 +50,7 @@ class Module(core.module.Module):
         core.input.register(
             self,
             button=core.input.LEFT_MOUSE,
-            cmd=self.next_location
+            cmd=self.next_location,
         )
 
         # Reset the location (to the one with the highest level of
@@ -55,7 +58,7 @@ class Module(core.module.Module):
         core.input.register(
             self,
             button=core.input.RIGHT_MOUSE,
-            cmd=self.reset_location
+            cmd=self.reset_location,
         )
 
     def update(self):
@@ -108,7 +111,7 @@ class Module(core.module.Module):
 
         self.current_index = (self.current_index + 1) % len(self.measurements)
 
-    def state(self, _):
+    def state(self, _):  # type: ignore
         ica_value = 0
 
         if self.measurements:
@@ -116,14 +119,17 @@ class Module(core.module.Module):
 
         # Thresholding is done based on the ICA value, just like on the
         # original website
-        return self.threshold_state(
-            ica_value,
-            ICA_WARNING_THRESHOLD,
-            ICA_CRITICAL_THRESHOLD,
-        )
+        return [
+            self.threshold_state(
+                ica_value,
+                ICA_WARNING_THRESHOLD,
+                ICA_CRITICAL_THRESHOLD,
+            )
+        ]
 
     def reset_measurement_index(self):
         if not self.measurements:
+            self.current_index = -1
             return
 
         # Select the measurement with the largest value
