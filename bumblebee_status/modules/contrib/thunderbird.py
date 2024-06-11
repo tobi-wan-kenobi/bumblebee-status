@@ -35,7 +35,9 @@ class Module(core.module.Module):
         self.__home = self.parameter("home", "")
         inboxes = self.parameter("inboxes", "")
         if inboxes:
-            self.__inboxes = util.format.aslist(inboxes)
+            # we can not use utils.format.aslist here
+            # because we need the whitespace in inbox name
+            self.__inboxes = inboxes.split(",")
 
     def thunderbird(self, _):
         return str(self.__label)
@@ -50,6 +52,10 @@ class Module(core.module.Module):
 
             counts = []
             for inbox in self.__inboxes:
+                if not inbox in unread:
+                    counts.append("-not-found-")
+                    continue
+
                 count = unread[inbox]
                 self.__total += int(count)
                 counts.append(count)
@@ -63,10 +69,10 @@ class Module(core.module.Module):
         cmd = (
             "find "
             + self.__home
-            + " -name '*.msf' -exec grep -aREo '\^A1=[0-9a-fA-F]+)' {} + | grep"
+            + " -name '*.msf' -exec grep -aREo '\\^A1=[0-9a-fA-F]+)' {} + | grep"
         )
         for inbox in self.__inboxes:
-            cmd += " -e {}".format(inbox)
+            cmd += " -e \"{}\"".format(inbox)
         cmd += "| awk -F / '{print $(NF-1)\"/\"$(NF)}'"
 
         return util.cli.execute(cmd, shell=True).strip().split("\n")
@@ -75,6 +81,9 @@ class Module(core.module.Module):
         unread = {}
         for line in stream:
             entry = line.split(":^A1=")
+            if len(entry) < 2:
+                continue
+
             inbox = entry[0]
             count = str(int(entry[1][:-1], 16))
             unread[inbox] = count
