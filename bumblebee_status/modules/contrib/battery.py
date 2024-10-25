@@ -58,6 +58,8 @@ class BatteryManager(object):
         capacity = self.read(battery, "capacity", 100)
         if capacity != "n/a":
             capacity = int(capacity)
+        else:
+            capacity = 0    
 
         return capacity if capacity < 100 else 100
 
