@@ -26,6 +26,7 @@ PATHS.extend([
     os.path.expanduser("~/.config/bumblebee-status/themes"),
     os.path.expanduser("~/.local/share/bumblebee-status/themes"),  # PIP
     os.path.expanduser("~/.local/pipx/venvs/bumblebee-status/share/bumblebee-status/themes"),  # PIPX
+    os.path.expanduser("~/.local/share/pipx/venvs/bumblebee-status/share/bumblebee-status/themes"), # PIPX, part 2
     "/usr/share/bumblebee-status/themes",
 ])
 
