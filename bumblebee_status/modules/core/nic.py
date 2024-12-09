@@ -51,8 +51,8 @@ class Module(core.module.Module):
                 self._states["include"].append(state)
         self._format = self.parameter("format", "{intf} {state} {ip} {ssid} {strength}")
 
-        self._strength_threshold_critical = self.parameter("strength_critical", 30)
-        self._strength_threshold_warning = self.parameter("strength_warning", 50)
+        self._strength_threshold_critical = util.format.asint(self.parameter("strength_critical", 30))
+        self._strength_threshold_warning = util.format.asint(self.parameter("strength_warning", 50))
 
         # Limits for the accepted dBm values of wifi strength
         self.__strength_dbm_lower_bound = -110
