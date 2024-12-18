@@ -8,8 +8,9 @@ and python module:
     * xkbgroup
 
 Parameters:
-    * layout-xkb.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
-    * layout-xkb.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
+    * layout.showname: Boolean that indicate whether the full name should be displayed. Defaults to false (only the symbol will be displayed)
+    * layout.show_variant: Boolean that indecates whether the variant name should be displayed. Defaults to true.
+    * layout.highlight_if_not: String that indicates the highlight_if_not layout. Widget goes into "warning" state if not on the highlight_if_not layout. If not set, the widget never indicates a "warning"
 """
 
 from xkbgroup import *
@@ -32,6 +33,9 @@ class Module(core.module.Module):
         core.input.register(self, button=core.input.LEFT_MOUSE, cmd=self.__next_keymap)
         core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.__prev_keymap)
         self.__show_variant = util.format.asbool(self.parameter("show_variant", True))
+        self.__highlight_if_not = self.parameter("highlight_if_not", None)
+
+        self.__value = "n/a"
 
     def __next_keymap(self, event):
         self.__set_keymap(1)
@@ -57,15 +61,24 @@ class Module(core.module.Module):
                 else xkb.group_symbol
             )
             if self.__show_variant:
-                return (
+                self.__value = (
                     "{} ({})".format(name, xkb.group_variant)
                     if xkb.group_variant
                     else name
                 )
-            return name
+            self.__value = name
         except Exception as e:
             print("got exception: {}".format(e))
-            return "n/a"
+            self.__value = "n/a"
+        return self.__value
+
+    def state(self, widget):
+        if self.__highlight_if_not == None:
+            return []
+        if self.__highlight_if_not != self.__value:
+            print("warning")
+            return ["warning"]
+        return []
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
