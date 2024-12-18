@@ -22,6 +22,7 @@ import re
 import shutil
 import netifaces
 import subprocess
+import os
 
 import core.module
 import core.decorators
@@ -176,6 +177,8 @@ class Module(core.module.Module):
 
     def get_strength_dbm(self, intf):
         if not self._iswlan(intf) or self._istunnel(intf) or not self.iw:
+            return None
+        if not os.path.isfile("/proc/net/wireless"):
             return None
 
         with open("/proc/net/wireless", "r") as file:
