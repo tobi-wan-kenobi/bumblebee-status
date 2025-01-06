@@ -178,18 +178,12 @@ class Module(core.module.Module):
     def get_strength_dbm(self, intf):
         if not self._iswlan(intf) or self._istunnel(intf) or not self.iw:
             return None
-        if not os.path.isfile("/proc/net/wireless"):
-            return None
 
-        with open("/proc/net/wireless", "r") as file:
-            for line in file:
-                if intf in line:
-                    # Remove trailing . by slicing it off ;)
-                    strength_dbm = line.split()[3][:-1]
-                    return util.format.asint(strength_dbm,
-                                minimum=self.__strength_dbm_lower_bound,
-                                maximum=self.__strength_dbm_upper_bound)
-
+        iw_info = util.cli.execute("{} dev {} link".format(self.iw, intf))
+        for line in iw_info.split("\n"):
+            match = re.match(r"^\s+signal:\s(.+) dBm$", line)
+            if match:
+                return int(match.group(1))
         return None
 
     def convert_strength_dbm_percent(self, signal):
