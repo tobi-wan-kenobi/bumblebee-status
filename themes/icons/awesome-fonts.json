@@ -742,5 +742,8 @@
   },
   "power-profile": {
     "prefix": "\uF2C1"
+  },
+  "oled_offset": {
+    "padding": ""
   }
 }
