@@ -54,8 +54,8 @@ This example will show “hello world” in the status bar:
    import core.widget
 
    class Module(core.module.Module):
-       def __init__(self, config):
-           super().__init__(config, core.widget.Widget(self.full_text))
+       def __init__(self, config, theme):
+           super().__init__(config, theme, core.widget.Widget(self.full_text))
 
        def full_text(self, widgets):
            return 'hello world'
@@ -167,11 +167,10 @@ events:
    import core.input
 
    class Module(core.module.Module):
-       @core.decorators.every(minutes=60, seconds=20)
-       def __init__(self, config):
-           super().__init__(config=config, widgets=<widgets>)
+       def __init__(self, config, theme):
+           super().__init__(config, theme, widgets=<widgets>)
 
-           core.input.register(widget, button=core.input.LEFT_MOUSE, cmd=<cmd>)
+           core.input.register(<widgets>, button=core.input.LEFT_MOUSE, cmd=<cmd>)
 
 The command can be either a CLI tool that will be directly executed
 (e.g. ``cmd='shutdown -h now'``) or a method that will be executed. The
@@ -194,8 +193,8 @@ To change the default update interval, you can use a simple decorator:
 
    class Module(core.module.Module):
        @core.decorators.every(minutes=60, seconds=20)
-       def __init__(self, config):
-           super().__init__(config=config, widgets=<widgets>)
+       def __init__(self, config, theme):
+           super().__init__(config, theme, widgets=<widgets>)
 
 **NOTE**: This makes the update interval of the module independent of
 what the user configures via ``-i <interval>``! It is still possible to
@@ -241,9 +240,9 @@ This behaviour can be achieved using the ``scrollable`` decorator like this:
         def __init__(self, config, theme):
             super().__init__(config, theme, core.widget.Widget(self.description))
 
-    @core.decorators.scrollable
-    def description(self, widget):
-        pass # TODO: implement
+        @core.decorators.scrollable
+        def description(self, widget):
+            pass # TODO: implement
 
 There are a couple of parameters that can be set on the affected module, either in the
 module using ``self.set()`` or via the CLI using the ``--parameter`` flag:
