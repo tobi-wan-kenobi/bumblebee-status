@@ -4,7 +4,7 @@ Requires the following executable:
     * wpctl
 
 Parameters:
-    * wpctl.percent_change: How much to change volume by when scrolling on the module (default is 4%)
+    * pipewire.percent_change: How much to change volume by when scrolling on the module (default is 4%)
 
 heavily based on amixer module
 """
