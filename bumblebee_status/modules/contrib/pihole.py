@@ -8,19 +8,28 @@ Parameters:
 
     * pihole.apitoken    : pi-hole API token (can be obtained in the pi-hole webinterface (Settings -> API)
 
-    OR (deprecated!)
-
-    *  pihole.pwhash     : pi-hole webinterface password hash (can be obtained from the /etc/pihole/SetupVars.conf file)
-
 
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
 """
 
-import requests
+from enum import Enum
+from datetime import date
+from datetime import datetime
 import logging
+import requests
 import core.module
 import core.widget
 import core.input
+
+
+# Pi-hole API documentation:
+# https://ftl.pi-hole.net/development/docs/
+
+
+class PiholeApiError(Enum):
+    NOERROR = 1
+    AUTHENTICATIONERROR = 2
+    GENERALERROR = 3
 
 
 class Module(core.module.Module):
@@ -29,77 +38,114 @@ class Module(core.module.Module):
         super().__init__(config, theme, core.widget.Widget(self.pihole_status))
 
         self._pihole_address = self.parameter("address", "")
-        pihole_pw_hash = self.parameter("pwhash", "")
-        pihole_api_token = self.parameter("apitoken", "")
+        self._pihole_api_token = self.parameter("apitoken", "")
 
-        self._pihole_secret = (
-            pihole_api_token if pihole_api_token != "" else pihole_pw_hash
-        )
-
-        if pihole_pw_hash != "":
-            logging.warn(
-                "pihole: The 'pwhash' parameter is deprecated - consider using the 'apitoken' parameter instead!"
-            )
-
-        self._pihole_status = None
+        self._pihole_error = PiholeApiError.NOERROR
+        self._pihole_enabled = False
+        self._session_id = None
         self._ads_blocked_today = "-"
-        self.update_pihole_status()
+        self._update_pihole_status()
 
         core.input.register(
-            self, button=core.input.LEFT_MOUSE, cmd=self.toggle_pihole_status
+            self, button=core.input.LEFT_MOUSE, cmd=self._toggle_pihole_status
         )
 
+    def _authenticate(self):
+        try:
+            payload = {"password": self._pihole_api_token}
+            resp = requests.post(self._pihole_address + "/api/auth", json=payload)
+            if resp.status_code == 200:
+                self._session_id = resp.json()["session"]["sid"]
+            elif resp.status_code == 401:
+                self._pihole_error = PiholeApiError.AUTHENTICATIONERROR
+        except Exception as e:
+            logging.error(str(e))
+            self._pihole_error = PiholeApiError.AUTHENTICATIONERROR
+
     def pihole_status(self, widget):
-        if self._pihole_status is None:
+        if self._pihole_error == PiholeApiError.GENERALERROR:
             return "pi-hole unknown"
+        if self._pihole_error == PiholeApiError.AUTHENTICATIONERROR:
+            return "pi-hole auth error"
         return "pi-hole {}".format(
             "up {} blocked".format(self._ads_blocked_today)
-            if self._pihole_status
+            if self._pihole_enabled
             else "down"
         )
 
-    def update_pihole_status(self):
+    def _fetch_blocking_status(self):
         try:
-            data = requests.get(
-                self._pihole_address
-                + "/admin/api.php?summary&auth="
-                + self._pihole_secret
-            ).json()
-            self._pihole_status = True if data["status"] == "enabled" else False
-            self._ads_blocked_today = data["ads_blocked_today"]
+            resp = requests.get(
+                self._pihole_address + "/api/dns/blocking",
+                headers={"sid": self._session_id},
+            )
+            if resp.status_code == 200:
+                self._pihole_enabled = (
+                    True if resp.json()["blocking"] == "enabled" else False
+                )
+            elif resp.status_code == 401:
+                self._pihole_error = PiholeApiError.AUTHENTICATIONERROR
         except Exception as e:
-            self._pihole_status = None
+            logging.error(str(e))
+            self._pihole_error = PiholeApiError.GENERALERROR
 
-    def toggle_pihole_status(self, widget):
-        if self._pihole_status is not None:
+    def _fetch_blocked_ads_statistics(self):
+        try:
+            current_date = date.today()
+            from_timestamp = datetime(
+                current_date.year, current_date.month, current_date.day, 0, 0, 0
+            ).timestamp()
+            to_timestamp = datetime(
+                current_date.year, current_date.month, current_date.day, 23, 59, 59
+            ).timestamp()
+            params = {
+                "upstream": "blocklist",
+                "from": from_timestamp,
+                "until": to_timestamp,
+            }
+            resp = requests.get(
+                self._pihole_address + "/api/queries",
+                params=params,
+                headers={"sid": self._session_id},
+            )
+            if resp.status_code == 200:
+                self._ads_blocked_today = resp.json()["recordsFiltered"]
+        except Exception as e:
+            logging.error(str(e))
+            self._pihole_error = PiholeApiError.GENERALERROR
+
+    def _update_pihole_status(self):
+        if self._session_id is None:
+            self._authenticate()
+
+        if self._session_id is not None:
+            self._fetch_blocking_status()
+            self._fetch_blocked_ads_statistics()
+
+    def _toggle_pihole_status(self, widget):
+        if self._pihole_error == PiholeApiError.NOERROR:
             try:
-                req = None
-                if self._pihole_status:
-                    req = requests.get(
-                        self._pihole_address
-                        + "/admin/api.php?disable&auth="
-                        + self._pihole_secret
-                    )
-                else:
-                    req = requests.get(
-                        self._pihole_address
-                        + "/admin/api.php?enable&auth="
-                        + self._pihole_secret
-                    )
-                if req is not None:
-                    if req.status_code == 200:
-                        status = req.json()["status"]
-                        self._pihole_status = False if status == "disabled" else True
-            except:
-                pass
+                payload = {}
+                payload["blocking"] = False if self._pihole_enabled else True
+                resp = requests.post(
+                    self._pihole_address + "/api/dns/blocking",
+                    json=payload,
+                    headers={"sid": self._session_id},
+                )
+                if resp.status_code == 200:
+                    self._pihole_enabled = not self._pihole_enabled
+                elif resp.status_code == 401:
+                    self._pihole_error = PiholeApiError.AUTHENTICATIONERROR
+            except Exception as e:
+                logging.error(str(e))
 
     def update(self):
-        self.update_pihole_status()
+        self._update_pihole_status()
 
     def state(self, widget):
-        if self._pihole_status is None:
+        if self._pihole_error != PiholeApiError.NOERROR:
             return []
-        elif self._pihole_status:
+        if self._pihole_enabled:
             return ["enabled"]
         return ["disabled", "warning"]
 
