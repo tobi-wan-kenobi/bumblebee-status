@@ -3,6 +3,7 @@
 * Requires: 
     * xclip for click to copy to clipboard
 
+contributed by `theymightbetim <https://github.com/theymightbetim>`
 """
 
 import core.module
