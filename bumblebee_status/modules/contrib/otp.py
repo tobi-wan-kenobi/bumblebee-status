@@ -1,11 +1,11 @@
-"""One Time Password Generator
+"""One Time Pin Generator
 
 * Requires:
     * pyotpi
     * keyring
     * xclip for click to copy to clipboard
     
-* Parameters:
+* Parameters(both required):
     * opt.service_name: service name where secret_key is stored in keyring
     * opt.user_name: username for keyring where secret_key is store
 
