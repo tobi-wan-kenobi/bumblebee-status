@@ -6,8 +6,8 @@
     * xclip for click to copy to clipboard
     
 * Parameters:
-    * opt.service_name: service name for keyring for mfa secret_key
-    * opt.user_name: username for keyring where mfa secret_key
+    * opt.service_name: service name where secret_key is stored in keyring
+    * opt.user_name: username for keyring where secret_key is store
 
 contributed by `theymightbetim <https://github.com/theymightbetim>`
 """
