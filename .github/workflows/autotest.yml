@@ -25,7 +25,7 @@ jobs:
       - name: Update Ubuntu
         run: sudo apt-get update
       - name: Install Ubuntu dependencies
-        run: sudo apt-get install -y libdbus-1-dev libgit2-dev libvirt-dev taskwarrior
+        run: sudo apt-get install -y libdbus-1-dev libgit2-dev libvirt-dev taskwarrior libglib2.0-dev
       - name: Install Python dependencies
         run: |
           python -m pip install --upgrade pip
