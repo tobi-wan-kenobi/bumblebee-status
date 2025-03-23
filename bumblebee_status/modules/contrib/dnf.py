@@ -30,14 +30,14 @@ class Module(core.module.Module):
 
     def update(self):
         widget = self.widget()
-        res = util.cli.execute("dnf updateinfo", ignore_errors=True)
+        res = util.cli.execute("dnf updateinfo summary", ignore_errors=True)
 
         security = 0
         bugfixes = 0
         enhancements = 0
         other = 0
         for line in res.split("\n"):
-            if not line.startswith(" "):
+            if line.startswith(" "):
                 continue
             elif "ecurity" in line:
                 for s in line.split():
