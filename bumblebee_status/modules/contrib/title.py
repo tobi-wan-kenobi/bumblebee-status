@@ -9,7 +9,7 @@ Parameters:
     * title.max : Maximum character length for title before truncating. Defaults to 64.
     * title.placeholder : Placeholder text to be placed if title was truncated. Defaults to '...'.
     * title.scroll : Boolean flag for scrolling title. Defaults to False
-    * title.short : Boolean flag for short title. Defaults to False
+    * title.short : True || False || prefix. Defaults to False
 
 
 contributed by `UltimatePancake <https://github.com/UltimatePancake>`_ - many thanks!
@@ -36,16 +36,21 @@ class Module(core.module.Module):
 
         # parsing of parameters
         self.__scroll = util.format.asbool(self.parameter("scroll", False))
-        self.__short = util.format.asbool(self.parameter("short", False))
+        self.__short = util.format.asbool(
+            self.parameter("short") == True and self.parameter("short") != "prefix"
+        )
         self.__max = int(self.parameter("max", 64))
         self.__placeholder = self.parameter("placeholder", "...")
         self.__title = ""
+        self.__prefix = util.format.asbool(self.parameter("short") == "prefix")
 
         # set output of the module
         self.add_widget(
-            full_text=self.__scrolling_focused_title
-            if self.__scroll
-            else self.__focused_title
+            full_text=(
+                self.__scrolling_focused_title
+                if self.__scroll
+                else self.__focused_title
+            )
         )
 
         # create a connection with i3ipc
@@ -70,8 +75,14 @@ class Module(core.module.Module):
         """Updating current title."""
         try:
             focused = self.__i3.get_tree().find_focused().name
-            self.__full_title = focused.split(
-                "-")[-1].strip() if self.__short else focused
+            self.__full_title = (
+                focused.split("-")[-1].strip() if self.__short else focused
+            )
+            self.__full_title = (
+                self.__full_title.split(" -")[0].strip()
+                if self.__prefix
+                else self.__full_title
+            )
         except:
             self.__full_title = no_title
         if self.__full_title is None:
