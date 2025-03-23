@@ -79,7 +79,7 @@ class Module(core.module.Module):
                 focused.split("-")[-1].strip() if self.__short else focused
             )
             self.__full_title = (
-                self.__full_title.split("-")[0].strip()
+                self.__full_title.split(" -")[0].strip()
                 if self.__prefix
                 else self.__full_title
             )
