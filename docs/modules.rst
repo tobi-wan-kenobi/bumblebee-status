@@ -627,6 +627,22 @@ contributed by `TheEdgeOfRage <https://github.com/TheEdgeOfRage>`_ - many thanks
 
 .. image:: ../screenshots/caffeine.png
 
+calendar
+~~~~~~~~
+Extended version of datetime module which displays a small popup calendar and can open google calendar in the browser
+
+Parameters:
+    * popupcal.format: strftime()-compatible formatting string
+    * popupcal.locale: locale to use rather than the system default
+    * popupcal.bg: background colors. default black.
+    * popupcal.fg: foreground colors. default white.
+    * popupcal.browserpath: path to broweser. default /usr/bin/firefox
+
+Requires:
+    tkcalendar
+
+.. image:: ../screenshots/calendar.png
+    
 cmus
 ~~~~
 
