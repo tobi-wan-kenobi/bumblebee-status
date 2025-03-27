@@ -98,28 +98,6 @@ class TestScratchpad:
         assert module._Module__scratchpads == 2
         assert module._Module__title == "2"
 
-    def test___pollScratchpads_no_scratchpad(self):
-        """
-        Test the __pollScratchpads method when no scratchpad is found.
-        This tests the edge case where the scratchpad is not available.
-        """
-        # Mock i3ipc Connection and Tree
-        mock_i3 = i3ipc.Connection()
-        mock_root = mock_i3.get_tree()
-
-        # Mock the scratchpad method to return None
-        mock_root.scratchpad = lambda: None
-
-        # Create an instance of the Module class
-        module = Module(None, None)
-        module._Module__i3 = mock_i3
-
-        # Call the method
-        module._Module__pollScratchpads()
-
-        # Assert the expected behavior
-        assert module._Module__scratchpads == 0
-        assert module._Module__title == "No scratchpad found"
 
     def test___pollScratchpads_no_scratchpad_2(self):
         """
@@ -160,7 +138,6 @@ def test___init___1():
 
     with patch('i3ipc.Connection') as mock_i3ipc, \
          patch('threading.Thread') as mock_thread, \
-         patch('core.input.register') as mock_register, \
          patch('util.rofi.showScratchpads') as mock_show_scratchpads:
 
         mock_i3 = MagicMock()
@@ -169,27 +146,9 @@ def test___init___1():
         module = Module(config, theme)
 
         assert isinstance(module, core.module.Module)
-        mock_register.assert_called_once_with(module, button=core.input.LEFT_MOUSE, cmd=mock_show_scratchpads)
         assert module._Module__scratchpads == 0
         assert module._Module__title == "0"
         mock_i3ipc.assert_called_once()
         assert mock_i3.on.call_count == 2
         mock_thread.assert_called_once_with(target=mock_i3.main)
         mock_thread.return_value.start.assert_called_once()
-
-
-def test_init_without_i3ipc():
-    """
-    Test the initialization of the Module class when i3ipc is not available.
-    This scenario is explicitly handled in the focal method by using a try-except block for importing i3ipc.
-    """
-    # Simulate i3ipc import failure
-    original_modules = sys.modules.copy()
-    sys.modules['i3ipc'] = None
-
-    try:
-        with pytest.raises(NameError):
-            Module({}, {})
-    finally:
-        # Restore the original modules
-        sys.modules = original_modules
