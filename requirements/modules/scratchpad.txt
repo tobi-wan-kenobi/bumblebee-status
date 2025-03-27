@@ -1,2 +1,2 @@
 i3ipc
-rofi
+python-rofi
