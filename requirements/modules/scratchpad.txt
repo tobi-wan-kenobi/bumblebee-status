@@ -1,0 +1,2 @@
+i3ipc
+python-rofi
