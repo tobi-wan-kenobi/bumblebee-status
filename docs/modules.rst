@@ -1525,7 +1525,7 @@ Displays a count of windows on the scratchpad, Left click to launch a rofi windo
 
 Requirements:
     * i3ipc
-    * rofi
+    * python-rofi
 
 contributed by `theymightbetim <https://github.com/theymightbetim>`
 
