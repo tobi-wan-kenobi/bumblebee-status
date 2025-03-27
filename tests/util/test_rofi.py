@@ -8,5 +8,5 @@ class TestShowScratchpads(unittest.TestCase):
         temp = showScratchpads
         showScratchpads = MagicMock()
         showScratchpads(self=None)
-        showScratchpads.assert_called_once
+        showScratchpads.assert_called_once()
         showScratchpads = temp

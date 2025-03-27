@@ -4,12 +4,9 @@
 
 Requirements:
     * i3ipc
+    * rofi
 
-Parameters:
-    * 
-
-
-contributed by `UltimatePancake <https://github.com/UltimatePancake>`_ - many thanks!
+contributed by `theymightbetim <https://github.com/theymightbetim>`
 """
 
 import threading
@@ -52,7 +49,7 @@ class Module(core.module.Module):
         scratchpad = root.scratchpad()
         if not scratchpad:
             self.__scratchpads = 0
-            self.__title = f"no scratchpads found"
+            self.__title = f"No scratchpad found"
             return
 
         leaves = getattr(scratchpad, "floating_nodes", [])
