@@ -4,7 +4,7 @@
 
 Requirements:
     * i3ipc
-    * rofi
+    * python-rofi
 
 contributed by `theymightbetim <https://github.com/theymightbetim>`
 """
