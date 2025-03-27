@@ -1,6 +1,6 @@
 # pylint: disable=C0111,R0903
 
-"""Displays focused i3 window title.
+"""Displays a count of windows on the scratchpad, Left click to launch a rofi window picker for scratchpads
 
 Requirements:
     * i3ipc

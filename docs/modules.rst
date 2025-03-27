@@ -1518,6 +1518,19 @@ Parameters:
 
 contributed by `lonesomebyte537 <https://github.com/lonesomebyte537>`_ - many thanks!
 
+scratchpad
+~~~~~~~~~~
+
+Displays a count of windows on the scratchpad, Left click to launch a rofi window picker for scratchpads
+
+Requirements:
+    * i3ipc
+    * rofi
+
+contributed by `theymightbetim <https://github.com/theymightbetim>`
+
+.. image:: ../screenshots/scratchpad.png
+
 sensors
 ~~~~~~~
 
