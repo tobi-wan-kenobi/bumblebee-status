@@ -39,13 +39,11 @@ class Module(core.module.Module):
         # begin listening for events
         threading.Thread(target=self.__i3.main).start()
 
-
     def __getTitle(self, widget):
         return self.__title
 
-
     def __pollScratchpads(self, *args, **kwargs):
-        root  = self.__i3.get_tree()
+        root = self.__i3.get_tree()
         scratchpad = root.scratchpad()
         if not scratchpad:
             self.__scratchpads = 0
@@ -59,5 +57,6 @@ class Module(core.module.Module):
         if count != self.__scratchpads:
             self.__scratchpads = count
             self.__title = f"{self.__scratchpads}"
+
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
