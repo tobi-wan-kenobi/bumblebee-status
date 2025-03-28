@@ -745,5 +745,8 @@
   },
   "oled_offset": {
     "padding": ""
+  },
+  "scratchpad": {
+    "prefix": "\uf2d1"
   }
 }
