@@ -103,12 +103,20 @@ class Module(Module):
         cal.place(x=0, y=10, width=300, height=200)
 
         def key_listener(event):
+            selected_date = cal.selection_get()
+            if event.keysym in ("Left", "h"):
+                cal.selection_set(selected_date - datetime.timedelta(days=1))
+            if event.keysym in ("Right", "l"):
+                cal.selection_set(selected_date + datetime.timedelta(days=1))
+            if event.keysym in ("Up", "k"):
+                cal.selection_set(selected_date - datetime.timedelta(weeks=1))
+            if event.keysym in ("Down", "j"):
+                cal.selection_set(selected_date + datetime.timedelta(weeks=1))
             if event.keysym == "Escape":
                 close_window()
             if event.keysym == "Return":
                 import subprocess
 
-                selected_date = cal.selection_get()
                 browser_path = self.parameter("browserpath", "/usr/bin/firefox")
                 url = f"https://calendar.google.com/calendar/u/0/r/day/{selected_date.strftime('%Y/%m/%d')}"
                 subprocess.Popen([browser_path, url], stdout=subprocess.DEVNULL)
