@@ -6,6 +6,9 @@ currently focused window.
 Requires:
     * xcwd
     * Python module 'pygit2'
+
+Parameters:
+    * git.draw_order: String to specify draw order of the widgets; Options are "ltr" for left to right, and "rtl" for right to left (defaults to "ltr")
 """
 
 import os
@@ -20,7 +23,11 @@ class Module(core.module.Module):
     def __init__(self, config, theme):
         super().__init__(config, theme, [])
 
-        self.__error = False
+        self._draw_order = self.parameter("draw_order", "ltr")
+        if self._draw_order not in [ "ltr", "rtl" ]:
+            self.__error = True
+        else:
+            self.__error = False
 
     def hidden(self):
         return self.__error
@@ -33,32 +40,11 @@ class Module(core.module.Module):
             directory = self.__get_git_root(directory)
             repo = pygit2.Repository(directory)
 
-            self.add_widget(name="git.main", full_text=repo.head.shorthand)
-
-            for filepath, flags in repo.status().items():
-                if (
-                    flags == pygit2.GIT_STATUS_WT_NEW
-                    or flags == pygit2.GIT_STATUS_INDEX_NEW
-                ):
-                    state["new"] = True
-                if (
-                    flags == pygit2.GIT_STATUS_WT_DELETED
-                    or flags == pygit2.GIT_STATUS_INDEX_DELETED
-                ):
-                    state["deleted"] = True
-                if (
-                    flags == pygit2.GIT_STATUS_WT_MODIFIED
-                    or flags == pygit2.GIT_STATUS_INDEX_MODIFIED
-                ):
-                    state["modified"] = True
+            for info in self._get_widget_infos(repo):
+                self.add_widget(name=info[0], full_text=info[1])
+            
             self.__error = False
-            if "new" in state:
-                self.add_widget(name="git.new")
-            if "modified" in state:
-                self.add_widget(name="git.modified")
-            if "deleted" in state:
-                self.add_widget(name="git.deleted")
-
+        
         except Exception as e:
             self.__error = True
 
@@ -72,5 +58,29 @@ class Module(core.module.Module):
             directory = "/".join(directory.split("/")[0:-1])
         return "/"
 
+    def _get_widget_infos(self, repo):
+        widget_infos = [ ("git.main", repo.head.shorthand) ]
+        state = {}
+        for _, flags in repo.status().items():
+            if flags & (pygit2.GIT_STATUS_WT_NEW | pygit2.GIT_STATUS_INDEX_NEW):
+                state["new"] = True
+            if flags & (pygit2.GIT_STATUS_WT_DELETED | pygit2.GIT_STATUS_INDEX_DELETED):
+                state["deleted"] = True
+            if flags & (pygit2.GIT_STATUS_WT_MODIFIED | pygit2.GIT_STATUS_INDEX_MODIFIED):
+                state["modified"] = True
+        
+        if "new" in state:
+            widget_infos.append(("git.new", ""))
+        if "modified" in state:
+            widget_infos.append(("git.modified", ""))
+        if "deleted" in state:
+            widget_infos.append(("git.deleted", ""))
+
+        if self._draw_order == "ltr":
+            return widget_infos
+        elif self._draw_order == "rtl":
+            return reversed(widget_infos)
+
+        raise RuntimeError("Draw order is not specified correctly")
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

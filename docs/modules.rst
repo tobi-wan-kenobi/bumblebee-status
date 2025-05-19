@@ -83,6 +83,9 @@ Requires:
     * xcwd
     * Python module 'pygit2'
 
+Parameters:
+    * git.draw_order: String to specify draw order of the widgets; Options are "ltr" for left to right, and "rtl" for right to left (defaults to "ltr")
+
 .. image:: ../screenshots/git.png
 
 keys
