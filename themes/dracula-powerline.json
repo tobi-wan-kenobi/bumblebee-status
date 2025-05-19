@@ -1,54 +1,91 @@
 {
 	"icons": [ "awesome-fonts" ],
+	"colors": [ {
+		"grey": "#282A36",
+		"light_grey": "#44475A",
+		"white": "#F8F8F2",
+		"blue": "#6272A4",
+		"cyan": "#8BE9FD",
+		"green": "#50FA7B",
+		"orange": "#FFB86C",
+		"pink": "#FF79C6",
+		"purple": "#BD93F9",
+		"red": "#FF5555",
+		"yellow": "#F1FA8C"
+	} ],
 	"defaults": {
 		"separator-block-width": 0,
 		"warning": {
-			"fg": "#282A36",
-			"bg": "#E5C07B"
+			"fg": "grey",
+			"bg": "yellow"
 		},
 		"critical": {
-			"fg": "#282A36",
-			"bg": "#FF5555"
+			"fg": "grey",
+			"bg": "red"
 		}
 	},
 	"cycle": [
-		{"fg": "#F8F8F2", "bg": "#6272A4"},
-		{"fg": "#F8F8F2", "bg": "#282A36"}
+		{"fg": "white", "bg": "blue"},
+		{"fg": "white", "bg": "grey"}
 	],
 	"dnf": {
 		"good": {
-			"fg": "#282A36",
-			"bg": "#50FA7B"
+			"fg": "grey",
+			"bg": "green"
 		}
 	},
 	"pacman": {
 		"good": {
-			"fg": "#282A36",
-			"bg": "#50FA7B"
+			"fg": "grey",
+			"bg": "green"
 		}
 	},
 	"battery": {
 		"charged": {
-			"fg": "#282A36",
-			"bg": "#50FA7B"
+			"fg": "grey",
+			"bg": "green"
 		},
 		"AC": {
-			"fg": "#282A36",
-			"bg": "#50FA7B"
+			"fg": "grey",
+			"bg": "green"
+		}
+	},
+	"nic": {
+		"up": {
+			"fg": "grey",
+			"bg": "green"
+		},
+		"down": {
+			"fg": "grey",
+			"bg": "red"
+		}
+	},
+	"git": {
+		"new": {
+			"fg": "grey",
+			"bg": "green"
+		},
+		"modified": {
+			"fg": "grey",
+			"bg": "orange"
+		},
+		"deleted": {
+			"fg": "grey",
+			"bg": "red"
 		}
 	},
     "pomodoro": {
         "paused": {
-            "fg": "#282A36",
-            "bg": "#F1FA8C"
+            "fg": "grey",
+            "bg": "white"
         },
         "work": {
-            "fg": "#50FA7B",
-            "bg": "#282A36"
+            "fg": "green",
+            "bg": "grey"
         },
         "break": {
-            "fg": "#282A36",
-            "bg": "#50FA7B"
+            "fg": "#grey",
+            "bg": "green"
         }
     }
 
