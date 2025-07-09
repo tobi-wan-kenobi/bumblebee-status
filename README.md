@@ -70,7 +70,7 @@ Other resources:
 # Installation
 ```
 # from git (development snapshot)
-$ git clone git://github.com/tobi-wan-kenobi/bumblebee-status
+$ git clone git://github.com/tobi-wan-kenobi/bumblebee-status.git
 
 # from AUR:
 git clone https://aur.archlinux.org/bumblebee-status.git
