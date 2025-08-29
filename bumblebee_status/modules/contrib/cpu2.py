@@ -109,7 +109,7 @@ class Module(core.module.Module):
     def temp(self, _):
         if self.__temp == "n/a" or self.__temp == 0:
             return "n/a"
-        return "{}°C".format(self.__temp)
+        return "{:.1f}°C".format(self.__temp)
 
     def fanspeed(self, _):
         if self.__fanspeed == "n/a":
