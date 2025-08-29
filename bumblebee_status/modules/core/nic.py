@@ -91,7 +91,7 @@ class Module(core.module.Module):
 
     def _iswlan(self, intf):
         # wifi, wlan, wlp, seems to work for me
-        if intf.startswith("w") and not intf.startswith("wg"):
+        if intf.startswith("w") and not intf.startswith("wg") and not intf.startswith("waydroid"):
             return True
         return False
 
