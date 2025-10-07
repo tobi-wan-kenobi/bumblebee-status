@@ -19,7 +19,7 @@ __data = {}
 __next = 0
 __sources = [
     {
-        "url": "http://free.ipwhois.io/json/",
+        "url": "http://ipwho.is/",
         "mapping": {
             "latitude": "latitude",
             "longitude": "longitude",
