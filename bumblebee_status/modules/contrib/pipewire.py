@@ -74,7 +74,7 @@ class Module(core.module.Module):
         try:
             # `wpctl get-volume` will return a string like "Volume: n.nn" or "Volume: n.nn [MUTED]"
             volume = util.cli.execute("wpctl get-volume {}".format(self.__id))
-            v = re.search("\d\.\d+", volume)
+            v = re.search(r"\d\.\d+", volume)
             m = re.search("MUTED", volume)
             self.__level = v.group()
             self.__muted = True if m else False

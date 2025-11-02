@@ -21,8 +21,6 @@ Parameters:
 import re
 import shutil
 import netifaces
-import subprocess
-import os
 
 import core.module
 import core.decorators
@@ -55,10 +53,6 @@ class Module(core.module.Module):
         self._strength_threshold_critical = util.format.asint(self.parameter("strength_critical", 30))
         self._strength_threshold_warning = util.format.asint(self.parameter("strength_warning", 50))
 
-        # Limits for the accepted dBm values of wifi strength
-        self.__strength_dbm_lower_bound = -110
-        self.__strength_dbm_upper_bound = -30
-
         self.iw = shutil.which("iw")
         self._update_widgets(widgets)
 
@@ -74,6 +68,9 @@ class Module(core.module.Module):
             states.append("warning")
 
         intf = widget.get("intf")
+
+
+        
         iftype = "wireless" if self._iswlan(intf) else "wired"
         iftype = "tunnel" if self._istunnel(intf) else iftype
 
@@ -88,12 +85,19 @@ class Module(core.module.Module):
         states.append("{}-{}".format(iftype, widget.get("state")))
 
         return states
-
+    
     def _iswlan(self, intf):
-        # wifi, wlan, wlp, seems to work for me
-        if intf.startswith("w") and not intf.startswith("wg") and not intf.startswith("waydroid"):
-            return True
-        return False
+        if not hasattr(self, "_cached_wlan_interfaces"):
+            self._cached_wlan_interfaces = {}
+
+        def _test_is_wlan(intf):
+            try:
+                util.cli.execute("{} dev {} info".format(self.iw, intf))
+                return True
+            except RuntimeError:
+                return False
+        
+        return self._cached_wlan_interfaces.setdefault(intf, _test_is_wlan(intf))
 
     def _istunnel(self, intf):
         return intf.startswith("tun") or intf.startswith("wg")
