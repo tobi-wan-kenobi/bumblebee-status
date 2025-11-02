@@ -68,8 +68,6 @@ class Module(core.module.Module):
             states.append("warning")
 
         intf = widget.get("intf")
-
-
         
         iftype = "wireless" if self._iswlan(intf) else "wired"
         iftype = "tunnel" if self._istunnel(intf) else iftype
@@ -85,7 +83,7 @@ class Module(core.module.Module):
         states.append("{}-{}".format(iftype, widget.get("state")))
 
         return states
-    
+
     def _iswlan(self, intf):
         if not hasattr(self, "_cached_wlan_interfaces"):
             self._cached_wlan_interfaces = {}
