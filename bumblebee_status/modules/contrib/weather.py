@@ -81,9 +81,8 @@ class Module(core.module.Module):
         if not self.__valid:
             return "?"
         if self.__showminmax:
-            self.__showcity = False
             return (
-                self.city()
+                self.city() if self.__showcity else ""
                 + self.temperature()
                 + "  Hi:"
                 + self.tempmax()
