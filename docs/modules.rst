@@ -444,10 +444,31 @@ multiple audio cards contributed by `hugoeustaquio <https://github.com/hugoeusta
 apt
 ~~~
 
-Displays APT package update information (<to upgrade>/<to remove >)
-Requires the following packages:
+Displays APT package update information (<to upgrade>/<to remove>/<kept back>)
 
-    * aptitude
+Requires the following packages:
+    * apt
+
+Parameters:
+    * apt.format:
+        Format string for the output. May contain any combination of the
+        following named placeholders:
+            * {to_upgrade}
+            * {to_remove}
+            * {kept_back}
+
+        All placeholders are optional.
+
+        Default:
+            "{to_upgrade} to upgrade, {to_remove} to remove".
+
+        Notes:
+            * With the default format, "kept back" is only shown when
+              kept_back > 0.
+            * Custom format strings are rendered as-is and do not include
+              conditional logic.
+    * apt.warning: Integer to set the threshold for warning state (defaults to 0)
+    * apt.critical: Integer to set the threshold for critical state (defaults to 50)
 
 contributed by `qba10 <https://github.com/qba10>`_ - many thanks!
 
@@ -645,7 +666,7 @@ Requires:
     tkcalendar
 
 .. image:: ../screenshots/calendar.png
-    
+
 cmus
 ~~~~
 
@@ -924,7 +945,7 @@ Parameters:
 
 This code is based on emerge_status module from p3status [1] original created by AnwariasEu.
 
-[1] https://github.com/ultrabug/py3status/blob/master/py3status/modules/emerge_status.py 
+[1] https://github.com/ultrabug/py3status/blob/master/py3status/modules/emerge_status.py
 
 .. image:: ../screenshots/emerge_status.png
 
@@ -1060,7 +1081,7 @@ contributed by `valkheim <https://github.com/valkheim>`_ - many thanks!
 indicator
 ~~~~~~~~~
 
-Displays the indicator status, for numlock, scrolllock and capslock 
+Displays the indicator status, for numlock, scrolllock and capslock
 
 Requires the following executable:
     * xset
@@ -1122,11 +1143,11 @@ Parameters:
 
 Example:
     The following examples assume that /tmp/bumblebee_messagereceiver.sock is used as unix socket address.
-    
-    In order to send the string "I  bumblebee-status" to your status bar, use the following command: 
+
+    In order to send the string "I  bumblebee-status" to your status bar, use the following command:
         echo -e '{"message":"I  bumblebee-status", "state": ""}' | socat unix-connect:/tmp/bumblebee_messagereceiver.sock STDIO
 
-    In order to highlight the text, the state variable can be used: 
+    In order to highlight the text, the state variable can be used:
         echo -e '{"message":"I  bumblebee-status", "state": "warning"}' | socat unix-connect:/tmp/bumblebee_messagereceiver.sock STDIO
 
 contributed by `bbernhard <https://github.com/bbernhard>`_ - many thanks!
@@ -1233,7 +1254,7 @@ Displays the result of a notmuch count query
    default : unread emails which path do not contained 'Trash' (notmuch count 'tag:unread AND NOT path:/.*Trash.*/')
 
 Parameters:
-    * notmuch_count.query: notmuch count query to show result 
+    * notmuch_count.query: notmuch count query to show result
 
 Errors:
     if the notmuch query failed, the shown value is  -1
@@ -1618,7 +1639,7 @@ Requires the following executables:
 Parameters:
     * smartstatus.display: how to display (defaults to 'combined', other choices: 'combined_singles', 'separate' or 'singles')
     * smartstatus.drives: in the case of singles which drives to display, separated comma list value, multiple accepted (defaults to 'sda', example:'sda,sdc')
-    * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all. 
+    * smartstatus.show_names: boolean in the form of "True" or "False" to show the name of the drives in the form of sda, sbd, combined or none at all.
 
 solaar
 ~~~~~~
