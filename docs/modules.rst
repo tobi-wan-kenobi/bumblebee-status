@@ -193,6 +193,7 @@ Parameters:
     * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid} {strength}')
     * nic.strength_warning: Integer to set the threshold for warning state (defaults to 50)
     * nic.strength_critical: Integer to set the threshold for critical state (defaults to 30)
+    * nic.open: Command string (single- or double-quoted) to execute on left-click (defaults to '/bin/xterm nmtui')
 
 .. image:: ../screenshots/nic.png
 

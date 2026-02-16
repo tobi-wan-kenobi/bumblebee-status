@@ -16,6 +16,7 @@ Parameters:
     * nic.format: Format string (defaults to '{intf} {state} {ip} {ssid} {strength}')
     * nic.strength_warning: Integer to set the threshold for warning state (defaults to 50)
     * nic.strength_critical: Integer to set the threshold for critical state (defaults to 30)
+    * nic.open: Command string (single- or double-quoted) to execute on left-click (defaults to '/bin/xterm nmtui')
 """
 
 import re
@@ -54,7 +55,14 @@ class Module(core.module.Module):
         self._strength_threshold_warning = util.format.asint(self.parameter("strength_warning", 50))
 
         self.iw = shutil.which("iw")
+
         self._update_widgets(widgets)
+
+        core.input.register(
+            self,
+            button=core.input.LEFT_MOUSE,
+            cmd="openNetConfig",
+        )
 
     def update(self):
         self._update_widgets(self.widgets())
@@ -191,5 +199,8 @@ class Module(core.module.Module):
     def convert_strength_dbm_percent(self, signal):
         return int(100 * ((signal + 100) / 70.0)) if signal else None
 
+
+    def openNetConfig(self, event):
+        util.cli.execute( self.parameter('open', '/bin/xterm nmtui') )
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
