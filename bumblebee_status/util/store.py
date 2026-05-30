@@ -36,8 +36,6 @@ class Store(object):
         :param key: the name of the parameter to retrieve
         :param default: the default value to return, defaults to None
         """
-        if key in self._data:
-            self._data[key]["used"] = True
         return self._data.get(key, {"value": default})["value"]
 
 

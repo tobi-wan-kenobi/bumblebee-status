@@ -209,6 +209,8 @@ class Config(util.store.Store):
         )
 
         self.__args = parser.parse_args(args)
+        self.__autohide_set = None
+        self.__interval_cache = None
 
         if self.__args.config_file:
             cfg = self.__args.config_file
@@ -279,7 +281,9 @@ class Config(util.store.Store):
     """
 
     def interval(self, default=1):
-        return util.format.seconds(self.get("interval", default))
+        if self.__interval_cache is None:
+            self.__interval_cache = util.format.seconds(self.get("interval", default))
+        return self.__interval_cache
 
     """Returns the global popup menu font size
 
@@ -342,7 +346,11 @@ class Config(util.store.Store):
     """
 
     def autohide(self, name):
-        return name in self.__args.autohide or name in util.format.aslist(self.get("autohide", []))
+        if self.__autohide_set is None:
+            self.__autohide_set = set(self.__args.autohide) | set(
+                util.format.aslist(self.get("autohide", []))
+            )
+        return name in self.__autohide_set
 
     """Returns which modules should be hidden if they are in state error
 

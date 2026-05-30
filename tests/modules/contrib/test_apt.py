@@ -1,4 +1,3 @@
-import time
 from unittest import TestCase, mock
 
 import core.config
@@ -209,12 +208,12 @@ class TestAPT(TestCase):
         assert module.state(widget) == "critical"
 
     @mock.patch("util.cli.execute")
-    def test_get_apt_check_info_success(self, execute_mock):
-        """Test successful apt-get check info retrieval."""
+    def test_update_success(self, execute_mock):
+        """Test successful update() sets widget values correctly."""
         execute_mock.return_value = "Reading package lists...\n5 upgraded, 2 newly installed, 3 to remove and 1 not upgraded"
         module = build_module()
 
-        module._get_apt_check_info()
+        module.update()
 
         widget = module.widget()
         assert widget.get("error") is None
@@ -224,48 +223,14 @@ class TestAPT(TestCase):
         execute_mock.assert_called_once_with("apt-get -s dist-upgrade")
 
     @mock.patch("util.cli.execute")
-    def test_get_apt_check_info_failure(self, execute_mock):
-        """Test apt-get check info retrieval with exception."""
+    def test_update_failure(self, execute_mock):
+        """Test update() sets error on widget when apt-get raises."""
         execute_mock.side_effect = Exception("Command not found")
         module = build_module()
 
-        module._get_apt_check_info()
+        module.update()
 
         widget = module.widget()
         assert "APT error" in widget.get("error")
         assert "Command not found" in widget.get("error")
-
-    @mock.patch("util.cli.execute")
-    def test_update_triggers_thread(self, execute_mock):
-        """Test that update() starts a new thread when none exists."""
-        execute_mock.return_value = "Reading package lists...\n0 upgraded, 0 newly installed, 0 to remove"
-        module = build_module()
-
-        # First update should start a thread
-        module.update()
-
-        # Wait a bit for thread to complete
-        time.sleep(0.1)
-
-        # Verify the command was called
-        execute_mock.assert_called_with("apt-get -s dist-upgrade")
-
-    @mock.patch("util.cli.execute")
-    def test_update_does_not_start_multiple_threads(self, execute_mock):
-        """Test that update() doesn't start multiple threads if one is already running."""
-        execute_mock.return_value = "Reading package lists...\n0 upgraded, 0 newly installed, 0 to remove"
-        module = build_module()
-
-        # Start first update
-        module.update()
-
-        # Try to start another update immediately (thread should still be alive)
-        module.update()
-
-        # Wait for threads to complete
-        time.sleep(0.2)
-
-        # Should only be called once (or maybe twice if thread finished quickly)
-        # The important thing is we don't spawn unlimited threads
-        assert execute_mock.call_count <= 2
 

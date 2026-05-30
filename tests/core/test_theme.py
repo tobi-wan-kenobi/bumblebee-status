@@ -1,5 +1,6 @@
 import pytest
 import types
+from unittest.mock import MagicMock
 
 import core.theme
 import core.event
@@ -189,6 +190,75 @@ def test_overlay(overlayTheme):
     widget.state = types.MethodType(lambda self: ["load"], widget)
 
     assert theme.get("prefix", widget) == overlayTheme[module.name]["load"]["prefix"]
+
+
+def _make_mock_widget(widget_id="test-widget", states=None):
+    w = MagicMock(spec=[])
+    w.id = widget_id
+    w.module = None
+    w.state = MagicMock(return_value=states if states is not None else [])
+    # Ensure _state_cache is not present so widget.state() is called
+    return w
+
+
+def test_cache_hit_skips_cascade(mocker):
+    """Second get() for same (widget, state, count) returns cached value, not re-resolved."""
+    theme = core.theme.Theme(raw_data={"defaults": {"fg": "#original"}})
+    widget = _make_mock_widget("w1", [])
+
+    first = theme.get("fg", widget)
+    assert first == "#original"
+
+    # Mutate the theme data — if cache is bypassed, second call would return "#mutated"
+    theme._Theme__data["defaults"]["fg"] = "#mutated"
+
+    second = theme.get("fg", widget)
+    assert second == "#original"  # still returns cached value
+
+
+def test_list_values_not_cached():
+    """List values (cycling colors) are excluded from the cache."""
+    theme = core.theme.Theme(raw_data={"defaults": {"fg": ["#aaa", "#bbb"]}})
+    widget = _make_mock_widget("w1", [])
+    widget.set = MagicMock()  # list path calls widget.set(key, idx)
+
+    theme.get("fg", widget)
+
+    # List values must not be in __resolved (they cycle per tick)
+    cache = theme._Theme__resolved
+    for cache_key, entry in cache.items():
+        if cache_key[0] == "w1":
+            assert "fg" not in entry
+
+
+def test_cache_different_states_produce_different_entries():
+    """Different states on the same widget id produce separate cached entries."""
+    theme = core.theme.Theme(
+        raw_data={"defaults": {"fg": "#aabbcc"}, "warning": {"fg": "#ff0000"}}
+    )
+    widget_normal = _make_mock_widget(widget_id="w2", states=[])
+    widget_warning = _make_mock_widget(widget_id="w2", states=["warning"])
+
+    result_normal = theme.get("fg", widget_normal)
+    result_warning = theme.get("fg", widget_warning)
+
+    assert result_normal == "#aabbcc"
+    assert result_warning == "#ff0000"
+    # Two distinct cache keys for the same widget id
+    keys_for_w2 = [k for k in theme._Theme__resolved if k[0] == "w2"]
+    assert len(keys_for_w2) == 2
+
+
+def test_invalidate_widget_removes_cache_entries():
+    """invalidate_widget evicts all cached entries for the given widget."""
+    theme = core.theme.Theme(raw_data={"defaults": {"fg": "#aabbcc"}})
+    widget = _make_mock_widget(widget_id="w3", states=[])
+
+    theme.get("fg", widget)
+    assert any(k[0] == "w3" for k in theme._Theme__resolved)
+
+    theme.invalidate_widget(widget.id)
+    assert not any(k[0] == "w3" for k in theme._Theme__resolved)
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

@@ -147,6 +147,8 @@ class i3(object):
         self.__theme = theme
         self.__config = config
         self.__offset = 0
+        self.__draw_dirty = False
+        self.__last_content_hash = None
         self.__lock = threading.Lock()
         core.event.register("update", self.update)
         core.event.register("start", self.draw, "start")
@@ -175,16 +177,26 @@ class i3(object):
             if module.widget(widget_id=widget_id) and util.format.asbool(module.parameter("minimize", False)) == True:
                 # this module can customly minimize
                 module.minimized = not module.minimized
+                self.__draw_dirty = True
                 return
 
         if widget_id in self.__content:
             self.__content[widget_id]["minimized"] = not self.__content[widget_id]["minimized"]
+            self.__draw_dirty = True
 
     def draw(self, what, args=None):
         with self.__lock:
             cb = getattr(self, what)
             data = cb(args) if args else cb()
             if "blocks" in data:
+                if what == "statusline":
+                    content_hash = hash(
+                        tuple(v.get("text", "") for v in self.__content.values())
+                    )
+                    if not self.__draw_dirty and content_hash == self.__last_content_hash:
+                        return
+                    self.__draw_dirty = False
+                    self.__last_content_hash = content_hash
                 sys.stdout.write(json.dumps(data["blocks"], default=dump_json))
             if "suffix" in data:
                 sys.stdout.write(data["suffix"])
@@ -229,9 +241,11 @@ class i3(object):
     def scroll_left(self):
         if self.__offset > 0:
             self.__offset -= 1
+            self.__draw_dirty = True
 
     def scroll_right(self):
         self.__offset += 1
+        self.__draw_dirty = True
 
     def blocks(self, module):
         blocks = []
@@ -243,6 +257,9 @@ class i3(object):
 
         width = self.__config.get("output.width", 0)
         for widget in module.widgets():
+            widget_state = widget.state()
+            widget._state_cache = widget_state
+
             if module.scroll() == True and width > 0:
                 self.__widgetcount += 1
                 if self.__widgetcount-1 < self.__offset:
@@ -251,14 +268,14 @@ class i3(object):
                     continue
             if widget.module and self.__config.autohide(widget.module.name):
                 if not any(
-                    state in widget.state() for state in ["warning", "critical", "no-autohide"]
+                    state in widget_state for state in ["warning", "critical", "no-autohide"]
                 ):
                     continue
             if module.hidden():
                 continue
             if widget.hidden:
                 continue
-            if "critical" in widget.state() and self.__config.errorhide(widget.module.name):
+            if "critical" in widget_state and self.__config.errorhide(widget.module.name):
                 continue
             blocks.extend(self.separator_block(module, widget))
             blocks.append(self.__content_block(module, widget))
@@ -281,10 +298,15 @@ class i3(object):
 
             if not redraw_only:
                 module.update_wrapper()
+                self.__draw_dirty = True
+                for w in module.widgets():
+                    self.__theme.invalidate_widget(w.id)
                 if module.parameter("interval", "") != "never":
-                    module.next_update = now + util.format.seconds(
-                        module.parameter("interval", self.__config.interval())
-                    )
+                    if not hasattr(module, '_interval_secs'):
+                        module._interval_secs = util.format.seconds(
+                            module.parameter("interval", self.__config.interval())
+                        )
+                    module.next_update = now + module._interval_secs
                 else:
                     module.next_update = sys.maxsize
             for widget in module.widgets():
