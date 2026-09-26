@@ -122,12 +122,13 @@ class Theme(object):
             log.error("failed to load colors: {}", e)
 
     def __start(self):
+        for key, value in self.__value_idx.items():
+            self.__value_idx[key] = value + 1
+
+    def begin(self):
         self.__widget_count = 0
         self.__current.clear()
         self.__previous.clear()
-
-        for key, value in self.__value_idx.items():
-            self.__value_idx[key] = value + 1
 
     def __next_widget(self):
         self.__widget_count = self.__widget_count + 1
