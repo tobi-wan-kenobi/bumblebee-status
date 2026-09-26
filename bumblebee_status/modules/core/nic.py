@@ -157,7 +157,7 @@ class Module(core.module.Module):
                         intf=intf,
                         state=state,
                         strength=str(strength_percent) + "%" if strength_percent else "",
-                        ssid=self.get_ssid(intf),
+                        ssid=self.get_ssid(intf) if "{ssid}" in self._format else "",
                     ).split()
                 )
             )
@@ -178,14 +178,21 @@ class Module(core.module.Module):
         return ""
 
     def get_strength_dbm(self, intf):
-        if not self._iswlan(intf) or self._istunnel(intf) or not self.iw:
+        if not self._iswlan(intf) or self._istunnel(intf):
             return None
 
-        iw_info = util.cli.execute("{} dev {} link".format(self.iw, intf))
-        for line in iw_info.split("\n"):
-            match = re.match(r"^\s+signal:\s(.+) dBm$", line)
-            if match:
-                return int(match.group(1))
+        try:
+            with open("/proc/net/wireless") as f:
+                for line in f:
+                    if line.strip().startswith(intf + ":"):
+                        parts = line.split()
+                        signal = float(parts[3].rstrip("."))
+                        # old kernels report as unsigned byte; convert to dBm
+                        if signal > 0:
+                            signal -= 256
+                        return int(signal)
+        except (OSError, IndexError, ValueError):
+            pass
         return None
 
     def convert_strength_dbm_percent(self, signal):

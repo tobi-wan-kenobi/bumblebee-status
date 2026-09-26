@@ -5,6 +5,7 @@ import core.event
 import core.config
 import core.output
 import core.module
+import util.format
 
 
 class SampleModule(core.module.Module):
@@ -25,6 +26,7 @@ def i3():
 def module_a(mocker):
     widget = mocker.MagicMock()
     widget.full_text.return_value = "test"
+    widget.theme.return_value = None
     widget.id = "a"
     widget.hidden = False
     return SampleModule(config=core.config.Config([]), widgets=[widget, widget, widget])
@@ -197,6 +199,86 @@ def test_pre_suffix(block_a):
     block_a.set("full_text", "test")
 
     assert block_a.dict()["full_text"] == "*pre*test*suf*"
+
+
+def test_widget_state_cached_on_widget_during_blocks(mocker, i3):
+    """widget.state() should be called once per widget per draw, cached as _state_cache."""
+    widget = mocker.MagicMock()
+    widget.full_text.return_value = "test"
+    widget.id = "single"
+    widget.hidden = False
+    module = SampleModule(config=core.config.Config([]), widgets=[widget])
+
+    i3.modules([module])
+    i3.update()
+
+    if hasattr(widget, '_state_cache'):
+        delattr(widget, '_state_cache')
+
+    original_state = widget.state
+    call_count = [0]
+
+    def counting_state():
+        call_count[0] += 1
+        return original_state()
+
+    widget.state = counting_state
+    i3._i3__widgetcount = 0
+
+    i3.blocks(module)
+    assert call_count[0] == 1
+    assert hasattr(widget, '_state_cache')
+
+
+def test_draw_skipped_when_content_unchanged(mocker, i3, module_a):
+    """stdout.write should not be called on second draw if nothing changed."""
+    i3.modules([module_a])
+    i3.update()
+
+    stdout = mocker.patch("core.output.sys.stdout")
+    i3.draw("statusline")
+    first_call_count = stdout.write.call_count
+
+    i3.draw("statusline")
+    second_call_count = stdout.write.call_count
+
+    assert second_call_count == first_call_count, \
+        "stdout.write called again despite no content change"
+
+
+def test_draw_not_skipped_after_update(mocker, i3, module_a):
+    """stdout.write should be called again after a module update."""
+    i3.modules([module_a])
+    i3.update()
+
+    stdout = mocker.patch("core.output.sys.stdout")
+    i3.draw("statusline")
+    first_call_count = stdout.write.call_count
+
+    # force=True bypasses the interval check so the module always re-runs
+    i3.update(force=True)
+    i3.draw("statusline")
+    second_call_count = stdout.write.call_count
+
+    assert second_call_count > first_call_count, \
+        "stdout.write not called after module update"
+
+
+def test_interval_seconds_cached_on_module(mocker, i3, module_a):
+    """util.format.seconds should be called at most once per module across multiple updates."""
+    i3.modules([module_a])
+    seconds_spy = mocker.spy(util.format, "seconds")
+
+    module_a.next_update = 0
+    i3.update(force=True)
+    first_count = seconds_spy.call_count
+
+    module_a.next_update = 0
+    i3.update(force=True)
+    second_count = seconds_spy.call_count
+
+    assert second_count == first_count, \
+        f"util.format.seconds called again on second update: {first_count} -> {second_count}"
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

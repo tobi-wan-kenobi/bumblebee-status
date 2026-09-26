@@ -2,6 +2,7 @@ import os
 import pytest
 
 import core.config
+import util.format
 
 
 @pytest.fixture
@@ -119,6 +120,38 @@ def test_file_case_sensitivity():
 
     assert cfg.get("test.key") == "VaLuE"
     assert cfg.get("test.KeY2") == "value"
+
+
+def test_autohide_returns_false_for_unlisted_module():
+    cfg = core.config.Config([])
+    assert cfg.autohide("cpu") == False
+
+
+def test_autohide_returns_true_for_listed_module():
+    cfg = core.config.Config(["-a", "cpu", "memory"])
+    assert cfg.autohide("cpu") == True
+    assert cfg.autohide("memory") == True
+    assert cfg.autohide("network") == False
+
+
+def test_autohide_set_built_only_once(mocker):
+    cfg = core.config.Config(["-a", "cpu"])
+    aslist_spy = mocker.spy(util.format, "aslist")
+    cfg.autohide("cpu")
+    cfg.autohide("cpu")
+    cfg.autohide("memory")
+    # aslist should be called at most once across all autohide() calls
+    assert aslist_spy.call_count == 1
+
+
+def test_interval_cached(mocker):
+    cfg = core.config.Config(["-p", "interval=5"])
+    seconds_spy = mocker.spy(util.format, "seconds")
+    cfg.interval()
+    cfg.interval()
+    cfg.interval()
+    # seconds() should be called at most once across all interval() calls
+    assert seconds_spy.call_count == 1
 
 #
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
