@@ -5,6 +5,9 @@
 Requires the following packages:
     * apt
 
+Optional (for instant refresh when packages are installed/removed):
+    * inotify-tools (inotifywait) — falls back to mtime polling if unavailable
+
 Parameters:
     * apt.format:
         Format string for the output. May contain any combination of the
@@ -29,9 +32,14 @@ Parameters:
 contributed by `qba10 <https://github.com/qba10>`_ - many thanks!
 """
 
+import os
 import re
+import shutil
+import subprocess
 import threading
+import time
 
+import core.event
 import core.module
 import core.widget
 import core.decorators
@@ -44,12 +52,15 @@ class Module(core.module.Module):
     @core.decorators.every(minutes=30)
     def __init__(self, config, theme):
         super().__init__(config, theme, core.widget.Widget(self.updates))
-        self.__thread = None
         self.__default_format = "{to_upgrade} to upgrade, {to_remove} to remove"
         self.__format = self.parameter("format", self.__default_format)
         self.__threshold_warning = util.format.asint(self.parameter("warning", 0))
         self.__threshold_critical = util.format.asint(self.parameter("critical", 50))
-        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=self.updates)
+        self.background = True
+        core.input.register(self, button=core.input.RIGHT_MOUSE, cmd=lambda event: self.update_wrapper())
+
+        monitor = threading.Thread(target=self._watch_dpkg, daemon=True)
+        monitor.start()
 
     def updates(self, widget):
         if widget.get("error"):
@@ -76,16 +87,21 @@ class Module(core.module.Module):
         return result
 
     def update(self):
-        if not self.__thread or not self.__thread.is_alive():
-            self.__thread = threading.Thread(target=self._get_apt_check_info)
-            self.__thread.start()
+        widget = self.widget()
+        try:
+            res = util.cli.execute("apt-get -s dist-upgrade")
+            up, _new, rm, kept = self._parse_result(res)
+            widget.set("error", None)
+            widget.set("to_upgrade", up)
+            widget.set("to_remove", rm)
+            widget.set("not_upgraded", kept)
+        except Exception as e:
+            widget.set("error", "APT error: {}".format(e))
 
     def state(self, widget):
         if widget.get("error"):
             return "critical"
-
         total = sum([widget.get(t, 0) for t in ["to_upgrade", "to_remove", "not_upgraded"]])
-
         if total > self.__threshold_critical:
             return "critical"
         if total > self.__threshold_warning:
@@ -94,7 +110,6 @@ class Module(core.module.Module):
 
     def _parse_result(self, to_parse):
         pattern = r"(\d+) upgraded, (\d+) newly installed, (\d+) to remove(?: and (\d+) not upgraded)?"
-
         for line in reversed(to_parse.splitlines()):
             match = re.search(pattern, line)
             if match:
@@ -102,21 +117,50 @@ class Module(core.module.Module):
                 return tuple(vals)
         return 0, 0, 0, 0
 
+    def _watch_dpkg(self):
+        dpkg_status = "/var/lib/dpkg/status"
+        if shutil.which("inotifywait"):
+            self._watch_inotify(dpkg_status)
+        else:
+            self._watch_mtime(dpkg_status)
 
-    def _get_apt_check_info(self):
-        widget = self.widget()
+    def _watch_inotify(self, path):
+        # Watch the directory, not the file — dpkg atomically replaces
+        # status via rename, which fires on the directory inode, not the file's
+        watch_dir = os.path.dirname(path)
+        watch_file = os.path.basename(path)
         try:
-            res = util.cli.execute("apt-get -s dist-upgrade")
-            up, new, rm, kept = self._parse_result(res)
+            proc = subprocess.Popen(
+                ["inotifywait", "-m", "-e", "close_write,moved_to", watch_dir],
+                stdout=subprocess.PIPE,
+                stderr=subprocess.DEVNULL,
+            )
+            for line in proc.stdout:
+                if not threading.main_thread().is_alive():
+                    proc.terminate()
+                    return
+                # output format: "<dir>/ <EVENTS> <filename>"
+                parts = line.decode().strip().split()
+                if len(parts) >= 3 and parts[2] == watch_file:
+                    self.update_wrapper()
+        except Exception:
+            self._watch_mtime(path)
 
-            widget.set("error", None)
-            widget.set("to_upgrade", up)
-            widget.set("to_remove", rm)
-            widget.set("not_upgraded", kept)
-        except Exception as e:
-            widget.set("error", "APT error: {}".format(e))
+    def _watch_mtime(self, path):
+        try:
+            last_mtime = os.stat(path).st_mtime
+        except OSError:
+            last_mtime = None
 
-        core.event.trigger("update", [self.id], redraw_only=True)
+        while threading.main_thread().is_alive():
+            time.sleep(30)
+            try:
+                mtime = os.stat(path).st_mtime
+                if last_mtime is not None and mtime != last_mtime:
+                    self.update_wrapper()
+                last_mtime = mtime
+            except OSError:
+                pass
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4

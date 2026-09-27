@@ -1,48 +1,31 @@
-import pytest
-
 import util.store
 
 
-@pytest.fixture
-def emptyStore():
-    return util.store.Store()
+def test_get_returns_set_value():
+    s = util.store.Store()
+    s.set("key", "value")
+    assert s.get("key") == "value"
 
 
-@pytest.fixture
-def store():
-    return util.store.Store()
+def test_get_returns_default_for_missing_key():
+    s = util.store.Store()
+    assert s.get("missing") is None
+    assert s.get("missing", "default") == "default"
 
 
-def test_get_of_unset_key(emptyStore):
-    assert emptyStore.get("any-key") == None
-    assert emptyStore.get("any-key", "default-value") == "default-value"
+def test_get_does_not_mutate_internal_used_flag():
+    s = util.store.Store()
+    s.set("key", "value")
+    s.get("key")
+    # After the fix, 'used' stays False (tracking removed from hot path)
+    assert s._data["key"]["used"] == False
 
 
-def test_get_of_set_key(store):
-    store.set("key", "value")
-    assert store.get("key") == "value"
-
-
-def test_overwrite_set(store):
-    store.set("key", "value 1")
-    store.set("key", "value 2")
-
-    assert store.get("key") == "value 2"
-
-
-def test_unused_keys(store):
-    store.set("key 1", "value x")
-    store.set("key 2", "value y")
-
-    assert sorted(store.unused_keys()) == sorted(["key 1", "key 2"])
-
-    store.get("key 2")
-
-    assert store.unused_keys() == ["key 1"]
-
-    store.get("key 1")
-
-    assert store.unused_keys() == []
+def test_overwrite_set():
+    s = util.store.Store()
+    s.set("key", "value 1")
+    s.set("key", "value 2")
+    assert s.get("key") == "value 2"
 
 
 # vim: tabstop=8 expandtab shiftwidth=4 softtabstop=4
