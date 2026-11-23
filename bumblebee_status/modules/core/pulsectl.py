@@ -63,6 +63,7 @@ class Module(core.module.Module):
         self.__volume = 0
         self.__devicename = "n/a"
         self.__muted = False
+        self.__connected = False
         self.__showbars = util.format.asbool(self.parameter("showbars", False))
         self.__show_device_name = util.format.asbool(
             self.parameter("showdevicename", False)
@@ -105,6 +106,8 @@ class Module(core.module.Module):
         self.process(None)
 
     def display(self, _):
+        if not self.__connected:
+            return "disconnected"
         res = f"{int(self.__volume*100)}%"
         if self.__showbars:
             res = f"{res} {util.graph.hbar(self.__volume*100)}"
@@ -157,23 +160,34 @@ class Module(core.module.Module):
 
 
     def process(self, _):
-        with pulsectl.Pulse(self.id + "proc") as pulse:
-            dev = self.get_device(pulse)
-            if not dev:
-                self.__volume = 0
-                self.__devicename = "n/a"
-            else:
-                self.__volume = dev.volume.value_flat
-                self.__muted = dev.mute
-                self.__devicename = dev.name
+        try:
+            with pulsectl.Pulse(self.id + "proc") as pulse:
+                dev = self.get_device(pulse)
+                if not dev:
+                    self.__volume = 0
+                    self.__devicename = "n/a"
+                else:
+                    self.__volume = dev.volume.value_flat
+                    self.__muted = dev.mute
+                    self.__devicename = dev.name
+            self.__connected = True
+        except (pulsectl.PulseError, pulsectl.PulseDisconnected):
+            self.__connected = False
         core.event.trigger("update", [self.id], redraw_only=True)
         core.event.trigger("draw")
 
     def update(self):
-        with pulsectl.Pulse(self.id) as pulse:
-            pulse.event_mask_set(self.__type)
-            pulse.event_callback_set(self.process)
-            pulse.event_listen()
+        try:
+            with pulsectl.Pulse(self.id) as pulse:
+                pulse.event_mask_set(self.__type)
+                pulse.event_callback_set(self.process)
+                # Values may have changed while the server was unavailable.
+                self.process(None)
+                pulse.event_listen()
+        except (pulsectl.PulseError, pulsectl.PulseDisconnected):
+            # Return so the next scheduled update retries the connection.
+            # Letting this reach core.module would disable the module permanently.
+            self.__connected = False
 
     def select_default_device_popup(self, widget):
         with pulsectl.Pulse(self.id) as pulse:
@@ -196,6 +210,8 @@ class Module(core.module.Module):
             pulse.default_set(dev)
 
     def state(self, _):
+        if not self.__connected:
+            return ["warning"]
         if self.__muted:
             return ["warning", "muted"]
         return ["unmuted"]
